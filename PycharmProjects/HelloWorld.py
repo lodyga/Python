@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@lodyga 
-lodyga
-/
-pycharmGIT
-1
-00
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-pycharmGIT/naukaPythonLinux.py /
-@lodyga
-lodyga Update naukaPythonLinux.py
-Latest commit 3fa698c on 30 Dec 2020
- History
- 1 contributor
-1526 lines (1116 sloc)  29.3 KB
- 
 print("USA")
 print("UK")
 print(2 * "\n")
@@ -1550,19 +1519,3 @@ with open('writeData.csv', mode='w') as file:
 
 
 from pandas import DataFrame
-
-
-
-
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
