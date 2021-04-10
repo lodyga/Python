@@ -639,6 +639,8 @@ string = 'some kind of a useless lambda'
 (lambda str: print(str))(string)
 
 
+
+
 # A REGULAR FUNCTION
 def guru(funct, *args):
    funct(*args)
@@ -656,6 +658,7 @@ guru(printer_two, 'printer 2 REGULAR CALL \n')
 # CALL A REGULAR FUNCTION THRU A LAMBDA
 guru(lambda: printer_one('printer 1 LAMBDA CALL'))
 guru(lambda: printer_two('printer 2 LAMBDA CALL \n'))
+
 
 
 (lambda x: x + x)(2)
@@ -2070,21 +2073,250 @@ print(db_cursor.rowcount, "Record Inserted")
 
 
 
-# sudo apt install default-jre
-# sudo apt install default-jdk
-# sudo snap install --classic eclipse
-# pip install selenium
-
-print("\n")
-print("# Facebook")
 
 
 
 
 
 
+# Facebook
+
+sudo apt install default-jre
+sudo apt install default-jdk
+sudo snap install --classic eclipse
+pip install selenium
+
+# dużo zachodu
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+# Step 1) Open Firefox 
+browser = webdriver.Firefox()
+# Step 2) Navigate to Facebook
+browser.get("http://www.facebook.com")
+# Step 3) Search & Enter the Email or Phone field & Enter Password
+username = browser.find_element_by_id("email")
+password = browser.find_element_by_id("pass")
+submit   = browser.find_element_by_id("loginbutton")
+username.send_keys("you@email.com")
+password.send_keys("yourpassword")
+# Step 4) Click Login
+submit.click()
 
 
+
+
+
+
+
+
+
+
+
+# Matrix
+
+M1 = [[8, 14, -6], [12, 7, 4], [-11, 3, 21], [3, 4, 5]]
+matrix_length = len(M1)
+#To read the last element from each row.
+for i in range(matrix_length):
+    print(M1[i][-1])
+
+#To print the rows in the Matrix
+for i in range(matrix_length):
+    print(M1[i])
+
+
+M1 = [[8, 14, -6], 
+      [12,7,4], 
+      [-11,3,21]]
+    
+M2 = [[3, 16, -6],
+           [9,7,-4], 
+           [-1,3,13]]
+
+M3  = [[0,0,0],
+       [0,0,0],
+       [0,0,0]]
+
+# To Add M1 and M2 matrices
+for i in range(len(M1)):
+   for j in range(len(M1[0])):
+      M3[i][j] = M1[i][j] + M2[i][j]
+
+M3
+
+
+import numpy as np
+M1 = np.array([[5, -10, 15], [3, -6, 9], [-4, 8, 12]])
+print(M1)
+
+
+M1 = np.array([[3, 6, 9], [5, -10, 15], [-7, 14, 21]])
+M2 = np.array([[9, -18, 27], [11, 22, 33], [13, -26, 39]])
+M3 = M1 + M2  
+print(M3)
+
+
+M1 = np.array([[3, 6], [5, -10]])
+M2 = np.array([[9, -18], [11, 22]])
+M3 = M1.dot(M2)  
+print(M3)
+
+
+M1 = np.array([[3, 6, 9], [5, -10, 15], [4,8,12]])
+M2 = M1.transpose()
+print(M2)
+
+
+arr = np.array([2,4,6,8,10,12,14,16])
+print(arr[3:6]) # will print the elements from 3 to 5
+print(arr[:5]) # will print the elements from 0 to 4
+print(arr[2:]) # will print the elements from 2 to length of the array.
+print(arr[-5:-1]) # will print from the end i.e. -5 to -2
+print(arr[:-1]) # will print from end i.e. 0 to -2
+
+
+M1 = np.array([[2, 4, 6, 8, 10], 
+   [3, 6, 9, -12, -15],
+   [4, 8, 12, 16, -20],
+   [5, -10, 15, -20, 25]])
+
+
+print(M1[1:3, 1:4]) # For 1:3, it will give first and second row.
+#The columns will be taken from first to third.
+
+
+print(M1[:2,]) # This will print f
+print(M1[:3,:2])
+
+
+
+
+
+
+
+
+# List: Comprehension, Apend, Sort, Length, Reverse
+
+list1 = [3, 5, 7, 8, 9, 20]
+list1.remove(3)
+list1.pop(0)
+del list1[0]
+print(list1)
+
+list_1 = [3, 5, 7, 8, 9, 20]
+list_1.append(3.33)
+print(list_1)
+
+len(list1)
+max(list1)
+reverse(list1)
+
+animals = ("cat", "dog", "fish", "cow")
+print(list(animals))
+
+animals = ['cat', 'dog', 'fish', 'cow', 'goat']
+fish_index = animals.index('fish')
+print(fish_index)
+
+sum_of_values = sum(list_1 )
+print(sum_of_values)
+
+list1.sort()
+print(list1)
+
+# to sort the list by length of the elements
+str1 = ['cat', 'mammal', 'goat', 'is']
+str1.sort()
+#sort_by_length = str1.sort(key = len)
+str1.sort(key=len)
+
+list2 = [10, 20, 30, 40, 50, 60, 70]
+for elem in list2:
+   elem = elem + 5
+   print(elem)
+
+list2 = [10, 20, 30, 40, 50, 60, 70]
+for elem in list2[:3]:
+   print(elem)
+   list2.remove(elem)
+print(list2)
+
+list2 = [10, 20, 30, 40, 50, 60, 70]
+for elem in range(len(list2[:3])):
+   print(elem)
+   list2.pop(0)
+print(list2)
+
+
+list2 = [10, 20, 30, 40, 50, 60, 70]
+new_list = []	
+for elem in list2[2:]:
+   new_list.append(elem)
+   print(elem)
+new_list
+
+
+list_of_squres = []
+for i in range(1, 10):
+   list_of_squres.append(i ** 2)
+print(list_of_squres) 
+
+list_of_squres_2 = [i ** 2 for i in range(1, 10)]   
+print(list_of_squres_2)
+
+from statistics import mean   
+list2 = [10, 20, 30, 40, 50, 60, 70]
+print(mean(list2))
+
+from numpy import mean
+list2 = [10, 20, 30, 40, 50, 60, 70]
+print(mean(list2))
+
+list1 = [2,3,4,3,10,3,5,6,3]
+elm_count = list1.count(3)
+print('The count of element: 3 is ', elm_count)
+
+list1 = ['red', 'green', 'blue', 'orange', 'green', 'gray', 'green']
+color_count = list1.count('green')
+print('The count of color: green is ', color_count)
+
+
+my_list = [1,1,2,3,2,2,4,5,6,2,1]
+temp_list = []
+for i in my_list:
+    if i not in temp_list:
+        temp_list.append(i)
+print(temp_list)
+
+my_list = [1,1,2,3,2,2,4,5,6,2,1]
+temp_list = []
+[temp_list.append(i) for i in my_list if i not in temp_list]
+print(temp_list)
+
+my_list = [1,1,2,3,2,2,4,5,6,2,1]
+my_final_list = set(my_list)
+print(my_final_list)
+
+import numpy as np
+my_list = [1,2,2,3,1,4,5,1,2,6]
+myFinalList = np.unique(my_list).tolist()
+print(myFinalList)
+
+import pandas as pd
+my_list = [1,2,2,3,1,4,5,1,2,6]
+myFinalList = pd.unique(my_list).tolist()
+print(myFinalList)
+
+my_list = [1,2,2,3,1,4,5,1,2,6]
+my_finallist = []
+for j, i in enumerate(my_list):
+   if i not in my_list[:j]:
+      my_finallist.append(i)
+print(my_finallist)
+
+my_list = [1,2,2,3,1,4,5,1,2,6]
+my_finallist = [i for j, i in enumerate(my_list) if i not in my_list[:j]] 
+print(my_finallist)
 
 
 
