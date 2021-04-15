@@ -1,0 +1,4 @@
+{
+  "test_sample1.py::test_file1_method1": true,
+  "test_sample2.py::test_file2_method1": true
+}

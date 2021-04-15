@@ -185,10 +185,15 @@ balance.insert(2, 150)
 print(balance)
 balance[0] = 5000
 print(balance)
-# balance.pop(0)
-# del balance[0]
+
+balance.pop(0)
+del balance[0]
 balance.remove(5000)
 print(balance)
+
+element = my_list.clear()
+print(element)
+print(my_list)
 
 print(balance.index(100))
 balance.reverse()
@@ -2318,6 +2323,233 @@ my_list = [1,2,2,3,1,4,5,1,2,6]
 my_finallist = [i for j, i in enumerate(my_list) if i not in my_list[:j]] 
 print(my_finallist)
 
+my_list = ['A', 'B', 'C', 'D', 'E', 'F']
+print("The index of element C is ", my_list.index('C'))
+print("The index of element F is ", my_list.index('F'))
+
+
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+all_indexes = [] 
+for i in range(len(my_list)) : 
+   if my_list[i] == 'Guru' : 
+      all_indexes.append(i)
+print("Originallist ", my_list)
+print("Indexes for element Guru : ", all_indexes)
+
+
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+result = []
+elementindex = -1
+while True:
+   try:
+      elementindex = my_list.index('Guru', elementindex+1)
+      result.append(elementindex)
+   except ValueError:
+      break
+print("OriginalList is ", my_list)
+print("The index for element Guru is ", result)
+
+
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+print("Originallist ", my_list)
+all_indexes = [a for a in range(len(my_list)) if my_list[a] == 'Guru']
+print("Indexes for element Guru : ", all_indexes)
+
+# list of letters
+letters = ['a', 'b', 'd', 'e', 'i', 'j', 'o']
+
+# function that filters vowels
+def filter_vowels(letter):
+   vowels = ['a', 'e', 'i', 'o', 'u']
+   if(letter in vowels):
+      return True
+   else:
+      return False
+filtered_vowels = filter(filter_vowels, letters)
+
+print('The filtered vowels are:')
+for vowel in filtered_vowels:
+   print(vowel)
+
+
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+print("Originallist ", my_list)
+all_indexes = list(filter(lambda i: my_list[i] == 'Guru', range(len(my_list)))) 
+print("Indexes for element Guru : ", all_indexes)
+
+
+import numpy as np
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+np_array = np.array(my_list)
+item_index = np.where(np_array == 'Guru')[0]
+print("Originallist", my_list)
+print("Indexes for element Guru :", item_index)
+
+
+from more_itertools import locate
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+print("Originallist : ", my_list)
+print("Indexes for element Guru :", list(locate(my_list, lambda x: x == 'Guru'))) 
+
+
+
+
+
+
+
+
+# RegEx
+
+import re
+xx = "guru99,education is fun"
+r1 = re.findall(r"^\w+", xx)
+print(r1)
+
+
+import re
+xx = "guru99,education is fun"
+r1 = re.findall(r"^\w+", xx)
+print((re.split(r'\s','we are splitting the words')))
+print((re.split(r's','split the swords')))
+
+
+import re
+list = ["guru99 get", "guru99 give", "guru Selenium"]
+for element in list:
+   z = re.match(r"(g\w+)\W(g\w+)", element)
+   if z:
+      print((z.groups()))
+
+
+patterns = ['software testing', 'guru99']
+text = 'software testing is fun?'
+for pattern in patterns:
+   print('Looking for "%s" in "%s" ->' % (pattern, text), end=' ')
+   if re.search(pattern, text):
+      print('found a match!')
+   else:
+      print('no match')
+
+
+abc = 'guru99@google.com, careerguru99@hotmail.com, users@yahoomail.com'
+emails = re.findall(r'[\w\.-]+@[\w\.-]+', abc)
+for email in emails:
+   print(email)
+
+abc = ['guru99@google.com, careerguru99@hotmail.com, users@yahoomail.com']
+for i in abc:
+   if re.search(r'[\w\.-]+@[\w\.-]+', i):
+      print(i)
+
+
+import re
+xx = """guru99 
+careerguru99	
+selenium"""
+k1 = re.findall(r"^\w", xx)
+k2 = re.findall(r"^\w", xx, re.MULTILINE)
+print(k1)
+print(k2)
+
+
+import re
+# Lets use a regular expression to match a date string. Ignore
+# the output since we are just testing if the regex matches.
+regex = r"([a-zA-Z]+) (\d+)"
+if re.search(regex, "June 24"):
+   # Indeed, the expression "([a-zA-Z]+) (\d+)" matches the date string
+   
+   # If we want, we can use the MatchObject's start() and end() methods 
+   # to retrieve where the pattern matches in the input string, and the 
+   # group() method to get all the matches and captured groups.
+   match = re.search(regex, "June 24")
+   
+   # This will print [0, 7), since it matches at the beginning and end of the 
+   # string
+   print("Match at index %s, %s" % (match.start(), match.end()))
+   
+   # The groups contain the matched values.  In particular:
+   #    match.group(0) always returns the fully matched string
+   #    match.group(1), match.group(2), ... will return the capture
+   #            groups in order from left to right in the input string
+   #    match.group() is equivalent to match.group(0)
+   
+   # So this will print "June 24"
+   print("Full match: %s" % (match.group(0)))
+   # So this will print "June"
+   print("Month: %s" % (match.group(1)))
+   # So this will print "24"
+   print("Day: %s" % (match.group(2)))
+else:
+   # If re.search() does not match, then None is returned
+   print("The regex pattern does not match. :(")
+
+
+import re
+# Lets use a regular expression to match a few date strings.
+regex = r"[a-zA-Z]+ \d+"
+matches = re.findall(regex, "June 24, August 9, Dec 12")
+for match in matches:
+   # This will print:
+   #   June 24
+   #   August 9
+   #   Dec 12
+   print("Full match: %s" % (match))
+
+# To capture the specific months of each date we can use the following pattern
+regex = r"([a-zA-Z]+) \d+"
+matches = re.findall(regex, "June 24, August 9, Dec 12")
+for match in matches:
+   # This will now print:
+   #   June
+   #   August
+   #   Dec
+   print("Match month: %s" % (match))
+
+# If we need the exact positions of each match
+regex = r"([a-zA-Z]+) \d+"
+matches = re.finditer(regex, "June 24, August 9, Dec 12")
+for match in matches:
+   # This will now print:
+   #   0 7
+   #   9 17
+   #   19 25
+   # which corresponds with the start and end of each match in the input string
+   print("Match at index: %s, %s" % (match.start(), match.end()))
+   
+
+import re
+# Lets try and reverse the order of the day and month in a date 
+# string. Notice how the replacement string also contains metacharacters
+# (the back references to the captured groups) so we use a raw 
+# string for that as well.
+regex = r"([a-zA-Z]+) (\d+)"
+
+# This will reorder the string and print:
+#   24 of June, 9 of August, 12 of Dec
+print(re.sub(regex, r"\2 of \1", "June 24, August 9, Dec 12"))
+   
+   
+import re
+# Lets create a pattern and extract some information with it
+regex = re.compile(r"(\w+) World")
+result = regex.search("Hello World is the easiest")
+if result:
+    # This will print:
+    #   0 11
+    # for the start and end of the match
+    print(result.start(), result.end())
+
+# This will print:
+#   Hello
+#   Bonjour
+# for each of the captured groups that matched
+for result in regex.findall("Hello World, Bonjour World"):
+    print(result)
+
+# This will substitute "World" with "Earth" and print:
+#   Hello Earth
+print(regex.sub(r"\1 Earth", "Hello World"))
 
 
 
@@ -2327,6 +2559,377 @@ print(my_finallist)
 
 
 
+# Calendar
+
+import calendar
+# Create a plain text calendar
+c = calendar.TextCalendar(calendar.THURSDAY)
+str = c.formatmonth(2025, 1, 0, 0)
+print(str)
+
+# Create an HTML formatted calendar
+hc = calendar.HTMLCalendar(calendar.THURSDAY)
+str = hc.formatmonth(2025, 1)
+print(str)
+
+# loop over the days of a month
+# zeroes indicate that the day of the week is in a next month or overlapping month
+for i in c.itermonthdays(2025, 4):
+   print(i)
+   
+# The calendar can give info based on local such a names of days and months (full and abbreviated forms)
+for name in calendar.month_name:
+   print(name)
+
+for day in calendar.day_name:
+   print(day)
+
+# calculate days based on a rule: For instance an audit day on the second Monday of every month
+# Figure out what days that would be for each month, we can use the script as shown here
+for month in range(1, 13):
+# It retrieves a list of weeks that represent the month
+   mycal = calendar.monthcalendar(2025, month)
+# The first MONDAY has to be within the first two weeks
+   week1 = mycal[0]
+   week2 = mycal[1]
+   if week1[calendar.MONDAY] != 0:
+      auditday = week1[calendar.MONDAY]
+   else:
+   # if the first MONDAY isn't in the first week, it must be in the second week
+      auditday = week2[calendar.MONDAY]
+   print("%10s %2d" % (calendar.month_name[month], auditday))
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+#PyTest
+
+import pytest
+def test_file1_method1():
+	x=5
+	y=6
+	assert x+1 == y,"test failed1"
+	assert x == y,"test failed2 because x=" + str(x) + " y=" + str(y)
+def test_file1_method2():
+	x=5
+	y=6
+	assert x+1 == y,"test failed3" 
+
+def test_file2_method1():
+	x=5
+	y=6
+	assert x+1 == y,"test failed"
+	assert x == y,"test failed because x=" + str(x) + " y=" + str(y)
+def test_file2_method2():
+	x=5
+	y=6
+	assert x+1 == y,"test failed"
+
+
+py.test
+py.test test_sample1.py
+py.test -k method1 -v
+-k <expression> is used to represent the substring to match
+-v increases the verbosity
+
+pytest -m set1 -v
+
+pip install pytest-xdist
+conda install -c anaconda jedi
+conda update conda
+pip list
+conda install pytest=6.2.2
+conda update flask
+conda search -f <package_name> 
+
+py.test -n 4
+
+import pytest
+@pytest.fixture
+def supply_AA_BB_CC():
+	aa = 25
+	bb = 35
+	cc = 45
+	return [aa, bb, cc]
+
+def test_comparewithAA(supply_AA_BB_CC):
+	zz = 35
+	assert supply_AA_BB_CC[0] == zz,"aa and zz comparison failed"
+
+def test_comparewithBB(supply_AA_BB_CC):
+	zz = 35
+	assert supply_AA_BB_CC[1] == zz,"bb and zz comparison failed"
+
+def test_comparewithCC(supply_AA_BB_CC):
+	zz = 35
+	assert supply_AA_BB_CC[2] == zz,"cc and zz comparison failed"
+
+pytest test_basic_fixture.py -v
+
+# conftest.py A fixture method can be accessed across multiple test files by defining it in conftest.py file.
+
+pytest -k test_comparewith -v
+
+
+import pytest
+@pytest.mark.parametrize("input1, input2, output", [(5, 5, 10), (3, 5, 12)])
+def test_add(input1, input2, output):
+	assert input1 + input2 == output, "failed"
+
+pytest -k test_add -v
+
+
+import pytest
+@pytest.mark.skip
+def test_add_1():
+	assert 100+200 == 400, "failed"
+
+@pytest.mark.skip
+def test_add_2():
+	assert 100+200 == 300, "failed"
+
+@pytest.mark.xfail
+def test_add_3():
+	assert 15+13 == 28, "failed"
+
+@pytest.mark.xfail
+def test_add_4():
+	assert 15+13 == 100, "failed"
+
+def test_add_5():
+	assert 3+2 == 5, "failed"
+
+def test_add_6():
+	assert 3+2 == 6, "failed"
+
+
+py.test test_sample1.py -v --junitxml="result.xml"
+
+https://reqres.in/.
+
+import pytest
+import requests
+import json
+@pytest.mark.parametrize("userid, firstname",[(1,"George"),(2,"Janet")])
+def test_list_valid_user(supply_url,userid,firstname):
+	url = supply_url + "/users/" + str(userid)
+	resp = requests.get(url)
+	j = json.loads(resp.text)
+	assert resp.status_code == 200, resp.text
+	assert j['data']['id'] == userid, resp.text
+	assert j['data']['first_name'] == firstname, resp.text
+
+def test_list_invaliduser(supply_url):
+	url = supply_url + "/users/50"
+	resp = requests.get(url)
+	assert resp.status_code == 404, resp.text
+
+
+pytest -k test_list -v
+pytest -k test_login -v
+
+
+
+import pytest
+import requests
+import json
+def tst_list_valid_user(supply_url, userid, firstname):
+    url = supply_url + "/users/" + str(userid)
+    resp = requests.get(url)
+    j = json.loads(resp.text)
+    return([j["data"]["last_name"], j["data"]["first_name"]])
+
+tst_list_valid_user("https://reqres.in/api", 1, "George")
+
+
+
+
+
+
+
+# Urllib.Request and urlopen()
+
+# read the data from the URL and print it
+import urllib.request
+# open a connection to a URL using urllib
+webUrl  = urllib.request.urlopen('https://www.youtube.com/user/guru99com')
+#get the result code and print it
+print("result code: " + str(webUrl.getcode()))
+# read the data from the URL and print it
+data = webUrl.read()
+print(data)
+
+
+
+
+
+
+
+# Read xml file example(Minidom, ElementTree)
+
+import xml.dom.minidom
+# use the parse() function to load and parse an XML file
+doc = xml.dom.minidom.parse("Myxml.xml")
+# print out the document node and the name of the first child tag
+print (doc.nodeName)
+print (doc.firstChild.tagName)
+# get a list of XML tags from the document and print each one
+expertise = doc.getElementsByTagName("expertise")
+print ("%d expertise:" % expertise.length)
+for skill in expertise:
+   print (skill.getAttribute("name"))
+# create a new XML tag and add it into the document
+newexpertise = doc.createElement("expertise")
+newexpertise.setAttribute("name", "BigData")
+doc.firstChild.appendChild(newexpertise)
+print (" ")
+expertise = doc.getElementsByTagName("expertise")
+print ("%d expertise:" % expertise.length)
+for skill in expertise:
+   print (skill.getAttribute("name"))
+
+
+
+
+
+
+
+
+# PyQt5
+
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget
+app = QApplication(sys.argv)
+w = QWidget()
+w.resize(300,300)
+w.setWindowTitle("majn tajtle")
+w.show()
+sys.exit(app.exec_())
+
+
+
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QLineEdit, QMessageBox, QComboBox, QMenuBar
+
+def dialog():
+   mbox = QMessageBox()
+   mbox.setWindowTitle("dialog title")
+   mbox.setText("setText")
+   mbox.setDetailedText("setDetailedText")
+   mbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)        
+   mbox.exec_()
+
+if __name__ == "__main__":
+   app = QApplication(sys.argv)
+   w = QWidget()
+   w.resize(300,300)
+   w.setWindowTitle('majn tajtle')
+   
+   label = QLabel(w)
+   label.setText("QLabel")
+   label.move(100,130)
+   label.show()
+
+   btn = QPushButton(w)
+   btn.setText('Button text'')
+   btn.move(110,150)
+   btn.show()
+   btn.clicked.connect(dialog)
+   
+   line1 = QLineEdit(w)
+   line1.move(100, 180)
+   line1.setText("line text")
+   line1.show()
+
+   rad1 = QRadioButton(w)
+   rad1.move(100, 210)
+   # rad1.setChecked(True)
+   rad1.show()
+
+   drop1 = QComboBox(w)
+   drop1.addItems(["item one", "item two", "item three"])
+
+   bar1 = QMenuBar(w)
+   #bar1.move(100, 230)
+   bar1.show()
+
+   w.show()
+   sys.exit(app.exec_())
+
+
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QVBoxLayout
+
+if __name__ == "__main__":
+   app = QApplication([])
+   w = QWidget()
+   w.setWindowTitle("Musketeers")
+
+   btn1 = QPushButton("Athos")
+   btn2 = QPushButton("Porthos")
+   btn3 = QPushButton("Aramis")
+
+   hbox = QHBoxLayout(w)
+   # hbox = QVBoxLayout(w)
+
+   hbox.addWidget(btn1)
+   hbox.addWidget(btn2)
+   hbox.addWidget(btn3)
+   w.show()
+   sys.exit(app.exec_())
+
+
+import sys
+from PyQt5.QtWidgets import QPushButton, QApplication, QWidget, QGridLayout
+
+if __name__ == "__main__":
+   app = QApplication([])
+   w = QWidget()
+   grid = QGridLayout(w)
+   for i in range(3):
+      for j in range(3):
+         grid.addWidget(QPushButton("Button"), i, j)
+   w.show()
+   sys.exit(app.exec_())
+
+
+import sys
+from PyQt5.QtWidgets import QPushButton, QApplication, QWidget, QGridLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPalette
+
+if __name__ == "__main__":
+   app = QApplication([])
+   # app.setStyle("Fusion")
+
+   qp = QPalette()
+   qp.setColor(QPalette.ButtonText, Qt.green)
+   qp.setColor(QPalette.Window, Qt.gray)
+   qp.setColor(QPalette.Button, Qt.red)
+   app.setPalette(qp)   
+
+   w = QWidget()
+   w.setWindowTitle("Buttons")
+   grid = QGridLayout(w)
+
+   grid.addWidget(QPushButton("Button one"), 0, 0)
+   grid.addWidget(QPushButton("Button two"), 0, 1)
+   grid.addWidget(QPushButton("Button three"), 0, 2)
+   grid.addWidget(QPushButton("Button four"), 1, 1)
+   grid.addWidget(QPushButton("Button five"), 2, 0, 10, 3)
+
+   w.show()
+   sys.exit(app.exec_())
 
 
 

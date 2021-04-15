@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="0.113" timestamp="2021-04-14T14:30:25.205062" hostname="ukasz-desktop"><testcase classname="test_sample1" name="test_file1_method1" time="0.002"><failure message="AssertionError: test failed because x=5 y=6&#10;assert 5 == 6&#10;  +5&#10;  -6">@pytest.mark.set1
+    def test_file1_method1():
+    	x=5
+    	y=6
+    	assert x+1 == y,"test failed"
+&gt;   	assert x == y,"test failed because x=" + str(x) + " y=" + str(y)
+E    AssertionError: test failed because x=5 y=6
+E    assert 5 == 6
+E      +5
+E      -6
+
+test_sample1.py:7: AssertionError</failure></testcase><testcase classname="test_sample1" name="test_file1_method2" time="0.002" /></testsuite></testsuites>
