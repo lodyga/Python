@@ -1617,6 +1617,92 @@ myfile.close()
 
 
 
+# NumPy
+adminq 
+
+import numpy as np
+myPythonList = [1, 9, 8, 3]
+numpy_array_from_list = np.array(myPythonList)
+a = np.array([1, 9, 8, 3])
+print(a.shape)
+print(a.dtype)
+
+b  = np.array([1.1, 2.0, 3.2])
+print(b.dtype)
+
+c = np.array([[1, 2, 3], [4, 5, 6]])
+print(c.shape)
+print(c)
+
+d = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+print(d.shape)
+
+np.zeros((2, 3))
+np.zeros((2, 3), dtype=np.int16)
+np.ones((2, 3))
+
+c.reshape(3, 2)
+d.reshape(3, 2, 2)
+d.flatten()
+
+f = np.array([1,2,3])
+g = np.array([4,5,6])
+np.hstack((f, g))
+np.vstack((f, g))
+
+import numpy as np
+normal_array = np.random.normal(5, .5, 1000)
+import matplotlib.pyplot as plt
+plt.hist(normal_array)
+plt.show()
+
+np.ones((4, 4))
+h = np.matrix(np.ones((4, 4)))
+np.asarray(np.matrix(np.ones((4, 4))))
+np.array(h)[2] = 2
+np.asarray(h)[2] = 2
+
+np.arange(1, 11, 2)
+np.linspace(1.0, 5.0, 10, endpoint= False)
+np.logspace(3.0, 4.0, 4)
+
+j = np.array([1,2,3], dtype=np.complex128)
+j.itemsize
+
+k = np.array([1,2,3], dtype=np.int16)
+k.itemsize
+
+c[0]
+c[:, 0]
+c[1, :2]
+
+normal_array
+
+np.min(normal_array)
+np.max(normal_array)
+np.mean(normal_array)
+np.median(normal_array)
+np.std(normal_array)
+
+l = np.array([1, 2])
+m = np.array([3, 4])
+np.dot(l, m)
+
+n = [[1,2],[3,4]] 
+o = [[5,6],[7,8]] 
+### 1*5+2*7 = 19
+np.matmul(n, o)
+
+np.linalg.det(n)
+
+
+
+
+
+
+
+
+
 # SciPy
 
 import numpy as np
@@ -2930,6 +3016,236 @@ if __name__ == "__main__":
 
    w.show()
    sys.exit(app.exec_())
+
+
+
+
+
+
+
+# Multithreading
+
+import time
+import _thread
+
+def thread_test(name, wait):
+   i = 0
+   while i <= 3:
+      time.sleep(wait)
+      print("Running %s\n" %name)
+      i = i + 1
+   print("%s has finished execution" %name)
+
+if __name__ == "__main__":
+   _thread.start_new_thread(thread_test, ("First Thread", 1))
+   _thread.start_new_thread(thread_test, ("Second Thread", 2))
+   _thread.start_new_thread(thread_test, ("Third Thread", 3))
+
+
+
+import time
+import threading
+
+class threadtester (threading.Thread):
+   def __init__(self, id, name, i):
+      threading.Thread.__init__(self)
+      self.id = id
+      self.name = name
+      self.i = i
+      
+   def run(self):
+      thread_test(self.name, self.i, 5)
+      print ("%s has finished execution " %self.name)
+
+def thread_test(name, wait, i):
+   while i:
+      time.sleep(wait)
+      print ("Running %s \n" %name)
+      i = i - 1
+
+if __name__=="__main__":
+   thread1 = threadtester(1, "First Thread", 1)
+   thread2 = threadtester(2, "Second Thread", 2)
+   thread3 = threadtester(3, "Third Thread", 3)
+   thread1.start()
+   thread2.start()
+   thread3.start()
+   thread1.join()
+   thread2.join()
+   thread3.join()
+
+
+
+import threading
+lock = threading.Lock()
+def first_function():
+   for i in range(5):
+      lock.acquire()
+      print ('lock acquired')
+      print ('Executing the first funcion')
+      lock.release()
+
+def second_function():
+   for i in range(5):
+      lock.acquire()
+      print ('lock acquired')
+      print ('Executing the second funcion')
+      lock.release()
+
+if __name__=="__main__":
+   thread_one = threading.Thread(target=first_function)
+   thread_two = threading.Thread(target=second_function)
+   thread_one.start()
+   thread_two.start()
+   thread_one.join()
+   thread_two.join()
+
+
+
+
+
+
+
+
+
+
+
+# modules
+
+import sys
+print(sys.path)
+
+def disp_message():
+	return "Moduł działa"
+
+import os
+sys.path.insert(0, os.path.abspath('/home/ukasz/Documents/Programowanie/Python/modtest/'))
+
+import sys
+import module1
+print(module1.disp_message())
+print(sys.path)
+
+
+
+import os
+sys.path.insert(0, os.path.abspath('/home/ukasz/Documents/Programowanie/Python/myproj/'))
+import sys
+import Car
+car_det = Car.Car("BMW","Z5", 2020)
+print(car_det.brand_name)
+print(car_det.car_details())
+print(car_det.get_Car_brand())
+print(car_det.get_Car_model())
+
+
+class Car:
+	brand_name = "BMW"
+	model = "Z4"
+	manu_year = "2020"
+
+	def __init__(self, brand_name, model, manu_year):
+		self.brand_name = brand_name
+		self.model = model
+		self.manu_year = manu_year
+
+	def car_details(self):
+		print("Car brand is ", self.brand_name)
+		print("Car model is ", self.model)
+		print("Car manufacture year is ", self.manu_year)
+					
+	def get_Car_brand(self):
+		print("Car brand is ", self.brand_name)
+
+	def get_Car_model(self):
+		print("Car model is ", self.model)
+
+Car("BMW", "Z4", 2020).get_Car_model()
+
+
+
+my_name = "nejm"
+my_address = "Kantry"
+
+def disp_message():
+	return "Moduł działa"
+	
+def display_message1():
+	return "All about Python!"
+
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath('/home/ukasz/Documents/Programowanie/Python/modtest/'))
+
+from module1 import disp_message, my_name
+print(disp_message())
+print(my_name)
+
+
+
+import test
+print(test.display_message())
+
+from test import *
+print(display_message())
+
+import json
+print(dir(json))
+
+
+
+def mod1_func1():
+print("Welcome to Module1 function1")
+
+def mod1_func2():
+print("Welcome to Module1 function2")
+
+def mod1_func3():
+print("Welcome to Module1 function3")
+
+
+import mypackage.module1 as mod1
+print(mod1.mod1_func1())
+print(mod1.mod1_func2())
+print(mod1.mod1_func2())
+
+
+# Import module
+from mypackage import module1
+print(module1.mod1_func1())
+
+from mypackage import module1 as inner_module1
+print(inner_module1.mod1_func1())
+
+import mypackage.module1
+print(module1.mod1_func1())
+
+import mypackage.module1 as inner_module1
+print(inner_module1.mod1_func1())
+
+
+# Import function
+from mypackage.module1 import mod1_func1
+print(mod1_func1())
+
+from mypackage.module1 import mod1_func1 as inner_mod1_func1
+print(inner_mod1_func1())
+
+#import mypackage.module1.mod1_func1
+#print(mod1_func1())
+
+#import mypackage.module1.mod1_func1 as inner_mod1_func1
+#print(inner_mod1_func1())
+
+
+
+
+
+
+
+
+
 
 
 
