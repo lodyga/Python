@@ -1355,28 +1355,28 @@ print("_class is a instance of MyClass() : ", isinstance(_class,MyClass))
 
 # File Handling: Create, Open, Append, Read, Write
 
-dir = "/home/ukasz/Documents/Programowanie/Python/"
+dire = "/home/ukasz/Documents/Programowanie/Python/"
 
-f = open(dir+"guru99.txt","w+")
+f = open(dire+"guru99.txt","w+")
 for i in range(2):
    f.write("This is line %d\r\n" % (i+1))
 f.close()
 
 
-f = open(dir+"guru99.txt", 'a+')
+f = open(dire+"guru99.txt", 'a+')
 for i in range(2):
    f.write('Appended line %d\r\n' % (i+1))
 f.close()
 
 
-f = open(dir+"guru99.txt", 'r')
+f = open(dire+"guru99.txt", 'r')
 if f.mode == 'r':
    contents = f.read()
    print(contents)
 f.close()
 
 
-f = open(dir+"guru99.txt", 'r')
+f = open(dire+"guru99.txt", 'r')
 f1 = f.readlines()
 for i in f1:
    print(i)
@@ -1396,20 +1396,20 @@ f.close()
 import os.path
 from os import path
 
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-print("File exists:" + str(path.exists(dir+'guru99.txt')))
-print("File exists:" + str(path.exists(dir+'career.guru99.txt')))
-print("directory exists:" + str(path.exists(dir+'PycharmProjects')))
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+print("File exists:" + str(path.exists(dire+'guru99.txt')))
+print("File exists:" + str(path.exists(dire+'career.guru99.txt')))
+print("directory exists:" + str(path.exists(dire+'PycharmProjects')))
 
-print("Is it File?" + str(path.isfile(dir+'guru99.txt')))
-print("Is it File?" + str(path.isfile(dir+'myDirectory')))
+print("Is it File?" + str(path.isfile(dire+'guru99.txt')))
+print("Is it File?" + str(path.isfile(dire+'myDirectory')))
 
-print ("Is it Directory?" + str(path.isdir(dir+'guru99.txt')))
-print ("Is it Directory?" + str(path.isdir(dir+'PycharmProjects')))
+print ("Is it Directory?" + str(path.isdir(dire+'guru99.txt')))
+print ("Is it Directory?" + str(path.isdir(dire+'PycharmProjects')))
 
 
 import pathlib
-file = pathlib.Path(dir+'guru99.txt')
+file = pathlib.Path(dire+'guru99.txt')
 if file.exists():
    print("File exist")
 else:
@@ -1431,9 +1431,9 @@ import os
 import shutil
 from os import path
 
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dir+"guru99.txt"):
-   src = path.realpath(dir+'guru99.txt')
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dire+"guru99.txt"):
+   src = path.realpath(dire+'guru99.txt')
    head, tail = path.split(src)
    print(src)
    print('patch :', head)
@@ -1450,8 +1450,8 @@ from datetime import date, time, timedelta
 import time
 
 # Get the modification time
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-t = path.getmtime(dir+"guru99.txt.bak")
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+t = path.getmtime(dire+"guru99.txt.bak")
 print(t)
 print(time.ctime(t))
 print(datetime.datetime.fromtimestamp(t))
@@ -1473,12 +1473,12 @@ from os import path
 
 
 # make a duplicate of an existing file
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dir+"guru99.txt"):
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dire+"guru99.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dir+"guru99.txt")
+   src = path.realpath(dire+"guru99.txt")
    # rename the original file
-   os.rename(dir+'guru99.txt', dir+'career.guru99.txt')
+   os.rename(dire+'guru99.txt', dire+'career.guru99.txt')
 
 
 
@@ -1500,17 +1500,17 @@ from os import path
 from shutil import make_archive
 
 # Check if file exists
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dir+"guru99.txt"):
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dire+"guru99.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dir+"guru99.txt")
+   src = path.realpath(dire+"guru99.txt")
    # now put things into a ZIP archive
    root_dir, tail = path.split(src)
-   shutil.make_archive(dir+"guru99_archive","zip",root_dir)
+   shutil.make_archive(dire+"guru99_archive","zip",root_dir)
    # more fine-grained control over ZIP files
-   with ZipFile(dir+"testguru99.zip", "w") as newzip:
-      newzip.write(dir+"guru99.txt")
-      newzip.write(dir+"guru99.txt.bak")
+   with ZipFile(dire+"testguru99.zip", "w") as newzip:
+      newzip.write(dire+"guru99.txt")
+      newzip.write(dire+"guru99.txt.bak")
 
 
 
@@ -1552,33 +1552,33 @@ KeyboardInterrupt
 
 # readline()
 
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-f = open(dir+"demo.txt","w+")
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+f = open(dire+"demo.txt","w+")
 for i in range(5):
    f.write("Testing - %d line \r\n" % (i+1))
 f.close()
 
 
-f = open(dir+'demo.txt', 'r')
+f = open(dire+'demo.txt', 'r')
 if f.mode == 'r':
    contents = f.read()
    print(contents)
 f.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 myline = myfile.readline()
 print(myline)
 myfile.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 myline = myfile.readline(10)
 print(myline)
 myfile.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 myline = myfile.readline()
 while myline:
    print(myline)
@@ -1586,19 +1586,19 @@ while myline:
 myfile.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 mylist = myfile.readlines()
 print(mylist)
 myfile.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 for line in myfile:
    print(line)
 myfile.close()
 
 
-myfile = open(dir+"demo.txt", "r")
+myfile = open(dire+"demo.txt", "r")
 while myfile:
    line  = myfile.readline()
    print(line)
@@ -1859,21 +1859,21 @@ print(integration)
 
 #import necessary modules
 import csv
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dir+'data.csv', mode = 'rt', encoding='utf-8-sig') as f:
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dire+'data.csv', mode = 'rt', encoding='utf-8-sig') as f:
    data = csv.reader(f)
    for row in data:
       print(row)
 
 
 import csv
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-reader = csv.DictReader(open(dir+"data.csv", encoding='utf-8-sig'))
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+reader = csv.DictReader(open(dire+"data.csv", encoding='utf-8-sig'))
 for raw in reader:
    print(raw)
 
 
-with open(dir+'writeData.csv', mode='w') as file:
+with open(dire+'writeData.csv', mode='w') as file:
    writer = csv.writer(file, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
    #way to write to csv file
    writer.writerow(['Programming language', 'Designed by', 'Appeared', 'Extension'])
@@ -1884,7 +1884,7 @@ with open(dir+'writeData.csv', mode='w') as file:
 
 #import necessary modules
 import pandas
-result = pandas.read_csv(dir+'data.csv')
+result = pandas.read_csv(dire+'data.csv')
 print(result)
 
 
@@ -1933,8 +1933,8 @@ print(sorted_string)
 
 
 # here we create new data_file.json file with write mode using file i/o operation
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dir+'json_file.json', "w") as file_write:
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dire+'json_file.json', "w") as file_write:
    person_data = {  "person":  { "name":  "Kenn",  "sex":  "male",  "age":  28}}
    # write json data into file
    print(json.dump(person_data, file_write))
@@ -1953,8 +1953,8 @@ print("Person......",  dict_obj.get('person'))
 
 import json
 #File I/O Open function for read data from JSON File
-dir = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dir+'json_file.json') as file_object:
+dire = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dire+'json_file.json') as file_object:
    # store file data in object
    data = json.load(file_object)
    print(type(file_object))
@@ -2039,11 +2039,11 @@ print((bike_dict.get('stationBeanList')[0])['id'])
 
 
 import json
-dir = "/home/ukasz/Documents/Programowanie/Python/"
+dire = "/home/ukasz/Documents/Programowanie/Python/"
 #File I/O Open function for read data from JSON File
 data = {} #Define Empty Dictionary Object
 try:
-   with open(dir+'json_file.json') as file_object:
+   with open(dire+'json_file.json') as file_object:
     data = json.load(file_object)
     print(data)
 except ValueError:
@@ -3247,7 +3247,200 @@ print(inner_mod1_func1())
 
 
 
+# Udacity
+# Variables
+x, y, z = 3, 4, 5
+y
+
+# data types: integer, float, string , bool
+int(49.7)
+print(.1 + .1 + .1 == .3)
 
 
+salesman = 'I think you\'re an "encyclopedia" salesman'
+print("test"*8)
+print(len("ababa") / len("ab"))
+
+# arithmetic operators  + - / * // ** (symbols)
+# assignment operators = +=
+# comparison operators < > == !=
+# logical operators and or not
+# identity operators is is not
+
+# functions print() len() float()
+
+# Process data / operating on values with operators (short symbols) and functions (descriptive names) and methods (associated with specific types of objects (the data type for a particular variable) / Methods actually are functions that are called using dot notation)
+# String Methods
+salesman.title()
+salesman.lower()
+salesman.islower()
+salesman.count("a", 20, 40)
+str(dir(str)).upper()
+https://docs.python.org/3/library/stdtypes.html#string-methods
+
+animal = "dog"
+action = "bite"
+print("Does your {} {}?".format(animal, action))
+
+str4 = ("dog", "bite")
+print("Does your %s %s ?" % str4)
+
+maria_string = "Maria loves {} and {}"
+print(maria_string.format("math", "statistics"))
+
+new_str = "The cow jumped over the moon."
+new_str.split(None, 3)
+
+new_str.find("moon")
+new_str.rfind("moon")
+
+# Types of Data Structures (data containers): Lists, Tuples, Sets, Dictionaries, Compound Data Structures
+# Operators: Membership, Identity
+
+#List is a data structure that is mutable ordered sequence of elements
+# List Methods
+
+list_of_random_things = [1, 3.4, 'a string', True]
+list_of_random_things[1:2]
+list_of_random_things[1:]
+
+
+'this' in 'this is a string'
+5 not in [1, 2, 3, 4, 6]
+5 in [1, 2, 3, 4, 6]
+[1, 2, 3, 4, 6][-3:]
+list_of_random_things[-2:] = [99, 98]
+
+VINIX = ['C', 'MA', 'BA', 'PG', 'CSCO', 'VZ', 'PFE', 'HD', 'INTC', 'T', 'V', 'UNH', 'WFC', 'CVX', 'BAC', 'JNJ', 'GOOGL', 'GOOG', 'BRK.B', 'XOM', 'JPM', 'FB', 'AMZN', 'MSFT', 'AAPL']
+"GOOGL" in VINIX
+sorted(VINIX, reverse=True)
+
+
+letters = ['a', 'b', 'c', 'd']
+let2 = letters
+letters, let2
+letters[0] = "x"
+letters, let2
+let2[0] = "y"
+letters, let2
+
+new_str = "\n".join(["fore", "aft", "starboard", "port"])
+print(new_str)
+
+letters = ['a', 'b', 'c', 'd']
+letters.append('z')
+print(letters)
+
+
+
+# Tuple
+# It's a data type for immutable ordered sequences of elements.
+# A tuple is an immutable, ordered data structure that can be indexed and sliced like a list.
+#  Tuples are defined by listing a sequence of elements separated by commas, optionally contained within parentheses: ().
+
+dimensions = 52, 40, 100
+length, width, height = dimensions
+print("The dimensions are {} x {} x {}".format(length, width, height))
+
+
+
+# Set 
+# A set is a data type for mutable unordered collections of unique elements.
+
+numbers = [1, 2, 6, 3, 1, 1, 6]
+unique_nums = set(numbers)
+print(unique_nums)
+
+fruit = {"apple", "banana", "orange", "grapefruit"}  # define a set
+print("watermelon" in fruit)  # check for element
+fruit.add("watermelon")  # add an element
+print(fruit)
+print(fruit.pop())  # remove a random element
+print(fruit)
+
+
+
+# Dictionaries
+#  A dictionary is a mutable data type that stores mappings of unique keys to values. 
+
+elements = {"hydrogen": 1, "helium": 2, "carbon": 6}
+elements["helium"]
+elements["lithium"] = 3
+"carbon" in elements
+elements.get("carbon")
+print(elements.get("dilithium"))
+n = elements.get("dilithium")
+print(n is None)
+print(n is not None)
+elements.get('kryptonite', 'There\'s no such element!')
+
+
+# In Python, any immutable object (such as an integer, boolean, string, tuple) is hashable, meaning its value 
+# does not change during its lifetime. 
+
+elements = {
+    "hydrogen": {
+        "number": 1,
+        "weight": 1.00794,
+        "symbol": "H"
+    },
+    "helium": {
+        "number": 2,
+        "weight": 4.002602,
+        "symbol": "He"
+    }
+}
+
+elements["helium"]
+elements["helium"]["weight"]
+
+oxygen = {"number": 8, "weight": 15.999, "symbol": "O"}
+elements["oxygen"] = oxygen
+elements
+
+elements["hydrogen"]["is_noble_gas"] = False
+elements["helium"]["is_noble_gas"] = True
+elements
+
+sorted(elements.keys())
+"hydrogen" in elements
+elements.get("hydrogen")
+
+
+# Quiz: Verse Dictionary
+verse_dict =  {'if': 3, 'you': 6, 'can': 3, 'keep': 1, 'your': 1, 'head': 1, 'when': 2, 'all': 2, 'about': 2, 'are': 1, 'losing': 1, 'theirs': 1, 'and': 3, 'blaming': 1, 'it': 1, 'on': 1, 'trust': 1, 'yourself': 1, 'men': 1, 'doubt': 1, 'but': 1, 'make': 1, 'allowance': 1, 'for': 1, 'their': 1, 'doubting': 1, 'too': 3, 'wait': 1, 'not': 1, 'be': 1, 'tired': 1, 'by': 1, 'waiting': 1, 'or': 2, 'being': 2, 'lied': 1, 'don\'t': 3, 'deal': 1, 'in': 1, 'lies': 1, 'hated': 1, 'give': 1, 'way': 1, 'to': 1, 'hating': 1, 'yet': 1, 'look': 1, 'good': 1, 'nor': 1, 'talk': 1, 'wise': 1}
+print(verse_dict, '\n')
+
+# find number of unique keys in the dictionary
+num_keys = len(verse_dict)
+print(num_keys)
+
+# find whether 'breathe' is a key in the dictionary
+contains_breathe = verse_dict.get("breathe")
+print(contains_breathe)
+print("breathe" in verse_dict)
+
+# create and sort a list of the dictionary's keys
+sorted_keys = sorted(verse_dict.keys())
+
+# get the first element in the sorted list of keys
+print(sorted_keys[0])
+
+# find the element with the highest value in the list of keys
+print(sorted_keys[-1])
+# find the element with the highest value in the list of values
+import operator
+print(max(verse_dict.items(), key=operator.itemgetter(1))) 
+
+
+Data Structure	   Ordered	Mutable	Constructor	   Example
+List	            Yes	   Yes	   [ ] or list()	[5.7, 4, 'yes', 5.7]
+Tuple	            Yes	   No	      ( ) or tuple()	(5.7, 4, 'yes', 5.7)
+Set	            No	      Yes	   {}* or set()	{5.7, 4, 'yes'}
+Dictionary	      No	      No**	   { } or dict()	{'Jun': 75, 'Jul': 89}
+
+
+
+# Control flow
 
 
