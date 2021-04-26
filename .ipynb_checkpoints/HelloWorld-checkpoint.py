@@ -1355,28 +1355,28 @@ print("_class is a instance of MyClass() : ", isinstance(_class,MyClass))
 
 # File Handling: Create, Open, Append, Read, Write
 
-dire = "/home/ukasz/Documents/Programowanie/Python/"
+dir = "/home/ukasz/Documents/Programowanie/Python/"
 
-f = open(dire+"guru99.txt","w+")
+f = open(dir+"guru99.txt","w+")
 for i in range(2):
    f.write("This is line %d\r\n" % (i+1))
 f.close()
 
 
-f = open(dire+"guru99.txt", 'a+')
+f = open(dir+"guru99.txt", 'a+')
 for i in range(2):
    f.write('Appended line %d\r\n' % (i+1))
 f.close()
 
 
-f = open(dire+"guru99.txt", 'r')
+f = open(dir+"guru99.txt", 'r')
 if f.mode == 'r':
    contents = f.read()
    print(contents)
 f.close()
 
 
-f = open(dire+"guru99.txt", 'r')
+f = open(dir+"guru99.txt", 'r')
 f1 = f.readlines()
 for i in f1:
    print(i)
@@ -1396,20 +1396,20 @@ f.close()
 import os.path
 from os import path
 
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-print("File exists:" + str(path.exists(dire+'guru99.txt')))
-print("File exists:" + str(path.exists(dire+'career.guru99.txt')))
-print("directory exists:" + str(path.exists(dire+'PycharmProjects')))
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+print("File exists:" + str(path.exists(dir+'guru99.txt')))
+print("File exists:" + str(path.exists(dir+'career.guru99.txt')))
+print("directory exists:" + str(path.exists(dir+'PycharmProjects')))
 
-print("Is it File?" + str(path.isfile(dire+'guru99.txt')))
-print("Is it File?" + str(path.isfile(dire+'myDirectory')))
+print("Is it File?" + str(path.isfile(dir+'guru99.txt')))
+print("Is it File?" + str(path.isfile(dir+'myDirectory')))
 
-print ("Is it Directory?" + str(path.isdir(dire+'guru99.txt')))
-print ("Is it Directory?" + str(path.isdir(dire+'PycharmProjects')))
+print ("Is it Directory?" + str(path.isdir(dir+'guru99.txt')))
+print ("Is it Directory?" + str(path.isdir(dir+'PycharmProjects')))
 
 
 import pathlib
-file = pathlib.Path(dire+'guru99.txt')
+file = pathlib.Path(dir+'guru99.txt')
 if file.exists():
    print("File exist")
 else:
@@ -1431,9 +1431,9 @@ import os
 import shutil
 from os import path
 
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
-   src = path.realpath(dire+'guru99.txt')
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dir+"guru99.txt"):
+   src = path.realpath(dir+'guru99.txt')
    head, tail = path.split(src)
    print(src)
    print('patch :', head)
@@ -1450,8 +1450,8 @@ from datetime import date, time, timedelta
 import time
 
 # Get the modification time
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-t = path.getmtime(dire+"guru99.txt.bak")
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+t = path.getmtime(dir+"guru99.txt.bak")
 print(t)
 print(time.ctime(t))
 print(datetime.datetime.fromtimestamp(t))
@@ -1473,12 +1473,12 @@ from os import path
 
 
 # make a duplicate of an existing file
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dir+"guru99.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dire+"guru99.txt")
+   src = path.realpath(dir+"guru99.txt")
    # rename the original file
-   os.rename(dire+'guru99.txt', dire+'career.guru99.txt')
+   os.rename(dir+'guru99.txt', dir+'career.guru99.txt')
 
 
 
@@ -1500,17 +1500,17 @@ from os import path
 from shutil import make_archive
 
 # Check if file exists
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+if path.exists(dir+"guru99.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dire+"guru99.txt")
+   src = path.realpath(dir+"guru99.txt")
    # now put things into a ZIP archive
    root_dir, tail = path.split(src)
-   shutil.make_archive(dire+"guru99_archive","zip",root_dir)
+   shutil.make_archive(dir+"guru99_archive","zip",root_dir)
    # more fine-grained control over ZIP files
-   with ZipFile(dire+"testguru99.zip", "w") as newzip:
-      newzip.write(dire+"guru99.txt")
-      newzip.write(dire+"guru99.txt.bak")
+   with ZipFile(dir+"testguru99.zip", "w") as newzip:
+      newzip.write(dir+"guru99.txt")
+      newzip.write(dir+"guru99.txt.bak")
 
 
 
@@ -1552,33 +1552,33 @@ KeyboardInterrupt
 
 # readline()
 
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-f = open(dire+"demo.txt","w+")
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+f = open(dir+"demo.txt","w+")
 for i in range(5):
    f.write("Testing - %d line \r\n" % (i+1))
 f.close()
 
 
-f = open(dire+'demo.txt', 'r')
+f = open(dir+'demo.txt', 'r')
 if f.mode == 'r':
    contents = f.read()
    print(contents)
 f.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 myline = myfile.readline()
 print(myline)
 myfile.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 myline = myfile.readline(10)
 print(myline)
 myfile.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 myline = myfile.readline()
 while myline:
    print(myline)
@@ -1586,19 +1586,19 @@ while myline:
 myfile.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 mylist = myfile.readlines()
 print(mylist)
 myfile.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 for line in myfile:
    print(line)
 myfile.close()
 
 
-myfile = open(dire+"demo.txt", "r")
+myfile = open(dir+"demo.txt", "r")
 while myfile:
    line  = myfile.readline()
    print(line)
@@ -1608,92 +1608,6 @@ myfile.close()
 
 
 
-
-
-
-
-
-
-
-
-
-# NumPy
-adminq 
-
-import numpy as np
-myPythonList = [1, 9, 8, 3]
-numpy_array_from_list = np.array(myPythonList)
-a = np.array([1, 9, 8, 3])
-print(a.shape)
-print(a.dtype)
-
-b  = np.array([1.1, 2.0, 3.2])
-print(b.dtype)
-
-c = np.array([[1, 2, 3], [4, 5, 6]])
-print(c.shape)
-print(c)
-
-d = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
-print(d.shape)
-
-np.zeros((2, 3))
-np.zeros((2, 3), dtype=np.int16)
-np.ones((2, 3))
-
-c.reshape(3, 2)
-d.reshape(3, 2, 2)
-d.flatten()
-
-f = np.array([1,2,3])
-g = np.array([4,5,6])
-np.hstack((f, g))
-np.vstack((f, g))
-
-import numpy as np
-normal_array = np.random.normal(5, .5, 1000)
-import matplotlib.pyplot as plt
-plt.hist(normal_array)
-plt.show()
-
-np.ones((4, 4))
-h = np.matrix(np.ones((4, 4)))
-np.asarray(np.matrix(np.ones((4, 4))))
-np.array(h)[2] = 2
-np.asarray(h)[2] = 2
-
-np.arange(1, 11, 2)
-np.linspace(1.0, 5.0, 10, endpoint= False)
-np.logspace(3.0, 4.0, 4)
-
-j = np.array([1,2,3], dtype=np.complex128)
-j.itemsize
-
-k = np.array([1,2,3], dtype=np.int16)
-k.itemsize
-
-c[0]
-c[:, 0]
-c[1, :2]
-
-normal_array
-
-np.min(normal_array)
-np.max(normal_array)
-np.mean(normal_array)
-np.median(normal_array)
-np.std(normal_array)
-
-l = np.array([1, 2])
-m = np.array([3, 4])
-np.dot(l, m)
-
-n = [[1,2],[3,4]] 
-o = [[5,6],[7,8]] 
-### 1*5+2*7 = 19
-np.matmul(n, o)
-
-np.linalg.det(n)
 
 
 
@@ -1859,21 +1773,21 @@ print(integration)
 
 #import necessary modules
 import csv
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dire+'data.csv', mode = 'rt', encoding='utf-8-sig') as f:
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dir+'data.csv', mode = 'rt', encoding='utf-8-sig') as f:
    data = csv.reader(f)
    for row in data:
       print(row)
 
 
 import csv
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-reader = csv.DictReader(open(dire+"data.csv", encoding='utf-8-sig'))
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+reader = csv.DictReader(open(dir+"data.csv", encoding='utf-8-sig'))
 for raw in reader:
    print(raw)
 
 
-with open(dire+'writeData.csv', mode='w') as file:
+with open(dir+'writeData.csv', mode='w') as file:
    writer = csv.writer(file, delimiter = ',', quotechar = '"', quoting = csv.QUOTE_MINIMAL)
    #way to write to csv file
    writer.writerow(['Programming language', 'Designed by', 'Appeared', 'Extension'])
@@ -1884,7 +1798,7 @@ with open(dire+'writeData.csv', mode='w') as file:
 
 #import necessary modules
 import pandas
-result = pandas.read_csv(dire+'data.csv')
+result = pandas.read_csv(dir+'data.csv')
 print(result)
 
 
@@ -1933,8 +1847,8 @@ print(sorted_string)
 
 
 # here we create new data_file.json file with write mode using file i/o operation
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dire+'json_file.json', "w") as file_write:
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dir+'json_file.json', "w") as file_write:
    person_data = {  "person":  { "name":  "Kenn",  "sex":  "male",  "age":  28}}
    # write json data into file
    print(json.dump(person_data, file_write))
@@ -1953,8 +1867,8 @@ print("Person......",  dict_obj.get('person'))
 
 import json
 #File I/O Open function for read data from JSON File
-dire = "/home/ukasz/Documents/Programowanie/Python/"
-with open(dire+'json_file.json') as file_object:
+dir = "/home/ukasz/Documents/Programowanie/Python/"
+with open(dir+'json_file.json') as file_object:
    # store file data in object
    data = json.load(file_object)
    print(type(file_object))
@@ -2039,11 +1953,11 @@ print((bike_dict.get('stationBeanList')[0])['id'])
 
 
 import json
-dire = "/home/ukasz/Documents/Programowanie/Python/"
+dir = "/home/ukasz/Documents/Programowanie/Python/"
 #File I/O Open function for read data from JSON File
 data = {} #Define Empty Dictionary Object
 try:
-   with open(dire+'json_file.json') as file_object:
+   with open(dir+'json_file.json') as file_object:
     data = json.load(file_object)
     print(data)
 except ValueError:
@@ -3237,6 +3151,11 @@ print(inner_mod1_func1())
 
 #import mypackage.module1.mod1_func1 as inner_mod1_func1
 #print(inner_mod1_func1())
+
+
+
+
+
 
 
 
