@@ -115,3 +115,34 @@ if __name__ == '__main__':
 
 
 
+# Finding the percentage
+from statistics import mean as mean
+if __name__ == '__main__':
+    student_marks = {}
+    for _ in range(int(input())):
+        name, *line = input().split()
+        scores = list(map(float, line))
+        student_marks[name] = scores
+    query_name = input()
+    # print(round(mean(student_marks[query_name]), 2))
+    print('{:.2f}'.format(round(mean(student_marks[query_name]), 2)))
+
+
+
+# Lists
+if __name__ == '__main__':
+    lis1 = []
+    for _ in range(int(input())):
+        inp = input().split()
+        met, arg = inp[0], inp[1:]
+        if met == "print":
+            print(lis1)
+        else:
+            arg = ", ".join(arg)
+            eval("lis1." + met + "(" + arg + ")")
+        '''
+        arg = ", ".join(arg)
+        print("lis1." + met + "(" + arg + ")")
+        '''
+
+

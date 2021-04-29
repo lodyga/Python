@@ -621,6 +621,117 @@ for name, assignment, grade in zip(names, assignments, grades):
 
 
 # Syntax errors occur when Python can’t interpret our code, since we didn’t follow the correct syntax for Python. These are errors you’re likely to get when you make a typo, or you’re first starting to learn Python.
-
 # Exceptions occur when unexpected things happen during execution of a program, even if the code is syntactically correct. There are different types of built-in exceptions in Python, and you can see which exception is thrown in the error message.
 
+x = 1
+while True:
+   try:
+      x = int(input("Enter a number: "))
+      # print(x)
+      break
+   except ValueError:
+      print("that\'s not a walid number\n")
+   except KeyboardInterrupt:
+      print("No onput tekken\n")
+      break
+   finally:
+      print(x)
+      print("zawsze\n")
+
+
+
+# Reading and Writing Files
+import os
+print(os.path.expanduser("~"))
+path = os.path.join(os.path.expanduser('~'), 'documents', 'python')
+print (path)
+
+
+# read a file
+dire = "/home/ukasz/Documents/Programowanie/Python/udacity/"
+f = open(dire+'udacity1.py', 'r')
+file_data = f.read()
+f.close()
+print(file_data)
+
+
+# write a file
+f = open(dire+"test_write.py", "w")
+f.write("write test")
+f.close()
+
+
+# open file many times
+files = []
+for i in range(10000):
+   files.append(open(dire+'test_write.py', 'r'))
+   print(i)
+
+
+with open(dire+'udacity1.py', 'r') as f:
+   file_data = f.read()
+print(file_data)
+
+
+with open(dire+"udacity1.py", "r") as snake:
+   print(snake.read(5))
+   print(snake.read(5))
+   print(snake.read())
+
+
+snake_lines = []
+with open(dire+"udacity1.py", "r") as snake:
+   for line in snake:
+      snake_lines.append(line.strip())
+print(snake_lines)
+
+
+with open(dire+"udacity1.py", "r") as snake:
+   list_of_lines = snake.readlines()
+#print(list_of_lines)
+for line in list_of_lines:
+   print(line)
+
+
+# You're going to create a list of the actors who appeared in the television programme Monty Python's Flying Circus.
+dire = "/home/ukasz/Documents/Programowanie/Python/udacity/"
+def create_cast_list(filename):
+   cast_list = []
+   #use with to open the file filename
+   #use the for loop syntax to process each line
+   #and add the actor name to cast_list
+   with open(dire+"flying_circus_cast.txt", "r") as dirty_cast:
+      for actor in dirty_cast:
+         cast_list.append(actor.split(",")[0])
+   return cast_list
+
+cast_list = create_cast_list('flying_circus_cast.txt')
+##for actor in cast_list:
+##    print(actor)
+print(cast_list)
+
+
+
+# initiate empty list to hold user input and sum value of zero
+user_list = []
+list_sum = 0
+
+# seek user input for ten numbers 
+for _ in range(1):
+    userInput = input("Enter any 2-digit number: ")
+    
+# check to see if number is even and if yes, add to list_sum
+# print incorrect value warning  when ValueError exception occurs
+    try:
+        number = int(userInput)
+        user_list.append(number)
+        if number % 2 == 0:
+            list_sum += number
+    except ValueError:
+        print("Incorrect value. That's not an int!")
+
+print("user_list: {}".format(user_list))
+print("The sum of the even numbers in user_list is: {}.".format(list_sum))
+   
+
+   
