@@ -735,3 +735,102 @@ print("The sum of the even numbers in user_list is: {}.".format(list_sum))
    
 
    
+# Importing Local Scripts
+# demo.py
+
+import udacity.useful_functions as uf
+
+scores = [88, 92, 79, 93, 85]
+
+mean = uf.mean(scores)
+curved = uf.add_five(scores)
+
+mean_c = uf.mean(curved)
+
+print("Scores:", scores)
+print("Original Mean:", mean, " New Mean:", mean_c)
+
+print(__name__)
+print(uf.__name__)
+
+
+
+import random
+# Use an import statement at the top
+
+word_file = "words.txt"
+word_list = []
+
+#fill up the word_list
+with open(word_file, 'r') as words:
+	for line in words:
+		# remove white space and make everything lowercase
+		word = line.strip().lower()
+		# don't include words that are too long or too short
+		if 3 < len(word) < 8:
+			word_list.append(word)
+
+# Add your function generate_password here
+# It should return a string consisting of three random words 
+# concatenated together without spaces
+
+def generate_password():
+    words = random.sample(word_list, k=3)
+    return "".join(words)
+
+# test your function
+print(generate_password())
+
+
+
+# Techniques for Importing Modules
+from module_name import object_name, second_object
+import module_name as new_name
+from module_name import object_name as new_name
+from module_name import * # To import every object individually from a module (DO NOT DO THIS):
+
+# Modules, Packages, and Names
+# In order to manage the code better, modules in the Python Standard Library are split down into sub-modules that are contained within a package. A package is simply a module that contains sub-modules. A sub-module is specified with the usual dot notation.
+# Modules that are submodules are specified by the package name and then the submodule name separated by a dot. You can import the submodule like this.
+
+import package_name.submodule_name
+# pip is the standard package manager for Python, but it isn't the only one. One popular alternative is Anaconda which is designed specifically for data science.
+
+pip install package_name
+pip install -r requirements.txt
+
+ipython
+len? # ? for details about an object
+! to execute system shell commands
+
+
+
+# Write your code here
+# HINT: create a dictionary from flowers.txt
+dire = "/home/ukasz/Documents/Programowanie/Python/udacity/"
+dict_flower = {}
+with open(dire+"flowers.txt", "r") as fl:
+    for line in fl:
+        dict_flower[line.strip().lower()[0]] = line.strip()[3:]
+# HINT: create a function to ask for user's first and last name
+inp_name = input("I tak liczy się tylko pierwsza litera ")[0].lower()
+
+
+# print the desired output
+print(dict_flower[inp_name])
+
+
+
+# Generators
+def my_range(x):
+    i = 0
+    while i < x:
+      yield i
+      i += 1
+
+for x in my_range(5):
+   print(x)
+
+
+
+

@@ -146,3 +146,212 @@ if __name__ == '__main__':
         '''
 
 
+
+# Tuples
+if __name__ == '__main__':
+    n = int(input())
+    integer_list = map(int, input().split())
+    print(hash(tuple(integer_list)))
+
+
+
+# sWAP cASE
+def swap_case(s):
+    new = ""
+    for inp in s:
+        if inp.isdigit() == False:
+            if inp.isupper():
+                new += inp.lower()
+            else: 
+                new += inp.upper()
+        else:
+            new += inp
+    return(new)
+
+if __name__ == '__main__':
+    s = input()
+    result = swap_case(s)
+    print(result)
+
+
+def swap_case(s):
+    return "".join([i.lower() if i.isupper() else i.upper() for i in s])
+
+def swap_case(s):
+    return "".join(map(str.swapcase, s))
+
+def swap_case(s):
+    return s.swapcase()
+
+
+
+# String Split and Join
+def split_and_join(line):
+    return "-".join(line.split())
+
+if __name__ == '__main__':
+    line = input()
+    result = split_and_join(line)
+    print(result)
+
+def split_and_join(line):
+    return line.replace(" ", "-")
+
+
+
+# What's Your Name?
+def print_full_name(first, last):
+    print("Hello {} {}! You just delved into python.".format(first, last))
+
+if __name__ == '__main__':
+    first_name = input()
+    last_name = input()
+    print_full_name(first_name, last_name)
+
+
+
+#  Mutations
+# You are given an immutable string, and you want to make changes to it.
+>>> string = "abracadabra"
+>>> l = list(string)
+>>> l[5] = 'k'
+>>> string = ''.join(l)
+>>> print string
+abrackdabra
+
+>>> string = string[:5] + "k" + string[6:]
+>>> print string
+abrackdabra
+
+def mutate_string(string, position, character):
+    return string[:position] + character + string[position + 1:]
+    # li1 = list(string)
+    # li1[position] = character
+    # return "".join(li1)
+
+if __name__ == '__main__':
+    s = input()
+    i, c = input().split()
+    s_new = mutate_string(s, int(i), c)
+    print(s_new)
+
+
+
+# Find a string
+def count_substring(string, sub_string):
+    counter = 0
+    for i in range(len(string)):
+        if sub_string == string[i:i + len(sub_string)]:
+            counter += 1
+    return counter
+
+if __name__ == '__main__':
+    string = input().strip()
+    sub_string = input().strip()
+    
+    count = count_substring(string, sub_string)
+    print(count)
+
+def count_substring(string, sub_string):
+    return len([i for i in range(len(string)) if sub_string == string[i:i + len(sub_string)]])
+
+
+
+# String Validators
+if __name__ == '__main__':
+    s = input()
+    print(any(char.isalnum() for char in s))
+    print(any(char.isalpha() for char in s))
+    print(any(char.isdigit() for char in s))
+    print(any(char.islower() for char in s))
+    print(any(char.isupper() for char in s))
+    
+
+
+# Text Alignment
+print 'HackerRank'.ljust(width,'-')
+
+#Replace all ______ with rjust, ljust or center. 
+
+thickness = int(input()) #This must be an odd number
+c = 'H'
+
+#Top Cone
+for i in range(thickness):
+    print((c*i).rjust(thickness-1)+c+(c*i).ljust(thickness-1))
+
+#Top Pillars
+for i in range(thickness+1):
+    print((c*thickness).center(thickness*2)+(c*thickness).center(thickness*6))
+
+#Middle Belt
+for i in range((thickness+1)//2):
+    print((c*thickness*5).center(thickness*6))    
+
+#Bottom Pillars
+for i in range(thickness+1):
+    print((c*thickness).center(thickness*2)+(c*thickness).center(thickness*6))    
+
+#Bottom Cone
+for i in range(thickness):
+    print(((c*(thickness-i-1)).rjust(thickness)+c+(c*(thickness-i-1)).ljust(thickness)).rjust(thickness*6))
+
+
+
+# Text Wrap
+import textwrap
+def wrap(string, max_width):
+    string2 = ""
+    while len(string) > max_width:
+        string2 += string[:max_width] + "\n"
+        string = string[max_width:]
+    string2 += string
+    return string2
+
+if __name__ == '__main__':
+    string, max_width = input(), int(input())
+    result = wrap(string, max_width)
+    print(result)
+
+
+
+# Designer Door Mat
+inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
+div = inp//2
+for i in range(div):
+    print("-"*(div - i)*3 + "." + "|.."*i + "|" + "..|"*i + "." + 3*(div - i)*"-")
+print("WELCOME".center(3*inp, "-"))
+for i in range(div-1, -1, -1):
+    print("-"*(div - i)*3 + "." + "|.."*i + "|" + "..|"*i + "." + 3*(div - i)*"-")
+
+inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
+div = inp//2
+for i in range(div):
+    print("-"*(div - i)*3 + ".|."*(2*i + 1) + 3*(div - i)*"-")
+print("WELCOME".center(3*inp, "-"))
+for i in range(div-1, -1, -1):
+    print("-"*(div - i)*3 + ".|."*(2*i + 1) + 3*(div - i)*"-")
+
+inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
+print("\n".join([(".|."*(2*i + 1)).center(3*inp, "-") for i in range(inp//2)]))
+print("WELCOME".center(3*inp, "-"))
+print("\n".join([(".|."*(2*i + 1)).center(3*inp, "-") for i in range(inp//2-1, -1, -1)]))
+
+inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
+up = [(".|."*(2*i + 1)).center(3*inp, "-") for i in range(inp//2)]
+middle = ["WELCOME".center(3*inp, "-")]
+print("\n".join(up + middle + up[::-1]))
+
+n, m = map(int, input().split())
+pattern = [('.|.'*(2*i + 1)).center(m, '-') for i in range(n//2)]
+print('\n'.join(pattern + ['WELCOME'.center(m, '-')] + pattern[::-1]))
+
+names = ["Rick Sanchez", "Morty Smith", "Summer Smith", "Jerry Smith", "Beth Smith"]
+names[::-1]
+
+
+
+# String Formatting
+
+
+

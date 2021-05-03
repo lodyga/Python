@@ -3187,7 +3187,7 @@ print(my_name)
 import test
 print(test.display_message())
 
-from test import *
+from test import * # nie robić tak
 print(display_message())
 
 import json
