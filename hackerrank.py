@@ -352,6 +352,227 @@ names[::-1]
 
 
 # String Formatting
+def print_formatted(number):
+    str_len = len(bin(number)[2:])
+    for i in range(1, number + 1):
+        print("{}".format(i).rjust(str_len), end=' ')
+        print("{}".format(oct(i)[2:]).rjust(str_len), end=' ')
+        print("{}".format(hex(i)[2:]).upper().rjust(str_len), end=' ')
+        print("{}".format(bin(i)[2:]).rjust(str_len))
+
+if __name__ == '__main__':
+    n = int(input())
+    print_formatted(n)
+
+
+# String Formatting
+def print_formatted(n):
+    width = len("{:b}".format(n))
+    for i in range(1, n + 1):
+        print("{0:{width1}d} {0:{width1}o} {0:{width1}X} {0:{width1}b}".format(i, width1=width))
+
+ 
+
+# Alphabet Rangoli
+n = 5
+char_list = [chr(c) for c in range(ord("a"), 97 + n)]
+char_list_r = char_list[::-1]
+
+
+for i in range(0, n):
+    char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*" ".join(2), "-")
+for i in range(n-2, -1, -1):
+    char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*" ".join(2), "-")
+
+char_list[2:-4:-1] + char_list[1:]
+
+
+n = 5
+char_list = [chr(c) for c in range(ord("a"), 97 + n)]
+char_list_r = char_list[::-1]
+
+for i in range(0, n):
+    char_list[-1:n-2-i:-1] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*" ".join(2), "-")
+#for i in range(n-2, -1, -1):
+ char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*" ".join(2), "-")
+
+# char_list[2:-4:-1] + char_list[1:]
+#[liczy od końca indeks początku inclusive:liczy od końca indeks końca listy exclusive:-1]
+char_list_r[::-1]
 
 
 
+# Capitalize!
+n = "sdfs sadf"
+[i.capitalize() for i in n." ".join(split()]
+
+s = input()
+for x in s[:].split():
+    s = s.replace(x, x.capitalize())
+print(s)
+
+
+# itertools.product()
+from itertools import product
+A = map(int, input().split())
+B = map(int, input().split())
+for i in product(A, B):
+    print(i, end=' ') 
+
+from itertools import product
+A = map(int, input().split())
+B = map(int, input().split())
+print(*product(A, B)) 
+
+
+
+# itertools.permutations()
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+from itertools import permutations
+inp, num = input().split()
+inp = [i for i in inp]
+num = int(num)
+li1 = ["".join(i) for i in list(permutations(inp, num))]
+li1.sort()
+for i in range(len(li1)):
+    print(li1[i])
+
+
+from itertools import permutations
+inp, num = input().split()
+print(*["".join(i) for i in permutations(sorted(inp), int(num))], sep="\n")
+
+
+# itertools.combinations()
+from itertools import combinations
+inp, num = input().split()
+for j in range(1, int(num) + 1):
+    for i in combinations(sorted(inp), j):
+        print("".join(i))
+
+
+
+# itertools.combinations_with_replacement()
+from itertools import combinations_with_replacement
+inp, num = input().split()
+print(*["".join(i) for i in list(combinations_with_replacement(sorted(inp), int(num)))], sep="\n")
+
+
+
+# Compress the String!
+from itertools import groupby
+data = "1222311"
+for key, group in groupby(data, lambda x: x[0]):
+    print("({1}, {0})".format(key, len(list(group))), end=" ")
+
+print(*["({}, {})".format(len(list(group)), key) for key, group in groupby(data, lambda x: x[0])])
+
+print(*[(len(list(group)), int(key)) for key, group in groupby(data)])
+
+
+
+# collections.Counter()
+from collections Counter
+myList = [1,1,2,3,4,5,3,2,3,4,2,1,2,3]
+list(Counter(myList).items())[0]
+
+
+# Importing defaultdict
+from collections import defaultdict
+lst = [('Geeks', 1), ('For', 2), ('Geeks', 3)]
+orDict = defaultdict(list)
+# iterating over list of tuples
+for key, val in lst:
+    orDict[key].append(val)
+print(orDict)
+
+
+
+from collections import Counter, defaultdict
+
+# n = int(input())
+shoe_sizes = [2, 3, 4, 5, 6, 8, 7, 6, 5, 18]
+# shoe_sizes = map(int, input().split())
+shoe_size_count = Counter(shoe_sizes)
+print(shoe_size_count)
+
+
+order_list = [[6, 55], [6, 45], [6, 55], [4, 40], [18, 60], [10, 50]]
+# order_list = [list(map(int, input().split())) for _ in range(int(input()))]
+order_dict = defaultdict(list)
+[order_dict[key].append(val) for key, val in order_list]
+print(order_dict)
+
+
+money = 0
+for key, val in order_list:
+    # if key in shoe_size_count.keys():
+    if shoe_size_count[key]:
+        money += order_dict[key][0]
+        del order_dict[key][0]
+        shoe_size_count[key] -= 1
+        if shoe_size_count[key] == 0:
+            del shoe_size_count[key]
+        # shoe_size_count = {x: y for x, y in shoe_size_count.items() if y!=0}
+
+print(money)
+
+'''
+# numCust = int(input())
+numCust = 6
+money = 0
+for i in range(numCust):
+    size, price = map(int, input().split())
+    if shoe_size_count[size]:
+        money += price
+        shoe_size_count[size] -= 1
+print(money)
+'''
+
+
+
+# Introduction to Sets
+def average(array):
+    return sum(set(array))/len(set(array))
+
+if __name__ == '__main__':
+    n = int(input())
+    arr = list(map(int, input().split()))
+    result = average(arr)
+    print(result)
+
+
+
+# DefaultDict Tutorial
+from collections import defaultdict
+a = ['a', 'a', 'b', 'a', 'b']
+b = ['a', 'b']
+d = defaultdict(list)
+for i in range(len(a)):
+    d[a[i]].append(i)
+for i in range(len(b)):
+    if b[i] in d.keys():
+        print(" ".join(d[b[i]])
+    else:
+        print(-1)
+
+
+from collections import defaultdict
+a = ['a', 'a', 'b', 'a', 'b']
+b = ['a', 'b']
+#m, n = list(map(int, input().split()))
+#a = [input() for _ in range(m)]
+#b = [input() for _ in range(n)]
+
+d = defaultdict(list)
+[d[a[i]].append(i + 1) for i in range(len(a))]
+
+for i in b:
+    if i in d.keys():
+        print(*d[i])
+    else:
+        print(-1)
+
+
+
+# 
