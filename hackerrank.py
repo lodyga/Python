@@ -575,4 +575,112 @@ for i in b:
 
 
 
-# 
+# Polar Coordinates
+from math import sqrt
+from cmath import phase
+n = complex(input())
+print(sqrt(n.real**2 + n.imag**2))
+print(phase(n))
+
+
+
+# Calendar Module
+import calendar
+day = calendar.weekday(2015, 8, 5)
+days = [i for i in calendar.day_name]
+months = [i for i in calendar.month_name]
+# print("The day on {} {}th {} was {}.".format(months[8], "5", 2015, days[day]))
+print(days[day].upper())
+
+import calendar
+list(calendar.day_name)
+
+
+
+# Collections.namedtuple()
+from collections import namedtuple
+from statistics import mean
+n = int(input())
+nt_templet = namedtuple("some_name", input())
+print(mean([int(nt_templet(*input().split()).MARKS) for i in range(n)]))
+
+Input (stdin)
+5
+ID         MARKS      NAME       CLASS
+1          97         Raymond    7
+2          50         Steven     4
+3          91         Adrian     9
+4          72         Stewart    5
+5          80         Peter      6
+
+
+
+# Exceptions
+for i in range(int(input())):
+    try:
+        m, n = map(int, input().split())
+        print(m//n)
+    except ZeroDivisionError as e:
+        print("Error Code:", e)
+    except ValueError as e:
+        print("Error Code:", e) 
+
+Input (stdin)
+3
+1 0
+2 $
+3 1
+
+for i in range(int(input())):
+    try:
+        m, n = map(int, input().split())
+        print(m//n)
+    except BaseException as e: #Exception
+        print("Error Code:", e)
+
+
+
+# collections.OrderedDict
+from collections import OrderedDict
+dict1 = OrderedDict()
+dict2 = OrderedDict()
+for i in range(int(input())):
+    inp1 = input().split()
+    name, price = " ".join(inp1[:-1]), inp1[-1]
+    dict1[name] = dict1.get(name, 0) + 1
+    dict2[name] = price
+
+for key, val in dict1.items():
+    print(key, int(val) * int(dict2[key]))
+
+Input (stdin)
+9
+BANANA FRIES 12
+POTATO CHIPS 30
+APPLE JUICE 10
+CANDY 5
+APPLE JUICE 10
+CANDY 5
+CANDY 5
+CANDY 5
+POTATO CHIPS 30
+
+from collections import OrderedDict
+dict1 = OrderedDict()
+for _ in range(int(input())):
+    name, space, price = input().rpartition(" ")
+    dict1[name] = dict1.get(name, 0) + int(price)
+
+[print(key, val) for key, val in dict1.items()]
+
+
+
+# Symmetric Difference
+
+
+
+
+
+
+
+
