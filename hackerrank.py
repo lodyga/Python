@@ -676,9 +676,259 @@ for _ in range(int(input())):
 
 
 # Symmetric Difference
+n = input()
+n = set(map(int, input().split()))
+m = input()
+m = set(map(int, input().split()))
+print(*sorted(m.difference(n).union(n.difference(m))), sep="\n")
+
+Input (stdin)
+4
+2 4 5 9
+4
+2 4 11 12
+
+n, n =input(), set(map(int, input().split()))
+m, m =input(), set(map(int, input().split()))
+print(*sorted(m.difference(n).union(n.difference(m))), sep="\n")
+
+n, n =input(), set(map(int, input().split()))
+m, m =input(), set(map(int, input().split()))
+print(*sorted(n^m), sep="\n")
 
 
 
+# Incorrect Regex
+import re
+for i in range(int(input())):
+    #inp = input()
+    #if re.search(r"\*\+", inp):
+    #    print(False)
+    #else:
+    #    print(True)
+    ans = True
+    try :
+        re.compile(input())
+    except: #re.error
+        ans = False
+    print(ans)
+
+Input (stdin)
+2
+.*\+
+.*+
+
+
+
+# Set .add()
+print(len({input() for i in range(int(input()))}))
+
+Sample Input
+7
+UK
+China
+USA
+France
+New Zealand
+UK
+France 
+
+
+
+# Set .discard(), .remove() & .pop()
+n = int(input())
+s = set(map(int, input().split()))
+
+for _ in range(int(input())):
+    inp = input().split()
+    met, arg = inp[0], "".join(inp[1:])
+    eval("s." + met + "(" + arg + ")")
+    
+print(sum(s))
+
+
+Sample Input
+9
+1 2 3 4 5 6 7 8 9
+10
+pop
+remove 9
+discard 9
+discard 8
+remove 7
+pop 
+discard 6
+remove 5
+pop 
+discard 5
+
+
+n = int(input())
+s = set(map(int, input().split()))
+
+for _ in range(int(input())):
+    eval('s.{0}({1})'.format(*input().split()+[' ']))
+print(sum(s))
+
+
+
+# Collections.deque()
+from collections import deque
+s = deque()
+
+for _ in range(int(input())):
+    eval('s.{0}({1})'.format(*input().split()+[' ']))
+print(*s)
+
+
+
+# Set .union() Operation
+m, m = input(), set(input().split())
+n, n = input(), set(input().split())
+print(len(m|n))
+#print(len(m.union(n)))
+
+Sample Input
+9
+1 2 3 4 5 6 7 8 9
+9
+10 1 2 3 11 21 55 6 8
+
+
+
+# Set .intersection() Operation
+_, m, _, n = input(), set(input().split()), input(), set(input().split())
+print(len(m&n))
+# print(len(m.intersection(n)))
+
+Sample Input
+9
+1 2 3 4 5 6 7 8 9
+9
+10 1 2 3 11 21 55 6 8
+
+
+
+# Mod Divmod
+m, n = (int(input()) for _ in range(2))
+print(m//n, m%n, (m//n, m%n), sep="\n")
+
+Sample Input
+177
+10
+
+
+
+# Power - Mod Power
+a, b, m = (int(input()) for _ in range(3))
+print(a**b, pow(a, b, m), sep="\n")
+
+Sample Input
+3
+4
+5
+
+
+
+# Set .difference() Operation
+_, m, _, n = input(), set(input().split()), input(), set(input().split())
+print(len(m-n))
+# print(len(m.intersection(n)))
+
+Sample Input
+9
+1 2 3 4 5 6 7 8 9
+9
+10 1 2 3 11 21 55 6 8
+
+
+
+# Integers Come In All Sizes
+a, b, c, d = (int(input()) for _ in range(4))
+print(a**b + c**d)
+
+
+
+# Set .symmetric_difference() Operation
+_, m, _, n = input(), set(input().split()), input(), set(input().split())
+print(len(m^n))
+# print(len(m.symmetric_difference(n)))
+
+Sample Input
+9
+1 2 3 4 5 6 7 8 9
+9
+10 1 2 3 11 21 55 6 8
+
+
+
+# Set Mutations
+H = set("Hacker")
+R = set("Rank")
+H|=R
+#H.update(R)
+print(H)
+
+H&=R
+# H.intersection_update(R)
+print(H)
+
+H-=R
+# H.difference_update(R)
+print(H)
+
+H^=R
+# H.symmetric_difference_update(R)
+print(H)
+
+
+_, s = input(), set(map(int, input().split()))
+for _ in range(int(input())):
+    met, _ = input().split()
+    n = set(map(int, input().split()))
+    eval("s. {}({})".format(met, n))
+print(sum(s))
+
+16
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 24 52
+4
+intersection_update 10
+2 3 5 6 8 9 1 4 7 11
+update 2
+55 66
+symmetric_difference_update 5
+22 7 35 62 58
+difference_update 7
+11 22 35 55 58 62 66
+
+
+_, s = input(), set(map(int, input().split()))
+for _ in range(int(input())):
+    eval("s. {0}({2})".format(*input().split(), set(map(int, input().split()))))
+print(sum(s))
+
+
+
+# The Captain's Room
+from collections import Counter
+_ = input()
+lis1 = Counter(list(map(int, input().split())))
+print(min(lis1, key=lis1.get)) # get min value form list
+
+Sample Input
+5
+1 2 3 6 5 4 4 2 5 3 6 1 6 5 3 2 4 1 2 5 1 4 3 6 8 4 3 1 5 6 2 
+
+from collections import Counter
+_ = input()
+num = Counter(map(int, input().split()))
+print(min(num, key=num.get))
+# działa w 9/10
+# print(list(num.keys())[-1])
+
+
+
+# Check Subset
 
 
 
