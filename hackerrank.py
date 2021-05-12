@@ -928,9 +928,144 @@ print(min(num, key=num.get))
 
 
 
+```
+from collections import Counter
+_ = input()
+num = Counter(map(int, input().split()))
+print(num.most_common()[-1][0])
+```
+
+another one 
+```
+print(min(num, key=num.get))
+```
+
+this works 9/10
+```
+print(list(num.keys())[-1])
+```
+
 # Check Subset
+for _ in range(int(input())):
+    _, m, _, n = input(), set(input()), input(), set(input())
+    print(m.issubset(n))
+
+Sample Input
+3
+5
+1 2 3 5 6
+9
+9 8 5 6 3 2 1 4 7
+1
+2
+5
+3 6 5 4 1
+7
+1 2 3 5 6 8 9
+3
+9 8 2
 
 
 
+# Check Strict Superset
 
+{"1", "2", "3"} > {"1", "2"}
+
+m = set(input().split())
+i = 0
+ran = int(input())
+for _ in range(ran):
+    n = set(input().split())
+    if n.issubset(m) and n != m:
+        i += 1
+print(i == ran)
+
+Sample Input
+1 2 3 4 5 6 7 8 9 10 11 12 23 45 84 78
+2
+1 2 3 4 5
+100 11 12
+
+m = set(input().split())
+print(all(list([m > set(input().split()) for _ in range(int(input()))])))
+
+
+
+# Zipped!
+A = [1,2,3]
+B = [6,5,4]
+print([A] + [B])
+print(list(zip(*([A] + [B]))))
+
+
+from statistics import mean
+_, leng = input().split()
+m = zip(*[list(map(float, input().split())) for i in range(int(leng))])
+n = [mean(i) for i in m]
+print(*n, sep="\n")
+
+
+Sample Input
+5 3
+89 90 78 93 80
+90 91 85 88 86  
+91 92 83 89 90.5
+
+
+from statistics import mean
+_, leng = input().split()
+m = [map(float, input().split()) for i in range(int(leng))]
+n = [mean(i) for i in zip(*m)]
+print(*n, sep="\n")
+
+
+
+# Input()
+x, y = input().split()
+print(eval(input().replace("x", x)) == int(y))
+
+Sample Input
+1 4
+x**3 + x**2 + x + 1
+
+x, y = map(int, input().split())
+print(eval(input()) == y)
+
+str1 = "A**2"
+A = int(5)
+print(eval(str1))
+
+
+
+# Python Evaluation
+eval(input())
+
+
+
+# Any or All
+_ = input()
+n = list(map(int, input().split()))
+zero = not any([True for i in n if i < 0])
+pali = False
+if zero:
+    pali = any([True for i in n if str(i)[0] == str(i)[-1]])
+print(all([zero, pali]))
+
+
+5
+12 9 61 5 14 
+
+
+
+_ = input()
+n = list(map(int, input().split()))
+print(any([str(i)[0] == str(i)[-1] for i in n]) and all([i >= 0 for i in n]))
+
+
+_ = input()
+n = input().split()
+print(any([i[0] == i[-1] for i in n]) and all([int(i) >= 0 for i in n]))
+
+
+# 
 
