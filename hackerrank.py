@@ -1067,5 +1067,90 @@ n = input().split()
 print(any([i[0] == i[-1] for i in n]) and all([int(i) >= 0 for i in n]))
 
 
-# 
 
+# Detect Floating Point Number
+import re
+print(*[bool(re.match(r"^[+-]?\d*\.\d*$", input())) for _ in range(int(input()))], sep="\n")
+
+4
+4.0O0
+-1.00
++4.54
+SomeRandomStuff
+
+
+
+# Map and Lambda Function
+cube = lambda x: x**3
+
+def fibonacci(n):
+    n1, n2 = 0, 1
+    fib_lilst = [0, 1]
+    count = 0
+    
+    while count < n:
+       nth = n1 + n2
+       fib_lilst.append(nth)
+       # update values
+       n1 = n2
+       n2 = nth
+       count += 1
+    return fib_lilst[:n]
+
+if __name__ == '__main__':
+    n = int(input())
+    print(list(map(cube, fibonacci(n))))
+
+Sample input
+5
+
+
+cube = lambda x: x**3
+
+def fibonacci(n):
+    fib_lilst = [0, 1][:n]
+    
+    if n > 2:
+        for i in range(n-2):
+            fib_lilst.append(fib_lilst[i] + fib_lilst[i + 1])
+    return fib_lilst
+
+if __name__ == '__main__':
+    n = int(input())
+    print(list(map(cube, fibonacci(n))))
+
+
+
+def fibonacci(n):
+    a,b = 0,1
+    for i in range(n):
+        yield a
+        a,b = b,a+b
+
+
+
+# Re.split()
+regex_pattern = r"[,.]"
+
+import re
+print("\n".join(re.split(regex_pattern, input())))
+
+
+Sample Input 0
+100,000,000.000
+
+regex_pattern = r"[\,\.]"
+regex_pattern = r"[\D+]"
+
+
+
+# Group(), Groups() & Groupdict() 
+print(re.match(r"\bS\w+", "Spain The rain in Spain"))
+
+import re
+print(re.search(r"\b(\d)\1+\b", "12345678910111213141516171820212223")
+
+sdfsdf
+12345671189101213141516171820212223
+
+11
