@@ -1145,12 +1145,287 @@ regex_pattern = r"[\D+]"
 
 
 # Group(), Groups() & Groupdict() 
-print(re.match(r"\bS\w+", "Spain The rain in Spain"))
+import re
+m = re.search(r"(\w(?!_))\1+", input())
+print(m.group(1) if m else -1)
+
+Input (stdin)
+12345678910111213141516171820212223
+
+r"(\d(?!_))\1+"
+
+# Re.findall() & Re.finditer() do poprawy
+import re
+m = re.findall(r'[aeuioAEUIO]{2,}', input())
+print(*m, sep='\n') if m else print(-1)
+
+Input (stdin)
+rabcdeefgyYhFjkIoomnpOeorteeeeet
 
 import re
-print(re.search(r"\b(\d)\1+\b", "12345678910111213141516171820212223")
+m = re.findall(r'[aeuioAEUIO]{2,}', input())
+print('\n'.join(m or ['-1']))
 
-sdfsdf
-12345671189101213141516171820212223
 
-11
+
+# XML 1 - Find the Score
+
+import sys
+import xml.etree.ElementTree as etree
+
+def get_attr_number(node):
+     return sum([len(elem.items()) for elem in tree.iter()])
+
+if __name__ == '__main__':
+    sys.stdin.readline()
+    xml = sys.stdin.read()
+    tree = etree.ElementTree(etree.fromstring(xml))
+    root = tree.getroot()
+    print get_attr_number(root)
+
+
+
+# Standardize Mobile Number Using Decorators
+def wrapper(f):
+    def fun(l):
+        n = [" ".join((i[-10:-5], i[-5:])) for i in l]
+        n.sort()
+        print(*["+91 " + i for i in n], sep="\n")
+    return fun
+
+@wrapper
+def sort_phone(l):
+    print(*sorted(l), sep='\n')
+
+if __name__ == '__main__':
+    l = [input() for _ in range(int(input()))]
+    sort_phone(l) 
+
+
+Sample Input
+3
+07895462130
+919875641230
+9195969878
+
+
+def wrapper(f):
+    def fun(l):
+        f(["+91 "+c[-10:-5]+" "+c[-5:] for c in l])
+    return fun
+
+
+
+# Arrays
+import numpy
+
+def arrays(arr):
+    return numpy.array(arr[::-1], float)
+
+arr = input().strip().split(' ')
+result = arrays(arr)
+print(result)
+
+
+Sample Input
+1 2 3 4 -8 -10
+
+
+return numpy.flipud(numpy.array(arr, float))
+
+
+
+# Shape and Reshape
+import numpy
+ar = numpy.array(input().strip().split(' '), int)
+print(numpy.reshape(ar,(3, 3)))
+
+
+Sample Input
+1 2 3 4 5 6 7 8 9
+
+import numpy
+ar = numpy.array(input().strip().split(' '), int)
+ar.shape = (3, 3)
+print(ar)
+
+
+import numpy
+print(numpy.reshape(numpy.array(input().strip().split(' '), int), (3, 3)))
+
+
+import numpy
+print(numpy.array(input().strip().split(' '), int).reshape(3, 3))
+
+
+import numpy
+print(numpy.array(list(map(int, input().split()))).reshape(3, 3))
+
+
+
+# Transpose and Flatten
+import numpy
+rows, cols = map(int, input().strip().split())
+n = numpy.array([list(map(int, input().strip().split(' '))) for _ in range(rows)])
+print(n.transpose())
+print(n.flatten())
+
+
+Sample Input
+2 2
+1 2
+3 4
+
+
+
+# Concatenate
+import numpy
+n, m, _ = map(int, input().strip().split())
+a1 = numpy.array([input().strip().split(' ') for _ in range(n)], int)
+a2 = numpy.array([input().strip().split(' ') for _ in range(m)], int)
+print(numpy.concatenate((a1, a2)))
+
+
+Sample Input
+4 3 2
+1 2
+1 2 
+1 2
+1 2
+3 4
+3 4
+3 4 
+
+
+
+# Zeros and Ones
+import numpy
+n = list(map(int, input().strip().split()))
+print(numpy.zeros(n, int))
+print(numpy.ones(n, int))
+
+Sample Input 0
+3 3 3
+
+
+import numpy
+n = tuple(map(int, input().strip().split()))
+print(numpy.zeros(n, int))
+print(numpy.ones(n, int))
+
+
+
+# Eye and Identity
+import numpy
+numpy.set_printoptions(legacy='1.13')
+n = tuple(map(int, input().strip().split()))
+print(numpy.eye(n[0], n[1]))
+
+
+Sample Input
+3 3
+
+
+import numpy
+numpy.set_printoptions(legacy='1.13')
+#n = tuple(map(int, input().strip().split()))
+print(numpy.eye(*map(int, input().strip().split())))
+
+
+
+# Array Mathematics
+# ten kod nie działa, bo za mało nawiasów generuje
+import numpy
+_ = input()
+a = numpy.array(input().strip().split(' '), int)
+b = numpy.array(input().strip().split(' '), int)
+# a, b = [numpy.array(input().strip().split(' '), int) for _ in range(2)]
+print(numpy.array(a+b), numpy.array(a-b), sep='\n')
+print(a+b, a-b, a*b, a//b, a%b, a**b, sep='\n')
+
+
+Sample Input
+1 4
+1 2 3 4
+5 6 7 8
+
+
+import numpy as np
+n, m = map(int, input().split())
+a, b = (np.array([input().split() for _ in range(n)], dtype=int) for _ in range(2))
+print(a+b, a-b, a*b, a//b, a%b, a**b, sep='\n')
+
+
+
+# Floor, Ceil and Rint
+import numpy
+numpy.set_printoptions(legacy='1.13')
+arr = numpy.array(input().strip().split(), float)
+print(numpy.floor(arr), numpy.ceil(arr), numpy.rint(arr), sep='\n')
+
+
+Sample Input
+1.1 2.2 3.3 4.4 5.5 6.6 7.7 8.8 9.9
+
+
+
+# Sum and Prod
+import numpy
+n, _ = input().strip().split()
+print(numpy.prod(numpy.sum(numpy.array([input().strip().split() for _ in range(int(n))], int), axis=0)))
+
+
+Sample Input
+2 2
+1 2
+3 4
+
+
+
+# Min and Max
+import numpy
+n, _ = input().strip().split()
+ar = numpy.array([input().strip().split() for _ in range(int(n))], int)
+print(max(numpy.min(ar, axis=1)))
+
+
+Sample Input
+4 2
+2 5
+3 7
+1 3
+4 0
+
+
+
+# Mean, Var, and Std
+import numpy
+n, _ = input().strip().split()
+ar = numpy.array([input().strip().split() for _ in range(int(n))], int)
+print(numpy.mean(ar, axis=1), numpy.var(ar, axis=0), round(numpy.std(ar), 11), sep='\n')
+
+Sample Input
+2 2
+1 2
+3 4
+
+
+
+# Dot and Cross
+import numpy
+n = int(input().strip())
+ar1, ar2 = [numpy.array([input().strip().split() for _ in range(n)], int) for _ in range(2)]
+print(numpy.dot(ar1, ar2))
+
+Sample Input
+2
+1 2
+3 4
+1 2
+3 4
+
+
+
+#Inner and Outer
+
+
