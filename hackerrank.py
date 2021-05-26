@@ -438,6 +438,31 @@ print(s)
 a = "sdf sdfsd"
 print(" ".join([i.capitalize() for i in a.split()]))
 
+
+
+# Merge the Tools!
+def merge_the_tools(string, k):
+    for i in range(len(string)//k):
+        str = string[k*i:k*(i + 1)]
+        str2 = ''
+        for st in str:
+            if st not in str2: str2 += st
+        print(str2)
+
+if __name__ == '__main__':
+
+
+Sample Input
+STDIN       Function
+-----       --------
+AABCAAADA   s = 'AABCAAADA'
+3           k = 3
+
+
+
+# 
+
+
 # String
 
 
@@ -716,6 +741,34 @@ Sample Input
 
 m = set(input().split())
 print(all(list([m > set(input().split()) for _ in range(int(input()))])))
+
+
+
+
+# No Idea!
+_, m = input().split()
+li1, se1, se2 = input().split(), set(input().split()), set(input().split())
+print(sum([((i in se1) - (i in se2)) for i in li1])))
+
+Sample Input
+3 2
+1 5 3
+3 1
+5 7
+
+
+# może i dobre ale wysypue się bo za długo liczy
+_, m = input().split()
+li1, se1, se2 = input().split(), list(set(input().split())), list(set(input().split())) 
+suma = 0
+for i in li1:
+    if i in se1:
+        suma += 1
+    if i in se2:
+        suma -= 1
+print(suma)
+#print(len(li1 & set(input().split())) - len(li1 & set(input().split())))
+
 # Sets
 
 
@@ -758,6 +811,38 @@ Sample Input
 # 26 Integers Come In All Sizes
 a, b, c, d = (int(input()) for _ in range(4))
 print(a**b + c**d)
+
+
+
+# Find Angle MBC
+import math as m
+a, b = int(input()), int(input())
+print(str(round(m.degrees(m.asin(a/m.sqrt(a**2 + b**2))))) + "\u00b0")
+
+
+# Triangle Quest
+for i in range(1, int(input())):
+    print((i*10**i)//9)
+
+Sample Input
+5
+
+
+
+# Triangle Quest 2
+for i in range(1,int(input())+1): print("".join([str(j) for j in range(1, i)]) + "".join([str(j) for j in range(i, 0, -1)]))
+[print("".join([str(j) for j in range(1, i)]) + "".join([str(j) for j in range(i, 0, -1)])) for i in range(1,int(input())+1)]
+
+
+for i in range(1, int(input())+1):
+    print(*(range(1, i)), *(range(i, 0, -1)), sep="")
+
+Sample Input
+5
+
+for i in range(1, int(input())+1):
+    print(((10**i)//9)**2)
+
 
 # Math
 
@@ -827,6 +912,34 @@ for key, group in groupby(data, lambda x: x[0]):
 print(*["({}, {})".format(len(list(group)), key) for key, group in groupby(data, lambda x: x[0])])
 
 print(*[(len(list(group)), int(key)) for key, group in groupby(data)])
+
+
+
+# Iterables and Iterators
+from itertools import combinations
+from statistics import mean
+_, letters, k = int(input()), "".join(list(input().split())), int(input())
+print(mean([True if 'a' in ''.join(i) else False for i in  combinations(letters, k)]))
+
+Sample Input
+4 
+a a c d
+2
+
+
+
+# Maximize It!
+from itertools import product
+K, M = map(int, input().split())
+li = [list(map(int, input().split()))[1:] for _ in range(K)]
+print(max(map(lambda i: sum(j**2 for j in i)%M, list(product(*li)))))
+
+Sample Input
+3 1000
+2 5 4
+3 7 8 9 
+5 5 7 8 9 10 
+
 
 #Itertools
 
@@ -1349,6 +1462,32 @@ Sample Input
 2  
 DEXTER <dexter@hotmail.com>
 VIRUS <virus!@variable.:p>
+
+result = bool(re.match(r'^<[a-z](\w|-|\.|_)+@[a-z]+\.[a-z]{1,3}>$', email, re.I))
+
+# Hex Color Code
+import re
+for _ in range(int(input())):
+    result = re.findall(r'#[\d|a-f]{3,6}(?=\)|,|;)', input(), re.I)
+    if result: print(*result, sep='\n')
+
+Sample Input
+11
+#BED
+{
+    color: #FfFdF8; background-color:#aef;
+    font-size: 123px;
+    background: -webkit-linear-gradient(top, #f9f9f9, #fff);
+}
+#Cab
+{
+    background-color: #ABC;
+    border: 2px dashed #fff;
+}   
+
+r'(?<!^)#[\d|a-f]{3,6}'
+r'[\s:](#[a-f0-9]{6}|#[a-f0-9]{3})'
+r'(?<!^)(#(?:[\da-f]{3}){1,2})' # nie wiem jak to działa
 
 
 
