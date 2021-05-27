@@ -998,7 +998,7 @@ for key, val in order_list:
 
 print(money)
 
-'''
+
 # numCust = int(input())
 numCust = 6
 money = 0
@@ -1008,7 +1008,7 @@ for i in range(numCust):
         money += price
         shoe_size_count[size] -= 1
 print(money)
-'''
+
 
 
 
@@ -1109,6 +1109,88 @@ for _ in range(int(input())):
     eval("s." + met + "(" + arg + ")")
     #print(arg)
 print(*s)
+
+
+
+
+# Word Order
+from collections import OrderedDict
+dict1 = OrderedDict()
+for _ in range(int(input())):
+    name = input()
+    dict1[name] = dict1.get(name, 0) + 1
+# print(len([i for i, j in dict1.items()]))
+print(len(dict1))
+#print(*[j for i, j in dict1.items()], sep=' ')
+print(*list(dict1.values()), sep=' ')
+
+
+Sample Input
+4
+bcdef
+abcdefg
+bcde
+bcdef
+
+
+from collections import Counter, OrderedDict
+class OrderedCounter(Counter, OrderedDict):
+    pass
+d = OrderedCounter(input() for _ in range(int(input())))
+print(len(d))
+print(*d.values())
+
+
+
+# Company Logo
+#!/bin/python3
+
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+from collections import Counter, OrderedDict
+import itertools
+
+if __name__ == '__main__':
+    dict1 = OrderedDict()
+    for i in input():
+        dict1[i] = dict1.get(i, 0) + 1
+    #sort_val = {k: v for k, v in sorted(dict1.items(), key=lambda item: item[1],reverse=True)}
+    #for key, val in dict(itertools.islice(sort_val.items(), 3)).items():
+    #    print(key, val)
+    dict2 = sorted(sorted(dict1), key = dict1.get, reverse = True) # sort dict
+    for i in dict2[:3]:
+        print(i, dict1[i])
+
+Sample Input 0
+aabbbccde
+
+
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+from collections import Counter, OrderedDict
+
+
+if __name__ == '__main__':
+    class OrderedCounter(Counter, OrderedDict):
+        pass
+
+    [print(*i) for i in OrderedCounter(sorted(input())).most_common(3)]
+
+
+
+# Piling Up!
+# nie kumama zadania
+
 
 # Collections
 
