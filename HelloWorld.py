@@ -1,3 +1,17 @@
+# Almost everything in Python is an object, with its properties and methods.
+# A Class is like an object constructor, or a "blueprint" for creating objects.
+
+# Parameters to functions are references to objects, which are passed by value. 
+# When you pass a variable to a function, python passes the reference to the object to which the variable refers (the value).
+
+
+
+# Guru99 tutorial
+
+## Python Programming Basics for Beginners
+# Print
+
+import pytest
 print("USA")
 print("UK")
 print(2 * "\n")
@@ -17,6 +31,9 @@ b = 99
 print('ABC' + str(b))
 
 
+
+# Python Variable Types: Local & Global
+
 def someFunction():
     a='Twoja Stata'
     print(a)
@@ -26,16 +43,22 @@ print(a)
 def someFunction():
     global a
     print(a)
+    a = 101
 someFunction()
 print(a)
 
 
-somefunction()
 print(a)
 del (a, b)
+print(a)
 
 
 
+
+## Python Data Structure
+# Tuple
+# To perform different task, tuple allows you to use many built-in functions like all(), 
+# any(), enumerate(), max(), min(), sorted(), len(), tuple(), etc.
 
 tup1 = ('Robert', 'Carlos', '1965', 'Terminator 1995', 'Actor', 'Florida')
 tup2 = (1, 2, 3, 4, 5, 6, 7)
@@ -47,6 +70,10 @@ print(company)
 print(emp)
 print(profile)
 
+(key_1, key_2) = ('val_1', "val_2")
+key_2
+
+
 a = (5, 6)
 b = (6, 4)
 if a > b:
@@ -54,10 +81,15 @@ if a > b:
 else:
    print("b is bigger")
 
+
 a = {'x': 100, 'y': 200}
 b = list(a.items())
+list(a.keys())
+list(a.values())
+print(a, b)
+del(a)
 print(a)
-print(b)
+
 
 x = ("a", "b", "c", "d", "e")
 print(x[2:4])
@@ -69,8 +101,7 @@ print(y)
 # Dictionary
 Dict = {'Tim': 18, 'Charlie': 12, 'Tiffany': 22, 'Robert': 25}
 print(Dict['Tiffany'])
-# to samo 
-print(Dict.get("Tim"))
+print(Dict.get("Tiffany"))
 Boys = {'Tim': 18, 'Charlie': 12, 'Robert': 25}
 Girls = {'Tiffany': 22}
 studentX = Boys.copy()
@@ -78,7 +109,8 @@ print(Boys)
 print(studentX)
 Dict.update({"Sarah": 9})
 print(Dict)
-del Dict['Charlie']
+del Dict['Sarah']
+Dict.pop('Sarah')
 print(Dict)
 
 print("Students Name: %s" % list(Dict.items()))
@@ -87,15 +119,15 @@ Dict = {'Tim': 18, 'Charlie': 12, 'Tiffany': 22, 'Robert': 25}
 Boys = {'Tim': 18, 'Charlie': 12, 'Robert': 25}
 for key in Dict.keys():
    if key in Boys.keys():
-       print(True)
+      print(True)
    else:
-       print(False)
+      print(False)
 
 Students = list(Dict.keys())
 Students.sort()
 print(Students)
-for S in Students:
-   print(": ".join((S, str(Dict[S]))))
+for student in Students:
+   print(': '.join((student, str(Dict[student]))))
 
 for S in Students:
    print(S)
@@ -104,12 +136,20 @@ print("Length : %d" % len(Dict))
 print(len(Students))
 print("variable Type: %s" % type(Dict))
 print("printable string:%s" % str(Dict))
-print("sdf %s" % str(Dict))
 
 Dict_copy = Dict.copy()
 print(Dict_copy)
 Dict_copy.update({"Tim": 80})
 print(Dict_copy)
+
+Here is the list of all Dictionary Methods
+Method	Description	Syntax
+copy()	Copy the entire dictionary to new dictionary	dict.copy()
+update()	Update a dictionary by adding a new entry or a key-value pair to anexisting entry or by deleting an existing entry.	Dict.update([other])
+items()	Returns a list of tuple pairs (Keys, Value) in the dictionary.	dictionary.items()
+sort()	You can sort the elements	dictionary.sort()
+len()	Gives the number of pairs in the dictionary.	len(dict)
+Str()	Make a dictionary into a printable string format	Str(dict)
 
 
 my_dict1 = {"username": "XYZ", "email": "xyz@gmail.com", "location": "Mumbai"}
@@ -118,6 +158,7 @@ my_dict1.update(my_dict2)
 print(my_dict1)
 my_dict = {**my_dict1, **my_dict2}
 print(my_dict)
+print({*my_dict1, *my_dict2})
 print("email" in my_dict)
 print("location" in my_dict)
 print("test" in my_dict)
@@ -128,45 +169,81 @@ print("test" in my_dict)
 my_dict = {"Name": [], "Address": [], "Age": []}
 print(my_dict['Name'])
 my_dict["Name"].append("Guru")
+my_dict['Name'] = "G"
 print(my_dict['Name'])
 my_dict["Address"].append("Mumbai")
 my_dict["Age"].append(30)
 print(my_dict)
 print("username:", my_dict['Name'])
 
-# del my_dict['Name']
-# print(my_dict)
-# del my_dict
-# your_dict.clear()
-# my_dict.pop("Name")
-# print(my_dict)
+
+del my_dict['Name']
+print(my_dict)
+del my_dict
+my_dict.clear()
+my_dict.pop("Name")
+print(my_dict)
 my_dict['name'] = 'Nick'
 print(my_dict)
-# to to samo co
-# my_dict.update({"name": "Nick"})
+my_dict.update({"name2": "Nick2"})
 
 my_dict1["my_dict1"] = my_dict
 print(my_dict1)
 
+Important built-in methods on a dictionary:
+Method	Description
+clear()	It will remove all the elements from the dictionary.
+append()	It is a built-in function in Python that helps to update the values for the keys in the dictionary.
+update()	The update() method will help us to merge one dictionary with another.
+pop()	Removes the element from the dictionary.
+
+
 
 
 # Operators
-
+# Arithmetic Operators
 x = 4
 y = 5
 print(x + y)
-print('x>y is', x != y)
+
+# Comparison Operators
+print('x > y is', x != y)
+
+# Assignment Operators
 x += 6
-print("x+6=", x)
+print("x + 6 =", x)
+
+# Logical Operators or Bitwise Operators
 a = True
 b = False
 print('a and b is', a and b)
 
+# Membership Operators
 lis1 = [1, 2, 3, 4, 5]
 if (y in lis1):
    print('Yes')
 else:
    print('No')
+
+if (y+100 not in lis1):
+   print('%d + 100 is not in %s' % (y, str(lis1)))
+
+# Identity Operators
+is, is not
+
+if x is not y:
+   print(x, y)
+
+Operators (Decreasing order of precedence)	Meaning
+**	Exponent
+*, /, //, %	Multiplication, Division, Floor division, Modulus
++, –	Addition, Subtraction
+<= < > >=	Comparison operators
+= %= /= //= -= += *= **=	Assignment Operators
+is is not	Identity operators
+in not in	Membership operators
+not or and	Logical operators
+
 print(9 // 4)
 print(9 % 4)
 print(9 ** 4)
@@ -176,7 +253,25 @@ print(9 ** 4)
 
 # Arrays
 
+Following tables show the type codes:
+
+Type code	Python type	C Type	Min size(bytes)
+‘u’	Unicode character	Py_UNICODE	2
+‘b’	Int	Signed char	1
+‘B’	Int	Unsigned char	1
+‘h’	Int	Signed short	2
+‘l’	Int	Signed long	4
+‘L’	Int	Unsigned long	4
+‘q’	Int	Signed long long	8
+‘Q’	Int	Unsigned long long	8
+‘H’	Int	Unsigned short	2
+‘f’	Float	Float	4
+‘d’	Float	Double	8
+‘i’	Int	Signed int	2
+‘I’	Int	Unsigned int	2
+
 import array as myarray
+from array import array
 balance = myarray.array('i', [300, 200, 100, 500])
 print(balance[1])
 print(balance[1:3])
@@ -190,20 +285,26 @@ balance.pop(0)
 del balance[0]
 balance.remove(5000)
 print(balance)
+print(balance + balance)
 
-element = my_list.clear()
-print(element)
-print(my_list)
+# element = my_list.clear()
+# print(element)
+# print(my_list)
 
 print(balance.index(100))
 balance.reverse()
 print(balance)
 print(balance.count(200))
 
+# Unicode
+p = array('u',[u'\u0050',u'\u0059',u'\u0054',u'\u0048',u'\u004F',u'\u004E'])
+print(p)
+q = p.tounicode()
+print(q)
+
 for x in balance:
    print(x)
 
-import array as myarray
 
 abc = myarray.array('d', [2.5, 4.9, 6.7])
 print('Array first element is:', abc[0])
@@ -218,10 +319,11 @@ print(abc[2:-1])
 
 
 
+# Python Conditional Loops
 # If
 
 def main():
-   x, y = 8, 8
+   x, y = 8, 9
    if x < y:
        st = "x is less than y"
    elif x == y:
@@ -229,7 +331,6 @@ def main():
    else:
        st = "x is greater than y"
    print(st)
-
 
 if __name__ == "__main__":
    main()
@@ -239,7 +340,6 @@ def main():
    x, y = 10, 8
    st = "x is less than y" if (x < y) else "x is greater than or equal to y"
    print(st)
-
 
 if __name__ == "__main__":
    main()
@@ -280,12 +380,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-
-
 # For & While
 
 x = 0
@@ -312,9 +406,7 @@ for i, m in enumerate(Months):
    print(i, m)
 
 for x in '234':
-   print('wartosc :', x)
-
-
+   print('wartość :', x)
 
 
 
@@ -336,21 +428,21 @@ i = 0
 while True:
    print(my_list[i])
    if (my_list[i] == 'Guru'):
-       print('Found the name Guru')
-       break
-       print('After break statement')
+      print('Found the name Guru')
+      break
+      print('After break statement')
    i += 1
 print('After while-loop exit')
 
 for i in range(4):
    for j in range(4):
-       if j == 2:
-           break
-       print('number is :', i, j)
+      if j == 2:
+         break
+      print('number is :', i, j)
 
 for i in range(5):
    if i == 2:
-       continue
+      continue
    print(i)
 
 i = 0
@@ -375,8 +467,8 @@ my_func()
 test = "Guru"
 for i in test:
    if i == 'r':
-       print('Pass executed')
-       pass
+      print('Pass executed')
+      pass
    print(i)
 print('\n')
 
@@ -386,35 +478,42 @@ print('\n')
 
 
 
-# Class, Object
+# Python OOPs: Class, Object, Inheritance and Constructor 
+# A Class in Python is a logical grouping of data and functions. 
+# It gives the freedom to create data structures that contains arbitrary 
+# content and hence easily accessible.
 
-# Example file for working with classes
+class mClass():
+    def method1(self):
+        print('self from met1')
+
+    def method2(self, arg):
+        print('self from met2 ' + arg)
+
+def main():
+    c = mClass()
+    c.method1()
+    c.method2('+ some arg')
+
+if __name__=='__main__':
+    main()
+
+
+# Inheritance is a feature used in object-oriented programming; 
+# it refers to defining a new class with less or no modification to 
+# an existing class. The new class is called derived class and from one 
+# which it inherits is called the base. Python supports inheritance; 
+# it also supports multiple inheritances. A class can inherit attributes 
+# and behavior methods from another class called subclass or heir class.
+
 class myClass():
    def method1(self):
-      print("Guru99")
-        
-   def method2(self, someString):    
-      print("Software Testing:" + someString)
-
-def main():           
-   # exercise the class methods
-   c = myClass()
-   c.method1()
-   c.method2(" Testing is fun")
-  
-if __name__== "__main__":
-   main()
-
-
-# Example file for working with classes
-class myClass():
-   def method1(self):
-      print("Guru99")
+      print("met1")
 
 class childClass(myClass):
-   #def method1(self):
-      # myClass.method1(self)
-      #print("childClass Method1")
+   def method1(self):
+      myClass.method1(self)
+      # print("childClass Method1")
 
    def method2(self):
       print("childClass method2")
@@ -430,8 +529,11 @@ if __name__ == "__main__":
 
 
 # Constructors
+# A constructor is a class function that instantiates an object to 
+# predefined values. It begins with a double underscore (_). 
+# It __init__() method
 
-class User:
+class User():
    name = ""
 
    def __init__(self, name):
@@ -443,13 +545,13 @@ class User:
 User1 = User("Alex")
 User1.sayHello()
 
+User('Ukasz').sayHello()
 
 
 
 
-
-
-# String
+# Strings
+# In Python everything is object and string are an object too.
 
 var1 = 'Guru99!'
 var2 = 'Software Testing'
@@ -458,6 +560,7 @@ print('var2[1:5]:', var2[1:5])
 print('u' in var1)
 print('8' in var1)
 print('\n')
+# r, R - raw string suppresses actual meaning of escape characters.
 print(r'\n')
 print('/n')
 print(R'/n')
@@ -477,6 +580,14 @@ print(name[1:3], name)
 oldstring = 'nie lubię Cię'
 newstring = oldstring.replace('nie', '')
 print(newstring)
+# Strings are immutable.
+oldstring.replace('nie lubię Cię', 'lubię')
+print(oldstring)
+
+x = "Guru99"
+x.replace("Guru99","Python")
+print(x)
+
 print(name.upper())
 print(name.capitalize())
 print(':'.join(name))
@@ -489,6 +600,7 @@ print(''.join(reversed(str1)))
 word = 'abc def ghi'
 print(word.split(' '))
 print(word.split('d'))
+
 
 
 
@@ -510,8 +622,6 @@ print("abcda".count('a', 2, ))
 
 
 
-
-
 # Format
 print('welcome {} too'.format('you'))
 print('welcome {n1} {n2} 2'.format(n1='you', n2='too'))
@@ -521,17 +631,25 @@ print('welcome {1} {0} 5'.format('you', 'too'))
 print("The binary to decimal value is : {:d}".format(0b0011))
 print("The binary value is : {:b}".format(500))
 print("The scientific value is : {:e}".format(40))
+print("The scientific value is : {:E}".format(40))
 print("The value is  : {:.3f}".format(40))
 print("The value is  : {:n}".format(500.00))
 print("The value is  : {:.2%}".format(1.80))
 print("The value is   {:_}".format(1000000))
+print("The value is   {:,}".format(1000000))
 print("The value is: {:5}".format(40))
+print('test {:5} tset {:5}'.format(1, 2))
 print("The value is: {}".format(-40))
 print("The value is: {:-}".format(-40))
 print("The value is: {:+}".format(40))
 print("The value is: {:=}".format(-40))
 print("The value {:^10} is positive value".format(40))
 print("The value {:<10} is positive value".format(40))
+print("The value {:>10} is positive value".format(40))
+
+print('welcome %s too' % ("you"))
+print('welcome %s %s' % ("you", "too"))
+
 
 
 # Using class with format()
@@ -539,15 +657,15 @@ class MyClass1():
    msg1 = 'twoja'
    msg2 = 'stara'
 
-print('tak to {c.msg1}1 {c.msg2}2'.format(c = MyClass1))
-
+print('tak, to {c.msg1} {c.msg2}'.format(c = MyClass1))
 
 # Using dictionary with format()
 my_dict = {'msg1': "twoja", 'msg2': "stara"}
-print('{m[msg1]}1 {m[msg2]}2'.format(m = my_dict))
-print('test {:5} tset {:5}'.format(1, 2))
-
-
+print('tak, to {m[msg1]} {m[msg2]}'.format(m = my_dict))
+my_dict = {'msg1': [], 'msg2': []}
+my_dict['msg1'].append('twoja')
+my_dict['msg1'].append('nowa')
+my_dict['msg2'].append('stara')
 
 
 
@@ -565,8 +683,6 @@ print("The length of the Array is", len(arr1))
 
 
 
-
-
 # Find
 print('text', str1.find("c"))
 print('text', str1.find("c", 1, 5))
@@ -580,34 +696,51 @@ print("The position of Tutorials using index() : ", mystring.index("Tutorials"))
 my_string = "test string test, test string testing, test string test string"
 startIndex = 0
 count = 0
-for i in range(len(mystring)):
+for i in range(len(my_string)):
    k = my_string.find("test", startIndex)
    if(k != -1):
       startIndex = k+1
       count += 1
-      # k = 0
+   else:
+      break
 print("The total count of substring test is:", count)
 
+my_string = "test string test, test string testing, test string test string"
+startIndex = 0
+count = 0
+i = 0
+while True:
+   k = my_string.find('test', startIndex)
+   if(k != -1):
+      startIndex = k + 1
+      count += 1
+   else:
+      break
+   i += 1
+print(count)
 
 
 
 
-
-
-
+# Functions
 # Main Function & Method Example: Understand __main__
+# Python main function is a starting point of any program. When the program is run, 
+# the python interpreter runs the code sequentially. Main function is executed only 
+# when it is run as a Python program. It will not run the main function if it imported 
+# as a module.
+
 def main1():
    print('hello')
 
 if __name__ == "__main__":
    main1()
 
-print('tak')
-print(__name__)
+main1()
+
+print("__name__ is ", __name__)
 
 
-
-# How Function Return Value?
+# A Function in Python is a piece of code which runs when it is referenced.
 def sq(x = 5):
    return x * x
 print(sq())
@@ -621,16 +754,15 @@ print(multi(y=2, x=4))
 
 
 def fun2(*args):
-   print(args)
+   # print(args)
    return args
 fun2(1, 2, 3, 4, 5)
 
 
-
-
-
-
 # Lambda Functions
+# A Lambda Function in Python programming is an anonymous function or a function
+#  having no name. It is a small and restricted function having no more 
+# than one line.
 
 adder = lambda x, y=2: x + y
 print(adder(1))
@@ -642,8 +774,6 @@ print(lambda string: print(string))
 # What a lambda returns #2
 string = 'some kind of a useless lambda'
 (lambda str: print(str))(string)
-
-
 
 
 # A REGULAR FUNCTION
@@ -665,48 +795,49 @@ guru(lambda: printer_one('printer 1 LAMBDA CALL'))
 guru(lambda: printer_two('printer 2 LAMBDA CALL \n'))
 
 
-
 (lambda x: x + x)(2)
 
-
+# lambdas in filter()
 sequence = [10, 2, 8, 7, 5, 4, 3, 11, 0, 1]
 filtered_result = filter(lambda x: x > 4, sequence)
 print(list(filtered_result))
 print(filtered_result)
 
 
+# lambdas in map()
 def filter2(arg):
    for i in range(len(arg)):
       if arg[i] > 4:
          print(arg[i])
 filter2(sequence)
 
-
 sequence = [10, 2, 8, 7, 5, 4, 3, 11, 0, 1]
 def filter3(arg):
    lis = []
-   it = 0
+   # it = 0
    for i in range(len(arg)):
       if arg[i] > 4:
          lis.append(arg[i])
-         it += 1
+         # it += 1
    return lis
 filter3(sequence)
+
+def filter4(arg):
+   for i in range(len(arg)):
+      if arg[i] > 4:
+         yield(arg[i])
+list(filter4(sequence))
 
 
 filtered_result = map(lambda x: x * x, sequence)
 print(list(filtered_result))
 
 
+# lambdas in reduce()
 from functools import reduce
 sequences = [1, 2, 3, 4, 5]
 product = reduce(lambda x, y: x * y, sequences)
 print(product)
-
-
-
-
-
 
 
 
@@ -723,9 +854,7 @@ print("The magnitude of the complex number is:", abs(complex_num))
 
 
 
-
-
-
+# Round()
 import random
 
 def truncate(num):
@@ -757,7 +886,7 @@ print("The difference from original - round =", sum_num1 - sum_truncate1)
 
 
 import numpy as np
-arr = [-0.341111, 1.455098989, 4.232323, -0.3432326, 7.626632, 5.122323]
+arr = [-0.341111, -1.455098989, 4.232323, -0.3432326, 7.626632, 5.122323]
 arr1 = np.round(arr, 2)
 print(arr1)
 
@@ -786,20 +915,19 @@ print("Using Decimal - ROUND_UP ", final_val7)
 
 
 
-
-
-
-
 # Range
 for i in range(3, 10, 2):
    print(i, end=" ")
 
 for i in range(15, 5, -1):
-    print(i, end =" ")
+   print(i, end =" ")
 
 arr_list = ['Mysql', 'Mongodb', 'PostgreSQL', 'Firebase']
 for i in range(len(arr_list)):
    print(arr_list[i], end=" ")
+
+for ar in arr_list:
+   print(ar, end=" ")
 
 print(list(range(10)))
 
@@ -813,9 +941,15 @@ print(list(abc("a", "t")))
 
 def range1(x):
    for i in range(x):
-       yield i
+      yield i
 print(list(range1(5)))
 
+def range2(x):
+   ak = []
+   for i in range(x):
+      ak.append(i)
+   return ak
+print(list(range2(5)))
 
 startvalue = range(5)[0]
 print("The first element in range is = ", startvalue)
@@ -832,17 +966,13 @@ frange = chain(range(10), range(10, 20, 1))
 print(list(frange))
 
 
-
 import numpy as np 
 for i in np.arange(10):
    print(i, end =" ")  
 
 import numpy as np 
 for  i in np.arange(0.5, 1.5, 0.2):
-   print(i, end =" ") 
-
-
-
+   print(round(i, 1), end =" ") 
 
 
 
@@ -856,13 +986,13 @@ my_list = [2, 3, 4, 5, 6, 7, 8, 9]
 up_list = map(square, my_list)
 print(list(up_list))
 
+list(map(lambda x: x**2, my_list))
 
 my_list = [2.6743, 3.63526, 4.2325, 5.9687967, 6.3265, 7.6988, 8.232, 9.6907]
 updated_list = map(round, my_list)
-print(updated_list)
 print(list(updated_list))
 for i in updated_list:
-   print(i, end="")
+   print(i, end=" ")
 
 
 def upfun(s):
@@ -870,9 +1000,12 @@ def upfun(s):
 my_str = "welcome to guru99 tutorials1!"
 updated_list1 = map(upfun, my_str)
 print(list(updated_list1))
+print(''.join(list(updated_list1)))
 
 for i in updated_list1:
    print(i, end="")
+
+updated_list1 = map(lambda s: s.upper(), my_str)
 
 
 my_tuple = ('php', 'java', 'python', 'c++', 'c')
@@ -903,11 +1036,8 @@ my_tuple = ('PHP','Java','Python','C++','C')
 updated_list = map(myMapFunc, my_list, my_tuple)
 print(list(updated_list))
 
-
-
-
-
-
+updated_list = map(lambda x, y: x+'_'+y, my_list, my_tuple)
+print(list(updated_list))
 
 
 
@@ -916,7 +1046,7 @@ print(list(updated_list))
 
 import timeit
 print(timeit.timeit("sadf = 10 * 5"))
-print("The time taken is ", timeit.timeit(stmt='a=10;b=10;sum=a+b'))
+print("The time taken is ", timeit.timeit(stmt='a=10; b=10; sum = a + b'))
 
 import timeit
 import_module = "import random"
@@ -925,23 +1055,26 @@ def test():
    return random.randint(10, 100)
 '''
 print(timeit.repeat(stmt=testcode, setup=import_module))
+print(timeit.timeit(stmt=testcode, setup=import_module))
 
-
-
-
-
-
+>python -m timeit -s 'text="hello world"'
 
 
 
 
 # Yield
+# The yield keyword in python works like a return with the only difference is that 
+# instead of returning a value, it gives back a generator object to the caller.
+# Python3 Yield keyword returns a generator to the caller and the execution of the 
+# code starts only when the generator is iterated.
 
 def testyield():
    yield "Welcome to Guru99 Python Tutorials"
 output = testyield()
 for i in output:
    print(i)
+list(testyield())[0]
+print(next(testyield()))
 
 
 def generator():
@@ -950,9 +1083,14 @@ def generator():
    yield "L"
    yield "L"
    yield "O"
-print(list(generator()))
+print(''.join(list(generator())))
 for i in generator():
-   print(i)
+   print(i, end='')
+
+lett = generator()
+print(next(lett))
+// wyświetla tylko pierwszą
+print(next(generator()))
 
 
 # Normal function
@@ -1010,13 +1148,8 @@ def getSquare(n):
       yield test(i)
 
 sq = getSquare(10)
+print(next(sq))
 print(list(sq))
-
-
-
-
-
-
 
 
 
@@ -1024,10 +1157,12 @@ print(list(sq))
 # Queue
 
 import queue
-q1 = queue.Queue()
+q1 = queue.Queue(2)
+q1.empty()
 q1.put(10)
 q1.put(5)
-print(q1.full())
+q1.full()
+q1.qsize()
 item1 = q1.get()
 print('The item removed from the queue is ', item1)
 item1 = q1.get()
@@ -1064,20 +1199,19 @@ print(list(q1.queue))
 n = q1.qsize()
 for i in range(n):
    x = q1.get()  # the element is removed
-   print('x ', str(i), ' ', str(x))
+   # print('x ', str(i), ' ', str(x))
    for j in range(n - 1):
       y = q1.get()  # the element is removed
-      print('y ', str(j), ' ', str(y))
+      # print('y ', str(j), ' ', str(y))
       if x > y:
          q1.put(y)  # the smaller one is put at the start of the queue
-
       else:
          q1.put(x)  # the smaller one is put at the start of the queue
          x = y  # the greater one is replaced with x and compared again with next element
-      print(list(q1.queue))
+   print(list(q1.queue))
    q1.put(x)
 
-while (q1.empty() == False):
+while q1.empty() == False:
    print(q1.get(), end=" ")
 
 
@@ -1112,7 +1246,9 @@ while (qReversed.empty() == False):
 
 
 # Counter
-
+# Python Counter is a container that will hold the count of each of the elements present in the container. 
+# The counter is a sub-class available inside the dictionary class. Using the Python Counter tool, you can count 
+# the key-value pairs in an object, also called a hash table object.
 from collections import Counter
 list1 = ['x','y','z','x','x','x','y', 'z']
 print(Counter(list1))
@@ -1126,13 +1262,16 @@ print(Counter(dict1))
 tuple1 = ('x','y','z','x','x','x','y','z')
 print(Counter(tuple1))
 
-_count = Counter()
-_count.update('Welcome to Guru99 Tutorials!')
-print(_count)
-print("%s : %d" % ("u", _count["u"]))
-print(_count["u"])
+count1 = Counter()
+count1.update('Welcome to Guru99 Tutorials!')
+print(count1)
+count1.update('Some txt? uuu')
+print(count1)
+
+print("%s : %d" % ("u", count1["u"]))
+print(count1["u"])
 for char in "Guru":
-   print(char, _count[char])
+   print(char, count1[char])
 
 
 from collections import Counter
@@ -1162,15 +1301,15 @@ print(counter6)
 
 
 counter1 =  Counter({'x': 5, 'y': 2, 'z': -2, 'x1':0})
-_elements = counter1.elements()
+elements1 = counter1.elements()
 print(list(counter1.elements()))
-for i in _elements:
+for i in elements1:
    print(i)
 
 
 common_element = counter1.most_common(2)
 print(common_element)
-print(counter1.most_common())
+print(counter1.most_common(2))
 
 
 counter1 = Counter({'x': 5, 'y': 12, 'z': -2, 'x1':0})
@@ -1183,6 +1322,7 @@ counter1 = Counter({'x': 5, 'y': 12, 'z': -2, 'x1':0})
 counter2 = Counter({'x': 2, 'y':5})
 counter1.update(counter2)
 print(counter1)
+print(counter1 + counter2)
 
 
 counter1 =  Counter({'x': 5, 'y': 12, 'z': -2, 'x1':0})
@@ -1190,13 +1330,6 @@ counter1['y'] = 20
 counter1['y1'] = 1
 print(counter1)
 print(counter1['y'])
-
-
-
-
-
-
-
 
 
 
@@ -1210,7 +1343,7 @@ print(list(en_l))
 for i in enumerate(my_list):
    print(i)
 
-for i in enumerate(my_list, 10):
+for i in enumerate(my_list, -5):
    print(i)
 
 for i in range(len(my_list)):
@@ -1225,14 +1358,13 @@ str1 = "dup"
 for i in enumerate(str1):
    print(i)
 
+my_dict = {"a": "PHP", "b":"JAVA", "c":"PYTHON", "d":"NODEJS"}
+for i in enumerate(my_dict):
+  print(i)
 
-
-
-
-
-
-
-
+list(enumerate(my_dict))
+list(enumerate(my_dict.keys()))
+list(enumerate(my_dict.values()))
 
 
 
@@ -1255,7 +1387,6 @@ display()
 print('Function Execution Delayed')
 
 
-# coś nie działa
 import asyncio
 print('Code Execution Started')
 async def display():
@@ -1274,7 +1405,6 @@ Event().wait(5)
 display()
 
 
-# coś nie działa
 from threading import Timer
 print('Code Execution Started')
 def display2():
@@ -1324,6 +1454,8 @@ class MyClass:
 t1 = type('NewClass', (MyClass, ), dict(x = 'Hello World2', y = 60))
 print(type(t1))
 print(vars(t1))
+type(MyClass)
+vars(MyClass)
 
 
 age = isinstance(51, int)
@@ -1334,59 +1466,85 @@ my_set = isinstance({1,2,3,4,5}, set)
 print("my_set is a set:", my_set)
 my_tuple = isinstance((1,2,3,4,5), tuple)
 print("my_tuple is a set:", my_tuple)
-my_list = isinstance([1,2,3,4,5],list)
+my_list = isinstance([1,2,3,4,5], list)
 print("my_list is a list:", my_list)
-my_dict = isinstance({"A":"a", "B":"b", "C":"c", "D":"d"},dict)
+my_dict = isinstance({"A":"a", "B":"b", "C":"c", "D":"d"}, dict)
 print("my_dict is a dict:", my_dict)
 
 class MyClass:
-   _message = "Hello World"
+   message = "Hello World"
 
-_class = MyClass()
-print("_class is a instance of MyClass() : ", isinstance(_class,MyClass))
-
-
+class1 = MyClass()
+print("_class is a instance of MyClass() : ", isinstance(class1, MyClass))
 
 
 
 
-
-
-
-# File Handling: Create, Open, Append, Read, Write
+# File Handling
+# Create, Open, Append, Read, Write
 
 dire = "/home/ukasz/Documents/Programowanie/Python/"
 
-f = open(dire+"guru99.txt","w+")
+f = open(dire+"delme.txt","w+")
 for i in range(2):
    f.write("This is line %d\r\n" % (i+1))
 f.close()
 
+f = open(dire+"delme.txt","w+")
+for i in range(3):
+   f.write("This is line %d\n" % (i+1))
+f.close()
 
-f = open(dire+"guru99.txt", 'a+')
+f = open(dire+"delme.txt","w+")
+for i in range(4):
+   f.write("This is line %d\r" % (i+1))
+f.close()
+
+
+f = open(dire+"delme.txt", 'a+')
 for i in range(2):
    f.write('Appended line %d\r\n' % (i+1))
 f.close()
 
 
-f = open(dire+"guru99.txt", 'r')
+f = open(dire+"delme.txt", 'r')
 if f.mode == 'r':
    contents = f.read()
    print(contents)
 f.close()
 
+f = open(dire+"delme.txt", "r")
+print(f.read())
+f.close()
 
-f = open(dire+"guru99.txt", 'r')
+f = open(dire+"delme.txt", "r")
+opened_file = f.read()
+f.close()
+print(opened_file)
+
+f = open(dire+"delme.txt", 'r')
 f1 = f.readlines()
 for i in f1:
    print(i)
 f.close()
 
+f = open(dire+"delme.txt", 'r')
+print(f.readlines())
+f.close()
 
+Following are the various File Modes in Python:
 
-
-
-
+Mode	Description
+‘r’	This is the default mode. It Opens file for reading.
+‘w’	This Mode Opens file for writing.
+If file does not exist, it creates a new file.
+If file exists it truncates the file.
+‘x’	Creates a new file. If file already exists, the operation fails.
+‘a’	Open file in append mode.
+If file does not exist, it creates a new file.
+‘t’	This is the default mode. It opens in text mode.
+‘b’	This opens in binary mode.
+‘+’	This will open a file for reading and writing (updating)
 
 
 
@@ -1397,30 +1555,23 @@ import os.path
 from os import path
 
 dire = "/home/ukasz/Documents/Programowanie/Python/"
-print("File exists:" + str(path.exists(dire+'guru99.txt')))
-print("File exists:" + str(path.exists(dire+'career.guru99.txt')))
+print("File exists:" + str(path.exists(dire+'delme.txt')))
 print("directory exists:" + str(path.exists(dire+'PycharmProjects')))
 
-print("Is it File?" + str(path.isfile(dire+'guru99.txt')))
+print("Is it File?" + str(path.isfile(dire+'delme.txt')))
 print("Is it File?" + str(path.isfile(dire+'myDirectory')))
 
-print ("Is it Directory?" + str(path.isdir(dire+'guru99.txt')))
+print ("Is it Directory?" + str(path.isdir(dire+'delme')))
 print ("Is it Directory?" + str(path.isdir(dire+'PycharmProjects')))
 
 
 import pathlib
-file = pathlib.Path(dire+'guru99.txt')
+file = pathlib.Path(dire+'delme.txt')
+file = pathlib.Path(dire+'PycharmProjects')
 if file.exists():
    print("File exist")
 else:
    print("File not exist")
-
-
-
-
-
-
-
 
 
 
@@ -1432,8 +1583,8 @@ import shutil
 from os import path
 
 dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
-   src = path.realpath(dire+'guru99.txt')
+if path.exists(dire+"delme.txt"):
+   src = path.realpath(dire+'delme.txt')
    head, tail = path.split(src)
    print(src)
    print('patch :', head)
@@ -1445,22 +1596,17 @@ if path.exists(dire+"guru99.txt"):
 
 
 from os import path
-import datetime
+# import datetime
 from datetime import date, time, timedelta
 import time
 
 # Get the modification time
 dire = "/home/ukasz/Documents/Programowanie/Python/"
-t = path.getmtime(dire+"guru99.txt.bak")
+t = path.getmtime(dire+"delme.txt.bak")
 print(t)
-print(time.ctime(t))
+print(time.ctime(path.getmtime(dire+"delme.txt.bak")))
 print(datetime.datetime.fromtimestamp(t))
-
-
-
-
-
-
+print(datetime.datetime.fromtimestamp(path.getmtime(dire+"delme.txt.bak")))
 
 
 
@@ -1474,19 +1620,11 @@ from os import path
 
 # make a duplicate of an existing file
 dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
+if path.exists(dire+"delme.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dire+"guru99.txt")
+   src = path.realpath(dire+"delme.txt")
    # rename the original file
-   os.rename(dire+'guru99.txt', dire+'career.guru99.txt')
-
-
-
-
-
-
-
-
+   os.rename(src, dire+'demo.txt')
 
 
 
@@ -1499,15 +1637,19 @@ from zipfile import ZipFile
 from os import path
 from shutil import make_archive
 
+# pakuje wszystko w katalogu !
 # Check if file exists
 dire = "/home/ukasz/Documents/Programowanie/Python/"
-if path.exists(dire+"guru99.txt"):
+if path.exists(dire+"delme.txt"):
    # get the path to the file in the current directory
-   src = path.realpath(dire+"guru99.txt")
+   src = path.realpath(dire+"delme.txt")
    # now put things into a ZIP archive
    root_dir, tail = path.split(src)
-   shutil.make_archive(dire+"guru99_archive","zip",root_dir)
-   # more fine-grained control over ZIP files
+   shutil.make_archive("delme_archive", "zip", root_dir)
+
+
+
+# more fine-grained control over ZIP files
    with ZipFile(dire+"testguru99.zip", "w") as newzip:
       newzip.write(dire+"guru99.txt")
       newzip.write(dire+"guru99.txt.bak")
@@ -1515,14 +1657,8 @@ if path.exists(dire+"guru99.txt"):
 
 
 
-
-
-
-
-
-
-# Try, Catch, Finally
-
+# Exception Handling: Try, Catch, Finally
+# tu trzeba wrócić
 '''
 coś tu lipa jest
 try:
@@ -1540,12 +1676,6 @@ Output
 Welcome, world!
 KeyboardInterrupt
 '''
-
-
-
-
-
-
 
 
 
@@ -1597,6 +1727,10 @@ for line in myfile:
    print(line)
 myfile.close()
 
+# tak nie zadziała
+myfile = open(dire+"demo.txt", "r")
+print(myfile)
+myfile.close()
 
 myfile = open(dire+"demo.txt", "r")
 while myfile:
@@ -1609,16 +1743,10 @@ myfile.close()
 
 
 
+# Data Science
 
-
-
-
-
-
-
-
-# NumPy
-adminq 
+# to jest skąd inąd NumPy
+adminq
 
 import numpy as np
 myPythonList = [1, 9, 8, 3]
@@ -1698,19 +1826,16 @@ np.linalg.det(n)
 
 
 
-
-
-
-
-
 # SciPy
 
 import numpy as np
 from scipy import io as sio
-array = np.ones((4, 4))
-sio.savemat('example.mat', {'ar': array})
+array_ones = np.ones((4, 4))
+# to do mathlaba
+sio.savemat('example.mat', {'ar': array_ones})
 data = sio.loadmat('example.mat', struct_as_record=True)
 print(data['ar'])
+print(data)
 
 
 from scipy.special import cbrt
@@ -1724,12 +1849,17 @@ from scipy.special import exp10
 #define exp10 function and pass value in its
 exp = exp10([1, 10, 20])
 print(exp)
+for i in exp:
+   print("The value is  : {:n}".format(i))
 
 
 from scipy.special import comb
 #find combinations of 5, 2 values using comb(N, k)
 com = comb(5, 2, exact=False, repetition=False)
 print(com)
+comb(5, 2, repetition=False)
+comb(5, 2)
+comb(5, 2, repetition=True)
 
 from scipy.special import perm
 #find permutation of 5, 2 using perm (N, k) function
@@ -1750,8 +1880,6 @@ print(eg_val)
 print(eg_vect)
 
 
-# tkinter
-# sudo apt-get install python3-tk
 # matplotlib inline
 from matplotlib import pyplot as plt
 import numpy as np
@@ -1794,10 +1922,20 @@ plt.show()
 optimize.fmin_bfgs(function, 0)
 
 
+x = np.arange(0, 2*np.pi, 0.1)   # start,stop,step
+y = np.sin(x)
+plt.plot(x, y)
+plt.title("Sin(x)")
+plt.xlabel("x-axis")
+plt.ylabel("y-axis")
+plt.legend(["Sin(x)"])
+plt.show()
+
+
 import numpy as np
 from scipy.optimize import minimize
 #define function f(x)
-def f(x):   
+def f(x):
    return .4*(1 - x[0])**2
 optimize.minimize(f, [2, -1], method="Nelder-Mead")
 
@@ -1811,11 +1949,14 @@ panda = misc.face()
 plt.imshow(panda)
 plt.show()
 
+
 #Flip Down using scipy misc.face image  
 flip_down = np.flipud(misc.face())
 plt.imshow(flip_down)
 plt.show()
 
+from scipy import ndimage, misc
+from matplotlib import pyplot as plt
 panda = misc.face()
 #rotatation function of scipy for image – image rotated 135 degree
 panda_rotate = ndimage.rotate(panda, 135)
@@ -1827,8 +1968,7 @@ from scipy import integrate
 # take f(x) function as f
 f = lambda x : x**2
 #single integration with a = 0 & b = 1
-integration = integrate.quad(f, 0 , 1)
-print(integration)
+integrate.quad(f, 0 , 1)
 
 
 from scipy import integrate
@@ -1844,20 +1984,18 @@ q = lambda y : sqrt(1 - 2*y**2)
 # perform double integration
 integration = integrate.dblquad(f , 0 , 2/4,  p, q)
 print(integration)
+integrate.dblquad(f , 0 , 2/4,  0, q)
 
-
-
-
-
-
-
+from scipy import integrate
+f = lambda y, x: x*y**2
+integrate.dblquad(f, 0, 2, lambda x: 0, lambda x: 1)
+integrate.dblquad(f, 0, 2, 0, 1)
 
 
 
 
 # CSV
 
-#import necessary modules
 import csv
 dire = "/home/ukasz/Documents/Programowanie/Python/"
 with open(dire+'data.csv', mode = 'rt', encoding='utf-8-sig') as f:
@@ -1884,6 +2022,7 @@ with open(dire+'writeData.csv', mode='w') as file:
 
 #import necessary modules
 import pandas
+dire = "/home/ukasz/Documents/Programowanie/Python/"
 result = pandas.read_csv(dire+'data.csv')
 print(result)
 
@@ -1903,14 +2042,6 @@ print(df)
 
 
 
-
-
-
-
-
-
-
-
 # JSON
 
 import json
@@ -1919,7 +2050,7 @@ x = {
    "age": 45,
    "married": True,
    "children": ("Alice", "Bob"),
-   "pets": ['Dog'],
+   "pets": ["Dog"],
    "cars": [
       {"model": "Audi A1", "mpg": 15.1},
       {"model": "Zeep Compass", "mpg": 18.1}
@@ -1937,10 +2068,11 @@ dire = "/home/ukasz/Documents/Programowanie/Python/"
 with open(dire+'json_file.json', "w") as file_write:
    person_data = {  "person":  { "name":  "Kenn",  "sex":  "male",  "age":  28}}
    # write json data into file
-   print(json.dump(person_data, file_write))
+   print(json.dump(person_data, file_write, indent=4, sort_keys=True))
 
 
-import json # json data string
+import json 
+# json data string
 person_data = '{"person": {"name": "Kenn", "sex": "male", "age": 28}}'
 print(type(person_data))
 # Decoding or converting JSON format in dictionary using loads()
@@ -1949,6 +2081,7 @@ dict_obj = json.loads(person_data)
 print("Type of dict_obj", type(dict_obj))
 # get human object details
 print("Person......",  dict_obj.get('person'))
+dict_obj['person']['name']
 
 
 import json
@@ -1974,8 +2107,11 @@ print(compact_obj)
 
 import json
 dic = { 'a': 4, 'b': 5 }
-''' To format the code use of indent and 4 shows number of space and use of separator is not necessary but standard way to write code of particular function. '''
+# To format the code use of indent and 4 shows number of space and use of separator is not 
+# necessary but standard way to write code of particular function.
 formatted_obj = json.dumps(dic, indent=4, separators=(',', ':'))
+print(formatted_obj)
+formatted_obj = json.dumps(dic, indent=4)
 print(formatted_obj)
 
 
@@ -2012,7 +2148,8 @@ print("Without_complex_object......", simple_object)
 from json.encoder import JSONEncoder
 colour_dict = { "colour": ["red", "yellow", "green" ]}
 # directly called encode method of JSON
-print(JSONEncoder().encode(colour_dict))
+JSONEncoder().encode(colour_dict)
+json.dumps(colour_dict)
 
 
 import json
@@ -2021,6 +2158,7 @@ from json.decoder import JSONDecoder
 colour_string = '{ "colour": ["red", "yellow"]}'
 # directly called decode method of JSON
 JSONDecoder().decode(colour_string)
+json.loads(colour_string)
 
 
 import json
@@ -2044,8 +2182,8 @@ dire = "/home/ukasz/Documents/Programowanie/Python/"
 data = {} #Define Empty Dictionary Object
 try:
    with open(dire+'json_file.json') as file_object:
-    data = json.load(file_object)
-    print(data)
+      data = json.load(file_object)
+      print(data)
 except ValueError:
    print("Bad JSON file format,  Change JSON File")
 
@@ -2069,10 +2207,7 @@ import json
 repeat_pair = '{"a":  1, "a":  2, "a":  3}'
 json.loads(repeat_pair)
 
-
-
-
-
+echo '{"name" : "Kings Authur" }' | python -m json.tool
 
 
 
@@ -2092,6 +2227,14 @@ SHOW VARIABLES LIKE 'validate_password%';
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<at_least_8_password>';
 mysql -u root -p
 
+import mysql.connector
+db_connection = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  passwd="q!@#q!@#"
+)
+print(db_connection)
+
 
 import mysql.connector
 db_connection = mysql.connector.connect(
@@ -2104,23 +2247,18 @@ db_connection = mysql.connector.connect(
 print(db_connection)
 
 
-import mysql.connector
-db_connection = mysql.connector.connect(
-   host="localhost",
-   port=3306,
-   user="root",
-   passwd="<password>"
-)
 # creating database_cursor to perform SQL operation
 db_cursor = db_connection.cursor()
 # executing cursor with execute method and pass SQL query
-db_cursor.execute("CREATE DATABASE my_first_db")
+db_cursor.execute("DROP DATABASE IF EXISTS my_first_db2")
+db_cursor.execute("CREATE DATABASE guru_db")
 # get list of all databases
 db_cursor.execute("SHOW DATABASES")
 #print all databases
 for db in db_cursor:
    print(db)
 
+db_cursor.execute("USE guru_db")
 
 import mysql.connector
 db_connection = mysql.connector.connect(
@@ -2130,9 +2268,10 @@ db_connection = mysql.connector.connect(
    passwd="<password>",
    database="my_first_db"
   )
+
 db_cursor = db_connection.cursor()
 #Here creating database table as student'
-db_cursor.execute("CREATE TABLE student (id INT, name VARCHAR(255))")
+db_cursor.execute("CREATE TABLE student2 (id INT, name VARCHAR(255))")
 #Get database table'
 db_cursor.execute("SHOW TABLES")
 for table in db_cursor:
@@ -2150,7 +2289,6 @@ for table in db_cursor:
 #Here we modify existing column id
 db_cursor.execute("ALTER TABLE student MODIFY id INT PRIMARY KEY")
 
-
 student_sql_query = "INSERT INTO student(id,name) VALUES(01, 'John')"
 employee_sql_query = " INSERT INTO employee (id, name, salary) VALUES (01, 'John', 10000)"
 #Execute cursor and pass query as well as student data
@@ -2159,13 +2297,6 @@ db_cursor.execute(student_sql_query)
 db_cursor.execute(employee_sql_query)
 db_connection.commit()
 print(db_cursor.rowcount, "Record Inserted")
-
-
-
-
-
-
-
 
 
 
@@ -2196,37 +2327,33 @@ submit.click()
 
 
 
-
-
-
-
-
-
-
-# Matrix
+# Matrix: Transpose, Multiplication, NumPy Arrays
 
 M1 = [[8, 14, -6], [12, 7, 4], [-11, 3, 21], [3, 4, 5]]
 matrix_length = len(M1)
 #To read the last element from each row.
 for i in range(matrix_length):
-    print(M1[i][-1])
+   print(M1[i][-1])
+
+# tak nie działa, w np.array działa
+print(M1[1, 1])
 
 #To print the rows in the Matrix
 for i in range(matrix_length):
-    print(M1[i])
+   print(M1[i])
 
 
-M1 = [[8, 14, -6], 
-      [12,7,4], 
-      [-11,3,21]]
-    
+M1 = [[8, 14, -6],
+      [12, 7, 4],
+      [-11, 3, 21]]
+
 M2 = [[3, 16, -6],
-           [9,7,-4], 
-           [-1,3,13]]
+      [9, 7, -4],
+      [-1, 3, 13]]
 
-M3  = [[0,0,0],
-       [0,0,0],
-       [0,0,0]]
+M3 = [[0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]]
 
 # To Add M1 and M2 matrices
 for i in range(len(M1)):
@@ -2258,7 +2385,7 @@ M2 = M1.transpose()
 print(M2)
 
 
-arr = np.array([2,4,6,8,10,12,14,16])
+arr = np.array([2, 4, 6, 8, 10, 12, 14, 16])
 print(arr[3:6]) # will print the elements from 3 to 5
 print(arr[:5]) # will print the elements from 0 to 4
 print(arr[2:]) # will print the elements from 2 to length of the array.
@@ -2266,27 +2393,33 @@ print(arr[-5:-1]) # will print from the end i.e. -5 to -2
 print(arr[:-1]) # will print from end i.e. 0 to -2
 
 
-M1 = np.array([[2, 4, 6, 8, 10], 
-   [3, 6, 9, -12, -15],
-   [4, 8, 12, 16, -20],
-   [5, -10, 15, -20, 25]])
+M1 = np.array([[2, 4, 6, 8, 10],
+               [3, 6, 9, -12, -15],
+               [4, 8, 12, 16, -20],
+               [5, -10, 15, -20, 25]])
 
 
 print(M1[1:3, 1:4]) # For 1:3, it will give first and second row.
 #The columns will be taken from first to third.
 
 
-print(M1[:2,]) # This will print f
+print(M1[:2,])
 print(M1[:3,:2])
 
+for i in range(len(M1)):
+   print(M1[i, -1])
+print(M1[:, -1])
+
+print(M1[-1, -1])
 
 
 
 
+# List: Comprehension, Append, Sort, Length, Reverse
 
-
-
-# List: Comprehension, Apend, Sort, Length, Reverse
+list1 = ['physics', 'chemistry', 'mathematics']
+list1[0] = 'biology'
+print(list1)
 
 list1 = [3, 5, 7, 8, 9, 20]
 list1.remove(3)
@@ -2301,6 +2434,7 @@ print(list_1)
 len(list1)
 max(list1)
 reverse(list1)
+list1.sort(reverse=True)
 
 animals = ("cat", "dog", "fish", "cow")
 print(list(animals))
@@ -2334,10 +2468,15 @@ print(list2)
 
 list2 = [10, 20, 30, 40, 50, 60, 70]
 for elem in range(len(list2[:3])):
-   print(elem)
+   print(elem, end='_')
    list2.pop(0)
 print(list2)
 
+list2 = [10, 20, 30, 40, 50, 60, 70]
+for elem in enumerate(list2[:3]):
+   print(elem)
+   list2.pop(0)
+print(list2)
 
 list2 = [10, 20, 30, 40, 50, 60, 70]
 new_list = []	
@@ -2363,7 +2502,7 @@ from numpy import mean
 list2 = [10, 20, 30, 40, 50, 60, 70]
 print(mean(list2))
 
-list1 = [2,3,4,3,10,3,5,6,3]
+list1 = [2, 3, 4, 3, 10, 3, 5, 6, 3]
 elm_count = list1.count(3)
 print('The count of element: 3 is ', elm_count)
 
@@ -2372,40 +2511,42 @@ color_count = list1.count('green')
 print('The count of color: green is ', color_count)
 
 
-my_list = [1,1,2,3,2,2,4,5,6,2,1]
+my_list = [1, 1, 2, 3, 2, 2, 4, 5, 6, 2, 1]
 temp_list = []
 for i in my_list:
-    if i not in temp_list:
-        temp_list.append(i)
+   if i not in temp_list:
+      temp_list.append(i)
 print(temp_list)
 
-my_list = [1,1,2,3,2,2,4,5,6,2,1]
+list(set(my_list))
+
+my_list = [1, 1, 2, 3, 2, 2, 4, 5, 6, 2, 1]
 temp_list = []
 [temp_list.append(i) for i in my_list if i not in temp_list]
 print(temp_list)
 
-my_list = [1,1,2,3,2,2,4,5,6,2,1]
+my_list = [1, 1, 2, 3, 2, 2, 4, 5, 6, 2, 1]
 my_final_list = set(my_list)
 print(my_final_list)
 
 import numpy as np
-my_list = [1,2,2,3,1,4,5,1,2,6]
+my_list = [1, 2, 2, 3, 1, 4, 5, 1, 2, 6]
 myFinalList = np.unique(my_list).tolist()
 print(myFinalList)
 
 import pandas as pd
-my_list = [1,2,2,3,1,4,5,1,2,6]
+my_list = [1, 2, 2, 3, 1, 4, 5, 1, 2, 6]
 myFinalList = pd.unique(my_list).tolist()
 print(myFinalList)
 
-my_list = [1,2,2,3,1,4,5,1,2,6]
+my_list = [1, 2, 2, 3, 1, 4, 5, 1, 2, 6]
 my_finallist = []
 for j, i in enumerate(my_list):
    if i not in my_list[:j]:
       my_finallist.append(i)
 print(my_finallist)
 
-my_list = [1,2,2,3,1,4,5,1,2,6]
+my_list = [1, 2, 2, 3, 1, 4, 5, 1, 2, 6]
 my_finallist = [i for j, i in enumerate(my_list) if i not in my_list[:j]] 
 print(my_finallist)
 
@@ -2414,7 +2555,7 @@ print("The index of element C is ", my_list.index('C'))
 print("The index of element F is ", my_list.index('F'))
 
 
-my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru']
 all_indexes = [] 
 for i in range(len(my_list)) : 
    if my_list[i] == 'Guru' : 
@@ -2423,12 +2564,12 @@ print("Originallist ", my_list)
 print("Indexes for element Guru : ", all_indexes)
 
 
-my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru'] 
+my_list = ['Guru', 'Siya', 'Tiya', 'Guru', 'Daksh', 'Riya', 'Guru']
 result = []
 elementindex = -1
 while True:
    try:
-      elementindex = my_list.index('Guru', elementindex+1)
+      elementindex = my_list.index('Guru', elementindex + 1)
       result.append(elementindex)
    except ValueError:
       break
@@ -2447,7 +2588,7 @@ letters = ['a', 'b', 'd', 'e', 'i', 'j', 'o']
 # function that filters vowels
 def filter_vowels(letter):
    vowels = ['a', 'e', 'i', 'o', 'u']
-   if(letter in vowels):
+   if (letter in vowels):
       return True
    else:
       return False
@@ -2478,6 +2619,31 @@ print("Originallist : ", my_list)
 print("Indexes for element Guru :", list(locate(my_list, lambda x: x == 'Guru'))) 
 
 
+Built-in Functions
+FUNCTION	DESCRIPTION
+Round()	Rounds off the number passed as an argument to a specified number of digits and returns the floating point value
+Min()	return minimum element of a given list
+Max()	return maximum element of a given list
+len()	Returns the length of the list
+Enumerate()	This built-in function generates both the values and indexes of items in an iterable, so we don’t need to count manually
+Filter()	tests if each element of a list true or not
+Lambda	An expression that can appear in places where a def (for creating functions) is not syntactic, inside a list literal or a function’s call arguments
+Map()	returns a list of the results after applying the given function to each item of a given iterable
+Accumulate()	apply a particular function passed in its argument to all of the list elements returns a list containing the intermediate results
+Sum()	Returns the sum of all the numbers in the list
+Cmp()	This is used for comparing two lists and returns 1 if the first list is greater than the second list.
+Insert	Insert element to list at particular position
+List Methods
+FUNCTION	DESCRIPTION
+Append()	Adds a new item to the end of the list
+Clear()	Removes all items from the list
+Copy()	Returns a copy of the original list
+Extend()	Add many items to the end of the list
+Count()	Returns the number of occurrences of a particular item in a list
+Index()	Returns the index of a specific element of a list
+Pop()	Deletes item from the list at particular index (delete by position)
+Remove()	Deletes specified item from the list (delete by value)
+Reverse()	In-place reversal method which reverses the order of the elements of the list
 
 
 
@@ -2486,25 +2652,43 @@ print("Indexes for element Guru :", list(locate(my_list, lambda x: x == 'Guru'))
 
 # RegEx
 
+'''
+dentifiers	Modifiers	White space characters	Escape required
+\d= any number (a digit)	\d represents a digit.Ex: \d{1,5} it will declare digit between 1,5 like 424,444,545 etc.	\n = new line	. + * ? [] $ ^ () {} | \
+\D= anything but a number (a non-digit)	+ = matches 1 or more	\s= space	
+\s = space
+(tab,space,newline etc.)	? = matches 0 or 1	\t =tab	
+\S= anything but a space	* = 0 or more	\e = escape	
+\w = letters ( Match alphanumeric character, including “_”)	$ match end of a string	\r = carriage return	
+\W =anything but letters ( Matches a non-alphanumeric character excluding “_”)	^ match start of a string	\f= form feed	
+. = anything but letters (periods)	| matches either or x/y	—————–	
+\b = any character except for new line	[] = range or “variance”	—————-	
+\.	{x} = this amount of preceding code	—————–
+'''
+
 import re
-xx = "guru99,education is fun"
+xx = "education is fun"
 r1 = re.findall(r"^\w+", xx)
 print(r1)
 
-
 import re
-xx = "guru99,education is fun"
+xx = "education is fun"
 r1 = re.findall(r"^\w+", xx)
 print((re.split(r'\s','we are splitting the words')))
 print((re.split(r's','split the swords')))
 
+
+# re.match() function of re in Python will search the regular expression pattern and return the first occurrence. 
+# The Python RegEx Match method checks for a match only at the beginning of the string. 
+# So, if a match is found in the first line, it returns the match object. 
+# But if a match is found in some other line, the Python RegEx Match function returns null.
 
 import re
 list = ["guru99 get", "guru99 give", "guru Selenium"]
 for element in list:
    z = re.match(r"(g\w+)\W(g\w+)", element)
    if z:
-      print((z.groups()))
+      print(z.groups())
 
 
 patterns = ['software testing', 'guru99']
@@ -2513,24 +2697,51 @@ for pattern in patterns:
    print('Looking for "%s" in "%s" ->' % (pattern, text), end=' ')
    if re.search(pattern, text):
       print('found a match!')
+      print((re.search(pattern, text)).group())
    else:
       print('no match')
 
 
-abc = 'guru99@google.com, careerguru99@hotmail.com, users@yahoomail.com'
-emails = re.findall(r'[\w\.-]+@[\w\.-]+', abc)
-for email in emails:
-   print(email)
+re.search(patterns[0], text).group()
+re.match(patterns[0], text).group()
+re.findall(patterns[0], text)
+
+
+# re.search() function will search the regular expression pattern and return the first occurrence. 
+# Unlike Python re.match(), it will check all lines of the input string. 
+# The Python re.search() function returns a match object when the pattern is found and “null” if the pattern is not found
+
+# findall() module is used to search for “all” occurrences that match a given pattern. 
+# In contrast, search() module will only return the first occurrence that matches the specified pattern. 
+# findall() will iterate over all the lines of the file and will return all non-overlapping matches of pattern in a single step.
 
 abc = ['guru99@google.com, careerguru99@hotmail.com, users@yahoomail.com']
+abc[0]
+# ten for trochę bez sensu
 for i in abc:
-   if re.search(r'[\w\.-]+@[\w\.-]+', i):
+   mat = re.search(r'[\w\.-]+@[\w\.-]+\.[\w]+', i)
+   if mat:
       print(i)
+      print(mat.start())
+      print(mat.group(0))
+      print(mat.groups())
+
+mat = re.search(r'[\w\.-]+@[\w\.-]+\.[\w]+', abc[0])
+print(mat)
+print(mat.start())
+print(mat.group(0))
+print(mat.end())
+
+abc = 'guru99@google.com, careerguru99@hotmail.com, users@yahoomail.com'
+emails = re.findall(r'[\w\.-]+@[\w\.-]+\.[\w]+', abc)
+print(emails)
+for email in emails:
+   print(email)
 
 
 import re
 xx = """guru99 
-careerguru99	
+careerguru99	u
 selenium"""
 k1 = re.findall(r"^\w", xx)
 k2 = re.findall(r"^\w", xx, re.MULTILINE)
@@ -2581,6 +2792,7 @@ for match in matches:
    #   August 9
    #   Dec 12
    print("Full match: %s" % (match))
+print(matches)
 
 # To capture the specific months of each date we can use the following pattern
 regex = r"([a-zA-Z]+) \d+"
@@ -2621,17 +2833,17 @@ import re
 regex = re.compile(r"(\w+) World")
 result = regex.search("Hello World is the easiest")
 if result:
-    # This will print:
-    #   0 11
-    # for the start and end of the match
-    print(result.start(), result.end())
+   # This will print:
+   #   0 11
+   # for the start and end of the match
+   print(result.start(), result.end())
 
 # This will print:
 #   Hello
 #   Bonjour
 # for each of the captured groups that matched
 for result in regex.findall("Hello World, Bonjour World"):
-    print(result)
+   print(result)
 
 # This will substitute "World" with "Earth" and print:
 #   Hello Earth
@@ -2699,37 +2911,53 @@ for month in range(1, 13):
 
 
 #PyTest
+# By default pytest only identifies the file names starting with test_ or ending with _test 
+# as the test files. We can explicitly mention other filenames though (explained later). 
+# Pytest requires the test method names to start with “test.” 
+# All other method names will be ignored even if we explicitly ask to run those methods.
 
-import pytest
+> py.test test_sample1.py
+
+@pytest.mark.set1
 def test_file1_method1():
-	x=5
-	y=6
-	assert x+1 == y,"test failed1"
-	assert x == y,"test failed2 because x=" + str(x) + " y=" + str(y)
+	x = 5
+	y = 6
+	assert x + 1 == y, "test failed"
+	assert x == y, "test failed because x=" + str(x) + " y=" + str(y)
+	assert 1 == 2, "jeden jest dwa"
+
+
+@pytest.mark.set2
 def test_file1_method2():
-	x=5
-	y=6
-	assert x+1 == y,"test failed3" 
+	x = 5
+	y = 6
+	assert x+1 == y, "test failed"
+
 
 def test_file2_method1():
-	x=5
-	y=6
-	assert x+1 == y,"test failed"
-	assert x == y,"test failed because x=" + str(x) + " y=" + str(y)
+	x = 5
+	y = 6
+	assert x + 1 == y, "test failed"
+	assert x == y, "test failed because x=" + str(x) + " y=" + str(y)
+	assert 1 == 2, "jeden jest dwa"
+
 def test_file2_method2():
-	x=5
-	y=6
-	assert x+1 == y,"test failed"
+	x = 5
+	y = 6
+	assert x+1 == y, "test failed"
 
 
-py.test
-py.test test_sample1.py
-py.test -k method1 -v
+> py.test
+> py.test test_sample1.py
+> py.test -k method1 -v
 -k <expression> is used to represent the substring to match
 -v increases the verbosity
+> py.test -k method -v # will run all the four methods, starts with 'method'
 
+# Run tests by markers
 pytest -m set1 -v
 
+# Run Tests in Parallel with Pytest
 pip install pytest-xdist
 conda install -c anaconda jedi
 conda update conda
@@ -2750,21 +2978,24 @@ def supply_AA_BB_CC():
 
 def test_comparewithAA(supply_AA_BB_CC):
 	zz = 35
-	assert supply_AA_BB_CC[0] == zz,"aa and zz comparison failed"
+	assert supply_AA_BB_CC[0] == zz, "aa and zz comparison failed"
 
 def test_comparewithBB(supply_AA_BB_CC):
 	zz = 35
-	assert supply_AA_BB_CC[1] == zz,"bb and zz comparison failed"
+	assert supply_AA_BB_CC[1] == zz, "bb and zz comparison failed"
 
 def test_comparewithCC(supply_AA_BB_CC):
 	zz = 35
-	assert supply_AA_BB_CC[2] == zz,"cc and zz comparison failed"
+	assert supply_AA_BB_CC[2] == zz, "cc and zz comparison failed"
 
-pytest test_basic_fixture.py -v
+> pytest test_basic_fixture.py -v
 
-# conftest.py A fixture method can be accessed across multiple test files by defining it in conftest.py file.
+# pytest will look for the fixture in the test file first and if not found it will look 
+# in the conftest.py
+# conftest.py A fixture method can be accessed across multiple test files by defining 
+# it in conftest.py file.
 
-pytest -k test_comparewith -v
+> pytest -k test_comparewith -v
 
 
 import pytest
@@ -2772,8 +3003,17 @@ import pytest
 def test_add(input1, input2, output):
 	assert input1 + input2 == output, "failed"
 
-pytest -k test_add -v
+> pytest -k test_add -v
 
+# Pytest Xfail / Skip Tests
+'''
+The xfailed test will be executed, but it will not be counted as part failed or passed tests. 
+There will be no traceback displayed if that test fails. We can xfail tests using
+@pytest.mark.xfail.
+
+Skipping a test means that the test will not be executed. We can skip tests using
+@pytest.mark.skip.
+'''
 
 import pytest
 @pytest.mark.skip
@@ -2798,10 +3038,18 @@ def test_add_5():
 def test_add_6():
 	assert 3+2 == 6, "failed"
 
+'''
+test_add_1 and test_add_2 are skipped and will not be executed.
+test_add_3 and test_add_4 are xfailed. These tests will be executed and will be part of xfailed(on test failure) or xpassed(on test pass) tests. There won’t be any traceback for failures.
+test_add_5 and test_add_6 will be executed and test_add_6 will report failure with traceback while the test_add_5 passes
+'''
 
+# Results XML
 py.test test_sample1.py -v --junitxml="result.xml"
 
-https://reqres.in/.
+
+# Fake data
+https://reqres.in/
 
 import pytest
 import requests
@@ -2823,7 +3071,7 @@ def test_list_invaliduser(supply_url):
 
 pytest -k test_list -v
 pytest -k test_login -v
-
+--disable-pytest-warnings
 
 
 import pytest
@@ -2848,7 +3096,8 @@ tst_list_valid_user("https://reqres.in/api", 1, "George")
 # read the data from the URL and print it
 import urllib.request
 # open a connection to a URL using urllib
-webUrl  = urllib.request.urlopen('https://www.youtube.com/user/guru99com')
+# webUrl  = urllib.request.urlopen('https://www.youtube.com/user/guru99com')
+webUrl  = urllib.request.urlopen('https://www.google.com/')
 #get the result code and print it
 print("result code: " + str(webUrl.getcode()))
 # read the data from the URL and print it
@@ -3111,12 +3360,14 @@ if __name__=="__main__":
 
 
 # modules
+# A module is a file with python code. The code can be in the form of variables, functions, or 
+# class defined. The filename becomes the module name.
 
 import sys
 print(sys.path)
 
 def disp_message():
-	return "Moduł działa"
+   return "Moduł działa"
 
 import os
 sys.path.insert(0, os.path.abspath('/home/ukasz/Documents/Programowanie/Python/modtest/'))
@@ -3173,6 +3424,7 @@ def disp_message():
 def display_message1():
 	return "All about Python!"
 
+# A package is a directory with all modules defined inside it.
 
 import os
 import sys
@@ -3239,7 +3491,8 @@ print(inner_mod1_func1())
 #print(inner_mod1_func1())
 
 
-
+import sys
+print(sys.path)
 
 
 
