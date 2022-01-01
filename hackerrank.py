@@ -1,3 +1,5 @@
+dir(fun_name)
+
 #_Introduction
 # 1 Say "Hello, World!" With Python
 print("Hello, World!")
@@ -7,16 +9,24 @@ print("Hello, World!")
 # 2 Python If-Else
 if __name__ == '__main__':
     n = int(input().strip())
-    if (n % 2 == 1) or 6 <= n <= 20:
+    # if (n % 2 == 1) or (6 <= n <= 20):
+    if (n % 2 == 1) or (n in range(6, 21)):
         print("Weird")
     else:
         print("Not Weird")
 
 Input (stdin)
 3
+Wired
+
 
 
 # 3 Arithmetic Operators
+if __name__ == '__main__':
+    a, b = (int(input().strip()) for _ in range(2))
+    print(a + b, a - b, a*b, sep='\n')
+
+
 if __name__ == '__main__':
     a = int(input().strip())
     b = int(input().strip())
@@ -26,8 +36,12 @@ if __name__ == '__main__':
     print(a * b)
 
 Input (stdin)
-4
 3
+2
+
+5
+1
+6
 
 
 
@@ -36,36 +50,63 @@ if __name__ == '__main__':
     a = int(input().strip())
     b = int(input().strip())
 
+    print(a//b, a/b, sep='\n')
     print('{} \n{:.2f}'.format((a//b), (a/b)))
+    print('%d \n%.3f' % (a//b, a/b))
 
 Input (stdin)
 4
 3
 
-if __name__ == '__main__':
-    a = int(input().strip())
-    b = int(input().strip())
-
-    print('%d \n%f' % (a//b, a/b))
+1
+1.33333333333
 
 
 
 # 5 Loops
 if __name__=='__main__':
-    n = int(input().strip())
-    for i in range(n):
+    for i in range(int(input().strip())):
         print(i**2)
 
 Input (stdin)
 5
 
+0
+1
+4
+9
+16
+
 if __name__ == '__main__':
     n = int(input().strip())
     print(*[i**2 for i in range(n)], sep='\n')
 
+if __name__ == '__main__':
+    n = int(input().strip())
+    print(*(i**2 for i in range(n)), sep='\n')
+
 
 
 # 6 Write a function
+def is_leap(year):
+    return (year%400 == 0) or (year%4 == 0 and year%100 != 0)
+
+if __name__ == '__main__':
+    year = int(input().strip())
+    print(is_leap(year))
+
+Input (stdin)
+1990
+
+False
+
+def is_leap(year):
+    if (year%400 == 0) or (year%4 == 0 and year%100 != 0):
+        leap = 'True'
+    else:
+        leap = 'False'
+    return leap
+
 def is_leap(year):
     leap = False
     if year % 400 == 0:
@@ -73,27 +114,20 @@ def is_leap(year):
     elif year % 4 == 0 and not year % 100 == 0:
         leap = True
     return leap
-year = int(input().strip())
-print(is_leap(year))
-
-Input (stdin)
-1990
 
 def is_leap(year):
     return year % 4 == 0 and (year % 400 == 0 or year % 100 != 0)
-year = int(input().strip())
-print(is_leap(year))
 
 
 
 # 7 Print Function
 if __name__ == '__main__':
     n = int(input().strip())
-    print(*[i for i in range(1, n + 1)], sep="")
+    print(*list(range(1, n + 1)), sep="")
 
 if __name__ == '__main__':
     n = int(input().strip())
-    print(*list(range(1, n + 1)), sep="")
+    print(*[i for i in range(1, n + 1)], sep="")
 
 if __name__== '__main__':
     n = int(input().strip())
@@ -101,8 +135,13 @@ if __name__== '__main__':
         print(i, end='')
     print('\n')
 
+if __name__ == '__main__':
+    print(*[i + 1 for i in range(int(input().strip()))], sep='')
+
 Sample Input 0
 3
+
+123
 
 ##Introduction
 
@@ -115,10 +154,7 @@ Sample Input 0
 # 8 List Comprehensions
 if __name__ == '__main__':
     x, y, z, n = (int(input().strip()) for _ in range(4))
-    print([[i, j, k] 
-        for i in range(x + 1) 
-        for j in range(y + 1)
-        for k in range(z + 1) if i + j + k != n])
+    print([[i, j, k] for i in range(x + 1) for j in range(y + 1) for k in range(z + 1) if i + j + k != n])
 
 Sample Input 0
 1
@@ -126,18 +162,20 @@ Sample Input 0
 1
 2
 
+[[0, 0, 0], [0, 0, 1], [0, 1, 0], [1, 0, 0], [1, 1, 1]]
+
 
 
 # 9 Find the Runner-Up Score!
 if __name__ == '__main__':
     # n = int(input())
-    arr = map(int, input().split())
-    arr = sorted(list(set(arr)), reverse=True)[1]
-    print(arr)
+    sample_in = map(int, input().split())
+    print(sorted(set(sample_in), reverse=True)[1])
 
 Sample Input 0
 5
 2 3 6 6 5
+5
 
 if __name__ == '__main__':
     # n = int(input().strip()))
@@ -151,26 +189,31 @@ if __name__ == '__main__':
 
 # 10 Nested Lists
 if __name__ == '__main__':
-    nasc = {}
-    nasc2 = {}
+    dict1 = {}
+    dict2 = {}
+
+    for _ in range(int(input().strip())):
+        key = input().strip()
+        val = float(input().strip())
+        dict1[key] = val
+
+    sec_min_val = sorted(set(dict1.values()))[1]
+
+    for key, val in dict1.items():
+        if val == sec_min_val:
+            dict2[key] = val
+            
+    print(*sorted(dict2.keys()), sep='\n')
+
+---------
+    # using list insted of dictionary
     names = []
+    for key, val in dict1.items():
+        if val == sec_min_val:
+            names.append(key)
 
-    # zbiera dane
-    for _ in range(int(input())):
-        name = input()
-        score = float(input())
-        nasc[name] = score
+    print(*sorted(names), sep='\n')
 
-    # wybiera drugi val
-    min_val = sorted(list(set(nasc.values())))[1]
-
-    # bierze imiona po val
-    for key, val in nasc.items():
-        if val == min_val:
-            nasc2[key] = val
-
-    # sort imion
-    print(*sorted(nasc2.keys()), sep='\n')
 
 Sample Input 0
 5
@@ -184,6 +227,11 @@ Akriti
 41
 Harsh
 39
+
+Berry
+Harry
+
+
 
 if __name__ == '__main__':
     nasc = {}
@@ -218,8 +266,26 @@ if __name__ == '__main__':
 
 
 # 11 Finding the percentage
-from statistics import mean as mean
+if __name__ == '__main__':
+    dict1 = {}
+    for _ in range(int(input().strip())):
+        key, *val = input().split()
+        val = list(map(int, val))
+        dict1[key] = sum(val)/len(val)
 
+    print("{:.2f}".format(dict1[input().strip()]))
+    # print("%.2f" % dict1[input().strip()])
+
+Sample Input 0
+3
+Krishna 67 68 69
+Arjun 70 98 63
+Malika 52 56 60
+Malika
+
+56.00
+
+from statistics import mean as mean
 from numpy.lib.function_base import append
 if __name__ == '__main__':
     # n = int(input().strip())
@@ -228,15 +294,8 @@ if __name__ == '__main__':
         name, *line = input().strip().split()
         student_marks[name] = tuple(map(float, line))
     query_name = input().strip()
-    # print('{:.2f}'.format(round(mean(stuldent_marks[query_name]), 2)))
+    # print('{:.2f}'.format(mean(stuldent_marks[query_name])))
     print('%.2f' % mean(student_marks[query_name]))
-
-Sample Input 0
-3
-Krishna 67 68 69
-Arjun 70 98 63
-Malika 52 56 60
-Malika
 
 from statistics import mean as mean
 if __name__ == '__main__':
@@ -252,17 +311,35 @@ if __name__ == '__main__':
 
 
 # 12 Lists
-if __name__ == '__main__':
-    lis1 = []
+if __name__ == "__main__":
+    list1 = []
     for _ in range(int(input().strip())):
-        #inp = input().split()
         #met, arg = inp[0], inp[1:]
-        met, *arg = input().split()
-        if met == "print":
-            print(lis1)
+        fun, *args = input().split()
+        if fun == 'print':
+            print(list1)
         else:
-            arg = ", ".join(arg)
-            eval("lis1." + met + "(" + arg + ")")
+            args = ', '.join(args)
+            eval('list1.'+fun+'('+args+')')
+
+Sample Input 0
+12
+insert 0 5
+insert 1 10
+insert 0 6
+print
+remove 6
+append 9
+append 1
+sort
+print
+pop
+reverse
+print
+
+[6, 5, 10]
+[1, 5, 9, 10]
+[9, 5, 1]
 
 
 
@@ -276,104 +353,41 @@ if __name__ == '__main__':
 
 
 
-#!/bin/python3
-
-import math
-import os
-import random
-import re
-import sys
-
-
-
-class Car:
-    max_speed = 0
-    speed_unit = 0
-    def __init__(self, max_speed, speed_unit):
-        self.max_speed=max_speed
-        self.speed_unit=speed_unit
-        
-    def some(self):
-        print(self.max_speed)
-
-class Boat:
-    max_speed = 0
-    def __init__(self, max_speed):
-        self.max_speed=max_speed
-        
-    def some(self):
-        return self.max_speed
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    q = int(input())
-    queries = []
-    for _ in range(q):
-        args = input().split()
-        vehicle_type, params = args[0], args[1:]
-        if vehicle_type == "car":
-            max_speed, speed_unit = int(params[0]), params[1]
-            vehicle = Car(max_speed, speed_unit)
-        elif vehicle_type == "boat":
-            max_speed = int(params[0])
-            vehicle = Boat(max_speed)
-        else:
-            raise ValueError("invalid vehicle type")
-        fptr.write("%s\n" % vehicle)
-    fptr.close()
-
-Input (stdin)
-2
-car 151 km/h
-boat 77
-
-
-
-def transformSentence(sentence):
-    new = ''
-    for i in sentence.split(' '):
-        for j in range(len(i)):
-            if j == 0:
-                new += i[j]
-            else:
-                if i[j - 1] <= i[j]:
-                    new += i[j].upper()
-                else:
-                    new += i[j].lower()
-        new += ' '
-    return new[:-1]
-
-transformSentence('a Blue MOON')
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-
-    sentence = input()
-
-    result = transformSentence(sentence)
-
-    fptr.write(result + '\n')
-
-    fptr.close()
-
-'a Blue MOON'
-
-'a' < 'b'
 
 
 
 # Strings
 # 14 sWAP cASE
-def swap_case(s):
-    return s.swapcase()
+if __name__ == "__main__":
+    def swap_case(s):
+        return s.swapcase()
 
-if __name__ == '__main__':
-    s = input()
-    result = swap_case(s)
-    print(result)
+    
+    string1 = input()
+    print(swap_case(string1))
+
 
 Sample Input 0
 HackerRank.com presents "Pythonist 2".
+
+hACKERrANK.COM PRESENTS "pYTHONIST 2".
+
+
+if __name__ == "__main__":
+    def swap_case(s):
+        new_s = ''
+        for st in s:
+            if st.isupper():
+                new_s += st.lower()
+            elif st.lower():
+                new_s += st.upper()
+            else:
+                new_s += st
+        return new_s
+
+    
+    string1 = 'HackerRank.com presents "Pythonist 2".'
+    swap_case(string1)
 
 def swap_case(s):
     new = ""
@@ -396,71 +410,78 @@ def swap_case(s):
 
 
 # 15 String Split and Join
-def split_and_join(line):
-    return "-".join(line.split())
+if __name__ == "__main__":
+    def spl_jo(str1):
+        return '-'.join(str1.split())
 
-if __name__ == '__main__':
-    line = input()
-    result = split_and_join(line)
-    print(result)
+    print(spl_jo(input().strip()))
 
-def split_and_join(line):
+Sample Input
+this is a string
+
+this-is-a-string
+
+
+def split_and_join(str1):
     return line.replace(" ", "-")
 
 
 
 # 16 What's Your Name?
-def print_full_name(first, last):
-    print('Hello %s %s! You just delved into python.' % (first, last))
-    # print("Hello {} {}! You just delved into python.".format(first, last))
+if __name__ == "__main__":
+    def hello(name_l, surname_l):
+        return 'Hello {} {}! You just delved into python.'.format(name_l, surname_l)
+        # return 'Hello %s %s! You just delved into python.' % (name, surname)
 
-if __name__ == '__main__':
-    first_name = input()
-    last_name = input()
-    print_full_name(first_name, last_name)
+    name = input().strip()
+    surname = input().strip()
+    print(hello(name, surname))
 
 
 
 # 17 Mutations
 # You are given an immutable string, and you want to make changes to it.
-def mutate_string(string, position, character):
-    return string[:position] + character + string[position + 1:]
-    # li1 = list(string)
-    # li1[position] = character
-    # return "".join(li1)
+if __name__ == "__main__":
+    def insert_char(string_l, pos_l, char_l):
+        string_l = list(string_l)
+        string_l[pos_l] = char_l
+        return ''.join(string_l)
 
-if __name__ == '__main__':
-    s = input()
-    i, c = input().split()
-    s_new = mutate_string(s, int(i), c)
-    print(s_new)
+    def insert_char2(string_l, pos_l, char_l):
+        return string_l[:pos_l] + char_l + string_l[pos_l + 1:]
+
+    string_g = input().strip()
+    pos_g, char_g = input().split()
+    pos_g = int(pos_g)
+    print(insert_char2(string_g, pos_g, char_g))
 
 Sample Input
-STDIN           Function
------           --------
-abracadabra     s = 'abracadabra'
-5 k             position = 5, character = 'k'
+abracadabra
+5 k
+
+abrackdabra
 
 
 
 # 18 Find a string
-def count_substring(string, sub_string):
-    counter = 0
-    for i in range(len(string) + 1 - len(sub_string)):
-        if sub_string == string[i:i + len(sub_string)]:
-            counter += 1
-    return counter
+if __name__ == "__main__":
+    def find_a_string(string_big, string_small):
+        counter = 0
+        for i in range(len(string_big) - len(string_small) + 1):
+            if string_small == string_big[i:i + len(string_small)]:
+                counter += 1
+        return counter
 
-if __name__ == '__main__':
-    string = input().strip()
-    sub_string = input().strip()
     
-    count = count_substring(string, sub_string)
-    print(count)
+    print(find_a_string(input().strip(), input().strip()))
+
 
 Sample Input
 ABCDCDC
 CDC
+
+2
+
 
 def count_substring(string, sub_string):
     return len([i for i in range(len(string) + 1 - len(sub_string)) if sub_string == string[i:i + len(sub_string)]])
@@ -478,6 +499,12 @@ if __name__ == '__main__':
 
 Sample Input
 qA2
+
+True
+True
+True
+True
+True
 
 
 
@@ -517,30 +544,83 @@ if __name__ == '__main__':
 Sample Input
 5
 
+    B    
+   ABC   
+  AABCC  
+ AAABCCC 
+AAAABCCCC
+  DDDDD               EEEEE             
+  DDDDD               EEEEE             
+  DDDDD               EEEEE             
+  DDDDD               EEEEE             
+  DDDDD               EEEEE             
+  DDDDD               EEEEE             
+  FFFFFFFFFFFFFFFFFFFFFFFFF   
+  FFFFFFFFFFFFFFFFFFFFFFFFF   
+  FFFFFFFFFFFFFFFFFFFFFFFFF   
+  GGGGG               HHHHH             
+  GGGGG               HHHHH             
+  GGGGG               HHHHH             
+  GGGGG               HHHHH             
+  GGGGG               HHHHH             
+  GGGGG               HHHHH             
+ IIIIJKKKK 
+  IIIJKKK  
+   IIJKK   
+    IJK    
+     J    
+
 
 
 # 21 Text Wrap
-import textwrap
-def wrap(string, max_width):
-    string2 = ""
-    while len(string) > max_width:
-        string2 += string[:max_width] + "\n"
-        string = string[max_width:]
-    string2 += string
-    return string2
-
 if __name__ == '__main__':
+    def text_wrap(string, max_width):
+        string2 = ""
+        while len(string) != 0:
+            string2 += string[:max_width] + "\n"
+            string = string[max_width:]
+        return string2
+
     string, max_width = input(), int(input())
-    result = wrap(string, max_width)
-    print(result)
+    print(text_wrap(string, max_width))
 
 Sample Input 0
 ABCDEFGHIJKLIMNOQRSTUVWXYZ
 4
 
+ABCD
+EFGH
+IJKL
+IMNO
+QRST
+UVWX
+YZ
+
 
 
 # 22 Designer Door Mat
+if __name__ == "__main__":
+    n = int(input())
+    _ = int(input("Dowolna liczba: "))
+    for i in range(n//2):
+        print(('.|.'*(2*i + 1)).center(3*n, '-'))
+    print('WELCOME'.center(3*n, '-'))
+    for i in reversed(range(n//2)):
+        print(('.|.'*(2*i + 1)).center(3*n, '-'))
+
+Sample Input
+9 27
+
+------------.|.------------
+---------.|..|..|.---------
+------.|..|..|..|..|.------
+---.|..|..|..|..|..|..|.---
+----------WELCOME----------
+---.|..|..|..|..|..|..|.---
+------.|..|..|..|..|.------
+---------.|..|..|.---------
+------------.|.------------
+
 inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
 div = inp//2
 for i in range(div):
@@ -548,9 +628,6 @@ for i in range(div):
 print("WELCOME".center(3*inp, "-"))
 for i in range(div-1, -1, -1):
     print("-"*(div - i)*3 + "." + "|.."*i + "|" + "..|"*i + "." + 3*(div - i)*"-")
-
-Sample Input
-9 27
 
 inp = int(input("Tylko pierwsza liczba ma znaczenie: ").split()[0])
 div = inp//2
@@ -581,6 +658,40 @@ names.reverse()
 
 
 # 23 String Formatting
+if __name__ == '__main__':
+    def print_formatted(n):
+        num_len = len('{:b}'.format(n))
+        for i in range(1, n + 1):
+            print('{}'.format(i).rjust(num_len, ' '), end=' ')
+            print('{:o}'.format(i).rjust(num_len, ' '), end=' ')
+            print('{:X}'.format(i).rjust(num_len, ' '), end=' ')
+            print('{:b}'.format(i).rjust(num_len, ' '))
+
+    n = int(input())
+    print_formatted(n)
+
+Sample Input
+17
+
+    1     1     1     1
+    2     2     2    10
+    3     3     3    11
+    4     4     4   100
+    5     5     5   101
+    6     6     6   110
+    7     7     7   111
+    8    10     8  1000
+    9    11     9  1001
+   10    12     A  1010
+   11    13     B  1011
+   12    14     C  1100
+   13    15     D  1101
+   14    16     E  1110
+   15    17     F  1111
+   16    20    10 10000
+   17    21    11 10001
+
+
 def print_formatted(number):
     str_len = len(bin(number)[2:])
     for i in range(1, number + 1):
@@ -588,13 +699,6 @@ def print_formatted(number):
         print("{}".format(oct(i)[2:]).rjust(str_len), end=' ')
         print("{}".format(hex(i)[2:]).upper().rjust(str_len), end=' ')
         print("{}".format(bin(i)[2:]).rjust(str_len))
-
-if __name__ == '__main__':
-    n = int(input())
-    print_formatted(n)
-
-Sample Input
-17
 
 def print_formatted(n):
     width = len("{:b}".format(n))
@@ -604,15 +708,43 @@ def print_formatted(n):
  
 
 # 24 Alphabet Rangoli
+if __name__ == "__main__":
+    n = 5
+    alphab = [chr(i + 97) for i in range(n)]
+    alphab_rev = alphab[::-1]
+    for i in range(n):
+        print('-'.join(alphab[::-1][:i + 1]).rjust(2*n - 1, '-'), end='')
+        print('-', end='')
+        print('-'.join(reversed(alphab[::-1][:i])).ljust(2*(n - 1) - 1, '-'))
+    for i in reversed(range(n - 1)):
+    # for i in range(n - 2, -1, -1):
+        print('-'.join(alphab[::-1][:i + 1]).rjust(2*n - 1, '-'), end='')
+        print('-', end='')
+        print('-'.join(reversed(alphab[::-1][:i])).ljust(2*(n - 1) - 1, '-'))
+
+Sample Input
+5
+
+--------e--------
+------e-d-e------
+----e-d-c-d-e----
+--e-d-c-b-c-d-e--
+e-d-c-b-a-b-c-d-e
+--e-d-c-b-c-d-e--
+----e-d-c-d-e----
+------e-d-e------
+--------e--------
+
+
 def print_rangoli(size):
     n = size
     char_list = [chr(c) for c in range(ord("a"), 97 + n)]
     char_list_r = char_list[::-1]
     
     for i in range(0, n):
-        print("{}".format("-".join(char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-"))
+        print("{}".format("-".join(char_list_r[:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-"))
     for i in range(n-2, -1, -1):
-        print("{}".format("-".join(char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-"))
+        print("{}".format("-".join(char_list_r[:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-"))
 
 if __name__ == '__main__':
     n = int(input())
@@ -623,13 +755,10 @@ def print_rangoli(size):
     n = size
     char_list = [chr(c) for c in range(ord("a"), 97 + n)]
     char_list_r = char_list[::-1]
-    # pattern = [("-".join(char_list_r[0:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-") for i in range(0, n)]
-    pattern = [("-".join(char_list_r[0:1 + i] + char_list[n-i:n+1])).center((n - 1)*4 + 1, "-") for i in range(0, n)]
+    # pattern = [("-".join(char_list_r[:1 + i] + char_list[n-i:n+1])).center(((n - 1)*2 + 1) + ((n - 1)*2), "-") for i in range(0, n)]
+    pattern = [("-".join(char_list_r[:1 + i] + char_list[n-i:n+1])).center((n - 1)*4 + 1, "-") for i in range(0, n)]
     # print('\n'.join(pattern + pattern[-2::-1]))
     print('\n'.join(pattern[:-1] + pattern[::-1]))
-
-Sample Input
-5
 
 
 ord('a')
@@ -649,6 +778,9 @@ solve("chirs   alan")
 
 Sample Input
 chris alan
+
+Chris Alan
+
 
 def solve(s):
     # for x in s[:].split():
@@ -671,10 +803,14 @@ def merge_the_tools(string, k):
 merge_the_tools('AABCAAADA', 3)
 
 Sample Input
-STDIN       Function
------       --------
-AABCAAADA   s = 'AABCAAADA'
-3           k = 3
+STDIN
+-----
+AABCAAADA
+3
+
+AB
+CA
+AD
 
 # kolejność nie liczy się
 ''.join(set('AACVGVV'))
@@ -689,20 +825,22 @@ AABCAAADA   s = 'AABCAAADA'
 
 # Sets
 # 27 Introduction to Sets
-def average(array):
-    return sum(set(array))/len(set(array))
-
 if __name__ == '__main__':
-    n = int(input())
-    arr = list(map(int, input().split()))
+    def average(array):
+        return sum(array)/len(array)
+
+    _ = input()
+    arr = set(map(int, input().split()))
     result = average(arr)
     print(result)
 
 Sample Input
-STDIN                                       Function
------                                       --------
-10                                          arr[] size N = 10
-161 182 161 154 176 170 167 171 170 174     arr = [161, 181, ..., 174]
+STDIN
+-----
+10
+161 182 161 154 176 170 167 171 170 174
+
+169.375
 
 from statistics import mean
 def average(array):
@@ -723,6 +861,8 @@ Sample Input
 3 1
 5 7
 
+1
+
 
 
 # 29 Symmetric Difference
@@ -738,10 +878,15 @@ Input (stdin)
 4
 2 4 11 12
 
+5
+9
+11
+12
+
 
 
 # 30 Set .add()
-print(len({input().strip() for i in range(int(input().strip()))}))
+print(len({input().strip() for _ in range(int(input().strip()))}))
 
 Sample Input
 7
@@ -753,25 +898,25 @@ New Zealand
 UK
 France 
 
+5
 
 if __name__ == '__main__':
-    set1 = set('')
-    for i in range(int(input().strip())):
+    set1 = set()
+    for _ in range(int(input().strip())):
         set1.add(input().strip())
-    print(set1)
+    print(len(set1))
 
 
 
 # 31 Set .discard(), .remove() & .pop()
 if __name__ == '__main__':
-    _ = int(input())
-    s = set(map(int, input().split()))
-    
-    for _ in range(int(input())):
-        inp = input().split()
-        met, arg = inp[0], "".join(inp[1:])
-        eval("s." + met + "(" + arg + ")")
-    print(sum(s))
+    # _ = input()
+    set_samp = set(map(int, input().split()))
+    for _ in range(int(input().strip())):
+        fun, *args = input().split()
+        args = ''.join(args)
+        eval('set_samp.'+fun+'('+args+')')
+    print(sum(set_samp))
 
 Sample Input
 9
@@ -788,6 +933,18 @@ remove 5
 pop 
 discard 5
 
+4
+
+if __name__ == '__main__':
+    # _ = int(input())
+    s = set(map(int, input().split()))
+    
+    for _ in range(int(input())):
+        inp = input().split()
+        met, arg = inp[0], "".join(inp[1:])
+        eval("s." + met + "(" + arg + ")")
+    print(sum(s))
+
 _ = int(input())
 s = set(map(int, input().split()))
 
@@ -798,36 +955,43 @@ print(sum(s))
 
 
 # 32 Set .union() Operation
-_, m = input(), set(input().split())
-_, n = input(), set(input().split())
-print(len(m|n))
-#print(len(m.union(n)))
+if __name__ == '__main__':
+    _, m = input(), set(input().split())
+    _, n = input(), set(input().split())
+    print(len(m|n))
+    #print(len(m.union(n)))
 
 Sample Input
 9
 1 2 3 4 5 6 7 8 9
 9
 10 1 2 3 11 21 55 6 8
+
+13
 
 
 
 # 33 Set .intersection() Operation
-_, m, _, n = input(), set(input().split()), input(), set(input().split())
-print(len(m&n))
-# print(len(m.intersection(n)))
+if __name__ == '__main__':
+    _, m, _, n = input(), set(input().split()), input(), set(input().split())
+    print(len(m&n))
+    # print(len(m.intersection(n)))
 
 Sample Input
 9
 1 2 3 4 5 6 7 8 9
 9
 10 1 2 3 11 21 55 6 8
+
+5
 
 
 
 # 34 Set .difference() Operation
-_, m, _, n = input(), set(input().split()), input(), set(input().split())
-print(len(m-n))
-# print(len(m.intersection(n)))
+if __name__ == '__main__':
+    _, m, _, n = input(), set(input().split()), input(), set(input().split())
+    print(len(m-n))
+    # print(len(m.difference(n)))
 
 Sample Input
 9
@@ -835,6 +999,7 @@ Sample Input
 9
 10 1 2 3 11 21 55 6 8
 
+4
 
 
 # 35 Set .symmetric_difference() Operation
@@ -869,13 +1034,15 @@ H^=R
 # H.symmetric_difference_update(R)
 print(H)
 
-
-_, s = input(), set(map(int, input().split()))
-for _ in range(int(input())):
-    met, _ = input().split()
-    n = set(map(int, input().split()))
-    eval("s. {}({})".format(met, n))
-print(sum(s))
+set_samp = set(map(int, input().split()))
+for _ in range(int(input().strip())):
+    fun, arg = input().split()
+    arg = ''.join(arg)
+    # TypeError: can only concatenate str (not "set") to str
+    # arg = set(arg)
+    eval('set_samp.'+fun+'("'+arg+'")')
+    # eval('set_samp.{}({})'.format(fun, set(arg)))
+print(sum(map(int, set_samp)))
 
 16
 1 2 3 4 5 6 7 8 9 10 11 12 13 14 24 52
@@ -889,6 +1056,15 @@ symmetric_difference_update 5
 difference_update 7
 11 22 35 55 58 62 66
 
+7
+
+_, s = input(), set(map(int, input().split()))
+for _ in range(int(input())):
+    met, _ = input().split()
+    n = set(map(int, input().split()))
+    eval("s. {}({})".format(met, n))
+print(sum(s))
+
 
 _, s = input(), set(map(int, input().split()))
 for _ in range(int(input())):
@@ -898,11 +1074,12 @@ print(sum(s))
 
 
 # 37 The Captain's Room
-
+# Counter groups elements
 from collections import Counter
 if __name__ == '__main__':
     _ = input()
     num = Counter(map(int, input().split()))
+    # counter to convert to list of tuples
     # print(num.most_common()[-1][0])
     # print(list(num.keys())[-1]) 
     print(min(num, key=num.get)) # wibiera minimalny key
@@ -910,6 +1087,8 @@ if __name__ == '__main__':
 Sample Input
 5
 1 2 3 6 5 4 4 2 5 3 6 1 6 5 3 2 4 1 2 5 1 4 3 6 8 4 3 1 5 6 2 
+
+8
 
 works 9/10
 print(list(num.keys())[-1])
@@ -919,7 +1098,7 @@ print(list(num.keys())[-1])
 # 38 Check Subset
 if __name__ == '__main__':
     for _ in range(int(input())):
-        _, m, _, n = input(), set(input()), input(), set(input())
+        _, m, _, n = input(), set(input().split()), input(), set(input().split())
         print(m.issubset(n))
 
 Sample Input
@@ -940,7 +1119,13 @@ Sample Input
 
 
 # 39 Check Strict Superset
-{"1", "2", "3"} > {"1", "2"}
+#  subset
+>>> {"1", "2", "3"} > {"1", "2"}
+True
+
+if __name__ == '__main__':
+    paren_set = set(input().split())
+    print(all([set(input().split()).issubset(paren_set) for _ in range(int(input().strip()))]))
 
 if __name__ == '__main__':
     m = set(input().split())
@@ -958,6 +1143,8 @@ Sample Input
 1 2 3 4 5
 100 11 12
 
+False
+
 m = set(input().split())
 print(all([m > set(input().split()) for _ in range(int(input().strip()))]))
 
@@ -973,18 +1160,26 @@ print(all([m > set(input().split()) for _ in range(int(input().strip()))]))
 
 # Math
 # 40 Polar Coordinates
+from cmath import polar
+if __name__ == '__main__':
+    print(*polar(complex(1+2j)), sep='\n')
+
+from cmath import polar
+if __name__ == '__main__':
+    print(*polar(complex(1, 2)), sep='\n')
+ 
+Sample Input
+1+2j
+
+2.23606797749979
+1.1071487177940904
+
 from math import sqrt
 from cmath import phase
 if __name__ == '__main__':
     n = complex(input())
     print(sqrt(n.real**2 + n.imag**2))
     print(phase(n))
- 
-Sample Input
-1+2j
-
-from cmath import polar
-print(*polar(complex(input())), sep="\n")
 
 
 
@@ -1024,6 +1219,11 @@ Sample Input
 
 
 # 44 Find Angle MBC
+from math import degrees, atan
+if __name__ == '__main__':
+    a, b = int(input().strip()), int(input().strip())
+    print(str(round(degrees(atan(a/b)))) + "\u00b0")
+
 import math as m
 if __name__ == '__main__':
     a, b = int(input().strip()), int(input().strip())
@@ -1033,6 +1233,7 @@ Sample Input
 10
 10
 
+45°
 
 
 # 45 Triangle Quest
@@ -1040,6 +1241,11 @@ print(*[(i*10**i)//9 for i in range(1, int(input().strip()))], sep='\n')
 
 Sample Input
 5
+
+1
+22
+333
+4444
 
 # to zailcza test
 for i in range(1, int(input())):
@@ -1052,6 +1258,12 @@ print(*[((10**i)//9)**2 for i in range(1, int(input().strip()) + 1)], sep='\n')
 
 Sample Input
 5
+
+1
+121
+12321
+1234321
+123454321
 
 for i in range(1, int(input())+1):
     print(*(range(1, i)), *(range(i, 0, -1)), sep="")
@@ -1084,6 +1296,8 @@ Sample Input
 1 2
 3 4
 
+(1, 3) (1, 4) (2, 3) (2, 4)
+
 from itertools import product
 A = map(int, input().strip().split())
 B = map(int, input().strip().split())
@@ -1102,6 +1316,19 @@ print(*[''.join(i) for i in sorted(permutations(inp, int(num)))], sep='\n')
 
 Sample Input
 HACK 2
+
+AC
+AH
+AK
+CA
+CH
+CK
+HA
+HC
+HK
+KA
+KC
+KH
 
 from itertools import permutations
 inp, num = input().split()
@@ -1125,6 +1352,17 @@ for j in range(1, int(num) + 1):
 Sample Input
 HACK 2
 
+A
+C
+H
+K
+AC
+AH
+AK
+CH
+CK
+HK
+
 list_of_list = [[''.join(i) for i in (combinations(sorted(inp), j))] for j in range(1, int(num) + 1)]
 print(*[val for sublist in list_of_list for val in sublist], sep='\n')
 
@@ -1138,15 +1376,27 @@ print(*["".join(i) for i in list(combinations_with_replacement(sorted(inp), int(
 Sample Input
 HACK 2
 
+AA
+AC
+AH
+AK
+CC
+CH
+CK
+HH
+HK
+KK
 
 
 # 51 Compress the String!
+# groupby groups elements
 from itertools import groupby
 
 print(*((len(list(group)), int(key)) for key, group in groupby(str(input().strip()))))
 
 Sample Input
 1222311
+(1, 1) (3, 2) (1, 3) (2, 1)
 
 for key, group in groupby(str(input().strip())):
     print("({1}, {0})".format(key, len(list(group))), end=" ")
@@ -1158,29 +1408,37 @@ print(*["({}, {})".format(len(list(group)), key) for key, group in groupby(str(i
 # 52 Iterables and Iterators
 from itertools import combinations
 from statistics import mean
-_, letters, k = int(input()), "".join(list(input().split())), int(input())
-print(mean([True if 'a' in i else False for i in  combinations(letters, k)]))
+if __name__ == '__main__':
+    _, letters, k = int(input()), "".join(list(input().split())), int(input())
+    print(mean([True if 'a' in i else False for i in  combinations(letters, k)]))
 
 Sample Input
 4 
 a a c d
 2
 
+0.8333
+
 print(mean([True if 'a' in ''.join(i) else False for i in  combinations(letters, k)]))
 
 
 
-# 52 Maximize It!
+# 53 Maximize It!
 from itertools import product
-K, M = map(int, input().split())
-li = [list(map(int, input().split()))[1:] for _ in range(K)]
-print(max(map(lambda i: sum(j**2 for j in i)%M, list(product(*li)))))
+if __name__ == '__main__':
+    K, M = map(int, input().split())
+    li = [list(map(int, input().split()))[1:] for _ in range(K)]
+    print(list(product(*li)))
+    print(list(product(li)))
+    print(max(map(lambda i: sum(j**2 for j in i)%M, list(product(*li)))))
 
 Sample Input
 3 1000
 2 5 4
 3 7 8 9 
 5 5 7 8 9 10 
+
+
 
 list(product(*li))
 list(combinations(li[1], 2))
@@ -1640,6 +1898,7 @@ print(any(i[0] == i[-1] for i in n) and all(int(i) >= 0 for i in n))
 
 
 # 66 Athlete Sort
+# sort by column
 import numpy as np
 # array sort
 a = np.array([[8, 2, -2], [-4, 1, 7], [6, 3, 9]])
@@ -2553,7 +2812,7 @@ for i in combinations(arr, 3):
 print(set((1, 1)) == {1})
 
 
-# zajebane z hackerranka
+# zajebanane z hackerranka
 def countTriplets(arr, r):
     a = Counter(arr)
     b = Counter()
@@ -2617,4 +2876,103 @@ print(maximumToys(prices, k))
 
 
 # Sorting: Comparator
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!/bin/python3
+
+import math
+import os
+import random
+import re
+import sys
+
+
+
+class Car:
+    max_speed = 0
+    speed_unit = 0
+    def __init__(self, max_speed, speed_unit):
+        self.max_speed=max_speed
+        self.speed_unit=speed_unit
+        
+    def some(self):
+        print(self.max_speed)
+
+class Boat:
+    max_speed = 0
+    def __init__(self, max_speed):
+        self.max_speed=max_speed
+        
+    def some(self):
+        return self.max_speed
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    q = int(input())
+    queries = []
+    for _ in range(q):
+        args = input().split()
+        vehicle_type, params = args[0], args[1:]
+        if vehicle_type == "car":
+            max_speed, speed_unit = int(params[0]), params[1]
+            vehicle = Car(max_speed, speed_unit)
+        elif vehicle_type == "boat":
+            max_speed = int(params[0])
+            vehicle = Boat(max_speed)
+        else:
+            raise ValueError("invalid vehicle type")
+        fptr.write("%s\n" % vehicle)
+    fptr.close()
+
+Input (stdin)
+2
+car 151 km/h
+boat 77
+
+
+
+def transformSentence(sentence):
+    new = ''
+    for i in sentence.split(' '):
+        for j in range(len(i)):
+            if j == 0:
+                new += i[j]
+            else:
+                if i[j - 1] <= i[j]:
+                    new += i[j].upper()
+                else:
+                    new += i[j].lower()
+        new += ' '
+    return new[:-1]
+
+transformSentence('a Blue MOON')
+
+if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+    sentence = input()
+
+    result = transformSentence(sentence)
+
+    fptr.write(result + '\n')
+
+    fptr.close()
+
+'a Blue MOON'
+
+'a' < 'b'
 

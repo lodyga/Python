@@ -3496,7 +3496,25 @@ print(sys.path)
 
 
 
+#   a = list(x)
+#   b = dict(y)
+#   complex_function(a, b)
+ 
 
+def complex_function3(objects, dict):
+    list = []
+    i = 0
+    while i<len(objects):
+        x = objects[i]
+        i = i+1
+        if not(x == None or x in dict.keys()):
+            list.append(x)
+    x = set(list)
+    return x
+
+
+def complex_function(objects, my_dict):
+    return {el for el in objects if el is not None and el not in my_dict}
 
 
 
