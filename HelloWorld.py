@@ -1982,9 +1982,9 @@ p = lambda y : 0
 # upper limit of first integral
 q = lambda y : sqrt(1 - 2*y**2)
 # perform double integration
-integration = integrate.dblquad(f , 0 , 2/4,  p, q)
+integration = integrate.dblquad(f , 0 , 2/4, p, q)
 print(integration)
-integrate.dblquad(f , 0 , 2/4,  0, q)
+integrate.dblquad(f , 0 , 2/4, 0, q)
 
 from scipy import integrate
 f = lambda y, x: x*y**2
@@ -2066,7 +2066,7 @@ print(sorted_string)
 # here we create new data_file.json file with write mode using file i/o operation
 dire = "/home/ukasz/Documents/Programowanie/Python/"
 with open(dire+'json_file.json', "w") as file_write:
-   person_data = {  "person":  { "name":  "Kenn",  "sex":  "male",  "age":  28}}
+   person_data = {  "person":  { "name":  "Kenn", "sex":  "male", "age":  28}}
    # write json data into file
    print(json.dump(person_data, file_write, indent=4, sort_keys=True))
 
@@ -2080,7 +2080,7 @@ dict_obj = json.loads(person_data)
 # check type of dict_obj
 print("Type of dict_obj", type(dict_obj))
 # get human object details
-print("Person......",  dict_obj.get('person'))
+print("Person......", dict_obj.get('person'))
 dict_obj['person']['name']
 
 
@@ -2185,7 +2185,7 @@ try:
       data = json.load(file_object)
       print(data)
 except ValueError:
-   print("Bad JSON file format,  Change JSON File")
+   print("Bad JSON file format, Change JSON File")
 
 
 import json
@@ -2765,7 +2765,7 @@ if re.search(regex, "June 24"):
    # string
    print("Match at index %s, %s" % (match.start(), match.end()))
    
-   # The groups contain the matched values.  In particular:
+   # The groups contain the matched values. In particular:
    #    match.group(0) always returns the fully matched string
    #    match.group(1), match.group(2), ... will return the capture
    #            groups in order from left to right in the input string
