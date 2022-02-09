@@ -1,0 +1,19 @@
+# interactive mode
+> python
+# write code
+# press enter
+
+# standard (script) mode
+cat > filename.py
+print('Hello World')
+^C
+>python filename.py
+
+# in vsc
+# write code in editor
+# select code
+# shift+enter
+
+# python in jupyther in code
+code> ctrl+shift+p
+Jupyther: Create

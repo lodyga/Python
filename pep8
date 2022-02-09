@@ -1,0 +1,30 @@
+# startswith() and endswith() are cleaner and less error prone:
+# Correct:
+if foo.startswith('bar'):
+# Wrong:
+if foo[:3] == 'bar':
+
+
+# Object type comparisons should always use isinstance() instead of comparing types directly:
+# Correct:
+if isinstance(obj, int):
+# Wrong:
+if type(obj) is type(1):
+
+
+# For sequences, (strings, lists, tuples), use the fact that empty sequences are false:
+# Correct:
+if not seq:
+if seq:
+# Wrong:
+if len(seq):
+if not len(seq):
+
+
+# Don't compare boolean values to True or False using ==:
+# Correct:
+if greeting:
+# Wrong:
+if greeting == True:
+
+
