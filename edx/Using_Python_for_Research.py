@@ -59,14 +59,18 @@
 # and built-in functions
 # but the bulk of the Python library consists of modules.
 
-# Each object in Python has three characteristics. These characteristics are called object type, object value, and object identity. 
+# Each object in Python has three characteristics. These characteristics are called 
+# object type, object value, and object identity. 
 # Object type tells Python what kind of an object it's dealing with. 
 # A type could be a number, or a string, or a list, or something else.
-# Object value is the data value that is contained by the object. This could be a specific number, for example.
-# Finally, you can think of object identity as an identity number for the object. Each distinct object in the computer's memory
+# Object value is the data value that is contained by the object. 
+# This could be a specific number, for example.
+# Finally, you can think of object identity as an identity number for the object. 
+# Each distinct object in the computer's memory
 # will have its own identity number.
 
-# Most Python objects have either data or functions or both associated with them. These are known as attributes.
+# Most Python objects have either data or functions or both associated with them. 
+# These are known as attributes.
 # The name of the attribute follows the name of the object.
 # And these two are separated by a dot in between them.
 
@@ -78,19 +82,32 @@ object.date_attribute
 object.method() == object.function()
 
 # Object type always determines the kind of operations that it supports.
-# In other words, depending on the type of the object, different methods may be available to you as a programmer.
+# In other words, depending on the type of the object, different methods 
+# may be available to you as a programmer.
 
-# Finally, an instance is one occurrence of an object. For example, you could have two strings.
-# They may have different values stored in them, but they nevertheless support the same set of methods.
+# Finally, an instance is one occurrence of an object. 
+# For example, you could have two strings.
+# They may have different values stored in them, but they nevertheless 
+# support the same set of methods.
 
 
 
-# Python has immutable objects (e.g., strings and tuples) and mutable objects (e.g., dictionaries and lists). 
+# Python has immutable objects (e.g., strings and tuples) and mutable 
+# objects (e.g., dictionaries and lists). 
 # What does it mean for an object to be immutable?
 # Its contents cannot be modified by the programmer after the object has been created.
 
 # What is the difference between methods and data attributes of objects?
 # Methods are functions associated with objects, whereas data attributes are data associated with objects.
+
+a = [1, 2]; b = a; b[0] = 0;
+id(a); id(b)
+c = 1; d = c; d = 2 * d
+id(c); id(d)
+c = '12'; d = c; d = d[:1]
+id(c); id(d)
+
+
 
 
 
@@ -99,18 +116,17 @@ object.method() == object.function()
 
 # 1.1.3: Modules and Methods
 
-# Python modules are libraries of code and you can import Python modules using the import statements.
+# Python modules are libraries of code and you can import Python 
+# modules using the import statements.
 
 # The module comes with several functions.
 # Shouldn't be with several data attributes?
-from dataclasses import replace
 import math
-from optparse import Values
 math.pi
 
 # The math module also comes with several functions, or methods.
 math.sqrt(10)
-math.sin(math.pi/2)
+math.sin(math.pi / 2)
 
 from math import pi
 pi
@@ -158,8 +174,10 @@ name.upper
 name.upper()
 help(name.upper())
 
-# Suppose that math.sqrt and numpy.sqrt had identical behavior. Are they the same function?
-# No. Because they belong to different namespaces, Python treats them separately, regardless of their behavior.
+# Suppose that math.sqrt and numpy.sqrt had identical behavior. 
+# Are they the same function?
+# No. Because they belong to different namespaces, Python treats 
+# them separately, regardless of their behavior.
 
 
 
@@ -220,8 +238,10 @@ choice([2, 44, 55, 66])
 type(True)
 
 # boolean type values: True, False;
-# Operations involving logic, so-called boolean operations, take in one or more boolean object and then
-# they return one boolean object back to you. There are only three boolean operations, which are "or", "and", and "not".
+# Operations involving logic, so-called boolean operations, 
+# take in one or more boolean object and then
+# they return one boolean object back to you. There are only three 
+# boolean operations, which are "or", "and", and "not".
 
 True or False
 True and True
@@ -243,7 +263,9 @@ not False
 [2, 3] is [2, 3]
 [2, 3] is not [2, 3]
 
-# Python takes the second number, which is number 2, an integer-- it turns that into a floating point number.
+# Python takes the second number, which is number 2, an integer-- 
+# it turns that into a floating point number.
+
 2.00 == 2
 
 True == True
@@ -302,8 +324,10 @@ id(d)
 # In Python, a sequence is a collection of objects ordered by their position.
 # In Python, there are three basic sequences, which are lists, tuples, and so-called "range objects".
 # But Python also has additional sequence types for representing things like strings.
-# ... any sequence data type will support the common sequence operations. generic sequence functions/operations eg. +, len().
-# in addition, these different types will have their own methods available for performing specific operations.
+# ... any sequence data type will support the common sequence operations. 
+# generic sequence functions/operations eg. +, len().
+# in addition, these different types will have their own methods available 
+# for performing specific operations.
 # Sequences are called "sequences" because the objects that they contain form a sequence.
 
 # The first, fundamental aspect to understand about sequences is that indexing starts at 0. 
@@ -463,14 +487,15 @@ S[0]
 S[-1]
 S[:3]
 S[-3:]
+S[:-3]
 'y' in 'Python'
 'Y' in 'Python'
 
 # polymorphism means that what an operator does depends on the type of objects it is being applied to.
 # concatenation
-"2" + "2"
-3*S
-"eight equals " + str(8)
+'2' + '2'
+3 * S
+'eight equals ' + str(8)
 
 # directory of attributes
 dir(str)
@@ -480,8 +505,8 @@ help(str.replace)
 
 name = 'A Alan'
 name.replace('A', 'a')
-names = name.split(" ")
-" ".join([name.upper() for name in names])
+names = name.split(' ')
+' '.join([name.upper() for name in names])
 name
 help(str.join)
 
@@ -490,7 +515,7 @@ from string import digits
 digits
 list(range(10))
 
-"22".isdigit()
+'22'.isdigit()
 dir(str)
 help(str)
 help(str.isdigit)
@@ -522,6 +547,10 @@ help(str.isdigit)
 # One of the key ideas about sets is that they cannot be indexed. So the objects inside sets don't have locations.
 # elements can never be duplicated.
 
+# A set is an unordered collection of items. Every set element is unique 
+# (no duplicates) and must be immutable (cannot be changed).
+# However, a set itself is mutable. We can add or remove items from it.
+
 ids = set()
 ids = {1, 3, 5}
 type(ids)
@@ -537,19 +566,22 @@ ids = set(range(10))
 males = {1, 3, 5, 6, 7}
 type(males)
 
+# Set operations
+# difference
 females = ids - males
 ids.difference(males)
-
 # OR, union
 ids | males
+males.union(females)
 # AND (ampersand), intersection
 females & males
 females.intersection(males)
-# XOR,
+# XOR, symmetric difference
 females ^ males
 females.symmetric_difference(males)
 
 # implication =>
+# p => q = ~p v q
 not females or males
 
 word = "antidisestablishmentarianism"
@@ -596,7 +628,6 @@ age = {'Tim': 28, 'Jim': 35, 'Pam': 40}
 # This is the nature of views objects, their content is dynamically updated as you modify your dictionary.
 names = age.keys()
 type(names)
-age.values()
 ages = age.values()
 type(ages)
 age['Tim']
@@ -610,13 +641,13 @@ age.items()
 
 age.update({'Tom': 50})
 age['Tom2'] = 50
-names
+
+age[0] = 1
+age[0]
 
 # Test membership in dictionary.
 'Tim' in age
 'Tim' in age.keys()
-age[0] = 1
-age[0]
 
 
 
@@ -985,9 +1016,9 @@ for name in sorted(age, reverse=True):
 bears = {"Grizzly": "angry", "Brown": "friendly", "Polar": "friendly"}
 for bear in bears:
     if bears[bear] == 'friendly':
-        print("Hello, "+bear+" bear!")
+        print('Hello, '+bear+' bear!')
     else:
-        print("odd")
+        print('odd')
 
 
 n = 11
@@ -1074,17 +1105,17 @@ for line in open(path+'input.txt'):
 # However, we have to add an extra character, which
 # is the line break character that we extracted
 # when we were reading the file.
-F = open(path+"output.txt", "w")
-F.write("Python\n")
+F = open(path+'output.txt', 'w')
+F.write('Python\n')
 F.close()
 
 
-F2 = open(path+"output2.txt", "w+")
-F2.write("Hello\nWolrd\n")
+F2 = open(path+'output2.txt', 'w+')
+F2.write('Hello\nWolrd\n')
 F2.close()
 
 lines = []
-for line in open(path+"output2.txt"):
+for line in open(path+'output2.txt'):
     lines.append(line.strip())
 print(lines)
 
@@ -1099,9 +1130,11 @@ print(lines)
 
 
 # 1.3.7: Introduction to Functions
-# Functions are devices for grouping statements so that they can be easily run more than once in a program.
+# Functions are devices for grouping statements so that they can be 
+# easily run more than once in a program.
 # Functions maximize code reuse and minimize code redundancy.
-# Functions enable dividing larger tasks into smaller chunks, an approach that is called procedural decomposition.
+# Functions enable dividing larger tasks into smaller chunks, 
+# an approach that is called procedural decomposition.
 
 def add(a, b):
     mysum = a + b
@@ -1111,8 +1144,10 @@ add(2, 3)
 add
 
 # Arguments to Python functions are matched by position.
-# An argument is an object that is passed to a function as its input when the function is called.
-# A parameter, in contrast, is a variable that is used in the function definition to refer to that argument.
+# An argument is an object that is passed to a function as its 
+# input when the function is called.
+# A parameter, in contrast, is a variable that is used in the function 
+# definition to refer to that argument.
 
 # mutalbe object
 def modify(mylist):
@@ -1184,8 +1219,8 @@ password(5)
 
 
 
-"".join([str(elem) for elem in list(range(5))])
-type("") == str
+''.join([str(elem) for elem in list(range(5))])
+type('') == str
 4 in 'ae'
 
 def is_vowel(letter):
@@ -1623,7 +1658,6 @@ np.array([2, 4]) + np.array([6, 8])
 
 # 2.2.3: Indexing NumPy Arrays
 
-
 ind = [1, 2]
 y[ind]
 y[[1, 2]]
@@ -1709,8 +1743,7 @@ np.all(x >= 0.1)
 
 # x%i == 0 tests if x has a remainder when divided by i. 
 # If this is not true for all values strictly between 1 and x, it must be prime!
-x = 20
-not np.any([x%i == 0 for i in range(2, x)])
+not np.any([x%i == 0 for i in range(2, 20)])
 
 
 
@@ -1737,7 +1770,7 @@ import numpy as np
 # If for some reason you'd like to suppress the printing of that object,
 # in the IPython Shell you can add a semi-colon at the end of the line
 # doesn' work
-plt.plot([0, 1, 4, 9, 16]);
+plt.plot([0, 1, 4, 9, 16])
 plt.show()
 
 x = np.linspace(0, 10, 20)
@@ -1749,12 +1782,12 @@ plt.show()
 # a keyword argument is an argument which is supplied to the function by explicitly naming each parameter
 # and specifying its value.
 
-plt.plot([0,1,2],[0,1,4],"rd-")
+plt.plot([0, 1, 2], [0, 1, 4], 'rd-')
 
 # In this case, I'm requesting plt to use blue, to use circles, and to use a solid line.
-plt.plot(x, y1, "bo-")
-plt.plot(x, y1, "bo-", linewidth=2, markersize=4, label="First")
-plt.plot(x, y2, "gs-", linewidth=2, markersize=12, label="Second")
+plt.plot(x, y1, 'bo-')
+plt.plot(x, y1, 'bo-', linewidth=2, markersize=4, label='First')
+plt.plot(x, y2, 'gs-', linewidth=2, markersize=12, label='Second')
 plt.show()
 
 
@@ -1764,13 +1797,13 @@ plt.show()
 
 # 2.3.2: Customizing Your Plots
 
-plt.xlabel("$X$")
-plt.ylabel("$Y$")
+plt.xlabel('$X$')
+plt.ylabel('$Y$')
 # plt.axis[(xmin, xmax, ymin, ymax)]
 plt.axis([-.5, 10.5, -5, 105])
-plt.legend(loc="upper left")
+plt.legend(loc='upper left')
 # plt.savefig("myplot.png")
-#  plt.savefig("myplot.pdf")
+# plt.savefig("myplot.pdf")
 plt.show()
 
 
@@ -1967,7 +2000,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 rolls = [random.choice(range(1, 7)) for _ in range(100)]
-plt.hist(rolls, density=True, bins=np.linspace(.5, 6.5, 7), ec="black")
+plt.hist(rolls, density=True, bins=np.linspace(.5, 6.5, 7), ec='black')
 plt.show()
 
 # The law of large numbers, which is a theorem of probability,
@@ -1978,7 +2011,7 @@ plt.show()
 
 x = sum([random.choice(range(1, 7)) for _ in range(10)])
 y = [sum([random.choice(range(1, 7)) for _ in range(10)]) for _ in range(1000000)]
-plt.hist(y, density=True, bins=np.linspace(5, 65, 25), ec="black")
+plt.hist(y, density=True, bins=np.linspace(5, 65, 25), ec='black')
 # plt.hist(y, density=True, ec="black")
 plt.show()
 
@@ -2020,14 +2053,14 @@ np.random.normal(0, 1, (2, 5))
 # generate random integers
 X = np.random.randint(1, 7, (1000000, 10))
 X.shape
-# sum over all rows
-X.sum(1)
-X.sum(1,)
-
 # summing over all of the rows of the array.
 np.sum(X, axis=0)
 # summing over all of the columns.
 np.sum(X, axis=1)
+# sum over all columns
+X.sum(1)
+X.sum(1,)
+
 
 help(np.sum)
 Y = np.sum(X, axis=1)
@@ -2035,7 +2068,6 @@ plt.hist(Y, density=True, bins=np.linspace(5, 65, 25), ec="black")
 plt.hist(Y, density=True, ec="black")
 plt.show()
 
-np.random.normal(1, 2, 3)
 
 
 
@@ -2362,7 +2394,7 @@ genetic instructions.
 These instructions are needed to make and maintain living organisms.
 For a long time, it was not clear what molecules
 were able to copy and transmit genetic information.
-We now know that this information is carried by the dioxyribonucleic acid
+We now know that this information is carried by the deoxyribonucleic acid
 or DNA in all living things.
 DNA is a discrete code physically present
 in almost every cell of an organism.
@@ -2420,10 +2452,11 @@ for line in open(os.getcwd()+path+'dna.txt'):
 
 f = open(os.getcwd()+path+'dna.txt')
 seq = f.read()
-# prind with \n
+# print with \n
 seq
 # print without \n
 print(seq)
+f.close()
 
 # remove \n linebreaks
 seq = seq.replace('\n', '').replace('\r', '')
@@ -2499,18 +2532,19 @@ def DNA_to_aminoacid(seq):
     Translate a string containing a nucleotide sequence into a string containing the corresponding sequence of amino acids. 
     Nucleotides are translated in triplets using the table dictionary; each amino acid 4 is encoded with a string of length 1.
     """
-
+    
     protein = ''
-    if True: #len(seq)%3 == 0:
-        # for i in range(len(seq)//3):
-        #     print(seq[3*i:3 * (i+1)])
-        for i in range(0, len(seq), 3):
-            # protein += table_js[seq[i:i+3]]
-            protein += table2[seq[i:i+3]]
-
+    for i in range(0, len(seq), 3):
+        # protein += table_js[seq[i:i+3]]
+        protein += table2[seq[i:i+3]]
     return protein
 
 
+DNA_to_aminoacid('ATAGGCAAA')
+
+
+
+    
 
 
 
@@ -2620,21 +2654,11 @@ encoded_message
 
 
 
-
-
-
 # Week 3: Case Studies Part 1/Case Study 2: Language Processing
 
 # 3.2.1: Introduction to Language Processing
 
 # Project Gutenberg is the oldest digital library of books.
-
-
-
-
-
-
-
 
 
 
@@ -2690,7 +2714,7 @@ count_words(text) == count_words_fast(text)
 
 import os
 os.getcwd()
-os.chdir('/home/ukasz/Documents/IT/Python')
+# os.chdir('/home/ukasz/Documents/IT/Python')
 path = '/edx/Language_Processing/Books/English/shakespeare'
 
 
@@ -2805,7 +2829,7 @@ num_uniq_pl, counts_pl = word_stats(count_words_fast(romeo_book_pl))
 
 import os
 os.getcwd()
-os.chdir('/home/ukasz/Documents/IT/Python/')
+# os.chdir('/home/ukasz/Documents/IT/Python/')
 path = '/edx/Language_Processing/Books'
 os.listdir(os.getcwd()+path)
 
@@ -2829,30 +2853,35 @@ import pandas as pd
 # package / libraray version
 pd.__version__
 
-table = pd.DataFrame(columns=('Name', 'Age'))
-table.loc[1] = 'James', 25
+
+table = pd.DataFrame(columns=('Name', 'Age')) # create an empty table
+table.loc[1] = 'James', 25 # add elements
 table.loc[2] = 'Jess', 22
-# table.append[3] = 'Tom', 40
+table2 = pd.DataFrame([['Tom', 40]], columns=('Name', 'Age'))
+table.append(table2)
 table
-table.columns
+table.columns # column names
+table.Name  # select column
 table.Name
-table['Name']
+table[['Name', 'Age']]
 
 
-df0 = pd.DataFrame(columns=('A', 'B'))
-df = pd.DataFrame([[1, 2], [3, 4]], columns=('A', 'B'))
-df = pd.DataFrame([[1, 2], [3, 4]], columns=('A', 'B'), index=(1, 2))
-df2 = pd.DataFrame([[5, 6]], columns=('A', 'B'))
-df0.append(df, ignore_index=True)
+df = pd.DataFrame([[1, 2], [3, 4]],
+                  columns=('A', 'B'),
+                  index=(0, 1))  # create table with data
+df.loc[2] = 5, 6
+df.append(pd.DataFrame([[7, 8]], columns=('A', 'B')))
+df2 = pd.DataFrame([[7, 8]], columns=('A', 'B'))
 df.append(df2)
 df.append(df2, ignore_index=True)
+
 
 stats = pd.DataFrame(columns=('language', 'author', 'title', 'length', 'unique'))
 title_num = 1
 
 import os
 os.getcwd()
-os.chdir('/home/ukasz/Documents/IT/Python')
+# os.chdir('/home/ukasz/Documents/IT/Python')
 path = '/edx/Language_Processing/Books'
 os.listdir(os.getcwd()+path)
 
@@ -2962,7 +2991,7 @@ hamlets
 
 language, text = hamlets.iloc[0]
 
-# DataFrame from Counter (or dict)
+# create DataFrame from Counter or dict
 data = pd.DataFrame(dict(count_words_fast(text)).items(), columns=('word', 'count'))
 # data = pd.DataFrame({
 #    'word': count_words_fast(text).keys(),
@@ -3255,13 +3284,13 @@ points = np.array([[1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 1], [3, 2
 p = np.array([2.5, 2])
 
 import matplotlib.pyplot as plt
-plt.plot(points[:, 0], points[:, 1], "ro")
-plt.plot(p[0], p[1], "bo")
+plt.plot(points[:, 0], points[:, 1], 'ro')
+plt.plot(p[0], p[1], 'bo')
 # plt.axis(0, 3.5, 0, 3.5)
 plt.show()
 
 for point in np.array(list([p]) + list(points)):
-    plt.plot(point[0], point[1], "bo")
+    plt.plot(point[0], point[1], 'bo')
 plt.show()
 
 
@@ -3278,6 +3307,7 @@ def find_nearest_neighbors(p, points, k=5):
     """Find k nearest neighbors"""
 
     # np.argsort returns to indices that would sort the given array.
+    # sort by index
     return np.argsort([distance(p, point) for point in points])[:k]
 
 ind = find_nearest_neighbors(p, points, 2)
@@ -3347,8 +3377,8 @@ def generate_synth_data(n=50):
 points, outcomes = generate_synth_data(20)
 
 import matplotlib.pyplot as plt
-plt.plot(points[:20, 0], points[:20, 1], "ro")
-plt.plot(points[20:, 0], points[20:, 1], "bo")
+plt.plot(points[:20, 0], points[:20, 1], 'ro')
+plt.plot(points[20:, 0], points[20:, 1], 'bo')
 plt.show()
 
 
@@ -3444,8 +3474,12 @@ predictors, outcomes = generate_synth_data()
 predictors.shape
 outcomes.shape
 
-k = 50; filename = 'knn_synth_50.png'; limits = (-3, 4, -3, 4); h = 0.1
-(xx, yy, prediction_grid) = make_prediction_grid(predictors, outcomes, limits, h, k)
+k = 50
+filename = 'knn_synth_50.png'
+limits = (-3, 4, -3, 4)
+h = 0.1
+(xx, yy, prediction_grid) = make_prediction_grid(
+    predictors, outcomes, limits, h, k)
 plot_prediction_grid(xx, yy, prediction_grid, filename)
 
 # Looking at the plot here for k equals 50,
@@ -3485,6 +3519,7 @@ plot_prediction_grid(xx, yy, prediction_grid, filename)
 # petal length, and petal width.
 
 from sklearn import datasets
+import sklearn.datasets
 import matplotlib.pyplot as plt
 
 iris = datasets.load_iris()
@@ -3897,7 +3932,7 @@ print([val for sublist in list_of_lists for val in sublist])
 list_of_lists= zip(*repeat(range(1, 6), 3))
 print(list(np.array(list(list_of_lists)).flatten()))
 
-print(list(np.repeat(range(1, 6), 3)))
+np.repeat(range(1, 6), 3)
 
 
 
@@ -3966,7 +4001,9 @@ for i in range(len(distilleries)):
                 correlation_colors.append('lightgray') # color them lightgray.
 
 
-correlation_colors2 = ['white' if correlations[i, j] < 0.7 else cluster_colors[whisky.Group[i]] if distilleries[i] == distilleries[j] else 'lightgray' for i in range(len(distilleries)) for j in range(len(distilleries))]
+correlation_colors2 = ['white' if correlations[i, j] < 0.7 else cluster_colors[whisky.Group[i]] 
+                            if distilleries[i] == distilleries[j] else 'lightgray' 
+                                for i in range(len(distilleries)) for j in range(len(distilleries))]
 correlation_colors == correlation_colors2
 
 
@@ -4149,6 +4186,9 @@ plt.ylabel("Latitude")
 plt.legend(loc='upper left')
 # plt.savefig(os.getcwd()+'/'+path+'/'+'3traj.png')
 plt.show()
+
+
+
 
 
 
@@ -4396,6 +4436,7 @@ grouped_birds = birddata.groupby('bird_name')
 
 # Now calculate the mean of `speed_2d` using the `mean()` function.
 mean_speeds = grouped_birds.speed_2d.mean()
+mean_speeds = birddata.groupby('bird_name').speed_2d.mean()
 
 # Find the mean `altitude` for each bird.
 mean_altitudes = grouped_birds.altitude.mean()
@@ -4438,7 +4479,7 @@ sanne_daily_speed = grouped_birdday.speed_2d.mean().Sanne
 nico_daily_speed  = grouped_birdday.speed_2d.mean().Nico
 
 # eric_daily_speed.plot(label='Eric')
-plt.plot(eric_daily_speed, label='Eric')
+plt.plot(eric_daily_supeed, label='Eric')
 sanne_daily_speed.plot(label='Sanne')
 nico_daily_speed.plot(label='Nico')
 plt.plot(eric_daily_speed)
@@ -6362,6 +6403,6 @@ sorted(list(zip(all_covariates, forest_classifier.feature_importances_)),
 
 
 
-2*44+3*49+1+40
+
 
 

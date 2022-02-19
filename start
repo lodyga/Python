@@ -15,5 +15,5 @@ print('Hello World')
 # shift+enter
 
 # python in jupyther in code
-code> ctrl+shift+p
+in VSC> ctrl+shift+p
 Jupyther: Create
