@@ -1,17 +1,22 @@
 # help
 
-from cProfile import label
-from collections import Counter
-from enum import unique
-
-from HelloWorld import C
-dir(str)
+dir(str)  # returns a list of attributes and methods belonging to an object
 help(str)
 help(str.isdigit)
-type(str)
+type(str) # type of an object
+id(str) # identity of an object
+
+
+
+
+
 
 
 # print
+
+from pprint import pprint
+pprint(dir(str))
+
 
 print('Germany', end = '\n')
 print('ABC' + ' ' + str(99))
@@ -127,12 +132,27 @@ c.sort(reverse=False)
 sorted(c)
 len(c)
 c.index(5) # returns index of the value
-
+[1, 2, 3].index(3)
+c.insert(0, 1) # insters an element at i-th position # prepend
 
 # to sort the list by length of the elements
-str1 = ['cat', 'mammal', 'goat', 'is']
+str1 = ['cat', 'mammal', 'goat', 'is', '']
 str1.sort()
 str1.sort(key=len)
+sorted(str1, key=len)
+
+# removes '' and ' ' from string list
+list(filter(str.strip, str1))
+
+[1, 1, 2].count(1) # count chosen elements in list
+[None, True, False].count(True)
+
+'foobar'[::-1]
+'foobar'[-1::-1]
+'foobar'.startswith('foo')
+
+
+
 
 
 
@@ -159,6 +179,8 @@ x[0]
 
 
 
+
+
 # Strings
 
 S = 'Python'
@@ -182,10 +204,12 @@ names = name.split(' ')
 ';'.join('ukasz')
 ' '.join([name.title() for name in names])
 ''.join([random.choice(string.ascii_lowercase) for _ in range(5)])
-name.index('l')
-name.find('l')
+name.find('l') # same as index but returns -1 of none
+name.index('l') # same as find but sends ValueError it str not found
+
 
 '22'.isdigit()
+'str'.isalpha()
 'ukasz'.upper()
 'ukasz'.capitalize()
 'ukasz'.title()
@@ -210,8 +234,8 @@ mystring = 'Meet Guru99 Tutorials Site. Best site for Python Tutorials!'
 mystring.find('Tutorials')
 mystring.find('Tutorials', 20)
 mystring.rfind('Tutorials')
-mystring.index('Tutorials')
-mystring.find('foo')
+mystring.find('foo') # returns -1 if nothing found
+mystring.index('Tutorials') # returns error if nothing found
 
 
 
@@ -236,6 +260,7 @@ ids.add(10)
 ids.add(1)
 # removes element from set
 ids.pop()
+ids.remove(1)
 
 ids = set(range(10))
 males = {1, 3, 5, 6, 7}
@@ -363,7 +388,8 @@ word = "antidisestablishmentarianism"
 Counter(word)
 [(vote, count) for vote, count in dict(Counter(word)).items() if count == max(dict(Counter(word)).values())]
 
-
+arr = [3, 3, 3, 3, -1]
+max(set(arr), key=arr.count)
 
 
 
@@ -382,11 +408,26 @@ sort_dict(address_count)
 
 
 
+
+
+# sort
+
+a = [(1, 2), (4, 1), (9, 10), (13, -3)]
+
+a.sort(key=lambda x: x[1])
+
+sorted(a, key=lambda x: x[1])
+
+
+
+
+
+
 # sum
 
 import numpy as np
 
-X = np.random.randint(1, 7, (1000000, 10))
+X = np.random.randint(1, 7, (100, 10))
 X.shape
 
 # summing over all of the rows of the array.
@@ -440,6 +481,80 @@ list(frange)
 list(range(10)) + list(range(10, 20, 1))
 
 
+a_list = [[1, 2], [3, 4], [5, 6]]
+print(list(chain(*a_list)))
+print(list(chain.from_iterable(a_list)))
+
+
+
+
+# reduce
+
+from functools import reduce
+
+reduce((lambda x, y: x + y), [1, 2, 3, 4])
+reduce((lambda x, y: x - y), [4, 3, 2, 1])
+
+
+
+
+
+
+# from collections import defaultdict
+
+from collections import defaultdict
+
+colors = (
+   ('first', 'blue'),
+   ('second', 'red'),
+   ('third', 'green'),
+   ('first', 'orange')
+)
+
+colors_list = defaultdict(list)
+for key, val in colors:
+    colors_list[key].append(val)
+
+dict(colors_list)
+colors_list.get('first')
+
+
+from collections import defaultdict
+tree = lambda: defaultdict(tree)
+some_dict = tree()
+some_dict['colours']['favourite'] = "yellow"
+
+import json
+print(json.dumps(some_dict))
+
+
+
+
+
+
+
+
+# from collections import deque
+
+from collections import deque
+
+d = deque()
+d.append(1)
+d.append('1')
+len(d)
+d[0]
+d[-1]
+d.popleft()
+d.remove('1')
+
+d = deque(range(5), maxlen=5) # max elements in q
+d.appendleft(-1) # add element from left
+d.extend([4, 5, 6]) # add list
+
+
+
+
+
 
 
 
@@ -456,8 +571,8 @@ for i in enumerate('foo'):
 for i in enumerate({'a': 'PHP', 'b': 'JAVA', 'c': 'PYTHON', 'd': 'NODEJS'}.items()):
     print(i)
 
-
-
+my_list = ['apple', 'banana', 'grapes', 'pear']
+list(enumerate(my_list, 1)) # enumerate a tuple
 
 
 
@@ -500,11 +615,15 @@ list(abc('a', 't'))
 # isinstance()
 
 isinstance(51, int)
+isinstance(5.0, int) # it's int, but object is float
+isinstance(5.0, float)
 isinstance('Hello World', str)
 isinstance({1, 2, 3, 4, 5}, set)
 isinstance((1, 2, 3, 4, 5), tuple)
 isinstance([1, 2, 3, 4, 5], list)
 isinstance({'A': 'a', 'B': 'b', 'C': 'c', 'D': 'd'}, dict)
+
+(5.0).is_integer()
 
 class MyClass:
    message = 'Hello World'
@@ -614,11 +733,14 @@ np.all(z >= 0.1)
 np.all(np.array([[1, 2], [1, 2]]) == 1, axis=0)
 np.all(np.array([[1, 2], [1, 2]]) == 1, axis=1)
 
-
-np.cumsum(random.sample(range(10), 10)) # cumulative sum
+np.cumsum([1, 2, 3])
+np.subtract.accumulate([1, 2, 3])
 np.power([1, 2, 3], 2)
 np.square([1, 2, 3])
 np.sqrt([9, 16, 25])
+np.sum([3, 4, 10])
+np.prod([3, 4, 10])
+np.product([3, 4, 10])
 
 np.min([9, 16, 25])
 np.max([9, 16, 25])
@@ -750,6 +872,15 @@ plt.show()
 
 # CSV
 
+# If you want to read the file, pass in r
+# If you want to read and write the file, pass in r+
+# If you want to overwrite the file, pass in w
+# If you want to append to the file, pass in a
+
+# In general, if the format is written by humans, it tends to be text mode. jpg image files are not generally written by humans (and are indeed not readable by humans), and you should therefore open them in binary mode by adding a b to the mode string (if you’re following the opening example, the correct mode would be rb). If you open something in text mode (i.e. add a t, or nothing apart from r/r+/w/a), you must also know which encoding to use. For a computer, all files are just bytes, not characters.
+
+# encoding='utf-8-sig'
+
 # better use pandas
 import os
 
@@ -806,9 +937,9 @@ from collections import Counter
 word = "antidisestablishmentarianism"
 Counter(word)
 list(Counter(word).elements()) # list of all letters
-
 Counter(word).most_common(2) # the most repetitive elements
 
+Counter([5, 5, 6, 6, 7]).most_common(2) # the most frequent elements in list
 
 counter1 = Counter({'x': 4, 'y': 2, 'z': -2})
 counter2 = Counter({'x1': -12, 'y': 5, 'z':4 })
@@ -843,7 +974,12 @@ counter1['y']
 
 
 
+
 # import os
+
+import os
+os.system('cls' if os.name == 'nt' else 'clear')
+
 from os import getcwd, chdir
 import os
 
@@ -994,7 +1130,27 @@ if path.exists(os.getcwd()+'/'+dire+'dna.txt.bak'):
 
 
 
-# Zip
+# Zip & UnZip
+
+first_name = ['Joe','Earnst','Thomas','Martin','Charles']
+last_name = ['Schmoe','Ehlmann','Fischer','Walter','Rogan','Green']
+age = [23, 65, 11, 36, 83]
+list(zip(first_name, last_name,  age))
+
+for f, l, a in zip(first_name, last_name,  age):
+    print('{} {} is {} years old'.format(f, l, a))
+
+# unzip
+full_name_list = [('Joe', 'Schmoe', 23),
+                  ('Earnst', 'Ehlmann', 65),
+                  ('Thomas', 'Fischer', 11),
+                  ('Martin', 'Walter', 36),
+                  ('Charles', 'Rogan', 83),
+                 ]
+
+list(zip(*full_name_list))
+(*full_name_list)
+
 
 import os
 import shutil
@@ -1016,6 +1172,46 @@ with ZipFile(os.getcwd()+'/'+dire+'delme_archive.zip', 'w') as newzip:
     newzip.write(os.getcwd()+'/'+'pep8')
 
 
+
+
+# *
+# *someting - skips outer braces, feeding function with (possibly) more than one argument
+
+
+
+
+
+
+# generators
+
+# simple generator with range(10)
+def gen_fun():
+    for i in range(10):
+        yield i
+
+for i in gen_fun():
+    print(i)
+
+
+# Fibonacci generator
+def fib(n):
+    a = b = 1
+    for i in range(n):
+        yield(a)
+        a, b = b, a + b
+
+# print all values
+for i in fib(10):
+    print(i)
+
+# use next() to access the next element of a sequence
+fib_10 = fib(10)
+print(next(fib_10))
+
+
+# iterate a string
+iter_text = iter('some_text')
+print(next(iter_text))
 
 
 
@@ -1190,8 +1386,84 @@ pd.DataFrame({'freq': ('high', 'low'),
 
 
 
+
+
+# filter
+
+codespeedy_list = ['hey','there','','whats','','up']
+# filter None
+list(filter(None, codespeedy_list))
+list(filter(bool, codespeedy_list))
+list(filter(len, codespeedy_list))
+
+# removes '' and ' ' from string list
+str1 = ['cat', 'mammal', 'goat', 'is', '', ' ']
+list(filter(str.strip, str1))
+
+# find ditits string
+list(filter(str.isdigit, '1is2'))
+
+
+# sort elements by int in substrings
+def order(sentence):
+    return ' '.join(sorted(sentence.split(), key=lambda x: int(''.join(filter(str.isdigit, x)))))
+order('is2 Thi1s T4est 3a')
+
+def order(sentence):
+    return ' '.join(sorted(sentence.split(), key=lambda x: sorted(x)))
+
+# use function as a key in sorted
+def digits_first_fun(x):
+    return int(''.join(filter(str.isdigit, x)))
+digits_first_fun('1is2')
+
+def order(sentence):
+    return ' '.join(sorted(sentence.split(), key=digits_first_fun))
+order('is2 Thi1s T4est 3a')
+
+
+# filter < 0
+list(filter(lambda x: x < 0, range(-5, 5)))
+
+
+
+
+
+
+
+
+# bool
+
+# use not str % 2
+if not x % 2 is <==> to if x % 2 == 0
+2 % 2 # is 0; not 0 is 1
+not 2 % 2
+
+
+
+
+
+# None
+
+import numpy as np
+
+None_list = np.array([None, True, False])
+# select only not None's
+Not_None_list = None_list[None_list != None]
+# count True's in list; filter None
+np.sum(Not_None_list)
+
+
+
+
 # NaN
+
+import numpy as np
+import pandas as pd
+
 NaN_list = pd.Series([1, np.NaN, 3])
+# remove np.Nan's
+np.array(NaN_list[~np.isnan(NaN_list)], dtype=int)
 np.isnan(NaN_list)
 np.isnan(NaN_list).any()
 np.any(np.isnan(NaN_list))
@@ -1204,8 +1476,11 @@ df = df.replace([np.inf, -np.inf], np.nan)
 # df = df.dropna(how="any")
 df = df.dropna()
 
-
-
+# removing np.Nan's without Pandas doesn't work
+Nan_list = [1, 2, np.NaN]
+~np.isnan(Nan_list)
+# removing Nan's doesn't work that way, need to use Pandas
+Nan_list[~np.isnan(Nan_list)]
 
 
 
@@ -1218,6 +1493,7 @@ string.digits
 string.ascii_lowercase
 string.ascii_letters
 
+'str'.isalpha()
 
 
 
@@ -1317,8 +1593,9 @@ date_str = '2013-08-15 00:18:08+00'
 datetime.datetime.strptime(date_str[:-3], '%Y-%m-%d %H:%M:%S')
 
 
-(datetime.datetime.today() - time1) / datetime.timedelta(days=1)
+(datetime.datetime.today() - time1) / datetime.timedelta(seconds=1)
 (datetime.datetime.today() - time1) / datetime.timedelta(hours=1)
+(datetime.datetime.today() - time1) / datetime.timedelta(days=1)
 
 time1.date()
 time1.time()
@@ -1616,6 +1893,25 @@ list(map(myMapFunc, my_list1, my_list2))
 
 
 
+# map
+# map(function_to_apply, list_of_inputs)
+
+list(map(lambda x: x ** 2 if not x % 2 else x ** 3, range(1, 11)))
+
+# tuple of functions as inputs
+def add(x):
+    return x + x
+def multiply(x):
+    return x * x
+
+for i in range(5):
+    print(list((map(lambda x: x(i), (add, multiply)))))
+
+
+
+
+
+
 
 
 
@@ -1768,11 +2064,237 @@ print(regex.sub(r'\1 Earth', 'Hello World'))
 
 
 
+# Exceptions
+
+# no file to open
+try:
+    file = open('test.txt', 'rb')
+except IOError as e:
+    print('An IOError occurred. {}'.format(e.args[-1]))
+    # raise e
+
+
+# putt all the exceptions which are likely to occur in a tuple
+try:
+    file = open('test.txt', 'rb')
+except (IOError, EOFError) as e:
+    print('An error occurred. {}'.format(e.args[-1]))
+
+
+# handle individual exceptions in separate except blocks
+try:
+    file = open('test.txt', 'rb')
+except IOError as e:
+    print('An error occurred.')
+    # raise e
+except EOFError as e:
+    print('An EOF error occurred.')
+    # raise e
+
+# trapping ALL exceptions:
+try:
+    file = open('test.txt', 'rb')
+except Exception as e:
+    # Some logging if you want
+    raise e
+
+# finally runs whatever except occurs or not
+try:
+    file = open('test.txt', 'rb')
+except IOError as e:
+    print('An IOError occurred. {}'.format(e.args[-1]))
+finally:
+    print("This would be printed whether or not an exception occurred!")
+
+
+try:
+    print('I am sure no exception is going to occur!')
+except Exception:
+    print('exception')
+else:
+    # any code that should only run if no exception occurs in the try,
+    # but for which exceptions should NOT be caught
+    print('This would only run if no exception occurs. And an error here '
+          'would NOT be caught.')
+finally:
+    print('This would be printed in every case.')
+
+
+
+
+
+
+
+
+# function as an argument
+
+def b(function, arg):
+    function(arg)
+
+def a(function, inner_fun, *arg):
+    function(inner_fun, *arg)
+
+a(b, print, 'Hello')
+
+
+
+# *args; are tuples
+
+def args_fun(*arg):
+    # return type(arg) 
+    return arg
+args_fun(1, 2)
+
+def args_fun2(arg1, arg2):
+    print('arg1:', arg1)
+    print('arg2: '+ str(arg2))
+args = ('one', 2)
+args_fun2(*args)
+
+# **kwargs; are dict's
+
+def kwargs_fun(**kwargs):
+    # return type(kwargs)
+    return kwargs
+kwargs_fun(name='no_name', sth='no')
+
+def args_fun2(arg1, arg2):
+    print('arg1:', arg1)
+    print('arg2: '+ str(arg2))
+    print(type(arg2))
+kwargs = {'arg2': 2, 'arg1': 'one'}
+args_fun2(**kwargs)
+
+def args_fun3(**kwarg):
+    # print(type(kwarg))
+    print(kwarg)
+kwargs = {'arg2': 2, 'arg1': 'one'}
+args_fun3(**kwargs)
+
+
+
+
+
+
+
+
+
+
+
+
+# Instance & Class variables
+
+# Instance variables are for data which is unique to every object
+# Class variables are for data shared between different instances of a class
+
+class Cal(object):
+    # pi is a class variable
+    pi = 3.142
+
+    def __init__(self, radius):
+        # self.radius is an instance variable
+        self.radius = radius
+
+    def area(self):
+        return self.pi * self.radius**2
+
+a = Cal(32)
+a.area()
+a.pi
+Cal(32).area()
+
+a.pi = 5
+
+b = Cal(44)
+b.area()
+b.pi
+
+
+# wrong usage of mutable class variables
+class SuperClass(object):
+    superpowers = []
+
+    def __init__(self, name):
+        self.name = name
+
+    def add_superpower(self, power):
+        self.superpowers.append(power)
+
+foo = SuperClass('foo')
+foo.name
+bar = SuperClass('bar')
+bar.name
+foo.add_superpower('fly')
+bar.superpowers
+
+
+# __x__ Magic Methods; commonly called dunder (double underscore)
+# __init__ class initializer
+
+class GetTest(object):
+
+    def __init__(self, name):
+        self.name = name
+        print('Greetings {} !!'.format(name))
+
+    def another_method(self):
+        print('I am another method which is not automatically called')
+
+a = GetTest('luk')
+a.another_method()
+a.name
+GetTest('luk').another_method()
+
+
+# __getitem__ # allows its instances to use the [] (indexer) operator.
+class GetTest(object): 
+
+    def __init__(self):
+        self.info = {
+            'name': 'Luk',
+            'country': 'Poland',
+            'number': 123456789
+        }
+
+    def __getitem__(self, i):
+        return self.info[i]
+
+GetTest()['name']
+GetTest().__getitem__('name')
+
+
+
 
 
 
 
 # Classes and Object-Oriented Programming
+
+# Constructors
+# A constructor is a class function that instantiates an object to 
+# predefined values. It begins with a double underscore (_). 
+# It __init__() method
+
+class User(object):
+    name = ''
+    day = 15
+
+    def __init__(self, name, years):
+        self.name = name
+        self.age = years
+
+    def sayHello(self):
+        print('Welcome to Guru99, ' + self.name)
+
+User1 = User('Alex')
+User1.sayHello()
+
+User('Ukasz').sayHello()
+User('Ukasz', 38).name
+User('Ukasz', 38).age
+me = User('Ukasz', 38)
+me.day
+
 
 class MyList(list):
     def remove_min(self):
@@ -1787,7 +2309,7 @@ class MyList(list):
     def remove_nth(self, i):
         del self[i]
 
-
+x = [1, 2, 3, 4, 5]
 y = MyList(x)
 
 type(x)
@@ -1807,7 +2329,7 @@ y.append_sum()
 # It gives the freedom to create data structures that contains arbitrary 
 # content and hence easily accessible.
 
-class mClass():
+class mClass(object):
     def method1(self):
         print('self from met1')
 
@@ -1822,6 +2344,8 @@ def main():
 if __name__=='__main__':
     main()
 
+type(mClass)
+del mClass
 
 # Inheritance is a feature used in object-oriented programming; 
 # it refers to defining a new class with less or no modification to 
@@ -1835,8 +2359,8 @@ class myClass():
         print('met1')
 
 class childClass(myClass):
-    def method1(self):
-        myClass.method1(self)
+    # def method1(self):
+        # myClass.method1(self)
         # print('childClass Method1')
 
     def method2(self):
@@ -1846,27 +2370,214 @@ def main1():
     # exercise the class methods
     c2 = childClass()
     c2.method1()
-    # c2.method2()
+    c2.method2()
 
 if __name__ == '__main__':
     main1()
 
 
-# Constructors
-# A constructor is a class function that instantiates an object to 
-# predefined values. It begins with a double underscore (_). 
-# It __init__() method
 
-class User():
-    name = ''
 
-    def __init__(self, name):
-        self.name = name
 
-    def sayHello(self):
-        print('Welcome to Guru99, ' + self.name)
 
-User1 = User('Alex')
-User1.sayHello()
 
-User('Ukasz').sayHello()
+# decorators
+
+"""What is a decorator in Python?
+A decorator in Python is a function that takes another function as its argument, 
+and returns yet another function . Decorators can be extremely useful as they allow the 
+extension of an existing function, without any modification to the original function source code
+
+Decorators are a significant part of Python. In simple words: they are functions which modify the functionality of other functions. They help to make our code shorter and more Pythonic. 
+"""
+
+# function within function
+def hi(name="yasoob"):
+    def greet():
+        return "now you are in the greet() function"
+
+    def welcome():
+        return "now you are in the welcome() function"
+
+    if name == "yasoob":
+        return greet
+    else:
+        return welcome
+
+a = hi()
+print(a)
+print(hi())
+print(hi()())
+
+
+# function as an argument
+def hi():
+    return "hi yasoob!"
+
+def doSomethingBeforeHi(func):
+    print("I am doing some boring work before executing hi()")
+    print(func())
+
+doSomethingBeforeHi(hi)
+
+
+# first decorator
+def f_without():
+    print('I have no decorators')
+
+f_without()
+
+def decor(a_func):
+    def fun_in_decor():
+        print('You think so?')
+        a_func()
+        print('Look again')
+    return fun_in_decor
+
+f_without = decor(f_without)
+f_without()
+
+
+# decorator with @
+def f_without():
+    print('I have no decorators')
+f_without()
+
+def decor(a_func):
+    def fun_in_decor():
+        print('You think so?')
+        a_func()
+        print('Look again')
+    return fun_in_decor
+
+@decor
+def f_without():
+    print('I have no decorators')
+f_without()
+
+# returns name of a func inside a decor
+print(f_without.__name__)
+
+
+from functools import wraps
+
+def new_decor(a_func):
+    @wraps(a_func) # it's for proper name of a func; a_func instead of decorated
+    def fun_in_decor():
+        print('You think so?')
+        a_func()
+        print('Look again')
+    return fun_in_decor
+
+@ new_decor
+def f_without():
+    print('I have no decorators')
+f_without()
+
+# returns proper name of a func
+print(f_without.__name__)
+
+
+from functools import wraps
+def decorator_name(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not can_run:
+            return "Function will not run"
+        return f(*args, **kwargs)
+    return decorated
+
+@decorator_name
+def func():
+    return("Function is running")
+
+can_run = True
+print(func())
+# Output: Function is running
+
+can_run = False
+print(func())
+# Output: Function will not run
+
+print(func.__name__)
+
+
+# example 1
+from functools import wraps
+
+def decor(add_fun):
+    @wraps(add_fun)
+    def inner_fun(*args, **kwargs):
+        print('name: ', add_fun.__name__, **kwargs)
+        return add_fun(*args, **kwargs)
+    return inner_fun    
+
+@decor
+def add_fun(x):
+    """Docstring"""
+    return x ** x
+
+add_fun(3)
+help(add_fun)
+
+
+
+
+
+
+
+
+# Mutation
+
+# adds elements to a list despite fact its target=[] in parameters
+# In Python the default arguments are evaluated once when the function is defined, not each time the function is called.
+def add(x, target=[]):
+    target.append(x)
+    return target
+
+add(1)
+
+# creates new list everytime function is called
+def add(x, target=None):
+    if target == None:
+        target = []
+    target.append(x)
+    return target
+
+add(1)
+
+
+
+
+
+
+
+
+
+"""A Singleton pattern in python is a design pattern that allows you to create just one instance of a class, throughout the lifetime of a program. Using a singleton pattern has many benefits. A few of them are:
+https: // python-patterns.guide/gang-of-four/singleton/
+
+"""
+
+
+
+
+
+# Virtual Environment
+# Virtualenv is a tool which allows us to make isolated python environments. 
+# Different applications need different versions of Python/packages
+
+
+pip install virtualenv # install
+virtualenv --system-site-packages mycoolproject # virtualenv to have access to your systems site-packages
+virtualenv --no-site-packages projekt1 # makes clean virtualenv
+source myproject/bin/activate # activates that isolated environment
+deactivate # turn off env
+
+
+
+
+
+
+
+

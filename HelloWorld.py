@@ -1322,6 +1322,14 @@ counter1['y']
 
 
 
+
+
+
+
+
+
+
+
 # Enumerate
 
 my_list = ['D', 'B', 'C', 'A']
@@ -3542,4 +3550,8 @@ def complex_function(objects, my_dict):
     return {el for el in objects if el is not None and el not in my_dict}
 
 
+A Singleton pattern in python is a design pattern that allows you to create just one instance of a class, throughout the lifetime of a program. Using a singleton pattern has many benefits. A few of them are:
+https: // python-patterns.guide/gang-of-four/singleton/
 
+What is a decorator in Python?
+A decorator in Python is a function that takes another function as its argument, and returns yet another function . Decorators can be extremely useful as they allow the extension of an existing function, without any modification to the original function source code
