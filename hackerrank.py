@@ -2127,7 +2127,7 @@ import re
 for _ in range(int(input())):
     name, email = input().split()
     result = bool(re.match(r'^<[A-Za-z](\w|-|\.|_)+@[A-Za-z]+\.[A-Za-z]{1,3}>$', email))
-    if result: print(*(name, email), sep=' ')
+    if result: print(*(name, email), sep=': ')
 
 Sample Input
 2  
