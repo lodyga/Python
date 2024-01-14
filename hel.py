@@ -23,10 +23,12 @@ id(str)  # identity of an object
 
 
 # Strings
+'welcome '+ "you" + ' too ' + "2"  # 'welcome you too 2'
 'welcome {0} too {1}'.format('you', '2')  # 'welcome you too 2'
 'welcome {a} too {b}'.format(a='you', b=2)  # 'welcome you too 2'
 'welcome %s too %d' % ('you', 2)  # 'welcome you too 2'
-f'welcome {"you"} too {2}'  # 'welcome you too 2'
+first_str, sec_str = "you", "2"
+f'welcome {first_str} too {sec_str}'  # 'welcome you too 2'
 
 arg = 'you'
 arg2 = 2
@@ -43,7 +45,7 @@ f'welcome {arg} too {arg2}'
 'abca'.rfind('a')  # 3
 'abca'.index('b')  # 1 # same as find but sends ValueError it str not found
 
-'abc'.count('a')  # 1
+'abca'.count('a')  # 1
 'abc'.count('a', 1, 1)  # 0 # count with start, stop
 
 'A Alan'.replace('A', 'a')  # 'a alan' # replace 'A' with 'a'
@@ -78,6 +80,10 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from string
 'ABc'.lower()  # 'abc'
 'abc def'.capitalize()  # 'Abc def'
 'abc def'.title()  # 'Abc Def'
+" ".join(map(str.capitalize, "abc def".split()))  # 'Abc Def'
+"abc't def".title()  # 'Abc'T Def'
+import string
+string.capwords("abc't def")  # 'Abc't Def'
 
 '  1 2  '.strip()  # '1 2' # removes leading and trailing whitespaces
 '  1 2  '.rstrip()  # '  1 2' # removes trailing whitespaces
@@ -103,7 +109,7 @@ S[:-4]  # 'Py' # ends on the 4th elem from right exclusive # first two elements 
 S[-2:]  # 'on' # starts from the 2nd elem from right # last two elements counting from right
 
 S[:2:-1]  # 'noh' # starts form the end, ends on the 2nd elem exclusive reversed # last three elements counting from left reversed
-S[4::-1]  # 'yP' # starts from the 4th elem, ends on the start reversed # first five elements counting from left reversed
+S[4::-1]  # 'ohtyP' # starts from the 4th elem, ends on the start reversed # first five elements counting from left reversed
 S[:-4:-1]  # 'noh' # starts form the end, ends on the 4th elem from right exclusive reversed # last three elements counting from right reversed
 S[-2::-1]  # 'ohtyP' # starts from the 2nd elem from right, ends on the start reversed # first five elements counting from right reversed
 
@@ -121,11 +127,15 @@ S[-2::-1]  # 'ohtyP' # starts from the 2nd elem from right, ends on the start re
 '{:n}'.format(500.00)  # '500' # remove trailing zeros
 '{:.2%}'.format(1.80)  # '180.00%' # to % with precision
 '{:,}'.format(1000000)  # '1,000,000' # set the separator # '   40' # set the string length and insert leading whitespaces
-'{:5}'.format(40)
+'{:5}'.format(40)  # '   40'
 '40'.rjust(5)  # '   40'
 '{:05}'.format(40)  # '00040' # set the string length and insert leading zeros
 '40'.rjust(5, '0')  # '00040'
+"{:^{}}".format("*" * 3, 5)  # " *** "
+"{} {}".format("*" * 3, "5")  # "*** 5"
+'{:^5}'.format("*")  # "  *  "
 '{:^5}'.format(40)  # ' 40  ' # set the string length and center
+"***".center(5)  # " *** "
 '40'.center(5)  # '  40 '
 '{:<5}'.format(40)  # '40   ' # set the string length and adjust left
 '40'.ljust(5)  # '40   '
@@ -157,7 +167,7 @@ format_dict['msg2'].append('too')
 
 # binary octal decimal hexadecimal
 
-# 256 = FF = byte = 8 bits
+# 256 = 0:255 = FF = byte = 8 bits
 bin(255)  # '0b11111111'  # dec to bin
 '{:b}'.format(255)  # '11111111'  # dec to bin
 f'{255:016b}'  # '0000000011111111' # dec to bin with leading zeros
@@ -193,6 +203,7 @@ sum(i in 'aeiou' for i in 'abracadabra')  # 5
 'a' in ['a', 'e', 'i', 'o', 'u'] # True
 True or 1/0  # True
 not p or not q <==> not (p and q)
+p => q <==> (not p) and q
 
 list(True if i in 'ab' else False for i in 'abc')  # [True, True, False]
 list(i in 'ab' for i in 'abc')  # [True, True, False]
@@ -312,19 +323,19 @@ for key in age:
 
 [1, 2] + [3]  # [1, 2, 3] # concatenate lists
 list([2, 3])  # [2, 3] # create a list
-a = [2, 3, 4]  # [2, 3]  # create a list
+a = [2, 3, 4, 3]  # [2, 3, 4, 3]  # create a list
 
-a.remove(3) # removes chosen value
+a.remove(3) # removes the first occurrence of the chosen value
 del a[0] # removes value at position
 a.pop(0)  # removes value at position and print it
 
-a.append(5)
-a.reverse()
-
-[1, 2, 3].index(3) # 2 # index of the value
+a.append(5) # 
 a.insert(0, 1) # insters an element at i-th position # prepend
 
-[1, 1, 2].count(1) # count chosen elements in list
+a.reverse()
+
+[10, 20, 3, 3].index(3) # 2 # the first index of the value
+[10, 5, 10].count(10) # count chosen elements in list
 [None, True, False].count(True)
 
 # to sort the list by length of the elements
@@ -518,7 +529,10 @@ for key in s_dict.keys():
     print(f'{key}: {s_dict[key]}')
 
 for key in s_dict.keys():
-   print(key, ':', s_dict[key])
+   print(key + ':', s_dict[key])
+
+for (key, val) in s_dict.items():
+    print(key + ": " + str(val) )
 
 for key in s_dict:
     print(': '.join((key, str(s_dict[key]))))
@@ -531,9 +545,10 @@ for key in s_dict:
 # max
 
 # from array
-arr = [3, 10, 3, 3, 3]
-min(set(arr), key=arr.count)  # 10
+arr = [3, 10, 3, 3, 3, 9, 9]
+min(set(arr), key=arr.count)  # 10 # find the first least frequent element in the list
 arr.index(max(arr))  # find index of the max element in array
+min([3, 9], key=arr.count)  # 9 # find the least frequent element in the 'key' list that's in input list
 
 arr = ['notnot', 'some', 'random', 'text', '']
 max(arr, key=len)  # first longest element in list
@@ -543,7 +558,9 @@ list(filter(lambda x: len(x) == len(max(arr, key=len)), arr)) # longest elements
 # find min/max in list, dict, string
 arr = [3, 10, 3, 3, 3, 11]
 arr = "antidisestablishmentarianism"
-min(arr, key=arr.count) # first most_common element in list
+min(arr, key=arr.count) # find the first least frequent element in the list
+max(arr, key=arr.count) # find the first most frequent element in the list
+
 
 from collections import Counter
 cn_arr = Counter(arr)
@@ -564,7 +581,7 @@ min((a - b, -b, i) for i, (a, b) in enumerate(goals))[-1] # min of sorted indexe
 
 # sort dict by count
 from collections import Counter
-arr = [3, 10, 3, 3, 3]
+arr = [3, 10, 3, 3, 3, 10, 6]
 arr = "antidisestablishmentarianism"
 count_dict = Counter(arr)
 sorted(count_dict, key=count_dict.get)  # sort the keys by the values
@@ -572,10 +589,12 @@ sorted(count_dict, key=count_dict.get)  # sort the keys by the values
 # sort elements by int in substrings
 def order(sentence):
     return ' '.join(sorted(sentence.split(), key=lambda x: int(''.join(filter(str.isdigit, x)))))
-order('is2 Thi1s T4est 3a')  # 'Thi1s is2 3a T4est'
+order('is2 Thi1s 23as T4est 3a')  # 'Thi1s is2 3a T4est 23as'
 
+# sort elements by the lowest int in substrings
 def order(sentence):
     return ' '.join(sorted(sentence.split(), key=lambda x: sorted(x)))
+order('is2 Thi1s 23as T4est 3a')  # 'Thi1s 23as is2 3a T4est'
 
 sorted(sorted('is2 Thi1s T4est 3a'.split(), key=lambda x: -len(x)), key=lambda x: sorted(x)) # sort within sort
 
@@ -595,11 +614,13 @@ to_sort = [[12, 'tall', 'blue', 1],
 sorted(to_sort, key=lambda x: (x[1], x[0])) # sort by two columns
 
 import operator
-sorted(to_sort, key=operator.itemgetter(1, 0))# sort by two columns with itemgetter
+sorted(to_sort, key=operator.itemgetter(1, 0)) # sort by two columns with itemgetter
 
 goals = [(5, 1), (2, 2), (2, 1)]
 sorted((a-b, -b, i) for i, (a, b) in enumerate(goals))[0][-1] # sorted indexes order by (increasing, decreasing)
 sorted(range(len(goals)), key=lambda x: (goals[x][0], -goals[x][1]))[0] # sorted indexes order by (increasing, decreasing)
+
+sorted(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)  # sort chars with int key.
 
 
 # sort
@@ -638,7 +659,7 @@ list(product([1, 2, 4], [8, 5, 7], [0, 1]))  # [(1, 8, 0), (1, 8, 1), (1, 5, 0),
 list(product(*([1, 2, 4], [8, 5, 7], [0, 1])))  # [(1, 8, 0), (1, 8, 1), (1, 5, 0), (1, 5, 1), (1, 7, 0), (1, 7, 1), (2, 8, 0), (2, 8, 1), (2, 5, 0), (2, 5, 1), (2, 7, 0), (2, 7, 1), (4, 8, 0), (4, 8, 1), (4, 5, 0), (4, 5, 1), (4, 7, 0), (4, 7, 1)]
 list(product(*[['1', '2', '4'], ['8', '5', '7'], ['0', '1']]))  # [('1', '8', '0'), ('1', '8', '1'), ('1', '5', '0'), ('1', '5', '1'), ('1', '7', '0'), ('1', '7', '1'), ('2', '8', '0'), ('2', '8', '1'), ('2', '5', '0'), ('2', '5', '1'), ('2', '7', '0'), ('2', '7', '1'), ('4', '8', '0'), ('4', '8', '1'), ('4', '5', '0'), ('4', '5', '1'), ('4', '7', '0'), ('4', '7', '1')]
 list(product('124', '857', '01'))  # [('1', '8', '0'), ('1', '8', '1'), ('1', '5', '0'), ('1', '5', '1'), ('1', '7', '0'), ('1', '7', '1'), ('2', '8', '0'), ('2', '8', '1'), ('2', '5', '0'), ('2', '5', '1'), ('2', '7', '0'), ('2', '7', '1'), ('4', '8', '0'), ('4', '8', '1'), ('4', '5', '0'), ('4', '5', '1'), ('4', '7', '0'), ('4', '7', '1')]
-
+[i+j+k for i, j, k in list(product('124', '857', '01'))] # ['180', '181', '150', '151', '170', '171', '280', '281', '250', '251', '270', '271', '480', '481', '450', '451', '470', '471']
 
 
 
@@ -766,6 +787,9 @@ d.extend([4, 5, 6]) # add list
 for i, char in enumerate(('a', 'b', 'c'), -3):
     print(i, char)
 
+for i, char in enumerate([10, 11, 12], -3):
+    print(i, char)
+
 for i in enumerate('foo'):
     print(i)
 
@@ -855,13 +879,16 @@ type(51)  # <class 'int'>
 isinstance(51, int)  # True
 type(5.0)  # <class 'float'>
 type(5)  # <class 'int'>
+type(5) == int  # True
 isinstance(5.0, int)  # False # it's int, but object is float
 isinstance(5.0, float) # True
 (5.0).is_integer()  # True # checks if float is an int
+(5).is_integer()  # 'int' object has no attribute 'is_integer'
 isinstance({1, 2, 3, 4, 5}, set)  # True
 isinstance((1, 2, 3, 4, 5), tuple)  # True
 isinstance([1, 2, 3, 4, 5], list)  # True
 isinstance({'A': 'a', 'B': 'b', 'C': 'c', 'D': 'd'}, dict)  # True
+"5".isdigit()  # True
 
 
 class MyClass:
@@ -887,40 +914,41 @@ list(Counter(word).items())  # [('a', 4), ('n', 3), ('t', 3), ('i', 5), ('d', 1)
 Counter(word).most_common(2) # the most repetitive/frequent elements # powtarzające, najczęstsze
 
 # counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'd': 1})
-counter1 = Counter({'a': 4, 'b': 2, 'c': -2})
+counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'e': 0})
 counter2 = Counter({'d': -12, 'b': 5, 'c': 4})
 
 # Union # keys: or, value: max, positive 
 counter1 | counter2  # Counter({'b': 5, 'a': 4, 'c': 4}) # positive max values from counter1 and counter2
 
-# Or # , ???????
-counter1 or counter2  # Counter({'a': 4, 'b': 2, 'c': -2}) # min from counter1 and counter2
+# Or # 
+counter1 or counter2  # Counter({'a': 4, 'b': 2, 'e': 0, 'c': -2}) # When using the or operator in Python between two objects, it doesn't combine these objects. Instead, it returns the first operand if it is truthy, or the second operand otherwise. 
 
 # Addition # key: or, value: addition, positive
-counter1 + counter2  # Counter({'b': 7, 'a': 4, 'c': 2}) # returns positive sum 
+counter1 + counter2  # Counter({'b': 7, 'a': 4, 'c': 2}) # returns positive sum
 
 # Intersection # key: and, val: min, positive
 counter1 & counter2  # Counter({'b': 2}) # common positive min values from counter1 and counter2
 
-# And # key: ???
-counter1 and counter2  # Counter({'b': 5, 'c': 4, 'd': -12}) # 
+# And
+counter1 and counter2  # Counter({'b': 5, 'c': 4, 'd': -12}) # When using and (and is a boolean operator), it returns the second operand if the first operand is truthy; otherwise, it returns the first operand. In the context of Counter objects, both counter1 and counter2 are truthy, so counter1 and counter2 returns counter2.
 
 # Subtraction # key: or, val: subtraction, positive
 counter1 - counter2  # Counter({'d': 12, 'a': 4}) # returns positive subtraction
 
 # .subtract like '-' with negative
 counter1.subtract(counter2)  # Counter({'d': 12, 'a': 4, 'b': -3, 'c': -6})
-counter1 = Counter({'a': 4, 'b': 2, 'c': -2})
+counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'e': 0})
 
 # .update like '+' with negative
 counter1.update(counter2)  # Counter({'b': 7, 'a': 4, 'c': 2, 'd': -12})
-counter1 = Counter({'a': 4, 'b': 2, 'c': -2})
+counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'e': 0})
 
 
 
 
 
 # lambda
+string_to_number = lambda s: int(s)
 cuboid = lambda l, w, d: l * w * d
 cuboid(1, 2, 3)  # 6
 cuboid = lambda _, __, ___: _*__*___
@@ -974,6 +1002,7 @@ def filter_vowels(letter):
 # filter works as yield
 letters = 'abcdefghij'
 filtered_vowels = filter(filter_vowels, letters)
+filtered_vowels = filter(lambda x: True if x in "aeoiu" else False, letters)
 
 for vowel in filtered_vowels:
     print(vowel)
@@ -995,6 +1024,8 @@ list(map(np.round, list_to_round))  # [3.0, 4.0, 4.0, 6.0, 6.0, 8.0, 8.0, 10.0]
 list(map(lambda x: np.round(x, 2), list_to_round))  # [2.67, 3.64, 4.23, 5.97, 6.33, 7.7, 8.23, 9.69]
 
 ''.join(map(lambda s: s.upper(), 'ab cd'))  # 'AB CD'
+"".join(map(str.upper, 'ab cd'))  # 'AB CD'
+
 
 def myMapFunc(list1, list2):
    return list1 + list2
@@ -1006,6 +1037,10 @@ list(map(myMapFunc, [1, 2, 3], [4, 5, 6]))  # [5, 7, 9]
 # map
 
 list(map(lambda x: x ** 2 if not x % 2 else x ** 3, range(1, 11)))
+[x ** 2 if not x % 2 else x ** 3 for x in range(1, 11)]
+
+sum(map(lambda x: x[0] - x[1], [[10, 0], [3, 5], [5, 8]]))
+
 
 # tuple of functions as inputs
 def add(x):
@@ -1032,7 +1067,7 @@ bool(256)  # True
 
 # use not str % 2
 if not x % 2 is <==> if x % 2 == 0
-not 2 % 2 # is 0; not 0 is 1
+not 2 % 2 # not 0 => 1
 
 
 
@@ -1042,8 +1077,8 @@ not 2 % 2 # is 0; not 0 is 1
 
 import numpy as np
 
-None_list = [None, True, False]
-Not_None_list = None_list[None_list != None]  # select only True
+None_list = [None, True, False, True]
+Not_None_list = None_list[None_list != None]  # select only True, not work
 np.sum(Not_None_list)  # count True's in list
 
 
@@ -1194,16 +1229,16 @@ random.uniform(-1, 1)
 # better numpy
 
 import math
-math.pi
-math.sqrt(16)
-math.sin(math.pi / 2)
-math.factorial(5)
+math.pi  # 3.141592653589793
+math.sqrt(16)  # 4.0
+math.sin(math.pi / 2)  # 1.0
+math.factorial(5)  # 120
 
 import numpy as np
-np.pi
-np.sqrt(16)
-np.sin(np.pi / 2)
-np.math.factorial(5)
+np.pi  # 3.141592653589793
+np.sqrt(16)  # 4.0
+np.sin(np.pi / 2)  # 1.0
+np.math.factorial(5)  # 120, deprecated
 
 
 
@@ -1373,6 +1408,9 @@ import timeit
 timeit.timeit('foo = 10 * 5')
 timeit.timeit(stmt='a=10; b=10; sum = a + b')
 
+timeit.timeit(lambda: sum(i in "aeiou" for i in test_str), number=100000)
+timeit.timeit(lambda: sum(True for i in test_str if i in "aeiou"), number=100000)
+timeit.timeit(lambda: sum(map(lambda x: True if x in 'aeiou' else False, test_str)), number=100000)
 
 
 
@@ -1536,6 +1574,7 @@ abababab
 import re
 
 # re.match() matches at the beginning
+re.match(r"[:;][-~]?[\)D]", ";-) ';~)'")  # <re.Match object; span=(0, 3), match=';-)'>
 re.match(r'abc', 'abc def')  # <re.Match object; span=(0, 3), match='abc'>
 re.match(r'def', 'abc def')  # None
 re.match(r'abc', 'abc def').start()  # 0
@@ -1556,6 +1595,7 @@ re.match(r'(\w+)\s(\w+)', 'Hello World').group(2)  # 'World'
 re.match(r'(\w+)\s(\w+)', 'Hello World').groups()  # ('Hello', 'World')
 
 # re.search() function searches for a specified pattern anywhere in the given string and stops the search on the first occurrence.
+re.search(r"[:;][-~]?[\)D]", "* ;-) ';~)'")  # <re.Match object; span=(2, 5), match=';-)'>
 re.search(r'abc', 'abc def abc')  # <re.Match object; span=(0, 3), match='abc'>
 re.search(r'def', 'abc def abc')  # <re.Match object; span=(4, 7), match='def'>
 re.search(r'[^abc\s]', 'abc def')  # <re.Match object; span=(4, 5), match='d'> # ^ invert character class
@@ -1563,6 +1603,7 @@ re.search(r'def', 'abc def abc').group()  # 'def'
 re.search(r'([a-zA-Z]+) (\d+)', 'June 24').group()  # 'June 24'
 
 # re.findall() The object returns a list of all occurrences.
+re.findall(r"[:;][-~]?[\)D]", "* ;-) ';~)'")  # [';-)', ';~)']
 re.findall('abc', 'abc def abc')  # ['abc', 'abc']
 re.findall('\d+', 'my number is 123 and not 456, and definitely not 789')  # ['123', '456', '789']
 re.findall(r'^\w+', 'education is fun')  # ['education]
@@ -1945,7 +1986,7 @@ import datetime
 # from datetime import date, time, timedelta
 import time
 
-datetime.fromtimestamp(1350508407) # 
+datetime.datetime.fromtimestamp(1350508407) # 
 
 
 # Get the modification time

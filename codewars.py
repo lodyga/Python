@@ -1,35 +1,41 @@
 # codewars kata
 
-
-"""Write a function that takes an integer as input, and returns the number of bits that are equal
-to one in the binary representation of that number. You can guarantee that input is non-negative.
-Example: The binary representation of 1234 is 10011010010, so the function should return 5 in this case"""
-
-
 from xml import dom
-
 from nbformat import read
 from solution import arithmetic
 from gettext import find
-
 from regex import D
 from solution import enough
 import enum
 from itertools import reduce
 import itertools
 from operator import index
-
 from hel import add
+
+
+
+
+
+# Bit Counting
+# https://www.codewars.com/kata/526571aae218b8ee490006f4
+"""Write a function that takes an integer as input, and returns the number of bits that are equal
+to one in the binary representation of that number. You can guarantee that input is non-negative.
+Example: The binary representation of 1234 is 10011010010, so the function should return 5 in this case"""
+
 def count_bits(n):
-    # return '{:b}'.format(n).count('1')
-    # return bin(n).count('1')
     return bin(n)[2:].count('1')
+    # return bin(n).count('1')
+    # return sum(True if int(i) else False for i in bin(n)[2:])
+    # return '{:b}'.format(n).count('1')
+    # return n.bit_count()
 count_bits(1234)
 
 
 
 
 
+# Sum of Digits / Digital Root
+# https://www.codewars.com/kata/541c8630095125aba6000c00/train/python
 """Digital root is the recursive sum of all the digits in a number.
 Given n, take the sum of the digits of n. If that value has more than one digit, 
 continue reducing in this way until a single-digit number is produced. The input will be a non-negative integer.
@@ -37,17 +43,27 @@ continue reducing in this way until a single-digit number is produced. The input
 
 from more_itertools import iterate
 import numpy as np
+
+def digital_root(n):
+    while n > 9:
+        n = sum(map(int, str(n)))
+    return n
+
+def digital_root(n):
+    return n if n < 10 else digital_root(sum(map(int, str(n))))
+
 def digital_root(n):
     while len(str(n)) != 1:
-        n = np.sum((int(i) for i in str(n)))
+        n = np.sum((int(digit) for digit in str(n)))
     return n
 
 def digital_root(n):
     while True:
-        n = sum(int(i) for i in str(n))
+        n = sum(int(digit) for digit in str(n))
         if len(str(n)) == 1:
             return n
 digital_root(169)
+digital_root(942)
 digital_root(132189)
 
 
@@ -62,7 +78,7 @@ import numpy as np
 def digital_root(n):
     while True:
         if len(str(n)) != 1:
-            n = np.sum((int(i) for i in str(n)))
+            n = np.sum((int(digit) for digit in str(n)))
         else:
             return n
 
@@ -75,6 +91,8 @@ test.assert_equals(digital_root(493193), 2)
 
 
 
+# Detect Pangram
+# https://www.codewars.com/kata/545cedaa9943f7fe7b000048/train/
 """A pangram is a sentence that contains every single letter of the alphabet at least once.
 For example, the sentence "The quick brown fox jumps over the lazy dog" is a pangram, because it uses the letters A-Z at least once (case is irrelevant).
 Given a string, detect whether or not it is a pangram. Return True if it is, False if not. Ignore numbers and punctuation."""
@@ -91,6 +109,9 @@ def is_pangram(s):
     return set(string.ascii_lowercase) <= set(s.lower())
 
 def is_pangram(s):
+    return set(s.lower()) >= set(string.ascii_lowercase)
+
+def is_pangram(s):
     return set(string.ascii_lowercase).issubset(set(s.lower()))
 
 def is_pangram(s):
@@ -99,6 +120,8 @@ def is_pangram(s):
 def is_pangram(s):
     return set(string.ascii_lowercase) & set(s.lower()) == set(string.ascii_lowercase)
 
+def is_pangram(s):
+    return not sum(0 if letter in s.lower() else 1 for letter in string.ascii_lowercase)
 
 test.assert_equals(is_pangram(pangram), True)
 
@@ -106,6 +129,8 @@ test.assert_equals(is_pangram(pangram), True)
 
 
 
+# Multiples of 3 or 5
+# https://www.codewars.com/kata/514b92a657cdc65150000006/train/python
 """If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9.
 The sum of these multiples is 23.
 Finish the solution so that it returns the sum of all the multiples of 3 or 5 below the number passed in.
@@ -113,7 +138,8 @@ Additionally, if the number is negative, return 0 (for languages that do have th
 Note: If the number is a multiple of both 3 and 5, only count it once."""
 
 def solution(numbers):
-    return sum(number for number in range(1, numbers) if not number % 3 or not number % 5)
+    # return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
+    return sum(digit for digit in range(3, numbers) if not (digit % 3 and digit % 5))
 solution(4)
 solution(6)
 solution(16)
@@ -140,6 +166,8 @@ test.assert_equals(solution(200), 9168)
 
 
 
+# The Hashtag Generator
+# https://www.codewars.com/kata/52449b062fb80683ec000024
 """The marketing team is spending way too much time typing in hashtags.
 Let's help them with our own Hashtag Generator!
 
@@ -155,16 +183,27 @@ Examples
 ""                                        =>  false"""
 
 def generate_hashtag(s):
-    if (len(s) > 140 or
-        not s):
-        return False
-    return '#' + ''.join(i.capitalize() for i in s.strip().split(' '))
+    solution = "#" + "".join(word.capitalize() for word in s.strip().split())
+    # solution = "#" + s.title().replace(" ", "")
+    return solution if (s and len(solution) <= 140) else False
 generate_hashtag('codewars is nice')
 generate_hashtag('CodeWars  is   nice')
 generate_hashtag('')
 
 def generate_hashtag(s):
+    solution = "#" + "".join(word.capitalize() for word in s.strip().split())
+    return False if not s or len(solution) > 140 else solution
+
+
+# final result must be > than 140 not input
+def generate_hashtag(s):
     if (len(s) > 140 or
+        not s):
+        return False
+    return '#' + ''.join(i.capitalize() for i in s.strip().split(' '))
+
+def generate_hashtag(s):
+    if (len(s) > 140 ore
             not s):
         return False
     return '#' + ''.join(map(lambda x: x.strip().capitalize(), s.split()))
@@ -201,6 +240,8 @@ test.assert_equals(generate_hashtag('Loooooooooooooooooooooooooooooooooooooooooo
 
 
 
+# Product of consecutive Fib numbers
+# https://www.codewars.com/kata/5541f58a944b85ce6d00006a
 """The Fibonacci numbers are the numbers in the following integer sequence (Fn):
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, ...
 such as
@@ -222,15 +263,22 @@ productFib(800) # should return (34, 55, false),
 
 def productFib(prod):
     a, b = 0, 1
+    while a * b < prod:
+        a, b = b, a + b
+    return [a, b, a * b == prod]
+productFib(714) # should return (21, 34, true) 
+productFib(800) # should return (34, 55, false)
+productFib(4895) # [55, 89, True] 
+productFib(5895) # [89, 144, False]
+
+def productFib(prod):
+    a, b = 0, 1
     while a * b <= prod:
         if prod == a * b:
             return [a, b, True]
         else:
             a, b = b, a + b
     return [a, b, False]
-productFib(714) # should return (21, 34, true) 
-productFib(800) # should return (34, 55, false)
-productFib(4895)
 
 def productFib(prod):
     a, b = 0, 1
@@ -260,6 +308,8 @@ test.assert_equals(productFib(5895), [89, 144, False])
 
 
 
+# Write Number in Expanded Form
+# https://www.codewars.com/kata/5842df8ccbd22792a4000245
 """Write Number in Expanded Form
 You will be given a number and you will need to return it as a string in Expanded Form. For example:
 
@@ -268,23 +318,23 @@ expanded_form(42) # Should return '40 + 2'
 expanded_form(70304) # Should return '70000 + 300 + 4'
 NOTE: All numbers will be whole numbers greater than 0."""
 
+def expanded_form(num):
+    return " + ".join(str(int(digit) * 10**(len(str(num)) - index)) for index, digit in enumerate(str(num), 1) if int(digit))
+expanded_form(70304)
 
 def expanded_form(num):
     return ' + '.join(str(int(j) * 10**(len(str(num)) - i)) for i, j in enumerate(str(num), 1) if j != '0')
-expanded_form(70304)
 
 def expanded_form(num):
     filter_with_None = map(lambda i, j: str(int(j) * 10**(len(str(num)) - i)) if j != '0' else None, range(1, len(str(num)) + 1), iter(str(num)))
     return ' + '.join(filter(bool, filter_with_None))
-expanded_form(70304)
-
 
 def expanded_form(num):
-    number_list = []
-    for i, number in enumerate(str(num), 1):
-        if number != '0':
-            number_list.append(str(int(number) * 10**(len(str(num)) - i)))
-    return ' + '.join(number_list)
+    divided_number = []
+    for index, digit in enumerate(str(num), 1):
+        if int(digit):
+            divided_number.append(str(int(digit) * 10**(len(str(num)) - index)))
+    return " + ".join(divided_number)
 
 
 test.assert_equals(expanded_form(12), '10 + 2');
@@ -295,6 +345,8 @@ test.assert_equals(expanded_form(70304), '70000 + 300 + 4');
 
 
 
+# RGB To Hex Conversion
+# https://www.codewars.com/kata/513e08acc600c94f01000001
 """The rgb function is incomplete. Complete it so that passing in RGB decimal values will result in a hexadecimal representation being returned. Valid decimal values for RGB are 0 - 255. Any values that fall out of that range must be rounded to the closest valid value.
 
 Note: Your answer should always be 6 characters long, the shorthand with 3 will not work here.
@@ -310,14 +362,24 @@ rgb(148, 0, 211) # returns 9400D3"""
 def rgb(r, g, b):
     rgb_round = lambda x: min(255, max(0, x))
     return ('{:02X}'*3).format(rgb_round(r), rgb_round(g), rgb_round(b))
-rgb(1,2,3)
-rgb(255,255,255)
-rgb(254,253,252)
+    # return ('{:02X}'*3).format(*map(lambda x: rgb_round(x), (r, g, b)))
+rgb(1, 2, 3)
+rgb(255, 255, 255)
+rgb(254, 253, 252)
 
 def rgb(r, g, b):
-    # r, g, b = list(map(lambda x: 0 if x < 0 else x, (r, g, b)))
+    r, g, b = min(255, max(r, 0)), min(255, max(g, 0)), min(255, max(b, 0))
+    red = "{:02X}".format(r)
+    # red = "{:X}".format(r) if len("{:X}".format(r)) == 2 else "0{:X}".format(r)
+    green = "{:X}".format(g) if g > 15 else "0{:X}".format(g)
+    blue = "{:X}".format(b) if b > 15 else "0{:X}".format(b)
+    # return "{:X}{:X}{:X}".format(r, g, b)
+    return red+green+blue
+
+def rgb(r, g, b):
+    # r, g, b = list(map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
     # return ('{:02X}'*3).format(r, g, b)
-    return ('{:02X}'*3).format(*map(lambda x: 0 if x < 0 else x, (r, g, b)))
+    return ('{:02X}'*3).format(*map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
 
 
 test.assert_equals(rgb(0,0,0),"000000", "testing zero values")
@@ -330,6 +392,8 @@ test.assert_equals(rgb(-20,275,125), "00FF7D", "testing out of range values")
 
 
 
+# The observed PIN
+# https://www.codewars.com/kata/5263c6999e0f40dee200059d
 """Alright, detective, one of our colleagues successfully observed our target person, Robby the robber. We followed him to a secret warehouse, where we assume to find all the stolen stuff. The door to this warehouse is secured by an electronic combination lock. Unfortunately our spy isn't sure about the PIN he saw, when Robby entered it.
 
 The keypad has the following layout:
@@ -386,8 +450,34 @@ def get_pins(observed):
     return [''.join(i) for i in product(*(around[char] for char in observed))]
 get_pins('369')
 
+def get_pins(observed):
+    pin_dict =  {
+                "0": "08",
+                "1": "124",
+                "2": "1235",
+                "3": "326",
+                "4": "1457",
+                "5": "45682",
+                "6": "6593",
+                "7": "748",
+                "8": "57890",
+                "9": "986"
+                }
+    adjency_list = [pin_dict[i] for i in str(observed)]
+    codes_to_concat = product(*adjency_list)
+    return ["".join(pin) for pin in codes_to_concat]
+get_pins(369)
+
+def get_pins(observed):
+    button_adjancency =  ("08", "124", "1235", "326", "1457", "45682", "6593", "748", "57890", "986")
+    return ["".join(pin) for pin in product(*(button_adjancency[int(i)] for i in str(observed)))]
+    # return list(map("".join, product(*(button_adjancency[int(i)] for i in str(observed)))))
+get_pins(369)
+
 
 list(product(*[['1', '2', '4'], ['8', '5', '7', '9', '0'], ['0', '1']]))
+list(product(['1', '2', '4'], ['8', '5', '7', '9', '0'], ['0', '1']))
+list(product(*('124', '85790', '01')))
 list(product('124', '85790', '01'))
 
 test.describe('example tests')
@@ -399,6 +489,9 @@ expectations = [('8', ['5','7','8','9','0']),
 
 
 
+# Maximum subarray sum
+# https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c
+# too slow
 """The maximum sum subarray problem consists in finding the maximum sum of a contiguous subsequence in an array or list of integers:
 
 max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
@@ -440,6 +533,27 @@ def max_sequence(arr):
 def max_sequence(arr):
     return max([sum(arr[i:j]) for i in range(len(arr)+1) for j in range(len(arr)+1)])
 
+def max_sequence(arr):
+    if sum(1 if digit < 0 else 0 for digit in arr) == len(arr):
+        return 0
+    max_sum = 0
+    # i_max, j_max = 0, 0
+    for i in range(len(arr)):
+        for j in range(len(arr) - i):
+            print(arr[i:i+j+1])
+            # print(sum(arr[i:i+j+1]))
+            if sum(arr[i:i+j+1]) > max_sum:
+                max_sum = sum(arr[i:i+j+1])
+                # i_max, j_max = i, j
+    # return sum(arr[i_max:i_max+j_max+1])
+    return max_sum
+                
+def max_sequence(arr):
+    return max(max(sum(arr[i:i+j+1]) for i in range(len(arr)) for j in range(len(arr) - i)), 0) if arr else 0
+
+max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
+max_sequence([])
+max_sequence([-1, -2])
 
 test.assert_equals(max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
 
@@ -447,6 +561,8 @@ test.assert_equals(max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
 
 
 
+# Weight for weight
+# https://www.codewars.com/kata/55c6126177c9441a570000cc/train/python
 """My friend John and I are members of the "Fat to Fit Club (FFC)". John is worried because each month a list with the weights of members is published and each month he is the last on the list which means he is the heaviest.
 
 I am the one who establishes the list so I told him: "Don't worry any more, I will modify the order of the list". It was decided to attribute a "weight" to numbers. The weight of a number will be from now on the sum of its digits.
@@ -467,7 +583,8 @@ All numbers in the list are positive numbers and the list can be empty."""
 
 
 def order_weight(strng):
-    return ' '.join(sorted(strng.split(), key=lambda x: (sum(int(d) for d in x), x)))
+    # return ' '.join(sorted(strng.split(), key=lambda x: sum(int(d) for d in x))) # without second parameter `x` it sorts but `2000` is before `11`
+    return " ".join(sorted(strng.split(), key=lambda x: (sum(int(digit) for digit in x), x)))
 order_weight("2000 10003 1234000 44444444 9999 11 11 22 123")
 order_weight("103 123 4444 99 2000")
 
@@ -476,12 +593,164 @@ def order_weight(strng):
         return ''
     splitted = [char.strip() for char in strng.split()]
     weight_list = [(sum(int(digit) for digit in number), number) for number in splitted]
-    return ' '.join(np.array(sorted(weight_list))[:, 1])
+    # return ' '.join(np.array(sorted(weight_list))[:, 1])
+    return weight_list
 
 
 test.assert_equals(order_weight("103 123 4444 99 2000"), "2000 103 123 4444 99")
 test.assert_equals(order_weight("2000 10003 1234000 44444444 9999 11 11 22 123"), "11 11 2000 10003 22 123 1234000 44444444 9999")
 test.assert_equals(order_weight(""), "")
+
+
+
+
+
+# Strip Comments
+# https://www.codewars.com/kata/51c8e37cee245da6b40000bd/train/python
+"""
+Complete the solution so that it strips all text that follows any of a set of comment markers passed in. Any whitespace at the end of the line should also be stripped out.
+solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
+# result should == "apples, pears\ngrapes\nbananas"
+"""
+
+
+def strip_comments(strng, markers):
+    if not markers:
+        return strng
+    cut_indexes = [min(line.find(char) if line.find(char) != -1 else len(line) for char in markers) for line in strng.split("\n")]
+    return "\n".join((strng.split("\n")[line_ind][:cut_index]).rstrip() for line_ind, cut_index in enumerate(cut_indexes))
+strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
+strip_comments(' a #b\nc\nd $e f g', ['#', '$'])
+
+# this is faster
+def strip_comments(string, markers):
+    splited_list = string.split('\n')
+    for marker in markers:
+        splited_list = [elem.split(marker)[0].rstrip() for elem in splited_list]
+        # splited_list = [elem if elem.find(marker) == -1 else elem[:elem.find(marker)].rstrip() for elem in splited_list]
+        # print([elem if elem.find(marker) == -1 else elem[:elem.find(marker)].rstrip() for elem in splited_list])
+    return '\n'.join(splited_list)
+
+
+test.assert_equals(solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
+test.assert_equals(solution('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
+test.assert_equals(solution(' a #b\nc\nd $e f g', ['#', '$']), ' a\nc\nd')
+
+
+
+
+
+# Human readable duration format
+# https://www.codewars.com/kata/52742f58faf5485cae000b9a/train/python
+# works here but codewars is complaining
+"""Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
+
+The function must accept a non-negative integer. If it is zero, it just returns "now". Otherwise, the duration is expressed as a combination of years, days, hours, minutes and seconds.
+
+It is much easier to understand with an example:
+
+* For seconds = 62, your function should return 
+    "1 minute and 2 seconds"
+* For seconds = 3662, your function should return
+    "1 hour, 1 minute and 2 seconds"
+For the purpose of this Kata, a year is 365 days and a day is 24 hours.
+
+Note that spaces are important.
+
+Detailed rules
+The resulting expression is made of components like 4 seconds, 1 year, etc. In general, a positive integer and one of the valid units of time, separated by a space. The unit of time is used in plural if the integer is greater than 1.
+
+The components are separated by a comma and a space (", "). Except the last component, which is separated by " and ", just like it would be written in English.
+
+A more significant units of time will occur before than a least significant one. Therefore, 1 second and 1 year is not correct, but 1 year and 1 second is.
+
+Different components have different unit of times. So there is not repeated units like in 5 seconds and 1 second.
+
+A component will not appear at all if its value happens to be zero. Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
+
+A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time."""
+
+
+def format_duration(seconds):
+    if not seconds:
+        return 'now'
+    time_digits = (60 * 60 * 24 * 365, 60 * 60 * 24, 60 * 60, 60, 1)
+    time_name = ('year', 'day', 'hour', 'minute', 'second')
+    time_list = []
+    for i in time_digits:
+        if seconds // i:
+            time_list.append(seconds // i)
+            seconds %= i
+    result = (i for i in zip(time_list, time_name[-len(time_list):]))
+    result2 = [str(i[0]) + ' ' + i[1] + 's' if i[0] > 1 else str(i[0]) + ' ' + i[1] for i in result]
+    return result2[0] if len(result2) == 1 else ', '.join(result2[:-1]) + ' and ' + result2[-1]
+format_duration(3662)
+
+# from codewars
+times = [("year", 365 * 24 * 60 * 60),
+         ("day", 24 * 60 * 60),
+         ("hour", 60 * 60),
+         ("minute", 60),
+         ("second", 1)]
+
+def format_duration(seconds):
+    if not seconds:
+        return "now"
+    
+    chunks = []
+    for name, secs in times:
+        qty = seconds // secs
+        if qty:
+            if qty > 1:
+                name += "s"
+            chunks.append(str(qty) + " " + name)
+
+        seconds = seconds % secs
+
+    return ', '.join(chunks[:-1]) + ' and ' + chunks[-1] if len(chunks) > 1 else chunks[0]
+
+import datetime
+def format_duration(seconds):
+    if not seconds:
+        return 'now'
+    dict_time = {4: 'year', 3: 'day', 2: 'hour', 1: 'minute', 0: 'second', 
+                 14: 'years', 13: 'days', 12: 'hours', 11: 'minutes', 10: 'seconds'}
+    # str_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
+    # transforms seconds to 'days, minuses:hours:seconds'
+    dirty_days = str(datetime.timedelta(seconds=seconds)) # days + '%H:%M:%S'
+    str_time = dirty_days[-8:].lstrip() # only '%H:%M:%S'
+    if 'day' in dirty_days:
+        days = int(dirty_days.split()[0])
+        if days > 365:
+            years = days // 365
+            days = days % 365
+            # years, days = divmod(days, 365)
+            str_time = str(years)+':'+str(days)+':'+str_time
+        else:
+            str_time = str(days)+':'+str_time
+    
+    sol = []
+    for enum, i in enumerate(reversed(str_time.split(':'))):
+        if int(i) != 0:
+            if int(i) == 1:
+                sol.append(str(int(i))+' '+dict_time[enum])
+            else:
+                sol.append(str(int(i))+' '+dict_time[enum + 10])
+    # sol = list(reversed(sol))
+    sol.reverse()
+    if len(sol) == 1:
+        return sol[0]
+    else:
+        return ', '.join(sol[:-1]) + ' and ' + sol[-1]
+
+format_duration(6300000000)
+
+
+test.assert_equals(format_duration(1), "1 second")
+test.assert_equals(format_duration(62), "1 minute and 2 seconds")
+test.assert_equals(format_duration(120), "2 minutes")
+test.assert_equals(format_duration(3600), "1 hour")
+test.assert_equals(format_duration(3662), "1 hour, 1 minute and 2 seconds")
 
 
 
@@ -655,119 +924,8 @@ re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe#c 12')
 
 
 
-# works here but codewars is complaining
-"""Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
-
-The function must accept a non-negative integer. If it is zero, it just returns "now". Otherwise, the duration is expressed as a combination of years, days, hours, minutes and seconds.
-
-It is much easier to understand with an example:
-
-* For seconds = 62, your function should return 
-    "1 minute and 2 seconds"
-* For seconds = 3662, your function should return
-    "1 hour, 1 minute and 2 seconds"
-For the purpose of this Kata, a year is 365 days and a day is 24 hours.
-
-Note that spaces are important.
-
-Detailed rules
-The resulting expression is made of components like 4 seconds, 1 year, etc. In general, a positive integer and one of the valid units of time, separated by a space. The unit of time is used in plural if the integer is greater than 1.
-
-The components are separated by a comma and a space (", "). Except the last component, which is separated by " and ", just like it would be written in English.
-
-A more significant units of time will occur before than a least significant one. Therefore, 1 second and 1 year is not correct, but 1 year and 1 second is.
-
-Different components have different unit of times. So there is not repeated units like in 5 seconds and 1 second.
-
-A component will not appear at all if its value happens to be zero. Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
-
-A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time."""
-
-
-def format_duration(seconds):
-    if not seconds:
-        return 'now'
-    time_digits = (60 * 60 * 24 * 365, 60 * 60 * 24, 60 * 60, 60, 1)
-    time_name = ('year', 'day', 'hour', 'minute', 'second')
-    time_list = []
-    for i in time_digits:
-        if seconds // i:
-            time_list.append(seconds // i)
-            seconds %= i
-    result = (i for i in zip(time_list, time_name[-len(time_list):]))
-    result2 = [str(i[0]) + ' ' + i[1] + 's' if i[0] > 1 else str(i[0]) + ' ' + i[1] for i in result]
-    return result2[0] if len(result2) == 1 else ', '.join(result2[:-1]) + ' and ' + result2[-1]
-format_duration(3662)
-
-# from codewars
-times = [("year", 365 * 24 * 60 * 60),
-         ("day", 24 * 60 * 60),
-         ("hour", 60 * 60),
-         ("minute", 60),
-         ("second", 1)]
-
-def format_duration(seconds):
-    if not seconds:
-        return "now"
-    chunks = []
-    for name, secs in times:
-        qty = seconds // secs
-        if qty:
-            if qty > 1:
-                name += "s"
-            chunks.append(str(qty) + " " + name)
-
-        seconds = seconds % secs
-
-    return ', '.join(chunks[:-1]) + ' and ' + chunks[-1] if len(chunks) > 1 else chunks[0]
-
-import datetime
-def format_duration(seconds):
-    if not seconds:
-        return 'now'
-    dict_time = {4: 'year', 3: 'day', 2: 'hour', 1: 'minute', 0: 'second', 
-                 14: 'years', 13: 'days', 12: 'hours', 11: 'minutes', 10: 'seconds'}
-    # str_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
-    # transforms seconds to 'days, minuses:hours:seconds'
-    dirty_days = str(datetime.timedelta(seconds=seconds)) # days + '%H:%M:%S'
-    str_time = dirty_days[-8:].lstrip() # only '%H:%M:%S'
-    if 'day' in dirty_days:
-        days = int(dirty_days.split()[0])
-        if days > 365:
-            years = days // 365
-            days = days % 365
-            # years, days = divmod(days, 365)
-            str_time = str(years)+':'+str(days)+':'+str_time
-        else:
-            str_time = str(days)+':'+str_time
-    
-    sol = []
-    for enum, i in enumerate(reversed(str_time.split(':'))):
-        if int(i) != 0:
-            if int(i) == 1:
-                sol.append(str(int(i))+' '+dict_time[enum])
-            else:
-                sol.append(str(int(i))+' '+dict_time[enum + 10])
-    # sol = list(reversed(sol))
-    sol.reverse()
-    if len(sol) == 1:
-        return sol[0]
-    else:
-        return ', '.join(sol[:-1]) + ' and ' + sol[-1]
-
-format_duration(63)
-
-
-test.assert_equals(format_duration(1), "1 second")
-test.assert_equals(format_duration(62), "1 minute and 2 seconds")
-test.assert_equals(format_duration(120), "2 minutes")
-test.assert_equals(format_duration(3600), "1 hour")
-test.assert_equals(format_duration(3662), "1 hour, 1 minute and 2 seconds")
-
-
-
-
-
+# Convert a String to a Number!
+# https://www.codewars.com/kata/544675c6f971f7399a000e79
 """Write a function, persistence, that takes in a positive parameter num and returns its multiplicative persistence, which is the number of times you must multiply the digits in num until you reach a single digit.
 
 For example (Input --> Output):
@@ -778,12 +936,14 @@ For example (Input --> Output):
 """
 
 
-from itertools import reduce
 def persistence(n):
     count = 0
     while len(str(n)) > 1:
+        multi = 1
+        for digit in str(n):
+            multi *= int(digit)
+        n = multi
         count += 1
-        n = reduce(lambda x, y: x * y, (int(i) for i in str(n)))
     return count
 persistence(39)
 persistence(999)
@@ -795,6 +955,15 @@ def persistence(n):
         n = np.product([int(i) for i in str(n)])
         ind += 1
     return ind
+
+from itertools import reduce # stopped working
+from functools import reduce
+def persistence(n):
+    count = 0
+    while len(str(n)) > 1:
+        count += 1
+        n = reduce(lambda x, y: x * y, (int(i) for i in str(n)))
+    return count
 
 
 @test.describe("Persistent Bugger.")
@@ -810,6 +979,8 @@ def fixed_tests():
 
 
 
+# Number of People in the Bus
+# https://www.codewars.com/kata/5648b12ce68d9daa6b000099
 """There is a bus moving in the city, and it takes and drop some people in each bus stop.
 
 You are provided with a list (or array) of integer pairs. Elements of each pair represent number of people get into bus (The first item) and number of people get off the bus (The second item) in a bus stop.
@@ -823,14 +994,22 @@ Please keep in mind that the test cases ensure that the number of people in the 
 The second value in the first integer array is 0, since the bus is empty in the first bus stop."""
 
 
-import numpy as np
 def number(bus_stops):
-    bus_stops = np.array(bus_stops)
-    return np.sum(bus_stops[:, 0]) - np.sum(bus_stops[:, 1])
+    return sum(enter - exit for enter, exit in bus_stops)
+number([[10, 0], [3, 5], [5, 8]])
+
+def number(bus_stops):
+    return sum(enter for enter, _ in bus_stops) - sum(exit for _, exit in bus_stops)
 number([[10, 0], [3, 5], [5, 8]])
 
 def number(bus_stops):
     return sum(map(lambda x: x[0] - x[1], bus_stops))
+number([[10, 0], [3, 5], [5, 8]])
+
+import numpy as np
+def number(bus_stops):
+    bus_stops = np.array(bus_stops)
+    return np.sum(bus_stops[:, 0]) - np.sum(bus_stops[:, 1])
 number([[10, 0], [3, 5], [5, 8]])
 
 import numpy as np
@@ -851,6 +1030,8 @@ def fixed_tests():
 
 
 
+# Count of positives / sum of negatives
+# https://www.codewars.com/kata/576bb71bbbcf0951d5000044/train/python
 """Given an array of integers.
 
 Return an array, where the first element is the count of positives numbers and the second element is sum of negative numbers. 0 is neither positive nor negative.
@@ -863,15 +1044,15 @@ For input [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15], you should r
 
 def count_positives_sum_negatives(arr):
     if not arr:
-        return []
-    return (len(list(filter(lambda x: x > 0, arr))), sum(filter(lambda x: x < 0, arr)))
-
+        return [] 
+    return [len(list(filter(lambda x: x > 0, arr))), sum(filter(lambda x: x < 0, arr))] if arr else []
 count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15])
 
 def count_positives_sum_negatives(arr):
     if not arr:
         return []
-    return (len([True for i in arr if i > 0]), sum(i for i in arr if i < 0))
+    # return [sum(True for i in arr if i > 0), sum(i for i in arr if i < 0)]
+    return [sum(i > 0 for i in arr), sum(i for i in arr if i < 0)]
 
 def count_positives_sum_negatives(arr):
     if not arr:
@@ -881,9 +1062,10 @@ def count_positives_sum_negatives(arr):
         if i > 0:
             pos += 1
         else:
-            neg += i
+            neg += i # can add 0 to negatives
     return [pos, neg]
 
+# positives are always first
 def count_positives_sum_negatives(arr):
     if not arr:
         return []
@@ -914,6 +1096,8 @@ def basic_tests():
 
 
 
+# String repeat
+# https://www.codewars.com/kata/54c27a33fb7da0db0100040e/solutions/python
 """A square of squares
 You like building blocks. You especially like building blocks that are squares. And what you even like more, is to arrange them into a square of square building blocks!
 
@@ -936,12 +1120,22 @@ Examples
 
 
 import numpy as np
+def is_square(n): 
+    return np.sqrt(n).is_integer()
+is_square(25)
+
+import numpy as np
 def is_square(n):
     if n < 0:
         return False
     return np.sqrt(n).is_integer()
     # return np.power(n, .5).is_integer()
-is_square(25)
+
+def is_square(n):
+    return (n ** 0.5) % 1 == 0
+
+def is_square(n):
+    return (n ** 0.5) ** 2 == n
 
 
 @test.describe("Fixed Tests")
@@ -959,6 +1153,8 @@ def fixed_tests():
 
 
 
+# Build a pile of Cubes
+# https://www.codewars.com/kata/5592e3bd57b64d00f3000047/train/python
 """Your task is to construct a building which will be a pile of n cubes. The cube at the bottom will have a volume of n^3, the cube above will have volume of (n-1)^3 and so on until the top which will have a volume of 1^3.
 
 You are given the total volume m of the building. Being given m can you find the number n of cubes you will have to build?
@@ -979,16 +1175,6 @@ def find_nb(m):
     return ind if cubed == m else -1
 find_nb(1071225)
 
-def find_nb(m):
-    cubed = 1
-    count = 1
-    while cubed <= m:
-        count += 1
-        cubed += count ** 3
-        if cubed == m:
-            return count
-    return -1
-
 
 test.assert_equals(find_nb(4183059834009), 2022)
 test.assert_equals(find_nb(24723578342962), -1)
@@ -1000,6 +1186,8 @@ test.assert_equals(find_nb(26825883955641), 3218)
 
 
 
+# Beginner Series #2 Clock
+# https://www.codewars.com/kata/55f9bca8ecaa9eac7100004a/train/python
 """Clock shows h hours, m minutes and s seconds after midnight.
 
 Your task is to write a function which returns the time since midnight in milliseconds.
@@ -1019,7 +1207,11 @@ Input constraints:
 
 def past(h, m, s):
     return ((((h * 60) + m) * 60) + s) * 1000
-past(0,1,1)
+past(0, 1, 1)
+
+def past(h, m, s):
+    return (s + 60*m + 3600*h) * 1000
+
 
 @test.describe("Fixed Tests")
 def basic_tests():
@@ -1035,6 +1227,8 @@ def basic_tests():
 
 
 
+# Find the next perfect square!
+# https://www.codewars.com/kata/56269eb78ad2e4ced1000013/solutions/python        
 """You might know some pretty large perfect squares. But what about the NEXT one?
 
 Complete the findNextSquare method that finds the next integral perfect square after the one passed as a parameter. Recall that an integral perfect square is an integer n such that sqrt(n) is also an integer.
@@ -1051,6 +1245,10 @@ Examples:(Input --> Output)
 def find_next_square(sq):
     return int(np.square(np.sqrt(sq) + 1)) if np.sqrt(sq).is_integer() else -1
 find_next_square(121)
+
+def find_next_square(sq):
+    root_test = (sq ** .5) % 1 == 0
+    return ((sq ** .5) + 1) ** 2 if root_test else -1
 
 
 @test.describe("Fixed Tests")
@@ -1071,6 +1269,8 @@ def fixed_tests():
 
 
 
+# Find the unique number
+# https://www.codewars.com/kata/585d7d5adb20cf33cb000235/train/python
 """There is an array with some numbers. All numbers are equal except for one. Try to find it!
 
 find_uniq([ 1, 1, 1, 2, 1, 1 ]) == 2
@@ -1081,7 +1281,7 @@ The tests contain some very huge arrays, so think about performance."""
 
 
 def find_uniq(arr):
-    return min(set(arr), key=arr.count)
+    return min(set(arr), key=arr.count)  # with 'set' computes much faster
 find_uniq([1, 1, 1, 2, 1, 1])
 find_uniq([3, 10, 3, 3, 3])
 
@@ -1111,6 +1311,8 @@ def f():
 
 
 
+# Descending Order
+# https://www.codewars.com/kata/5467e4d82edf8bbf40000155/train/python
 """Your task is to make a function that can take any non-negative integer as an argument and return it with its digits in descending order. Essentially, rearrange the digits to create the highest possible number.
 
 Examples:
@@ -1138,6 +1340,8 @@ def fixed_tests():
 
 
 
+# Duplicate Encoder
+# https://www.codewars.com/kata/54b42f9314d9229fd6000d9c/train/python
 """The goal of this exercise is to convert a string to a new string where each character in the new string is "(" if that character appears only once in the original string, or ")" if that character appears more than once in the original string. Ignore capitalization when determining if a character is a duplicate.
 
 Examples
@@ -1147,6 +1351,21 @@ Examples
 "(( @"     =>  "))((" """
 
 
+def duplicate_encode(word):
+    return ''.join(['(' if word.lower().count(char) == 1 else ')' for char in word.lower()])
+duplicate_encode('Success')
+
+def duplicate_encode(word):
+    return "".join(")" if word.lower().count(letter) > 1 else "(" for letter in word.lower())
+
+def duplicate_encode(word):
+    return ''.join(map(lambda x: '(' if Counter(word.lower())[x] == 1 else ')', word.lower()))
+duplicate_encode("din")
+
+def duplicate_encode(word):
+    multiple_appear = {letter: (word.lower().count(letter) > 1) for letter in set(word.lower())}
+    return "".join(")" if multiple_appear[letter] else "(" for letter in word.lower())
+
 from collections import Counter
 def duplicate_encode(word):
     return ''.join('(' if Counter(word.lower())[char] == 1 else ')' for char in word.lower())
@@ -1154,15 +1373,6 @@ duplicate_encode("din")
 duplicate_encode("recede")
 duplicate_encode("Success")
 duplicate_encode("(( @")
-
-def duplicate_encode(word):
-    return ''.join(['(' if word.lower().count(char) == 1 else ')' for char in word.lower()])
-duplicate_encode('Success')
-
-def duplicate_encode(word):
-    return ''.join(map(lambda x: '(' if Counter(word.lower())[x] == 1 else ')', word.lower()))
-duplicate_encode("din")
-
 
 
 @test.describe("Duplicate Encoder")
@@ -1178,6 +1388,8 @@ def fixed_tests():
 
 
 
+# Counting sheep...
+# https://www.codewars.com/kata/54edbc7200b811e956000556/train/python
 """Consider an array/list of sheep where some sheep may be missing from their place. We need a function that counts the number of sheep present in the array (true means present).
 
 For example,
@@ -1204,7 +1416,9 @@ array1 = [None,  np.NaN,  True,  False,
 
 def count_sheeps(sheep):
     return sheep.count(True)
+    # return sum(i == True for i in sheep)
     # return len([i for i in sheep if i == True])
+    # return sheep.count(1)
     # return [i for i in sheep if i == True].count(True)
     # return list(map(lambda x: True if x == True else False, sheep)).count(True)
 count_sheeps(array1)
@@ -1226,6 +1440,8 @@ test.assert_equals(result := count_sheeps(array1), 17, "There are 17 sheeps in t
 
 
 
+# Highest and Lowest
+# https://www.codewars.com/kata/554b4ac871d6813a03000035
 """In this little assignment you are given a string of space separated numbers, and have to return the highest and lowest number.
 
 Examples
@@ -1247,6 +1463,12 @@ high_and_low('8 3 -5 42 -1 0 0 -9 4 7 4 -4')
 def high_and_low(numbers):
     return ' '.join((str(max(int(i) for i in numbers.split(' '))), str(min(int(i) for i in numbers.split(' ')))))
 
+def high_and_low(numbers):
+    list_of_digits = list(int(digit) for digit in numbers.strip().split())
+    return str(max(list_of_digits)) + " " + str(min(list_of_digits))
+
+sorted(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
+
 
 @test.describe("Fixed Tests")
 def fixed_tests():
@@ -1259,6 +1481,8 @@ def fixed_tests():
 
 
 
+# Your order, please
+# https://www.codewars.com/kata/55c45be3b2079eccff00010f/solutions/python
 """Your task is to sort a given string. Each word in the string will contain a single number. This number is the position the word should have in the result.
 
 Note: Numbers can be from 1 to 9. So 1 will be the first word (not 0).
@@ -1270,13 +1494,28 @@ Examples
 "4of Fo1r pe6ople g3ood th5e the2"  -->  "Fo1r the2 g3ood 4of th5e pe6ople"
 ""  -->  """""
 
-from string import digits
+
 def order(sentence):
-    return sorted(sentence.split(), key=lambda x: sorted(x))
-    # return sorted(sentence.split(), key=lambda x: int(''.join(filter(str.isdigit, x))))
-    # return sorted(sentence.split(), key=lambda x: int(''.join(filter(lambda y: y in digits, x))))
+    return " ".join(sorted(sentence.split(), key=min))
 order("is2 Thi1s T4est 3a")
 
+def order(sentence):
+    return " ".join(sorted(sentence.split(), key=sorted))
+
+def order(sentence):
+    return " ".join(sorted(sentence.split(), key=lambda x: sorted(x)))
+
+def order(sentence):
+    return " ".join(sorted(sentence.split(), key=lambda x: "".join(filter(str.isdigit, x))))
+
+def order(sentence):
+    return " ".join(sorted(sentence.split(), key=lambda x: "".join(i for i in x if i.isdigit())))
+
+from string import digits
+def order(sentence):
+    return " ".join(sorted(sentence.split(), key=lambda x: ''.join(filter(lambda y: y in digits, x))))
+
+import re
 def order(sentence):
     return sorted(sentence.split(), key=lambda x: ''.join(re.findall(r'\d+', x)))
 order("is2 Thi1s T4est 3a")
@@ -1298,6 +1537,9 @@ test.assert_equals(order(""), "")
 
 
 
+
+# Century From Year
+# https://www.codewars.com/kata/5a3fe3dde1ce0e8ed6000097/train/python
 """Introduction
 The first century spans from the year 1 up to and including the year 100, the second century - from the year 101 up to and including the year 200, etc.
 
@@ -1311,13 +1553,24 @@ Examples
 2000 --> 20"""
 
 
-import numpy as np
 def century(year):
-    return int(np.ceil(year / 100))
+    ending = int(str(year)[-2:])
+    core = int(str(year)[-4:-2]) if str(year)[-4:-2] else 0
+    return core + 1 if ending else core
 century(1705)
 century(1900)
 century(1601)
 century(2000)
+century(356)
+century(89)
+century(0)
+
+def century(year):
+    return year // 100 + 1 if year % 100 else year // 100
+
+import numpy as np
+def century(year):
+    return int(np.ceil(year / 100))
 
 def century(year):
     return (year + 99) // 100
@@ -1348,6 +1601,8 @@ def fixed_tests():
 
 
 
+# Reversed Strings
+# https://www.codewars.com/kata/5168bb5dfe9a00b126000018/solutions/python
 """Complete the solution so that it reverses the string passed into it.
 
 'world'  =>  'dlrow'
@@ -1375,6 +1630,8 @@ def basic_tests():
 
 
 
+# Calculating with Functions
+# https://www.codewars.com/kata/525f3eda17c7cd9f9e000b39/python
 # Fist fail, WTF
 """This time we want to write calculations using functions and get the results. Let's have a look at some examples:
 
@@ -1391,6 +1648,56 @@ The most outer function represents the left operand, the most inner function rep
 Division should be integer division. For example, this should return 2, not 2.666666...:
 eight(divided_by(three()))"""
 
+
+def zero(func=None):
+    if func:
+        return func(0)
+    return 0
+def one(func=None):
+    if func:
+        return func(1)
+    return 1
+def two(func=None):
+    if func:
+        return func(2)
+    return 2
+def three(func=None):
+    if func:
+        return func(3)
+    return 3
+def four(func=None):
+    if func:
+        return func(4)
+    return 4
+def five(func=None):
+    if func:
+        return func(5)
+    return 5
+def six(func=None):
+    if func:
+        return func(6)
+    return 6
+def seven(func=None):
+    if func:
+        return func(7)
+    return 7
+def eight(func=None):
+    if func:
+        return func(8)
+    return 8
+def nine(func=None):
+    if func:
+        return func(9)
+    return 9
+
+def plus(x):
+    return lambda y: x + y
+def minus(x):
+    return lambda y: y - x
+def times(x):
+    return lambda y: x * y    
+def divided_by(x):
+    return lambda y: y // x
 
 def zero(f=None): 
     return 0 if not f else f(0)
@@ -1446,6 +1753,8 @@ test.assert_equals(six(divided_by(two())), 3)
 
 
 
+# You only need one - Beginner
+# https://www.codewars.com/kata/57cc975ed542d3148f00015b
 """You will be given an array a and a value x. All you need to do is check whether the provided array contains the value.
 
 Array can contain numbers or strings. X can be either.
@@ -1457,6 +1766,10 @@ def check(seq, elem):
     return elem in seq
 check([66, 101], 66)
 check(['t', 'e', 's', 't'], 'e')
+
+def check(seq, elem):
+    # return any([i == elem for i in seq])
+    return any([i for i in seq if i == elem])
 
 
 @test.describe("Fixed Tests")
@@ -1481,6 +1794,8 @@ def fixed_tests():
 
 
 
+# Count the smiley faces!
+# https://www.codewars.com/kata/583203e6eb35d7980400002a
 """Given an array (arr) as an argument complete the function countSmileys that should return the total number of smiling faces.
 
 Rules for a smiling face:
@@ -1505,8 +1820,11 @@ In case of an empty array return 0. You will not be tested with invalid input (i
 
 import re
 def count_smileys(arr):
-    return sum(True for i in arr if re.match(r'^[;:][~-]?[)D]$', i))
-    # return sum(True if re.match(r'^[;:][~-]?[)D]$', i) else False for i in arr)
+    return sum(True for elem in arr if re.match(r"[:;][-~]?[\)D]", elem))
+    # return sum(True for i in arr if re.match(r'^[;:][~-]?[\)D]$', i))
+    # return sum(True for i in arr if re.search(r'^[;:][~-]?[\)D]$', i))
+    # return sum(True for i in arr if re.findall(r'^[;:][~-]?[\)D]$', i))
+    # return sum(True if re.match(r"[:;][-~]?[\)D]", elem) else False for elem in arr)
 count_smileys([':)', ';(', ';}', ':-D'])
 count_smileys([';D', ':-(', ':-)', ';~)'])
 count_smileys([';]', ':[', ';*', ':$', ';-D'])
@@ -1514,7 +1832,7 @@ count_smileys([':D',':~)',';~D',':)'])
 
 import re
 def count_smileys(arr):
-    return len(re.findall(r'[;:][~-]?[)D]', ' '.join(arr)))
+    return len(re.findall(r'[;:][~-]?[\)D]', ' '.join(arr)))
 
 def count_smileys(arr):
     if not arr:
@@ -1541,6 +1859,8 @@ test.assert_equals(count_smileys([';]', ':[', ';*', ':$', ';-D']), 1)
 
 
 
+# Consecutive strings
+# https://www.codewars.com/kata/56a5d994ac971f1ac500003e
 """You are given an array(list) strarr of strings and an integer k. Your task is to return the first longest string consisting of k consecutive strings taken in the array.
 
 Examples:
@@ -1564,13 +1884,20 @@ n being the length of the string array, if n = 0 or k > n or k <= 0 return "" (r
 
 
 def longest_consec(strarr, k):
+    # if not (k in range(1, len(strarr) + 1) and strarr):
+    if not (0 < k <= len(strarr) and strarr):
+        return ""
+    return max(["".join(strarr[i:i+k]) for i in range(len(strarr) - k + 1)], key=len)
+    # return max(["".join(strarr[i:i+k]) for i in range(len(strarr) - k + 1)], key=len) if k in range(1, len(strarr) + 1) and strarr else ""
+longest_consec(["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"], 2)
+longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], 2)
+
+def longest_consec(strarr, k):
     if (not strarr or
         k > len(strarr) or
         k <= 0):
         return ''
     return max((''.join(strarr[i : i+k]) for i in range(len(strarr) - k + 1)), key=len)
-longest_consec(["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"], 2)
-longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], 2)
 
 # change next to list for all strings
 def longest_consec(strarr, k):
@@ -1598,6 +1925,8 @@ testing(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0), "")
 
 
 
+# Build Tower
+# https://www.codewars.com/kata/576757b1df89ecf5bd00073b/
 """Build Tower
 Build a pyramid-shaped tower given a positive integer number of floors. A tower block is represented with "*" character.
 
@@ -1609,9 +1938,16 @@ For example, a tower with 3 floors looks like this:
   "*****"
 ]"""
 
-def tower_builder(n_floors):
-    return [('*' * (2*i + 1) ).center(n_floors * 2 - 1) for i in range(n_floors)]
+
+def tower_builder(n):
+    return [("*" * (2*i + 1)).center(2*n - 1) for i in range(n)]
 tower_builder(3)
+
+def tower_builder(n):
+    return [" " * (n - i - 1) + "*" * (2*i + 1) + " " * (n - i - 1) for i in range(n)]
+
+def tower_builder(n):
+    return ["{:^{}}".format("*" * (2*i + 1), (2*n - 1)) for i in range(n)]
 
 
 @test.describe("Build Tower")
@@ -1626,6 +1962,8 @@ def fixed_tests():
 
 
 
+# Sum without highest and lowest number
+# https://www.codewars.com/kata/576b93db1129fcf2200001e6
 """Task
 Sum all the numbers of a given array ( cq. list ), except the highest and the lowest element ( by value, not by index! ).
 
@@ -1641,13 +1979,22 @@ If an empty value ( null, None, Nothing etc. ) is given instead of an array, or 
 
 
 def sum_array(arr):
+    if (not arr or 
+        len(arr) == 1 or 
+        len(arr) == 2):
+        return 0
+    return sum(arr) - min(arr) - max(arr)
+sum_array([3, 5])
+sum_array([-3, -5])
+sum_array([6, 2, 1, 8, 10])
+sum_array([1, 1, 11, 2, 3])
+sum_array([-6, 20, -1, 10, -12])
+
+def sum_array(arr):
     if (not arr or
         len(arr) == 1):
         return 0
     return sum(sorted(arr)[1:-1])
-sum_array([6, 2, 1, 8, 10])
-sum_array([1, 1, 11, 2, 3])
-sum_array([-6, 20, -1, 10, -12])
 
 
 @test.describe("Fixed Tests")
@@ -1677,14 +2024,20 @@ def fixed_tests():
 
 
 
-
+# Are You Playing Banjo?
+# https://www.codewars.com/kata/53af2b8861023f1d88000832
 """Create a function which answers the question "Are you playing banjo?".
 If your name starts with the letter "R" or lower case "r", you are playing banjo!
 
 The function takes a name as its only argument, and returns one of the following strings:
 
 name + " plays banjo" 
-name + " does not play banjo""""
+name + " does not play banjo"
+"""
+
+
+def are_you_playing_banjo(name):
+    return name + " plays banjo" if name[0].lower() == "r" else name + " does not play banjo"
 
 def are_you_playing_banjo(name):
     return '{} plays banjo'.format(name) if name[0].lower() == 'r' else '{} does not play banjo'.format(name)
@@ -1704,6 +2057,8 @@ def basic_tests():
 
 
 
+# Remove the minimum
+# https://www.codewars.com/kata/563cf89eb4747c5fb100001b
 """Task
 Given an array of integers, remove the smallest value. Do not mutate the original array/list. If there are multiple elements with the same value, remove the one with a lower index. If you get an empty array/list, return an empty array/list.
 
@@ -1713,6 +2068,10 @@ Examples
 * Input: [1,2,3,4,5], output= [2,3,4,5]
 * Input: [5,3,2,1,4], output = [5,3,2,4]
 * Input: [2,2,1,2,1], output = [2,2,2,1]"""
+
+
+def remove_smallest(numbers):
+    return numbers[:numbers.index(min(numbers))] + numbers[numbers.index(min(numbers)) + 1 :] if numbers else []
 
 def remove_smallest(numbers):
     if not numbers:
@@ -1763,6 +2122,8 @@ for i in range(10):
 
 
 
+# Two to One
+# https://www.codewars.com/kata/5656b6906de340bd1b0000ac
 """Take 2 strings s1 and s2 including only letters from ato z. Return a new sorted string, the longest possible, containing distinct letters - each taken only once - coming from s1 or s2.
 
 Examples:
@@ -1773,14 +2134,15 @@ longest(a, b) -> "abcdefklmopqwxy"
 a = "abcdefghijklmnopqrstuvwxyz"
 longest(a, a) -> "abcdefghijklmnopqrstuvwxyz""""
 
+
 def longest(a1, a2):
-    return ''.join(sorted(set(a1 + a2)))
+    return ''.join(sorted(set(a1) | set(a2)))
 longest('xyaabbbccccdefww', 'xxxxyyyyabklmopq')
 longest('abcdefghijklmnopqrstuvwxyz', 'abcdefghijklmnopqrstuvwxyz')
 longest("aretheyhere", "yestheyarehere")
 
 def longest(a1, a2):
-    return ''.join(sorted(set(a1) | set(a2)))
+    return ''.join(sorted(set(a1 + a2)))
 
 
 @test.describe("longest")
@@ -1795,6 +2157,8 @@ def tests():
 
 
 
+# Unique In Order
+# https://www.codewars.com/kata/54e6533c92449cc251001667
 """Implement the function unique_in_order which takes as argument a sequence and returns a list of items without any elements with the same value next to each other and preserving the original order of elements.
 
 For example:
@@ -1803,19 +2167,26 @@ unique_in_order('AAAABBBCCDAABBB') == ['A', 'B', 'C', 'D', 'A', 'B']
 unique_in_order('ABBCcAD')         == ['A', 'B', 'C', 'c', 'A', 'D']
 unique_in_order([1,2,2,3,3])       == [1,2,3]"""
 
-from itertools import groupby
 def unique_in_order(iterable):
-    return [k for k, _ in groupby(iterable)]
+    if not iterable:
+        return []
+    unique_list = [iterable[i] for i in range(len(iterable) - 1) if iterable[i] != iterable[i+1]]
+    unique_list.append(iterable[-1])
+    return unique_list
 unique_in_order('AAAABBBCCDAABBB')
 unique_in_order('ABBCcAD')
-unique_in_order([1,2,2,3,3])
+unique_in_order([1, 2, 2, 3, 3])
 
 def unique_in_order(iterable):
     if not iterable:
         return []
-    it = [iterable[i] for i in range(1, len(iterable)) if iterable[i] != iterable[i - 1]]
-    it.insert(0, iterable[0])
-    return it
+    unique_list = [iterable[i] for i in range(1, len(iterable)) if iterable[i] != iterable[i - 1]]
+    unique_list.insert(0, iterable[0])
+    return unique_list
+
+from itertools import groupby
+def unique_in_order(iterable):
+    return [k for k, _ in groupby(iterable)]
 
 def unique_in_order(iterable):
     if not iterable:
@@ -1827,14 +2198,6 @@ def unique_in_order(iterable):
             taboo.append(i)
     return taboo
 
-import numpy as np
-def unique_in_order(iterable):
-    return ([] if not iterable else
-            np.concatenate((
-                [iterable[0]],
-                [iterable[i] for i in range(1, len(iterable)) if iterable[i] != iterable[i - 1]
-                ]
-            )))
 
 test.assert_equals(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])
 
@@ -1842,6 +2205,8 @@ test.assert_equals(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B']
 
 
 
+# Bouncing Balls
+# https://www.codewars.com/kata/5544c7a5cb454edb3c000047
 """A child is playing with a ball on the nth floor of a tall building. The height of this floor, h, is known.
 
 He drops the ball out of the window. The ball bounces (for example), to two-thirds of its height (a bounce of 0.66).
@@ -1874,9 +2239,9 @@ def bouncing_ball(h, bounce, window):
     #     bounce >= 1 or
     #     window >= h):
     #         return -1
-    if not (h > 0 and 
-            0 < bounce < 1 and 
-            window < h):
+    if not (h > 0 
+            and 0 < bounce < 1 
+            and window < h):
         return -1
     counter = 1
     while h * bounce > window:
@@ -1886,6 +2251,14 @@ def bouncing_ball(h, bounce, window):
 bouncing_ball(3, 0.66, 1.5)
 bouncing_ball(2, 0.5, 1)
 bouncing_ball(2, 1, 1)
+
+def bouncing_ball(h, bounce, window):
+    if not (h > 0 
+            and 0 < bounce < 1 
+            and window < h):
+        return -1
+    return 2 + bouncing_ball(bounce * h, bounce, window)
+
 
 
 @test.it('Fixed Tests')
@@ -1899,6 +2272,8 @@ def tests():
 
 
 
+# Sum of positive
+# https://www.codewars.com/kata/5715eaedb436cf5606000381
 """You get an array of numbers, return the sum of all of the positives ones.
 
 Example [1,-4,7,12] => 1 + 7 + 12 = 20
@@ -1930,11 +2305,14 @@ def fixed_tests():
 
 
 
+# Beginner - Lost Without a Map
+# https://www.codewars.com/kata/57f781872e3d8ca2a000007e
 """Given an array of integers, return a new array with each value doubled.
 
 For example:
 
 [1, 2, 3] --> [2, 4, 6]"""
+
 
 def maps(a):
     return [i * 2 for i in a]
@@ -1960,6 +2338,8 @@ def fixed_tests():
 
 
 
+# String ends with?
+# https://www.codewars.com/kata/51f2d1cafc9c0f745c00037d/
 """Complete the solution so that it returns true if the first argument(string) passed in ends with the 2nd argument (also a string).
 
 Examples:
@@ -1974,6 +2354,9 @@ solution('abcde', 'cde')
 solution('sumo', 'omo')
 solution('samurai', 'ai')
 solution('samurai', '')
+
+def solution(text, ending):
+    return ending == text[-len(ending):]tex
 
 def solution(string, ending):
     if not ending:
@@ -1997,6 +2380,51 @@ test.assert_equals(solution('abcde', ''), True)
 
 
 
+# Is this a triangle?
+# https://www.codewars.com/kata/56606694ec01347ce800001b
+"""Implement a function that accepts 3 integer values a, b, c. The function should return true if a triangle can be built with the sides of given length and false in any other case.
+
+(In this case, all triangles must have surface greater than 0 to be accepted).
+
+Examples:
+
+Input -> Output
+1,2,2 -> true
+4,2,3 -> true
+2,2,2 -> true
+1,2,3 -> false
+-5,1,3 -> false
+0,2,3 -> false
+1,2,9 -> false """
+
+
+def is_triangle(a, b, c):
+    a, b, c = sorted((a, b, c))
+    return a + b > c
+is_triangle(1, 2, 2)
+is_triangle(7, 2, 2)
+is_triangle(1, 2, 3)
+is_triangle(1, 3, 2)
+is_triangle(3, 1, 2)
+is_triangle(5, 1, 2)
+is_triangle(1, 2, 5)
+is_triangle(2, 5, 1)
+is_triangle(4, 2, 3)
+is_triangle(5, 1, 5)
+is_triangle(2, 2, 2)
+
+def is_triangle(a, b, c):
+    return 2 * max((a, b, c)) < sum((a, b, c))
+
+def is_triangle(a, b, c):
+    return (a < b+c) and (b < a+c) and (c < a+b)
+
+
+
+
+
+# Replace With Alphabet Position
+# https://www.codewars.com/kata/546f922b54af40e1e90001da/train/python
 """In this kata you are required to, given a string, replace every letter with its position in the alphabet.
 
 If anything in the text isn't a letter, ignore it and don't return it.
@@ -2009,18 +2437,24 @@ Should return "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 1
 
 
 def alphabet_position(text):
-    text = text.replace(' ', '')
-    return ' '.join(str(ord(i.lower()) - 96) for i in text if i.isalpha())
+    # text = text.replace(' ', '').lower()
+    # return ' '.join(str(ord(i) - 96) for i in text.lower() if i.isalpha())
+    return ' '.join(str(ord(i) - ord("a") + 1) for i in text.lower() if i.isalpha())
 alphabet_position("The sunset sets at twelve o' clock.")
 
 import string
 def alphabet_position(text):
-    text = text.replace(' ', '')
-    return ' '.join(str(ord(i.lower()) - 96) for i in text if i in string.ascii_letters)
+    alph = string.ascii_lowercase
+    return " ".join(str(alph.find(i) + 1) for i in text.lower() if i in alph)
+
+import string
+def alphabet_position(text):
+    text = text.replace(' ', '').lower()
+    return ' '.join(str(ord(i) - 96) for i in text if i in string.ascii_letters)
 
 def alphabet_position(text):
-    text = text.replace(' ', '')
-    return ' '.join(str(ord(i.lower()) - 96) for i in (filter(str.isalpha, (i for i in text))))
+    filtered_text = filter(str.isalpha, text)
+    return ' '.join(str(ord(i.lower()) - 96) for i in filtered_text)
 
 
 from random import randint
@@ -2036,6 +2470,8 @@ test.assert_equals(alphabet_position(number_test), "")
 
 
 
+# Mexican Wave
+# https://www.codewars.com/kata/58f5c63f1e26ecda7e000029
 """Task
 In this simple Kata your task is to create a function that turns a string into a Mexican Wave. You will be passed a string and you must return that string in an array where an uppercase letter is a person standing up. 
 Rules
@@ -2047,10 +2483,9 @@ wave("hello") => ["Hello", "hEllo", "heLlo", "helLo", "hellO"]"""
 
 
 def wave(people):
-    return [people[:i] + people[i].upper() + people[i+1 : ] for i in range(len(people))]
+    return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if (people[:i] + people[i].upper() + people[i+1:]) != people]
 wave('hello')
 wave('')
-
 
 def wave(people):
     return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if people[i].isalpha()]
@@ -2062,6 +2497,8 @@ result = ["Codewars", "cOdewars", "coDewars", "codEwars", "codeWars", "codewArs"
 
 
 
+# Find the first non-consecutive number
+# https://www.codewars.com/kata/58f8a3a27a5c28d92e000144/
 """Your task is to find the first element of an array that is not consecutive.
 
 By not consecutive we mean not exactly 1 larger than the previous element of the array.
@@ -2083,6 +2520,12 @@ def first_non_consecutive(arr):
 first_non_consecutive([1, 2, 3, 4, 6, 7, 8])
 first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 9])
 first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 8])
+first_non_consecutive([31, 32])
+
+def first_non_consecutive(arr):
+    for i, v in enumerate(arr, arr[0]):
+        if v != i:
+            return v
 
 import numpy as np
 def first_non_consecutive(arr):
@@ -2107,24 +2550,28 @@ def fixed_tests():
 
 
 
+# Jaden Casing Strings
+# https://www.codewars.com/kata/5390bac347d09b7da40006f6
 """Your task is to convert strings to how they would be written by Jaden Smith. The strings are actual quotes from Jaden Smith, but they are not capitalized in the same way he originally typed them.
 
 Example:
 
 Not Jaden-Cased: "How can mirrors be real if our eyes aren't real"
-Jaden-Cased:     "How Can Mirrors Be Real If Our Eyes Aren't Real""""
-
-import string
-def to_jaden_case(string_text):
-    return string.capwords(string_text)
-
-def to_jaden_case(string_text):
-    return ' '.join(map(lambda x: x.title(), string_text.split()))
-to_jaden_case("How can mirrors be real if our eyes aren't real")
+Jaden-Cased:     "How Can Mirrors Be Real If Our Eyes Aren't Real"
+"""
 
 def to_jaden_case(string_text):
     return ' '.join(i.capitalize() for i in string_text.split())
 to_jaden_case("How can mirrors be real if our eyes aren't real")
+
+def to_jaden_case(string_text):
+    return ' '.join(map(str.capitalize, string_text.split()))
+    # return ' '.join(map(lambda x: x.title(), string_text.split()))
+to_jaden_case("How can mirrors be real if our eyes aren't real")
+
+import string
+def to_jaden_case(string_text):
+    return string.capwords(string_text)
 
 quote = "How can mirrors be real if our eyes aren't real"
 test.assert_equals(to_jaden_case(quote), "How Can Mirrors Be Real If Our Eyes Aren't Real")
@@ -2133,6 +2580,8 @@ test.assert_equals(to_jaden_case(quote), "How Can Mirrors Be Real If Our Eyes Ar
 
 
 
+# Find the odd int
+# https://www.codewars.com/kata/54da5a58ea159efa38000836
 """Given an array of integers, find the one that appears an odd number of times.
 
 There will always be only one integer that appears an odd number of times.
@@ -2145,18 +2594,20 @@ Examples
 [1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd)."""
 
 
+def find_it(seq):
+    return [i for i in set(seq) if seq.count(i) % 2][0]
+find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5])
+
+from collections import Counter
+def find_it(seq):
+    return [k for k, v in Counter(seq).items() if v % 2][0]
+
 from collections import Counter
 def find_it(seq):
     for k, v in Counter(seq).items():
         if v % 2:
             return k
     return None
-find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5])
-
-from collections import Counter
-def find_it(seq):
-    return [k for k, v in Counter(seq).items() if v % 2][0]
-find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5])
 
 
 @test.describe("Sample tests")
@@ -2194,6 +2645,8 @@ def sample_tests():
 
 
 
+# Highest Scoring Word
+# https://www.codewars.com/kata/57eb8fcdf670e99d9b000272
 """Given a string of words, you need to find the highest scoring word.
 
 Each letter of a word scores points according to its position in the alphabet: a = 1, b = 2, c = 3 etc.
@@ -2204,10 +2657,18 @@ If two words score the same, return the word that appears earliest in the origin
 
 All letters will be lowercase and all inputs will be valid."""
 
+
 def high(x):
     word_list = [sum(ord(j) - 96 for j in i) for i in x.split()]
     return x.split()[word_list.index(max(word_list))]
 high('man i need a taxi up to ubud')
+
+def high(x):
+    word_list = [sum(ord(letter) - ord("a") + 1 for letter in word) for word in x.split()]
+    return x.split()[word_list.index(max(word_list))]
+
+def high(x):
+    return max(x.split(), key=lambda x: sum(ord(i) - ord("a") + 1 for i in x))
 
 
 @test.describe("Fixed Tests")
@@ -2226,6 +2687,8 @@ def fixed_tests():
 
 
 
+
+# 
 """Complete the function that accepts a string parameter, and reverses each word in the string. All spaces in the string should be retained.
 
 Examples
@@ -2268,6 +2731,8 @@ def fixed_tests():
 
 
 
+# Vowel Count
+# https://www.codewars.com/kata/54ff3102c1bad923760001f3
 """Return the number (count) of vowels in the given string.
 
 We will consider a, e, i, o, u as vowels for this Kata (but not y).
@@ -2282,6 +2747,10 @@ get_count('abracadabra')
 def get_count(sentence):
     return sum(True for i in sentence if i in 'aeiou')
 
+import re
+def get_count(sentence):
+    return len(re.findall(r"[aeiou]", sentence))
+
 def get_count(sentence):
     return sum(map(lambda x: True if x in 'aeiou' else False, sentence))
 
@@ -2294,6 +2763,8 @@ def test_abracadabra():
 
 
 
+# Can we divide it?
+# https://www.codewars.com/kata/5a2b703dc5e2845c0900005a
 """Your task is to create the functionisDivideBy (or is_divide_by) to check if an integer number is divisible by both integers a and b.
 
 A few cases:
@@ -2340,6 +2811,8 @@ def fixed_tests():
 
 
 
+# Poker cards encoder/decoder
+# https://www.codewars.com/kata/52ebe4608567ade7d700044a/
 """Consider a deck of 52 cards, which are represented by a string containing their suit and face value.
 
 Your task is to write two functions encode and decode that translate an array of cards to/from an array of integer codes.
@@ -2386,18 +2859,29 @@ spade         s            3
 
 
 def encode(cards):
-    figures = 'A23456789TJQK'
-    symbol = 'cdhs'
-    return sorted(figures.index(i[0]) + symbol.find(i[1]) * 13 for i in cards)
+    figures = "A23456789TJQK"
+    symbols = "cdhs"
+    return sorted(figures.find(i[0]) + 13 * symbols.find(i[1]) for i in cards)
 encode(['Ac', 'Ks', '5h', 'Td', '3c'])
 encode(["Td", "8c", "Ks"])
 
 def decode(cards):
-    figures = 'A23456789TJQK'
-    symbol = 'cdhs'
-    return [figures[i % 13] + symbol[i // 13] for i in sorted(cards)]
+    figures = "A23456789TJQK"
+    symbols = "cdhs"
+    card_list = [figures[i % 13] + symbols[i // 13] for i in cards]
+    return sorted(card_list, key=lambda x: figures.find(x[0]) + 13 * symbols.find(x[1]))
 decode([0, 51, 30, 22, 2])
 decode([7, 22, 51])    
+
+def encode(cards):
+    figures = 'A23456789TJQK'
+    symbols = 'cdhs'
+    return sorted(figures.index(i[0]) + symbols.find(i[1]) * 13 for i in cards)
+
+def decode(cards):
+    figures = 'A23456789TJQK'
+    symbols = 'cdhs'
+    return [figures[i % 13] + symbols[i // 13] for i in sorted(cards)]
 
 encoding_dict = {'Ac': 0, 'Ad': 13, 'Ah': 26, 'As': 39,
                  '2c': 1, '2d': 14, '2h': 27, '2s': 40,
@@ -2459,13 +2943,15 @@ def sample_tests():
 
 
 
+# Simple Events
+# https://www.codewars.com/kata/52d3b68215be7c2d5300022f/
 """Your goal is to write an Event constructor function, which can be used to make event objects.
 
 An event object should work like this:
 
 it has a .subscribe() method, which takes a function and stores it as its handler
 it has an .unsubscribe() method, which takes a function and removes it from its handlers
-it has an .emit() method, which takes an arbitrary number of arguments and calls all the stored functions with these arguments
+Eeeit has an .emit() method, which takes an arbitrary number of arguments and calls all the stored functions with these arguments
 As this is an elementary example of events, there are some simplifications:
 
 all functions are called with correct arguments (e.g. only functions will be passed to unsubscribe)
@@ -2518,6 +3004,9 @@ test.assert_equals(f.calls, 1) #no second call
 
 
 
+
+# Mongodb ObjectID
+# https://www.codewars.com/kata/52fefe6cb0091856db00030e/
 """MongoDB is a noSQL database which uses the concept of a document, rather than a table as in SQL. Its popularity is growing.
 
 As in any database, you can create, read, update, and delete elements. But in constrast to SQL, when you create an element, a new field _id is created. This field is unique and contains some information about the time the element was created, id of the process that created it, and so on. More information can be found in the MongoDB documentation (which you have to read in order to implement this Kata).
@@ -2561,7 +3050,7 @@ is_valid('111111111111111111111111')
 
 from datetime import datetime
 def get_timestamp(s):
-    return datetime.fromtimestamp(int(s[:8], 16)) if is_valid(s) else False
+    return datetime.fromtimestamp(int(s[:8], 16)) if is_valid(s)
 get_timestamp('507f1f77bcf86cd799439011')
 get_timestamp('507f1f77bcf86cz799439011')
 get_timestamp('507f1f77bcf86cd79943901')
@@ -2636,6 +3125,7 @@ test.assert_equals(Mongo.get_timestamp('507f1f77bcf86cd799439016'), datetime(201
 
 
 
+# !!!
 """Sum of Pairs
 Given a list of integers and a single sum value, return the first two values (parse from the left please) in order of appearance that add up to form the sum.
 
@@ -2710,6 +3200,8 @@ test.expect(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -
 
 
 
+# Prime number decompositions
+# https://www.codewars.com/kata/53c93982689f84e321000d62
 """You have to code a function getAllPrimeFactors, which takes an integer as parameter and returns an array containing its prime decomposition by ascending factors. If a factor appears multiple times in the decomposition, it should appear as many times in the array.
 
 exemple: getAllPrimeFactors(100) returns [2,2,5,5] in this order.
