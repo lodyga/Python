@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 # help
 from scipy.fftpack import shift
 from sympy import intersection
@@ -315,7 +318,7 @@ age = {'Tim': 28, 'Jim': 35, 'Pam': 40}
 for key in age:
     print(key, age[key])
 
-
+next("udp".__len__)
 
 
 
@@ -325,17 +328,22 @@ for key in age:
 list([2, 3])  # [2, 3] # create a list
 a = [2, 3, 4, 3]  # [2, 3, 4, 3]  # create a list
 
-a.remove(3) # removes the first occurrence of the chosen value
-del a[0] # removes value at position
+a.remove(3)  # removes the first occurrence of the chosen value
+del a[0]  # removes value at position
 a.pop(0)  # removes value at position and print it
+a.pop()  # removes the last element
 
-a.append(5) # 
-a.insert(0, 1) # insters an element at i-th position # prepend
+a.append(5)  # 
+a += [5]  # 
+a.insert(0, 1)  # insters an element at i-th position # prepend
 
 a.reverse()
+a2 = a  # another name to the same list instance
+a3 = a.copy()  # creates another instance of a list
+a.clear()
 
-[10, 20, 3, 3].index(3) # 2 # the first index of the value
-[10, 5, 10].count(10) # count chosen elements in list
+[10, 20, 3, 3].index(3)  # 2 # the first index of the value
+[10, 5, 10].count(10)  # count chosen elements in list
 [None, True, False].count(True)
 
 # to sort the list by length of the elements
@@ -456,9 +464,11 @@ names = s_dict.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
 ages = s_dict.values()  # dict_values([28, 35, 40])
 s_dict.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
 s_dict.get('Tim')  # 28
-s_dict.get('Pim', 0)  # 0 # dict.get() returns 0 if key not in dict
+s_dict.get('Ukasz')  # Nothin # dict.get() is safer then dict[]
+s_dict.get('Ukasz', 100)  # 100 # dict.get() returns 100 if key not in dict
 s_dict['Tim']  # 28
 s_dict['Tim'] += 2  # 30
+s_dict['Ukasz']  # Error
 
 s_dict['Tom2'] = 50
 s_dict.update({'Tom': 50})
@@ -626,8 +636,8 @@ sorted(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)  # sort chars with int
 # sort
 
 a = [(1, 2), (4, 1), (9, 10), (13, -3)]
-a.sort(key=lambda x: x[1])
-sorted(a, key=lambda x: x[1])
+a.sort(key=lambda x: x[1])  # sorts enlements in list a
+sorted(a, key=lambda x: x[1])  # creates a new list with sorted elements
 
 
 
@@ -686,6 +696,7 @@ list(repeat([1, 2], 3))  # [[1, 2], [1, 2], [1, 2]]
 
 list(map(pow, range(5), repeat(3)))  # [0, 1, 8, 27, 64] # TypeError: 'int' object is not iterable
 list(map(pow, range(5), [3] * 5))  # [0, 1, 8, 27, 64]
+np.power(range(5), 3)  # [0, 1, 8, 27, 64]
 
 
 
@@ -709,7 +720,8 @@ list(chain.from_iterable(a_list))  # [1, 2, 3, 4, 5, 6]
 
 from itertools import groupby
 
-{k: list(v) for k, v in groupby('AAAABBBCCDAABBB')} # groups consecutive keys
+{k: list(v) for k, v in groupby('AAAABBBCCDAABBB')} # groups consecutive keys # {'A': ['A', 'A'], 'B': ['B', 'B', 'B'], 'C': ['C', 'C'], 'D': ['D']}
+{k: len(list(v)) for k, v in groupby('AAAABBBCCDAABBB')} # groups consecutive keys # {'A': 2, 'B': 3, 'C': 2, 'D': 1}
 
 
 
@@ -1051,7 +1063,7 @@ def multiply(x):
 for i in range(5):
     print(list(map(lambda x: x(i), (add, multiply))))
 
-list(map(pow, [1, 2, 3], [1, 2, 3]))
+list(map(pow, [1, 2, 3], [1, 2, 3]))  # [1, 4, 27]
 
 
 
@@ -1253,8 +1265,9 @@ np.version.version
 np.zeros(5) + np.ones(5)  # array([1., 1., 1., 1., 1.])
 np.zeros((5, 3))
 
-np.array([[1, 2], [3, 4]]).transpose()
-np.array([[1, 2], [3, 4]]).T
+np.array([[1, 2], [3, 4]]).transpose()  # [(1, 3), (2, 4)]
+np.array([[1, 2], [3, 4]]).T  # [(1, 3), (2, 4)]
+list(zip(*[[1, 2], [3, 4]]))  # [(1, 3), (2, 4)]
 
 x = np.array([1, 2, 3])
 y = np.array([2, 4, 6])
@@ -1327,6 +1340,8 @@ np.add.reduce([1, 2, 3])  # 6
 np.multiply.reduce([1, 2, 3])  # 6
 np.subtract.reduce([1, 2, 3])  # -4
 
+np.abs(-5)  # 5 # absolute value 
+np.power(3, 2)  # 9
 np.power([1, 2, 3], 2)  # [1, 4, 9]
 np.power([1, 2, 3], [1, 2, 3])  # [1, 4, 27]
 np.square([1, 2, 3])  # [1, 4, 9]
@@ -1408,9 +1423,22 @@ import timeit
 timeit.timeit('foo = 10 * 5')
 timeit.timeit(stmt='a=10; b=10; sum = a + b')
 
+test_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+timeit.timeit(lambda: xxx, number=100000)
 timeit.timeit(lambda: sum(i in "aeiou" for i in test_str), number=100000)
 timeit.timeit(lambda: sum(True for i in test_str if i in "aeiou"), number=100000)
 timeit.timeit(lambda: sum(map(lambda x: True if x in 'aeiou' else False, test_str)), number=100000)
+
+n = 4096
+timeit.timeit(lambda: sum(True for i in range(1, n + 1) if not n % i), number=10_000)  # 3.687169998000172
+timeit.timeit(lambda: len([i for i in range(1, n + 1) if not n % i]), number=10_000)  # 3.5938232469998184
+timeit.timeit(lambda: len([True for i in range(1, n + 1) if not n % i]), number=10_000)  # 3.6050773840001966
+timeit.timeit(lambda: sum([True for i in range(1, n + 1) if not n % i]), number=10_000)  # 3.6067721780000284
+timeit.timeit(lambda: len([not n % i for i in range(1, n + 1)]), number=10_000)  # 4.191705105999972
+timeit.timeit(lambda: sum(not n % i for i in range(1, n + 1)), number=10_000)  # 5.578456058000029
+timeit.timeit(lambda: sum(True if not n % i else False for i in range(1, n + 1)), number=10_000)  # 5.622829734999868
+timeit.timeit(lambda: len(list(filter(lambda i: not n % i, range(1, n + 1)))), number=10_000)  # 6.283454425999935
+
 
 
 
@@ -1639,12 +1667,13 @@ patt2.sub(r'\1 Earth', 'Hello World')  # 'Hello Earth'
 
 # re.sub() replaces the pattern with string
 re.sub(r'\n', '\n\r', 'abc\ndef\nabc', 1)  # 'abc\n\rdef\nabc' # steps afters 1st occurrence
-re.sub(r'([A-Z])', r' \1', 'helloWorld')  # 'hello World' # break up came casing
+re.sub(r'\n', '\n\r', 'abc\ndef\nabc')  # 'abc\n\rdef\n\rabc' # replace all
+re.sub(r'([A-Z])', r' \1', 'helloWorld')  # 'hello World' # break up camel casing
 re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe!c 12')  # 'June\nAugust 9\nDe' # why space ?
 re.sub(r' *?["#", "!"].*', '', 'June #24\nAugust 9\nDe!c 12') # why space ?
 re.sub(r'([a-zA-Z]+)\s(\d+)', r'\2 of \1', 'June 24, August 9, Dec 12')  # '24 of June, 9 of August, 12 of Dec'
 
-
+import re
 
 
 
@@ -1659,6 +1688,15 @@ re.sub(r'([a-zA-Z]+)\s(\d+)', r'\2 of \1', 'June 24, August 9, Dec 12')  # '24 o
 
 
 # Exceptions
+
+try:
+    # 10/0
+    number = int(input("Eneter a number: "))
+    print(number)
+except ZeroDivisionError as err:
+    print(err)
+except ValueError:
+    print("It's not a number")
 
 # no file to open
 try:
@@ -1858,6 +1896,37 @@ with open(dire+'writeData.csv', mode='w') as file:
     writer.writerow(['Python', 'Guido van Rossum', '1991', '.py'])
     writer.writerow(['Java', 'James Gosling', '1995', '.java'])
     writer.writerow(['C++', 'Bjarne Stroustrup', '1985', '.cpp'])
+
+
+
+
+
+
+
+import os
+os.getcwd()
+
+# reading a file
+
+emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp.txt", "r")
+
+print(emp_file.readable())  # is file readable
+print(emp_file.read())  # read a file
+print(emp_file.readline())  # read one line
+print(emp_file.readlines())  # each line to list row
+
+emp_file.close()
+
+# writting (append) to a file
+
+emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp.txt", "a")
+emp_file.write("Paweł poledancer\n")
+emp_file.close()
+
+# w new file
+emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp1.txt", "w")  # creats a new file
+emp_file.close()
+
 
 
 
@@ -2898,5 +2967,16 @@ g(7)
 def g(i):
     return i + 3
 g(7)
+
+
+# input()
+
+name = input("Enter name")
+print("Hello " + name)
+
+number1 = input("Enter the first number ")
+number2 = input("Enter the second number ")
+print(float(number1) + float(number2))
+
 
 

@@ -614,13 +614,16 @@ solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
 """
 
 
-def strip_comments(strng, markers):
-    if not markers:
-        return strng
-    cut_indexes = [min(line.find(char) if line.find(char) != -1 else len(line) for char in markers) for line in strng.split("\n")]
-    return "\n".join((strng.split("\n")[line_ind][:cut_index]).rstrip() for line_ind, cut_index in enumerate(cut_indexes))
+import re
+def strip_comments(string, markers):
+    for i in markers:
+        string = string.replace(i, '!')
+    # return '\n'.join((i[:i.find('!')]).rstrip() for i in string.split('\n'))
+    return '\n'.join(i.split('!')[0].rstrip() for i in string.split('\n'))
 strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
 strip_comments(' a #b\nc\nd $e f g', ['#', '$'])
+strip_comments("' = lemons\napples pears\n. avocados\n= ! bananas strawberries avocados !\n= oranges", ['!', '^', '#', '@', '='])
+strip_comments('cherries bananas lemons\n, apples watermelons\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears 
 
 # this is faster
 def strip_comments(string, markers):
@@ -631,10 +634,38 @@ def strip_comments(string, markers):
         # print([elem if elem.find(marker) == -1 else elem[:elem.find(marker)].rstrip() for elem in splited_list])
     return '\n'.join(splited_list)
 
+def strip_comments(strng, markers):
+    if not markers:
+        return strng
+    cut_indexes = [min(line.find(char) if line.find(char) != -1 else len(line) for char in markers) for line in strng.split("\n")]
+    return "\n".join((strng.split("\n")[line_ind][:cut_index]).rstrip() for line_ind, cut_index in enumerate(cut_indexes))
+
+def strip_comments(string, markers):
+    splitted_list = string.split('\n')
+    for char in markers:
+        # splitted_list = [i if i.find(char) == -1 else i[:i.find(char)].rstrip() for i in splitted_list]
+        splitted_list = [i.split(char)[0].rstrip() for i in splitted_list]
+    return '\n'.join(splitted_list)
+
+def strip_comments(string, markers):
+    for marker in markers:
+        # the space before works as ' '.join()
+        # string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
+        string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
+    return string
+
 
 test.assert_equals(solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
 test.assert_equals(solution('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
 test.assert_equals(solution(' a #b\nc\nd $e f g', ['#', '$']), ' a\nc\nd')
+
+
+# Some coding
+'a{}b'.format(['#', '!'])
+r' *?{}.*'.format(['#', '!'])
+
+regex = r' *?[#].*'
+re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe#c 12')
 
 
 
@@ -756,176 +787,8 @@ test.assert_equals(format_duration(3662), "1 hour, 1 minute and 2 seconds")
 
 
 
-"""Given two strings s1 and s2, we want to visualize how different the two strings are. 
-We will only take into account the lowercase letters (a to z). 
-First let us count the frequency of each lowercase letters in s1 and s2.
-
-s1 = "A aaaa bb c"
-
-s2 = "& aaa bbb c d"
-
-s1 has 4 'a', 2 'b', 1 'c'
-
-s2 has 3 'a', 3 'b', 1 'c', 1 'd'
-
-So the maximum for 'a' in s1 and s2 is 4 from s1; the maximum for 'b' is 3 from s2. 
-In the following we will not consider letters when the maximum of their occurrences is less than or equal to 1.
-
-We can resume the differences between s1 and s2 in the following string: 
-"1:aaaa/2:bbb" where 1 in 1:aaaa stands for string s1 and aaaa because the maximum for a is 4. 
-In the same manner 2:bbb stands for string s2 and bbb because the maximum for b is 3.
-
-The task is to produce a string in which each lowercase letters of s1 or s2 appears as 
-many times as its maximum if this maximum is strictly greater than 1; these letters will 
-be prefixed by the number of the string where they appear with their maximum value and :. 
-If the maximum is in s1 as well as in s2 the prefix is =:.
-
-In the result, substrings (a substring is for example 2:nnnnn or 1:hhh; it contains the prefix) 
-will be in decreasing order of their length and when they have the same length sorted in ascending 
-lexicographic order (letters and digits - more precisely sorted by codepoint); the different groups 
-will be separated by '/'. See examples and "Example Tests".
-
-Hopefully other examples can make this clearer.
-
-s1 = "my&friend&Paul has heavy hats! &"
-s2 = "my friend John has many many friends &"
-mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
-
-s1 = "mmmmm m nnnnn y&friend&Paul has heavy hats! &"
-s2 = "my frie n d Joh n has ma n y ma n y frie n ds n&"
-mix(s1, s2) --> "1:mmmmmm/=:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
-
-s1="Are the kids at home? aaaaa fffff"
-s2="Yes they are here! aaaaa fffff"
-mix(s1, s2) --> "=:aaaaaa/2:eeeee/=:fffff/1:tt/2:rr/=:hh"
-"""
-
-
-import string
-from collections import Counter
-def mix(s1, s2):
-    s1_dict = Counter(filter(str.islower, s1))
-    # s1_dict = Counter(char for char in s1 if char.islower())
-    # s1 = dict(Counter(i for i in filter(lambda x: x in string.ascii_lowercase, s1)))
-    s1_dict = {k: v for k, v in s1_dict.items() if v > 1}
-    s2_dict = Counter(filter(str.islower, s2))
-    s2_dict = {k: v for k, v in s2_dict.items() if v > 1}
-    s3_dict = Counter(s1_dict) | Counter(s2_dict)
-    to_sort = (('1:' + k*v) if (s1_dict.get(k, -1) == v and s2_dict.get(k, -1) != v) else 
-               ('2:' + k*v) if (s2_dict.get(k, -1) == v and s1_dict.get(k, -1) != v) else 
-               ('=:' + k*v) for k, v in s3_dict.items())
-    # return '/'.join(sorted(sorted(sorted(to_sort, key=lambda x: x[2]), key=lambda x: x), key=lambda x: -len(x)))
-    return '/'.join(sorted(to_sort, key=lambda x: (-len(x), x, x[2])))
-mix(s1, s2)
-mix("Are they here", "yes, they are here")
-mix(s1, s2) --> "2:eeeee/2:yy/=:hh/=:rr"
-mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &")
-mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
-
-# from codewars
-def mix(s1, s2):
-    c1 = Counter(filter(str.islower, s1))
-    c2 = Counter(filter(str.islower, s2))
-    res = []
-    for c in set(c1.keys() + c2.keys()):
-        n1, n2 = c1.get(c, 0), c2.get(c, 0)
-        if n1 > 1 or n2 > 1:
-            res.append(('1', c, n1) if n1 > n2 else
-                ('2', c, n2) if n2 > n1 else ('=', c, n1))
-    res = ['{}:{}'.format(i, c * n) for i, c, n in res]
-    return '/'.join(sorted(res, key=lambda s: (-len(s), s)))
-
-# from codewars
-def mix(s1, s2):
-    hist = {}
-    for ch in string.ascii_lowercase:
-        val1, val2 = s1.count(ch), s2.count(ch)
-        if max(val1, val2) > 1:
-            which = "1" if val1 > val2 else "2" if val2 > val1 else "="
-            hist[ch] = (-max(val1, val2), which + ":" + ch * max(val1, val2))
-    return "/".join(hist[ch][1] for ch in sorted(hist, key=lambda x: hist[x]))
-
-test.describe("Mix")
-test.it("Basic Tests")
-test.assert_equals(mix("Are they here", "yes, they are here"), "2:eeeee/2:yy/=:hh/=:rr")
-test.assert_equals(mix("Sadus:cpms>orqn3zecwGvnznSgacs","MynwdKizfd$lvse+gnbaGydxyXzayp"), '2:yyyy/1:ccc/1:nnn/1:sss/2:ddd/=:aa/=:zz')
-test.assert_equals(mix("looping is fun but dangerous", "less dangerous than coding"), "1:ooo/1:uuu/2:sss/=:nnn/1:ii/2:aa/2:dd/2:ee/=:gg")
-test.assert_equals(mix(" In many languages", " there's a pair of functions"), "1:aaa/1:nnn/1:gg/2:ee/2:ff/2:ii/2:oo/2:rr/2:ss/2:tt")
-test.assert_equals(mix("Lords of the Fallen", "gamekult"), "1:ee/1:ll/1:oo")
-test.assert_equals(mix("codewars", "codewars"), "")
-test.assert_equals(mix("A generation must confront the looming ", "codewarrs"), "1:nnnnn/1:ooooo/1:tttt/1:eee/1:gg/1:ii/1:mm/=:rr")
-
-
-
-
-
-"""Complete the solution so that it strips all text that follows any of a set of comment markers passed in. Any whitespace at the end of the line should also be stripped out.
-
-Example:
-
-Given an input string of:
-
-apples, pears # and bananas
-grapes
-bananas !apples
-The output expected would be:
-
-apples, pears
-grapes
-bananas
-The code would be called like so:
-
-result = solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
-# result should == "apples, pears\ngrapes\nbananas"
-"""
-
-import re
-def solution(string, markers):
-    for i in markers:
-        string = string.replace(i, '!')
-    # return '\n'.join((i[:i.find('!')]).rstrip() for i in string.split('\n'))
-    return '\n'.join(i.split('!')[0].rstrip() for i in string.split('\n'))
-solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
-
-def solution(string, markers):
-    splitted_list = string.split('\n')
-    for char in markers:
-        # splitted_list = [i if i.find(char) == -1 else i[:i.find(char)].rstrip() for i in splitted_list]
-        splitted_list = [i.split(char)[0].rstrip() for i in splitted_list]
-    return '\n'.join(splitted_list)
-
-def solution(string, markers):
-    for marker in markers:
-        # the space before works as ' '.join()
-        # string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
-        string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
-    return string
-
-solution("' = lemons\napples pears\n. avocados\n= ! bananas strawberries avocados !\n= oranges", ['!', '^', '#', '@', '='])
-solution('cherries bananas lemons\n, apples watermelons\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears apples', [
-         '-', '#', ',', "'", '@', '?', '.', '^'])
-
-# -*- coding: utf-8 -*-
-test.assert_equals(solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
-test.assert_equals(solution('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
-
-Testing for solution('cherries bananas lemons\n, apples watermelons\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears apples', ['-', '#', ',', "'", '@', '?', '.', '^'])
-It should work with random inputs too: 'cherries bananas lemons\n, apples watermelon\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears apples' 
-should equal 'cherries bananas lemons\n\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears apples'
-
-# Some coding
-'a{}b'.format(['#', '!'])
-r' *?{}.*'.format(['#', '!'])
-
-regex = r' *?[#].*'
-re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe#c 12')
-
-
-
-
-
-# Convert a String to a Number!
-# https://www.codewars.com/kata/544675c6f971f7399a000e79
+# Persistent Bugger.
+# https://www.codewars.com/kata/55bf01e5a717a0d57e0000ec
 """Write a function, persistence, that takes in a positive parameter num and returns its multiplicative persistence, which is the number of times you must multiply the digits in num until you reach a single digit.
 
 For example (Input --> Output):
@@ -2943,7 +2806,7 @@ def sample_tests():
 
 
 
-# Simple Events
+# Simple Events !!!
 # https://www.codewars.com/kata/52d3b68215be7c2d5300022f/
 """Your goal is to write an Event constructor function, which can be used to make event objects.
 
@@ -3125,81 +2988,6 @@ test.assert_equals(Mongo.get_timestamp('507f1f77bcf86cd799439016'), datetime(201
 
 
 
-# !!!
-"""Sum of Pairs
-Given a list of integers and a single sum value, return the first two values (parse from the left please) in order of appearance that add up to form the sum.
-
-sum_pairs([11, 3, 7, 5],         10)
-#              ^--^      3 + 7 = 10
-== [3, 7]
-
-sum_pairs([4, 3, 2, 3, 4],         6)
-#          ^-----^         4 + 2 = 6, indices: 0, 2 *
-#             ^-----^      3 + 3 = 6, indices: 1, 3
-#                ^-----^   2 + 4 = 6, indices: 2, 4
-#  * entire pair is earlier, and therefore is the correct answer
-== [4, 2]
-
-sum_pairs([0, 0, -2, 3], 2)
-#  there are no pairs of values that can be added to produce 2.
-== None/nil/undefined (Based on the language)
-
-sum_pairs([10, 5, 2, 3, 7, 5],         10)
-#              ^-----------^   5 + 5 = 10, indices: 1, 5
-#                    ^--^      3 + 7 = 10, indices: 3, 4 *
-#  * entire pair is earlier, and therefore is the correct answer
-== [3, 7]
-Negative numbers and duplicate numbers can and will appear.
-
-NOTE: There will also be lists tested of lengths upwards of 10,000,000 elements. Be sure your code doesn't time out."""
-# https://www.codewars.com/kata/54d81488b981293527000c8f/train/python
-
-def sum_pairs(ints, s):
-    for i, val in enumerate(ints):
-        try:
-            ints[:i].index(s - val)
-            return [s - val, val]
-            # return i
-        except:
-            pass
-sum_pairs(l1, 8)
-sum_pairs(l2, -6)
-
-def sum_pairs(ints, s):
-    for val in ints:
-        try:
-            ints.index(s - val)
-            return [val, s - val]
-        except:
-            pass
-
-
-
-
-
-l1 = [1, 4, 8, 7, 3, 15]
-l2 = [1, -2, 3, 0, -6, 1]
-l3 = [20, -13, 40]
-l4 = [1, 2, 3, 4, 1, 0]
-l5 = [10, 5, 2, 3, 7, 5]
-l6 = [4, -2, 3, 3, 4]
-l7 = [0, 2, 0]
-l8 = [5, 9, 13, -3]
-
-test.describe("Testing For Sum of Pairs")
-test.expect(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
-test.expect(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
-test.expect(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
-test.expect(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
-test.expect(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
-test.expect(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
-test.expect(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
-test.expect(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)
-
-
-
-
-
 # Prime number decompositions
 # https://www.codewars.com/kata/53c93982689f84e321000d62
 """You have to code a function getAllPrimeFactors, which takes an integer as parameter and returns an array containing its prime decomposition by ascending factors. If a factor appears multiple times in the decomposition, it should appear as many times in the array.
@@ -3258,7 +3046,8 @@ def getAllPrimeFactors(n):
     while n != 1:
         for i in range(2, n + 1):
             if not n % i:
-                decomp.append(i)
+                # decomp.append(i)
+                decomp += [i]
                 n //= i
                 break
     return decomp
@@ -3274,17 +3063,33 @@ getUniquePrimeFactorsWithCount(1)
 getUniquePrimeFactorsWithCount(0)
 getUniquePrimeFactorsWithCount(-1)
 
+def getUniquePrimeFactorsWithCount(n):
+    prime_set = set(getAllPrimeFactors(n))
+    values = [getAllPrimeFactors(n).count(i) for i in prime_set]
+    return [sorted(list(prime_set)), values]
 
 def getUniquePrimeFactorsWithProducts(n):
-    power1 = getUniquePrimeFactorsWithCount(n)
-    # return list(map(lambda x, y: x**y, power1[0], power1[1]))
-    return list(map(pow, power1[0], power1[1]))
+    factors = getUniquePrimeFactorsWithCount(n)
+    return [a**b for a, b in zip(*factors)]
+    return [a**b for a, b in zip(factors[0], factors[1])]
 getUniquePrimeFactorsWithProducts(100)
 getUniquePrimeFactorsWithProducts(1)
 getUniquePrimeFactorsWithProducts(0)
 getUniquePrimeFactorsWithProducts(-1)
 
+def getUniquePrimeFactorsWithProducts(n):
+    return [k ** v for k, v in Counter(getAllPrimeFactors(n)).items()]
+
+def getUniquePrimeFactorsWithProducts(n):
+    power1 = getUniquePrimeFactorsWithCount(n)
+    # return list(map(lambda x, y: x**y, power1[0], power1[1]))
+    return list(map(pow, power1[0], power1[1]))
+
 import numpy as np
+def getUniquePrimeFactorsWithProducts(n):
+    return list(np.power(list(Counter(getAllPrimeFactors(n)).keys()), 
+                         list(Counter(getAllPrimeFactors(n)).values())))
+
 def getUniquePrimeFactorsWithProducts(n):
     return list(np.power(*getUniquePrimeFactorsWithCount(n)))
 
@@ -3297,6 +3102,129 @@ test.assert_equals(getUniquePrimeFactorsWithProducts(100), [4,25])
 
 
 
+# Strings Mix
+# https://www.codewars.com/kata/5629db57620258aa9d000014
+"""Given two strings s1 and s2, we want to visualize how different the two strings are. 
+We will only take into account the lowercase letters (a to z). 
+First let us count the frequency of each lowercase letters in s1 and s2.
+
+s1 = "A aaaa bb c"
+
+s2 = "& aaa bbb c d"
+
+s1 has 4 'a', 2 'b', 1 'c'
+
+s2 has 3 'a', 3 'b', 1 'c', 1 'd'
+
+So the maximum for 'a' in s1 and s2 is 4 from s1; the maximum for 'b' is 3 from s2. 
+In the following we will not consider letters when the maximum of their occurrences is less than or equal to 1.
+
+We can resume the differences between s1 and s2 in the following string: 
+"1:aaaa/2:bbb" where 1 in 1:aaaa stands for string s1 and aaaa because the maximum for a is 4. 
+In the same manner 2:bbb stands for string s2 and bbb because the maximum for b is 3.
+
+The task is to produce a string in which each lowercase letters of s1 or s2 appears as 
+many times as its maximum if this maximum is strictly greater than 1; these letters will 
+be prefixed by the number of the string where they appear with their maximum value and :. 
+If the maximum is in s1 as well as in s2 the prefix is =:.
+
+In the result, substrings (a substring is for example 2:nnnnn or 1:hhh; it contains the prefix) 
+will be in decreasing order of their length and when they have the same length sorted in ascending 
+lexicographic order (letters and digits - more precisely sorted by codepoint); the different groups 
+will be separated by '/'. See examples and "Example Tests".
+
+Hopefully other examples can make this clearer.
+
+s1 = "my&friend&Paul has heavy hats! &"
+s2 = "my friend John has many many friends &"
+mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+s1 = "mmmmm m nnnnn y&friend&Paul has heavy hats! &"
+s2 = "my frie n d Joh n has ma n y ma n y frie n ds n&"
+mix(s1, s2) --> "1:mmmmmm/=:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+s1="Are the kids at home? aaaaa fffff"
+s2="Yes they are here! aaaaa fffff"
+mix(s1, s2) --> "=:aaaaaa/2:eeeee/=:fffff/1:tt/2:rr/=:hh"
+"""
+
+
+import string
+from collections import Counter
+def mix(s1, s2):
+    s1_dict = Counter(filter(str.islower, s1))
+    # s1_dict = Counter(char for char in s1 if char.islower())
+    # s1 = dict(Counter(i for i in filter(lambda x: x in string.ascii_lowercase, s1)))
+    s1_dict = {k: v for k, v in s1_dict.items() if v > 1}
+    # s2_dict = Counter(filter(str.islower, s2))
+    # s2_dict = {k: v for k, v in s2_dict.items() if v > 1}
+    s2_dict = {k: v for k, v in Counter(s2).items() if k.islower() and v > 1}
+    s3_dict = Counter(s1_dict) | Counter(s2_dict)
+    # s3_dict = s1_dict | s2_dict # (n: 3 | n: 2) = n: 2, if two are present the second one is chosed, so use Counter
+    to_sort = (('1:' + k*v) if (s1_dict.get(k, -1) == v and s2_dict.get(k, -1) != v) else 
+               ('2:' + k*v) if (s2_dict.get(k, -1) == v and s1_dict.get(k, -1) != v) else 
+               ('=:' + k*v) for k, v in s3_dict.items())
+    # return '/'.join(sorted(sorted(sorted(to_sort, key=lambda x: x[2]), key=lambda x: x), key=lambda x: -len(x)))
+    return '/'.join(sorted(to_sort, key=lambda x: (-len(x), x, x[2])))
+mix(s1, s2)
+mix("Are they here", "yes, they are here")
+mix(s1, s2) --> "2:eeeee/2:yy/=:hh/=:rr"
+mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &")
+mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
+from collections import Counter
+
+def mix(s1, s2):
+    dict1 = {k: v for k, v in Counter(s1).items() if k.islower() and v > 1}
+    dict2 = {k: v for k, v in Counter(s2).items() if k.islower() and v > 1}
+    dict_sum = Counter(dict1) | Counter(dict2)
+    unsorted_sol = []
+    for letter in dict_sum.keys():
+        unsorted_sol += ["1:" + letter * dict_sum[letter] if dict1.get(letter, -1) == dict_sum[letter] and dict2.get(letter, -1) != dict_sum[letter] else
+                         "2:" + letter * dict_sum[letter] if dict1.get(letter, -1) != dict_sum[letter] and dict2.get(letter, -1) == dict_sum[letter] else
+                         "=:" + letter * dict_sum[letter]]
+    return "/".join(sorted(unsorted_sol, key=lambda x: (-len(x), x[0], x[2])))
+
+# from codewars
+def mix(s1, s2):
+    c1 = Counter(filter(str.islower, s1))
+    c2 = Counter(filter(str.islower, s2))
+    res = []
+    for c in set(c1.keys() + c2.keys()):
+        n1, n2 = c1.get(c, 0), c2.get(c, 0)
+        if n1 > 1 or n2 > 1:
+            res.append(('1', c, n1) if n1 > n2 else
+                ('2', c, n2) if n2 > n1 else ('=', c, n1))
+    res = ['{}:{}'.format(i, c * n) for i, c, n in res]
+    return '/'.join(sorted(res, key=lambda s: (-len(s), s)))
+
+# from codewars
+def mix(s1, s2):
+    hist = {}
+    for ch in string.ascii_lowercase:
+        val1, val2 = s1.count(ch), s2.count(ch)
+        if max(val1, val2) > 1:
+            which = "1" if val1 > val2 else "2" if val2 > val1 else "="
+            hist[ch] = (-max(val1, val2), which + ":" + ch * max(val1, val2))
+    return "/".join(hist[ch][1] for ch in sorted(hist, key=lambda x: hist[x]))
+
+
+test.describe("Mix")
+test.it("Basic Tests")
+test.assert_equals(mix("Are they here", "yes, they are here"), "2:eeeee/2:yy/=:hh/=:rr")
+test.assert_equals(mix("Sadus:cpms>orqn3zecwGvnznSgacs","MynwdKizfd$lvse+gnbaGydxyXzayp"), '2:yyyy/1:ccc/1:nnn/1:sss/2:ddd/=:aa/=:zz')
+test.assert_equals(mix("looping is fun but dangerous", "less dangerous than coding"), "1:ooo/1:uuu/2:sss/=:nnn/1:ii/2:aa/2:dd/2:ee/=:gg")
+test.assert_equals(mix(" In many languages", " there's a pair of functions"), "1:aaa/1:nnn/1:gg/2:ee/2:ff/2:ii/2:oo/2:rr/2:ss/2:tt")
+test.assert_equals(mix("Lords of the Fallen", "gamekult"), "1:ee/1:ll/1:oo")
+test.assert_equals(mix("codewars", "codewars"), "")
+test.assert_equals(mix("A generation must confront the looming ", "codewarrs"), "1:nnnnn/1:ooooo/1:tttt/1:eee/1:gg/1:ii/1:mm/=:rr")
+
+
+
+
+
+# Tribonacci Sequence
+# https://www.codewars.com/kata/556deca17c58da83c00002db
 """Well met with Fibonacci bigger brother, AKA Tribonacci.
 
 As the name may already reveal, it works basically like a Fibonacci, but summing the last 3 (instead of 2) numbers of the sequence to generate the next. And, worse part of it, regrettably I won't get to hear non-native Italian speakers trying to pronounce it :(
@@ -3309,8 +3237,29 @@ But what if we started with [0, 0, 1] as a signature? As starting with [0, 1] in
 [0, 0, 1, 1, 2, 4, 7, 13, 24, ...]
 Well, you may have guessed it by now, but to be clear: you need to create a fibonacci function that given a signature array/list, returns the first n elements - signature included of the so seeded sequence."""
 
+
+def tribonacci(signature, n):
+    a, b, c = signature
+    """if not n:
+        return []
+    if n == 1:
+        return [a]
+    """
+    trib_lst = [a, b]
+    for _ in range(n - 2):
+        trib_lst += [c]
+        a, b, c = b, c, a + b + c
+    return trib_lst[:n]
+tribonacci([1, 1, 1], 10)
+tribonacci([1, 1, 1], 0)
+tribonacci([1, 1, 1], 1)
+tribonacci([1, 1, 1], 2)
+tribonacci([0, 0, 1], 6)
+
 def gen_tri(signature):
     a, b, c = signature
+    yield a
+    yield b
     while True:
         yield c
         a, b, c = b, c, a + b + c
@@ -3329,17 +3278,13 @@ def tribonacci(signature, n):
     #     return signature[0:2]
     tri_gen = gen_tri(signature)
     return signature[0:2] + [next(tri_gen) for _ in range(n - 2)]
-tribonacci([1, 1, 1], 10)
-tribonacci([1, 1, 1], 0)
-tribonacci([1, 1, 1], 1)
-tribonacci([1, 1, 1], 2)
-tribonacci([0, 0, 1], 6)
 
 # from codewars
 def tribonacci(signature, n):
     res = signature[:n]
     for _ in range(n - 3): 
-        res.append(sum(res[-3:]))
+        # res.append(sum(res[-3:]))
+        res += [sum(res[-3:])]
     return res
 
 # from codewars
@@ -3365,6 +3310,8 @@ test.assert_equals(tribonacci([0.5, 0.5, 0.5], 30), [0.5, 0.5, 0.5, 1.5, 2.5, 4.
 
 
 
+# Simple Fun #166: Best Match
+# https://www.codewars.com/kata/58b38256e51f1c2af0000081
 """"AL-AHLY" and "Zamalek" are the best teams in Egypt, but "AL-AHLY" always wins the matches between them. "Zamalek" managers want to know what is the best match they've played so far.
 
 The best match is the match they lost with the minimum goal difference. If there is more than one match with the same difference, choose the one "Zamalek" scored more goals in.
@@ -3391,6 +3338,11 @@ The number of goals "Zamalek" scored in each match. It is guaranteed that zamale
 Index of the best match."""
 
 
+def best_match(goals1, goals2):
+    to_sort = [(i, a - b, b) for i, (a, b) in enumerate(list(zip(goals1, goals2)))]
+    return sorted(to_sort, key=lambda x: (x[1], -x[2]))[0][0]
+    # return min(to_sort, key=lambda x: (x[1], -x[2]))[0]
+
 # from codewars
 def best_match(goals1, goals2):
     return min((a-b, -b, i) for i, (a, b) in enumerate(zip(goals1, goals2)))[-1]
@@ -3407,6 +3359,12 @@ def best_match(goals1, goals2):
     return sorted(range(len(goals)), key=lambda x: (goals[x][0], -goals[x][1]))[0]
 
 
+best_match([6, 4], [1, 2])
+best_match([1], [0])
+best_match([1, 2, 3, 4, 5], [0, 1, 2, 3, 4])
+best_match([3, 4, 3], [1, 1, 2])
+best_match([4, 3, 4], [1, 1, 1])
+
 test.it("Basic Tests")
 test.assert_equals(best_match([6, 4],[1, 2]),1)
 test.assert_equals(best_match([1],[0]),0)
@@ -3418,6 +3376,8 @@ test.assert_equals(best_match([4, 3, 4],[1, 1, 1]),1)
 
 
 
+# Roman Numerals Decoder
+# https://www.codewars.com/kata/51b6249c4612257ac0000005
 """Create a function that takes a Roman numeral as its argument and returns its value as a numeric decimal integer. You don't need to validate the form of the Roman numeral.
 
 Modern Roman numerals are written by expressing each decimal digit of the number to be encoded separately, starting with the leftmost digit and skipping any 0s. So 1990 is rendered "MCMXC" (1000 = M, 900 = CM, 90 = XC) and 2008 is rendered "MMVIII" (2000 = MM, 8 = VIII). The Roman numeral for 1666, "MDCLXVI", uses each letter in descending order.
@@ -3436,9 +3396,11 @@ C          100
 D          500
 M          1,000"""
 
+
+# only check if number is legit
+import re
 regex_pattern = r"^(?=[MDCLXVI])(M{0,3})(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$"
 print(str(bool(re.match(regex_pattern, input()))))
-
 
 roman_dict = {'I': 1,
               'V': 5,
@@ -3448,15 +3410,19 @@ roman_dict = {'I': 1,
               'D': 500,
               'M': 1000}
 
+bool(re.search(r"DM", "MDM"))
+
 import re
 def solution(roman):
     result = 0
-    r_find = re.match(r'.*?CM', roman)
-    if r_find:
+    # r_find = re.match(r'.*?CM', roman)
+    # r_find = re.search(r"CM", roman)
+    if re.search(r"CM", roman):
+    # if r_find:
         result += 900
         roman = roman.replace('CM', '')
-    r_find = re.match(r'.*?CD', roman)
-    if r_find:
+    # r_find = re.match(r'.*?CD', roman)
+    if re.search(r"CD", roman):
         result += 400
         roman = roman.replace('CD', '')
     r_find = re.match(r'.*?XC', roman)
@@ -3476,6 +3442,7 @@ def solution(roman):
         result += 4
         roman = roman.replace('IV', '')
     return result + sum(roman_dict[i] for i in roman)
+solution("MMMCMXCIX")
 solution('XXI')
 solution('IV')
 solution('IX')
@@ -3483,13 +3450,64 @@ solution('MDCLXVI')
 solution('MMDCLXVI')
 solution('XIV')
 
-# just for IV
+# playground
+solution("MMM")
+solution("MMMCM")
+
 def solution(roman):
-    result = 0
-    if roman.startswith('IV'):
-        result += 4
-        roman = roman[2:]
-    return result
+    value = 0
+    
+    value += 1000 * roman.count("M")
+    roman = roman.replace("M", "")
+    
+    if not len(roman):
+        return value
+
+    if roman[0] == "C":
+        value -= 100
+        roman = roman[1:]
+    return value
+
+    value += 500 * roman.count("D")
+    roman = roman.replace("D", "")
+
+    if roman[0] == "C":
+        value -= 100
+        roman = roman[1:]
+
+    value += 100 * roman.count("C")
+    roman = roman.replace("C", "")
+
+    if roman[0] == "X":
+        value -= 10
+        roman = roman[1:]
+
+    value += 50 * roman.count("L")
+    roman = roman.replace("L", "")
+
+    if roman[0] == "X":
+        value -= 10
+        roman = roman[1:]
+
+    value += 10 * roman.count("X")
+    roman = roman.replace("X", "")
+
+    if roman[0] == "I":
+        value -= 1
+        roman = roman[1:]
+
+    value += 5 * roman.count("V")
+    roman = roman.replace("V", "")
+
+    if roman[0] == "I":
+        value -= 1
+        roman = roman[1:]
+
+    value += 1 * roman.count("I")
+    roman = roman.replace("I", "")
+
+    # value += sum(decoder[i] for i in roman)
+    return value
 
 # from codewars, modded
 def solution(roman):
@@ -3555,6 +3573,8 @@ test.assert_equals(solution('MDCLXVI'), 1666, 'MDCLXVI should == 1666')
 
 
 
+# Friend or Foe?
+# https://www.codewars.com/kata/55b42574ff091733d900002f
 """Make a program that filters a list of strings and returns a list with only your friends name in it.
 
 If a name has exactly 4 letters in it, you can be sure that it has to be a friend of yours! Otherwise, you can be sure he's not...
@@ -3570,6 +3590,9 @@ Note: keep the original order of the names in the output."""
 def friend(x):
     return [i for i in x if len(i) == 4]
 friend(["Ryan", "Kieran", "Mark"])
+
+def friend(x):
+    return list(filter(lambda y: len(y) == 4, x))
 
 
 import codewars_test as test
@@ -3587,6 +3610,8 @@ def fixed_tests():
 
 
 
+# A Needle in the Haystack
+# https://www.codewars.com/kata/56676e8fabd2d1ff3000000c
 """Can you find the needle in the haystack?
 
 Write a function findNeedle() that takes an array full of junk but containing one "needle"
@@ -3601,8 +3626,9 @@ should return "found the needle at position 5" (in COBOL "found the needle at po
 
 def find_needle(haystack):
     return 'found the needle at position {}'.format(haystack.index('needle'))
-    return 'found the needle at position %s' % haystack.index('needle')
+    return 'found the needle at position %d' % haystack.index('needle')
     return f'found the needle at position {haystack.index("needle")}'
+    return "found the needle at position " + str(haystack.index("needle"))
 find_needle(['3', '123124234', None, 'needle', 'world', 'hay', 2, '3', True, False])
 
 
@@ -3621,6 +3647,8 @@ def fixed_tests():
 
 
 
+# Grasshopper - Personalized Message
+# https://www.codewars.com/kata/5772da22b89313a4d50012f7
 """Create a function that gives a personalized greeting. This function takes two parameters: name and owner.
 
 Use conditionals to return the proper message:
@@ -3648,6 +3676,8 @@ def fixed_tests():
 
 
 
+# The Feast of Many Beasts
+# https://www.codewars.com/kata/5aa736a455f906981800360d/
 """All of the animals are having a feast! Each animal is bringing one dish. There is just one rule: the dish must start and end with the same letters as the animal's name. For example, the great blue heron is bringing garlic naan and the chickadee is bringing chocolate cake.
 
 Write a function feast that takes the animal's name and dish as arguments and returns true or false to indicate whether the beast is allowed to bring the dish to the feast.
@@ -3660,6 +3690,9 @@ Assume that beast and dish are always lowercase strings, and that each has at le
 def feast(beast, dish):
     return beast[0] == dish[0] and beast[-1] == dish[-1]
 feast("great blue heron", "garlic naan")
+
+def feast(beast, dish):
+    return beast.startswith(dish[0]) and beast.endswith(dish[-1])
 
 
 import codewars_test as test
@@ -3677,6 +3710,8 @@ def fixed_tests():
 
 
 
+# Break camelCase
+# https://www.codewars.com/kata/5208f99aee097e6552000148/
 """Complete the solution so that the function will break up camel casing, using a space between words.
 
 Example
@@ -3685,17 +3720,17 @@ Example
 ""             =>  """""
 
 
+def solution(s):
+    return ''.join(' ' + i if i.isupper() else i for i in s)
+solution("helloWorld")
+solution("camelCase")
+solution("breakCamelCase")
+
 import string
 def solution(s):
     for i in string.ascii_uppercase:
         s = s.replace(i, ' ' + i)
     return s
-solution("helloWorld")
-solution("camelCase")
-solution("breakCamelCase")
-
-def solution(s):
-    return ''.join(' ' + i if i.isupper() else i for i in s)
 
 import re
 def solution(s):
@@ -3709,6 +3744,8 @@ test.assert_equals(solution("breakCamelCase"), "break Camel Case")
 
 
 
+# Printer Errors
+# https://www.codewars.com/kata/56541980fa08ab47a0000040
 """In a factory a printer prints labels for boxes. For one kind of boxes the printer has to use colors which, for the sake of simplicity, are named with letters from a to m.
 
 The colors used by the printer are recorded in a control string. For example a "good" control string would be aaabbbbhaijjjm meaning that the printer used three times color a, four times color b, one time color h then one time color a...
@@ -3729,11 +3766,16 @@ printer_error(s) => "8/22""""
 
 def printer_error(s):
     return '{}/{}'.format(sum(i > 'm' for i in s), len(s))
-    return '{}/{}'.format(sum(True for i in s if i > 'm'), len(s))
-    return '{}/{}'.format(sum(True for i in s if ord(i) > 109), len(s))
-    return '%d/%d' % (sum(True for i in s if ord(i) > 109), len(s))
-    return f'{sum(True for i in s if ord(i) > 109)}/{len(s)}'
+    return '{}/{}'.format(sum(ord(i) > 109 for i in s), len(s))
+    return '%d/%d' % (sum(i > 'm' for i in s), len(s))
+    return f"{sum(i > 'm' for i in s)}/{len(s)}"
 printer_error("aaaxbbbbyyhwawiwjjjwwm")
+
+import string
+def printer_error(s):
+    nominator = str(sum(i in string.ascii_lowercase[14:] for i in s))
+    denominator = str(len(s))
+    return  nominator + "/" + denominator
 
 import re
 def printer_error(s):
@@ -3761,6 +3803,8 @@ def basic_tests():
 
 
 
+# Rock Paper Scissors!
+# https://www.codewars.com/kata/5672a98bdbdd995fad00000f
 """Rock Paper Scissors
 Let's play! You have to return which player won! In case of a draw return Draw!.
 
@@ -3775,15 +3819,24 @@ def rps(p1, p2):
     if p1 == p2:
         return 'Draw!'
     winner = {'rock': 'paper', 'scissors': 'rock', 'paper': 'scissors'}
-    if p2 == winner[p1]:
-        return 'Player 2 won!'
-    else:
+    if winner[p2] == p1:
         return 'Player 1 won!'
+    else:
+        return 'Player 2 won!'
 rps('scissors','paper')
 rps('scissors','rock')
 rps('paper','paper')
 rps('rock','paper')
 rps('paper','rock')
+
+def rps(p1, p2):
+    items = ["rock", "paper", "scissors"]
+    items2 = ["paper", "scissors", "rock"]
+    if p1 == p2:
+        return "Draw!"
+    if items2.index(p1) == items.index(p2):
+        return "Player 1 won!"
+    return "Player 2 won!"
 
 
 import codewars_test as test
@@ -3805,6 +3858,8 @@ def basic_tests():
 
 
 
+# Basic Mathematical Operations
+# https://www.codewars.com/kata/57356c55867b9b7a60000bd7/
 """Your task is to create a function that does four basic mathematical operations.
 
 The function should take three arguments - operation(string/char), value1(number), value2(number).
@@ -3818,9 +3873,11 @@ Examples(Operator, value1, value2) --> output
 
 
 def basic_op(operator, value1, value2):
-    # return eval(f'{value1}{operator}{value2}')
     return eval(str(value1) + operator + str(value2))
-    # return eval('value1' + operator + 'value2')
+    return eval(f'{value1}{operator}{value2}')
+    return eval("{}{}{}".format(value1, operator, value2))
+    return eval('value1' + operator + 'value2')
+    return {'+':a+b,'-':a-b,'*':a*b,'/':a/b}[o]
 basic_op('+', 4, 7)
 
 
@@ -3840,6 +3897,8 @@ def fixed_tests():
 
 
 
+# The Supermarket Queue
+# https://www.codewars.com/kata/57b06f90e298a7b53d000a86
 """There is a queue for the self-checkout tills at the supermarket. Your task is write a function to calculate the total time required for all the customers to check out!
 
 input
@@ -3874,11 +3933,14 @@ P.S. The situation in this kata can be likened to the more-computer-science-rela
 
 # from codewars
 def queue_time(customers, n):
-    li = [0] * n
-    for i in customers:
-        li[li.index(min(li))] += i
-    return max(li)
+    cashiers = [0] * n
+    for customer in customers:
+        min_ind = cashiers.index(min(cashiers))
+        cashiers[min_ind] += customer
+    return max(cashiers)
 queue_time([2, 2, 3, 3, 4, 4], 2)
+queue_time([1,2,3,4,5], 1)
+queue_time([1,2,3,4,5], 100)
 
 import numpy as np
 def queue_time(customers, n):
@@ -3937,6 +3999,8 @@ test.assert_equals(queue_time([2,2,3,3,4,4], 2), 9, "wrong answer for a case wit
 
 
 
+# Are they the "same"?
+# https://www.codewars.com/kata/550498447451fbbd7600041c
 """Given two arrays a and b write a function comp(a, b) (orcompSame(a, b)) that checks whether the two arrays have the "same" elements, with the same multiplicities (the multiplicity of a member is the number of times it appears). "Same" means, here, that the elements in b are the elements in a squared, regardless of the order.
 
 Examples
@@ -3998,6 +4062,8 @@ def tests():
 
 
 
+# Directions Reduction
+# https://www.codewars.com/kata/550f22f4d758534c1100025a
 """Once upon a time, on a way through the old wild mountainous west,…
 … a man was given directions to go from one point to another. The directions were "NORTH", "SOUTH", "WEST", "EAST". Clearly "NORTH" and "SOUTH" are opposite, "WEST" and "EAST" too.
 
@@ -4037,15 +4103,39 @@ Not all paths can be made simpler. The path ["NORTH", "WEST", "SOUTH", "EAST"] i
 if you want to translate, please ask before translating."""
 
 
+def dir_reduc(arr):
+    opos = {"NORTH": "SOUTH", "SOUTH": "NORTH", "EAST": "WEST", "WEST": "EAST"}
+    directions = []
+
+    for direct in arr:
+        if directions and directions[-1] == opos[direct]:
+            directions.pop()
+        else:
+            directions += [direct]
+            # directions.append(direct)
+    
+    return directions
+dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])
+dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"])
+
 # from codewars
-def dirReduc(arr):
-    arr2 = ' '.join(arr).replace('NORTH SOUTH', '').replace('SOUTH NORTH', '').replace('EAST WEST', '').replace('WEST EAST', '').split()
-    return arr2 if len(arr) == len(arr2) else dirReduc(arr2)
-dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])
-dirReduc(["NORTH", "WEST", "SOUTH", "EAST"])
+def dir_reduc(arr):
+    arr_mod = " ".join(arr).replace("NORTH SOUTH", "").replace("SOUTH NORTH", "").replace("EAST WEST", "").replace("WEST EAST", "")
+    arr_mod = arr_mod.split()
+    return arr_mod if len(arr) == len(arr_mod) else dir_reduc(arr_mod)
 
 import re
-def dirReduc(arr):
+def dir_reduc(arr):
+    arr2 = ' '.join(arr)
+    arr2 = re.sub(r'NORTH SOUTH\s?', '', arr2)
+    arr2 = re.sub(r'SOUTH NORTH\s?', '', arr2)
+    arr2 = re.sub(r'EAST WEST\s?', '', arr2)
+    arr2 = re.sub(r'WEST EAST\s?', '', arr2)
+    arr2 = arr2.split()
+    return arr2 if len(arr) == len(arr2) else dir_reduc(arr2)
+
+import re
+def dir_reduc(arr):
     arr2 = ' '.join(arr)
     rep = True
     while rep:
@@ -4058,25 +4148,18 @@ def dirReduc(arr):
             rep = False
     return arr2.split()
 
-import re
-def dirReduc(arr):
-    arr2 = ' '.join(arr)
-    test_len = len(arr2)
-    arr2 = re.sub(r'NORTH SOUTH\s?', '', arr2)
-    arr2 = re.sub(r'SOUTH NORTH\s?', '', arr2)
-    arr2 = re.sub(r'EAST WEST\s?', '', arr2)
-    arr2 = re.sub(r'WEST EAST\s?', '', arr2)
-    return arr2.split() if test_len == len(arr2) else dirReduc(arr2.split())
 
 a = ["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]
-test.assert_equals(dirReduc(a), ['WEST'])
+test.assert_equals(dir_reduc(a), ['WEST'])
 u=["NORTH", "WEST", "SOUTH", "EAST"]
-test.assert_equals(dirReduc(u), ["NORTH", "WEST", "SOUTH", "EAST"])
+test.assert_equals(dir_reduc(u), ["NORTH", "WEST", "SOUTH", "EAST"])
 
 
 
 
 
+# Exes and Ohs
+# https://www.codewars.com/kata/55908aad6620c066bc00002a
 """Check to see if a string has the same amount of 'x's and 'o's. The method must return a boolean and be case insensitive. The string can contain any char.
 
 Examples input/output:
@@ -4101,6 +4184,8 @@ test.expect(not xo('xxxoo'), 'False expected')
 
 
 
+# Take a Number And Sum Its Digits Raised To The Consecutive Powers And ....¡Eureka!!
+# https://www.codewars.com/kata/5626b561280a42ecc50000d1
 """The number 89 is the first integer with more than one digit that fulfills the property partially introduced in the title of this kata. What's the use of saying "Eureka"? Because this sum gives the same number.
 
 In effect: 89 = 8^1 + 9^2
@@ -4121,17 +4206,20 @@ If there are no numbers of this kind in the range [a, b] the function should out
 sum_dig_pow(90, 100) == []"""
 
 
-def sum_dig_pow(a, b):
-    return [i for i in range(a, b + 1) if sum(int(j) ** en for en, j in enumerate(str(i), 1)) == i]
-sum_dig_pow(89, 135)
-
 # from codewars
-def filter_fun(x):
-    return sum(int(i) ** en for en, i in enumerate(str(x), 1)) == x
+def is_power_sum(number):
+    return number == sum(int(digit) ** i for i, digit in enumerate(str(number), 1))
 
 def sum_dig_pow(a, b):
-    return list(filter(filter_fun, range(a, b + 1)))
+    return list(filter(is_power_sum, range(a, b + 1)))
+sum_dig_pow(1, 100)
 sum_dig_pow(89, 135)
+
+def sum_dig_pow(a, b):
+    return [number for number in range(a, b + 1) if is_power_sum(number)]
+
+def sum_dig_pow(a, b):  # range(a, b + 1) will be studied by the function
+    return [number for number in range(a, b + 1) if number == sum(int(digit) ** (i + 1) for i, digit in enumerate(str(number)))]
 
 
 test.describe("Example Tests")
@@ -4146,6 +4234,8 @@ test.assert_equals(sum_dig_pow(89, 135), [89, 135])
 
 
 
+# Categorize New Member
+# https://www.codewars.com/kata/5502c9e7b3216ec63c0001aa
 """The Western Suburbs Croquet Club has two categories of membership, Senior and Open. They would like your help with an application form that will tell prospective members which category they will be placed.
 
 To be a senior, a member must be at least 55 years old and have a handicap greater than 7. In this croquet club, handicaps range from -2 to +26; the better the player the lower the handicap.
@@ -4181,6 +4271,8 @@ def fixed_tests():
 
 
 
+# Opposites Attract
+# https://www.codewars.com/kata/555086d53eac039a2a000083
 """Timmy & Sarah think they are in love, but around where they live, they will only know once they pick a flower each. If one of the flowers has an even number of petals and the other has an odd number of petals it means they are in love.
 
 Write a function that will take the number of petals of each flower and return true if they are in love and false if they aren't.
@@ -4195,6 +4287,11 @@ lovefunc(2,2)
 lovefunc(0,1)
 lovefunc(0,0)
 
+def lovefunc(flower1, flower2):
+    return (flower1 + flower2) % 2
+
+def lovefunc( flower1, flower2 ):
+    return (flower1 + flower2) % 2 == 1
 
 def lovefunc(flower1, flower2):
     return bool(flower1 % 2 ^ flower2 % 2)
@@ -4216,6 +4313,8 @@ def fixed_tests():
 
 
 
+# Playing with digits
+# https://www.codewars.com/kata/5552101f47fc5178b1000050
 """Some numbers have funny properties. For example:
 
 89 --> 8¹ + 9² = 89 * 1
@@ -4241,19 +4340,31 @@ dig_pow(695, 2) should return 2 since 6² + 9³ + 5⁴= 1390 = 695 * 2
 dig_pow(46288, 3) should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51"""
 
 
-import numpy as np
 def dig_pow(n, p):
-    the_sum = np.sum(np.power([int(i) for i in str(n)], range(p, p + len(str(n)))))
-    return the_sum // n if not the_sum % n else -1
+    sum_of_pow = sum(pow(int(digit), ind) for ind, digit in enumerate(str(n), p)) / n
+    return sum_of_pow if not sum_of_pow % 1 else -1
 dig_pow(89, 1)
 dig_pow(92, 1)
 dig_pow(46288, 3)
 dig_pow(695, 2)
 
+def dig_pow(n, p):
+    sum_of_pow = sum(int(digit) ** ind for ind, digit in enumerate(str(n), p)) / n
+    return sum_of_pow if not sum_of_pow % 1 else -1
 
 def dig_pow(n, p):
-    d, m = divmod(sum(int(d) ** (i + p) for i, d in enumerate(str(n))), n)
-    return d if not m else -1
+    sum_of_pow = sum(int(digit) ** ind for ind, digit in enumerate(str(n), p))
+    return sum_of_pow // n if not sum_of_pow % n else -1
+
+def dig_pow(n, p):
+    div, mod = divmod(sum(int(digit) ** ind for ind, digit in enumerate(str(n), p)), n)
+    return div if not mod else -1
+
+import numpy as np
+def dig_pow(n, p):
+    the_sum = np.sum(np.power([int(i) for i in str(n)], range(p, p + len(str(n)))))
+    return the_sum // n if not the_sum % n else -1
+
 
 test.assert_equals(dig_pow(89, 1), 1)
 test.assert_equals(dig_pow(92, 1), -1)
@@ -4262,7 +4373,8 @@ test.assert_equals(dig_pow(46288, 3), 51)
 
 
 
-
+# L1: Set Alarm
+# https://www.codewars.com/kata/568dcc3c7f12767a62000038
 """Write a function named setAlarm which receives two parameters. The first parameter, employed, is true whenever you are employed and the second parameter, vacation is true whenever you are on vacation.
 
 The function should return true if you are employed and not on vacation (because these are the circumstances under which you need to set an alarm). It should return false otherwise. Examples:
@@ -4293,6 +4405,8 @@ def fixed_tests():
 
 
 
+# Will there be enough space?
+# https://www.codewars.com/kata/5875b200d520904a04000003
 """The Story:
 Bob is working as a bus driver. However, he has become extremely popular amongst the city's residents. With so many passengers wanting to get aboard his bus, he sometimes has to face the problem of not enough space left on the bus! He wants you to write a simple program telling him if he will be able to fit all the passengers.
 
@@ -4310,6 +4424,13 @@ cap = 100, on = 60, wait = 50 --> 10 # He can't fit 10 of the 50 waiting"""
 
 
 def enough(cap, on, wait):
+    return -min(cap - on - wait, 0)
+enough(10, 5, 5)
+enough(100, 60, 5)
+enough(100, 60, 50)
+enough(20, 5, 5)
+
+def enough(cap, on, wait):
     return max(0, wait - cap + on)
 
 
@@ -4325,6 +4446,8 @@ def fixed_tests():
 
 
 
+# Sum of the first nth term of Series
+# https://www.codewars.com/kata/555eded1ad94b00403000071
 """Task:
 Your task is to write a function which returns the sum of following series upto nth term(parameter).
 
@@ -4344,11 +4467,23 @@ Examples:(Input --> Output)
 
 
 def series_sum(n):
-    return '{:.2f}'.format(sum(1/(3*i + 1) for i in range(n)))
+    sequence_sum = sum(1/(3*i + 1) for i in range(n))
+    return '{:.2f}'.format(sequence_sum)
+    return "%.2f" % sequence_sum
+    return f"{sequence_sumr:.2f}"
 series_sum(1)
 series_sum(2)
 series_sum(3)
 series_sum(5)
+
+def series_sum(n):
+    if n == 1:
+        return "1.00"
+    if n == 0:
+        return "0.00"
+    the_sum = sum(1/((3*ind) + 1) for ind in range(n))
+    sol = str(round(the_sum, 2)) 
+    return sol + "0" if len(sol) == 3 else sol
 
 # prime numbers generator
 def series_sum(n):
@@ -4381,6 +4516,8 @@ def fixed_tests():
 
 
 
+# Convert number to reversed array of digits
+# https://www.codewars.com/kata/5583090cbe83f4fd8c000051
 """Convert number to reversed array of digits
 Given a random non-negative number, you have to return the digits of this number within an array in reverse order.
 
@@ -4392,13 +4529,11 @@ Example:
 
 def digitize(n):
     return list(reversed([int(i) for i in str(n)]))
-digitize(35231)
-
-def digitize(n):
-    return map(int, str(n)[::-1])
-
-def digitize(n):
     return [int(i) for i in str(n)][::-1]
+    return [int(i) for i in reversed(str(n))]
+    return list(map(int, str(n)[::-1]))
+    return list(map(int, str(n)))[::-1]
+digitize(35231)
 
 
 import codewars_test as test
@@ -4419,6 +4554,8 @@ def basic_tests():
 
 
 
+# Get the Middle Character
+# https://www.codewars.com/kata/56747fd5cb988479af000028
 """est") should return "es"
 
 Kata.getMiddle("testing") should return "t"
@@ -4436,10 +4573,17 @@ The middle character(s) of the word represented as a string."""
 
 
 def get_middle(s):
-    return get_middle(s[1:-1]) if len(s) > 2 else s
+    len_s = len(s)
+    if len_s % 2:
+        return s[(len_s-1) // 2]
+    else:
+        return s[len_s//2 - 1 : len_s//2 + 1]
 get_middle("testing")
 get_middle("test")
 get_middle('')
+
+def get_middle(s):
+    return get_middle(s[1:-1]) if len(s) > 2 else s
 
 def get_middle(s):
     return s[(len(s)-1) // 2 : len(s)//2 + 1]
@@ -4454,7 +4598,8 @@ test.assert_equals(get_middle("of"),"of")
 
 
 
-
+# Transportation on vacation
+# https://www.codewars.com/kata/568d0dd208ee69389d000016
 """After a hard quarter in the office you decide to get some rest on a vacation. So you will book a flight for you and your girlfriend and try to leave all the mess behind you.
 
 You will need a rental car in order for you to get around in your vacation. The manager of the car rental makes you some good offers.
@@ -4467,6 +4612,14 @@ Write a code that gives out the total amount for different days(d).
 
 
 def rental_car_cost(d):
+    if d >= 7:
+        return d * 40 - 50
+    if d >= 3:
+        return d * 40 - 20
+    else:
+        return d * 40
+    
+def rental_car_cost(d):
     return 40*d if d < 3 else 40*d - 20 if d < 7 else 40*d - 50
 rental_car_cost(1)
 rental_car_cost(4)
@@ -4476,6 +4629,7 @@ rental_car_cost(8)
 # from codewars
 def rental_car_cost(d):
     return 40*d - (d > 2)*20 - (d > 6)*30
+
 
 import codewars_test as test
 from solution import rental_car_cost
@@ -4493,6 +4647,8 @@ def fixed_tests():
 
 
 
+# Abbreviate a Two Word Name
+# https://www.codewars.com/kata/57eadb7ecd143f4c9c0000a3
 """Write a function to convert a name into initials. This kata strictly takes two words with one space in between them.
 
 The output should be two capital letters with a dot separating them.
@@ -4505,11 +4661,10 @@ patrick feeney => P.F"""
 
 
 def abbrev_name(name):
+    return ".".join(i[0].upper() for i in name.split())
     return '.'.join(i[0] for i in name.split()).upper()
+    return ".".join(map(lambda x: x[0].upper(), name.split()))
 abbrev_name("Sam Harris")
-
-def abbrev_name(name):
-    return '.'.join(map(lambda x: x[0].upper(), name.split()))
 
 
 import codewars_test as test
@@ -4533,6 +4688,8 @@ def basic_tests():
 
 
 
+# Count by X
+# https://www.codewars.com/kata/5513795bd3fafb56c200049e
 """Create a function with two arguments that will return an array of the first (n) multiples of (x).
 
 Assume both the given number and the number of times to count will be positive numbers greater than 0.
@@ -4547,10 +4704,9 @@ count_by(2,5) #should return [2,4,6,8,10]"""
 
 def count_by(x, n):
     return list(range(x, n*x + 1, x))
-count_by(2, 5)
-
-def count_by(x, n):
     return [x * i for i in range(1, n + 1)]
+    return list(map(lambda y: x*y, range(1, n+1)))
+count_by(2, 5)
 
 import numpy as np
 def count_by(x, n):
@@ -4573,7 +4729,8 @@ def basic_tests():
 
 
 
-
+# Beginner Series #1 School Paperwork
+# https://www.codewars.com/kata/55f9b48403f6b87a7c0000bd
 """Your classmates asked you to copy some paperwork for them. You know that there are 'n' classmates and the paperwork has 'm' pages.
 
 Your task is to calculate how many blank pages do you need. If n < 0 or m < 0 return 0.
@@ -4585,6 +4742,7 @@ n=-5, m=5:  0"""
 
 def paperwork(n, m):
     return n * m if n > 0 and m > 0 else 0
+    return max(n, 0) * max(m, 0)
 paperwork(5, 5)
 paperwork(-5, 5)
 
@@ -4606,6 +4764,8 @@ def basic_tests():
 
 
 
+# Ones and Zeros
+# https://www.codewars.com/kata/578553c3a1b8d5c40300037c
 """Given an array of ones and zeroes, convert the equivalent binary value to an integer.
 
 Eg: [0, 0, 0, 1] is treated as 0001 which is the binary representation of 1.
@@ -4648,13 +4808,17 @@ def fixed_tests():
 
 
 
+# Shortest Word
+# https://www.codewars.com/kata/57cebe1dc6fdc20c57000ac9r
 """Simple, given a string of words, return the length of the shortest word(s).
 
 String will never be empty and you do not need to account for different data types."""
 
 
 def find_short(s):
+    return len(min(s.split(), key=len))
     return min(map(len, s.split()))
+    return min(len(i) for i in s.split())
 
 
 import codewars_test as test
@@ -4675,14 +4839,16 @@ def fixed_tests():
 
 
 
+# Fake Binary
+# https://www.codewars.com/kata/57eae65a4321032ce000002d
 """Given a string of digits, you should replace any digit below 5 with '0' and any digit 5 and above with '1'. Return the resulting string.
 
 Note: input will never be an empty string"""
 
 
 def fake_bin(x):
-    return ''.join('0' if i < '5' else '1' for i in x)
     return ''.join('0' if int(i) < 5 else '1' for i in x)
+    return ''.join('0' if i < '5' else '1' for i in x)
     return ''.join(map(lambda x: '0' if int(x) < 5 else '1', x))
 fake_bin("45385593107843568")
 
@@ -4710,6 +4876,8 @@ def fixed_tests():
 
 
 
+# Take a Ten Minutes Walk
+# https://www.codewars.com/kata/54da539698b8a2ad76000228
 """You live in the city of Cartesia where all roads are laid out in a perfect grid. You arrived ten minutes too early to an appointment, so you decided to take the opportunity to go for a short walk. The city provides its citizens with a Walk Generating App on their phones -- everytime you press the button it sends you an array of one-letter strings representing directions to walk (eg. ['n', 's', 'w', 'e']). You always walk only a single block for each letter (direction) and you know it takes you one minute to traverse one city block, so create a function that will return true if the walk the app gives you will take you exactly ten minutes (you don't want to be early or late!) and will, of course, return you to your starting point. Return false otherwise.
 
 Note: you will always receive a valid array (string in COBOL) containing a random assortment of direction letters ('n', 's', 'e', or 'w' only). It will never give you an empty array (that's not a walk, that's standing still!)."""
@@ -4730,21 +4898,27 @@ test.expect(not is_valid_walk(['n','n','n','s','n','s','n','s','n','s']), 'shoul
 
 
 
+# Calculate average
+# https://www.codewars.com/kata/57a2013acf1fa5bfc4000921
 """Write a function which calculates the average of the numbers in a given list.
 
 Note: Empty arrays should return 0."""
 
 
-import numpy as np
 def find_average(numbers):
-    return np.mean(numbers)
+    return sum(numbers)/len(numbers) if numbers else 0
 find_average([1, 2, 3])
 find_average([])
+
+import numpy as np
+
+def find_average(numbers):
+    return np.average(numbers)
 
 def find_average(numbers):
     try:
         return sum(numbers) / len(numbers) 
-    except:
+    except ZeroDivisionError:
         return 0
 
 
@@ -4761,6 +4935,8 @@ def fixed_tests():
 
 
 
+# Sum Mixed Array
+# https://www.codewars.com/kata/57eaeb9578748ff92a000009
 """Given an array of integers as strings and numbers, return the sum of the array values as if all were numbers.
 
 Return your answer as a number."""
@@ -4788,6 +4964,8 @@ def fixed_tests():
 
 
 
+# Switch it Up!
+# https://www.codewars.com/kata/5808dcb8f0ed42ae34000031
 """When provided with a number between 0-9, return it in words.
 
 Input :: 1
@@ -4830,6 +5008,8 @@ def fixed_tests():
 
 
 
+# Array.diff
+# https://www.codewars.com/kata/523f5d21c841566fde000009
 """Your goal in this kata is to implement a difference function, which subtracts one list from another and returns the result.
 
 It should remove all values from list a, which are present in list b keeping their order.
@@ -4881,6 +5061,8 @@ def fixed_tests():
 
 
 
+# Welcome!
+# https://www.codewars.com/kata/577ff15ad648a14b780000e7
 """Your start-up's BA has told marketing that your website has a large audience in Scandinavia and surrounding countries. Marketing thinks it would be great to welcome visitors to the site in their own language. Luckily you already use an API that detects the user's location, so this is an easy win.
 
 The Task
@@ -4911,6 +5093,17 @@ IP_ADDRESS_NOT_FOUND - ip address not in the database
 IP_ADDRESS_REQUIRED - no ip address was supplied"""
 
 
+def greet(language):
+    lan_dict = [("english", "Welcome"), ("czech", "Vitejte"), ("danish", "Velkomst"), ("dutch", "Welkom"), ("estonian", "Tere tulemast"), ("finnish", "Tervetuloa"), ("flemish", "Welgekomen"), ("french", "Bienvenue"), ("german", "Willkommen"), ("irish", "Failte"), ("italian", "Benvenuto"), ("latvian", "Gaidits"), ("lithuanian", "Laukiamas"), ("polish", "Witamy"), ("spanish", "Bienvenido"), ("swedish", "Valkommen"), ("welsh", "Croeso")                ]
+    real_dict = {k: v for k, v in lan_dict}
+    # return real_dict[language] if language in list(zip(*lan_dict))[0] else "Welcome"
+    # return real_dict[language] if language in real_dict.keys() else "Welcome"
+    return real_dict.get(language, real_dict["english"])
+greet('dutch')
+greet('IP_ADDRESS_INVALID')
+greet('')
+greet(2)
+
 # from codewars
 def greet(language):
     lang_db = {'english': 'Welcome',
@@ -4932,9 +5125,6 @@ def greet(language):
                'welsh': 'Croeso'
                }
     return lang_db.get(language, lang_db['english'])
-greet('dutch')
-greet('')
-greet(2)
 
 def greet(language):
     lang_db = {'english': 'Welcome',
@@ -4976,6 +5166,8 @@ test.assert_equals(greet(2), 'Welcome')
 
 
 
+# Area or Perimeter
+# https://www.codewars.com/kata/5ab6538b379d20ad880000ab
 """You are given the length and width of a 4-sided polygon. The polygon can either be a rectangle or a square.
 If it is a square, return its area. If it is a rectangle, return its perimeter.
 
@@ -5006,6 +5198,8 @@ def fixed_tests():
 
 
 
+# Total amount of points
+# https://www.codewars.com/kata/5bb904724c47249b10000131
 """Our football team finished the championship. The result of each match look like "x:y". Results of all matches are recorded in the collection.
 
 For example: ["3:1", "2:2", "0:1", ...]
@@ -5021,10 +5215,15 @@ there are 10 matches in the championship
 0 <= x <= 4
 0 <= y <= 4"""
 
+
+def points(games):
+    return sum(3 if x > y else 1 for x, _, y in games if x >= y)
+    return sum(3 if x[0] > x[-1] else 1 for x in games if x[0] >= x[-1])
+points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3'])
+
 # from codewars
 def points(games):
     return sum((x > y)*3 or x == y for x, _, y in games)
-points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3'])
 
 # from codewars
 def points(games):
@@ -5056,6 +5255,8 @@ def fixed_tests():
 
 
 
+# Two Sum
+# https://www.codewars.com/kata/52c31f8e6605bcc646000082
 """Write a function that takes an array of numbers (integers for the tests) and a target number. It should find two different items in the array that, when added together, give the target value. The indices of these items should then be returned in a tuple / list (depending on your language) like so: (index1, index2).
 
 For the purposes of this kata, some tests may have multiple answers; any valid solutions will be accepted.
@@ -5071,14 +5272,20 @@ def two_sum(numbers, target):
     for i in range(len(numbers)):
         for j in range(i):
             if numbers[i] + numbers[j] == target:
-                return sorted((i, j))
+                return (i, j)
 two_sum([1, 2, 3], 4)
+
+def two_sum(numbers, target):
+    for i in range(len(numbers) - 1):
+        for j in range(i + 1, len(numbers)):
+            if numbers[i] + numbers[j] == target:
+                return (i, j)
 
 def two_sum(numbers, target):
     for i, x in enumerate(numbers):
         for j, y in enumerate(numbers):
             if i != j and x + y == target:
-                return sorted((i, j))
+                return (i, j)
 
 
 test.assert_equals(sorted(two_sum([1,2,3], 4)), [0,2])
@@ -5089,6 +5296,8 @@ test.assert_equals(sorted(two_sum([2,2,3], 4)), [0,1])
 
 
 
+# How good are you really?
+# https://www.codewars.com/kata/5601409514fc93442500010b
 """There was a test in your class and you passed it. Congratulations!
 But you're an ambitious person. You want to know if you're better than the average student in your class.
 
@@ -5100,10 +5309,14 @@ Note:
 Your points are not included in the array of your class's points. For calculating the average point you may add your point to the given array!"""
 
 
+def better_than_average(class_points, your_points):
+    return your_points > ((sum(class_points) + your_points)/(len(class_points) + 1)) # including your_points in the sum
+    return your_points > (sum(class_points)/len(class_points))
+better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75)
+
 import numpy as np
 def better_than_average(class_points, your_points):
     return your_points > np.mean(class_points + [your_points])
-better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75)
 
 better_than_average = lambda class_points, your_points: your_points > np.mean(class_points + [your_points])
 
@@ -5142,6 +5355,10 @@ Define String.prototype.toAlternatingCase (or a similar function/method such as 
 "String.prototype.toAlternatingCase".toAlternatingCase() === "sTRING.PROTOTYPE.TOaLTERNATINGcASE"
 As usual, your function/method should be pure, i.e. it should not mutate the original string."""
 
+
+def to_alternating_case(string):
+    return string.swapcase()
+    return "".join(i.upper() if i.islower() else i.lower() for i in string)
 
 to_alternating_case = lambda string: string.swapcase()
 to_alternating_case = str.swapcase()
@@ -5182,6 +5399,8 @@ test.assert_equals(title, "altERnaTIng cAsE <=> ALTerNAtiNG CaSe")
 
 
 
+# Sort the odd
+# https://www.codewars.com/kata/578aa45ee9fd15ff4600090d
 """You will be given an array of numbers. You have to sort the odd numbers in ascending order while leaving the even numbers at their original positions.
 
 Examples
@@ -5192,22 +5411,23 @@ Examples
 
 # partially from codewars
 def sort_array(source_array):
-    odd_list = sorted(filter(lambda x: x % 2, source_array), reverse=True)
-    return [odd_list.pop() if i % 2 else i for i in source_array]
+    # odds = list(reversed(sorted(filter(lambda x: x % 2, source_array))))
+    odds = sorted(filter(lambda x: x % 2, source_array), reverse=True)
+    return [odds.pop() if i % 2 else i for i in source_array]
 sort_array([5, 3, 2, 8, 1, 4])
 
 # partially from codewars
 def sort_array(source_array):
-    odd_list = iter(sorted(filter(lambda x: x % 2, source_array)))
-    return [next(odd_list) if i % 2 else i for i in source_array]
+    odds = iter(sorted(filter(lambda x: x % 2, source_array)))
+    return [next(odds) if i % 2 else i for i in source_array]
 
 def sort_array(source_array):
-    odd_list = sorted(filter(lambda x: x % 2, source_array))
+    odds = sorted(filter(lambda x: x % 2, source_array))
     index = 0
     result_list = []
     for i in source_array:
         if i % 2:
-            result_list.append(odd_list[index])
+            result_list.append(odds[index])
             index += 1
         else:
             result_list.append(i)
@@ -5222,6 +5442,8 @@ test.assert_equals(sort_array([]),[])
 
 
 
+# Double Char
+# https://www.codewars.com/kata/56b1f01c247c01db92000076
 """Given a string, you have to return a string in which each character (case-sensitive) is repeated once.
 
 Examples (Input -> Output):
@@ -5229,6 +5451,9 @@ Examples (Input -> Output):
 * "Hello World" -> "HHeelllloo  WWoorrlldd"
 * "1234!_ "     -> "11223344!!__  """"
 
+
+def double_char(s):
+    return "".join(map(lambda x: 2*x, s))
 
 double_char = lambda s: ''.join(i * 2 for i in s)
 double_char("String")
@@ -5242,6 +5467,8 @@ test.assert_equals(double_char("1234!_ "),"11223344!!__  ")
 
 
 
+# Calculate BMI
+# https://www.codewars.com/kata/57a429e253ba3381850000fb
 """Write function bmi that calculates body mass index (bmi = weight / height2).
 
 if bmi <= 18.5 return "Underweight"
@@ -5253,14 +5480,6 @@ if bmi <= 30.0 return "Overweight"
 if bmi > 30 return "Obese""""
 
 
-# from codewars
-def bmi(weight, height):
-    b = weight / height ** 2
-    return ['Underweight', 'Normal', 'Overweight', 'Obese'][(b > 30) + (b > 25) + (b > 18.5)]
-bmi(50, 1.80)
-bmi(80, 1.80)
-bmi(90, 1.80)
-
 def bmi(weight, height):
     b = weight / height ** 2
     if b > 30:
@@ -5271,7 +5490,15 @@ def bmi(weight, height):
         return 'Normal'
     else:
         return 'Underweight'
+bmi(50, 1.80)
+bmi(80, 1.80)
+bmi(90, 1.80)
 
+
+# from codewars
+def bmi(weight, height):
+    b = weight / height ** 2
+    return ['Underweight', 'Normal', 'Overweight', 'Obese'][(b > 30) + (b > 25) + (b > 18.5)]
 
 @test.describe("Fixed Tests")
 def fixed_tests():
@@ -5287,6 +5514,8 @@ def fixed_tests():
 
 
 
+# Sort array by string length
+# https://www.codewars.com/kata/57ea5b0b75ae11d1e800006c
 """Write a function that takes an array of strings as an argument and returns a sorted array containing the same strings, ordered from shortest to longest.
 
 For example, if this array were passed as an argument:
@@ -5304,8 +5533,12 @@ sort_by_length = lambda arr: sorted(arr, key=len)
 sort_by_length(["Telescopes", "Glasses", "Eyes", "Monocles"])
 
 def sort_by_length(arr):
-    return sorted(arr, key=len)
-    return sorted(arr, key=lambda x: len(x))
+    # return sorted(arr, key=len)
+    # return sorted(arr, key=lambda x: len(x))
+
+def sort_by_length(arr):
+    arr.sort(key=len)
+    return arr
 
 
 import codewars_test as test
@@ -5332,6 +5565,8 @@ def fixed_tests():
 
 
 
+# Make a function that does arithmetic!
+# https://www.codewars.com/kata/583f158ea20cfcbeb400000a
 """Given two numbers and an arithmetic operator (the name of it, as a string), return the result of the two numbers having that operator used on them.
 
 a and b will both be positive integers, and a will always be the first number in the operation, and b always the second.
@@ -5349,7 +5584,8 @@ Try to do it without using if statements!"""
 
 def arithmetic(a, b, operator):
     ar_dict = {'add': '+', 'subtract': '-', 'multiply': '*', 'divide': '/'}
-    return eval('(' + 'a' + ar_dict[operator] + 'b' + ')')
+    return eval(f"{a}{ar_dict[operator]}{b}")
+    # return eval('(' + 'a' + ar_dict[operator] + 'b' + ')')
 arithmetic(1, 2, "add")
 
 # from codewars
@@ -5379,6 +5615,8 @@ def fixed_tests():
 
 
 
+# Beginner Series #3 Sum of Numbers
+# https://www.codewars.com/kata/55f2b110f61eb01779000053
 """Given two integers a and b, which can be positive or negative, find the sum of all the integers between and including them and return it. If the two numbers are equal return a or b.
 
 Note: a and b are not ordered!
@@ -5406,6 +5644,8 @@ test.assert_equals(get_sum(0,-1),-1)
 
 
 
+# Equal Sides Of An Array
+# https://www.codewars.com/kata/5679aa472b8f57fb8c000047
 """You are going to be given an array of integers. Your job is to take that array and find an index N where the sum of the integers to the left of N is equal to the sum of the integers to the right of N. If there is no index that would make this happen, return -1.
 
 For example:
@@ -5437,12 +5677,22 @@ If you are given an array with multiple answers, return the lowest correct index
 
 
 def find_even_index(arr):
+    r = [i for i in range(len(arr)) if (sum(arr[:i]) == sum(arr[i + 1:]))]
+    return r[0] if r else -1
+find_even_index([1, 2, 3, 4, 3, 2, 1])
+find_even_index([1, 2, 3, 4, 5, 6])
+
+def find_even_index(arr):
+    try:
+        return [i for i in range(len(arr)) if (sum(arr[:i]) == sum(arr[i + 1:]))][0]
+    except:
+        return -1
+
+def find_even_index(arr):
     for i in range(len(arr)):
         if sum(arr[:i]) == sum(arr[i+1:]):
             return i
     return -1
-find_even_index([1, 2, 3, 4, 3, 2, 1])
-find_even_index([1, 2, 3, 4, 5, 6])
 
 
 test.assert_equals(find_even_index([1,2,3,4,3,2,1]),3)
@@ -5460,11 +5710,15 @@ test.assert_equals(find_even_index(list(range(-100,-1))),-1)
 
 
 
+# Simple multiplication
+# https://www.codewars.com/kata/583710ccaa6717322c000105
 """This kata is about multiplying a given number by eight if it is an even number and by nine otherwise."""
 
 
-def simple_multiplication(number) :
+def simple_multiplication(number):
+    return number * 9 if number % 2 else number * 8
     return number * 8 if not number % 2 else number * 9
+    return number * (8 + number % 2)
 simple_multiplication(5)
 simple_multiplication(6)
 
@@ -5496,6 +5750,8 @@ def fixed_tests():
 
 
 
+# Sum of a sequence
+# https://www.codewars.com/kata/586f6741c66d18c22800010a
 """Your task is to make function, which returns the sum of a sequence of integers.
 
 The sequence is defined by 3 non-negative values: begin, end, step (inclusive).
@@ -5537,6 +5793,8 @@ def fixed_tests():
 
 
 
+# Extract the domain name from a URL
+# https://www.codewars.com/kata/514a024011ea4fb54200004b
 """Write a function that when given a URL as a string, parses out just the domain name and returns it as a string. For example:
 
 * url = "http://github.com/carbonfive/raygun" -> domain name = "github"
@@ -5546,6 +5804,12 @@ def fixed_tests():
 
 
 import re
+def domain_name(url):
+    return re.search(r"(:\/\/www\.|:\/\/|www\.|^)([\w-]+)\.", url).group(2)
+
+(:\/\/www\.|:\/\/|www\.)  # captures ://www.
+(:\/\/|:\/\/www\.|www\.)  # captures :// and www.
+
 def domain_name(url):
     return re.sub(r'^(https?://)?(www\.)?((\w|-)+)\..*$', r'\3', url)
 domain_name('http://google.com')
@@ -5579,39 +5843,8 @@ test.assert_equals(domain_name("https://youtube.com"), "youtube")
 
 
 
-"""As a part of this Kata, you need to create a function that when provided with a triplet, returns the index of the numerical element that lies between the other two elements.
-
-The input to the function will be an array of three distinct numbers (Haskell: a tuple).
-
-For example:
-
-gimme([2, 3, 1]) => 0
-2 is the number that fits between 1 and 3 and the index of 2 in the input array is 0.
-
-Another example (just to make sure it is clear):
-
-gimme([5, 10, 14]) => 1
-10 is the number that fits between 5 and 14 and the index of 10 in the input array is 1."""
-
-
-def gimme(input_array):
-    return
-
-
-import codewars_test as test
-from solution import gimme
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(gimme([2, 3, 1]), 0, 'Finds the index of middle element')
-        test.assert_equals(gimme([5, 10, 14]), 1, 'Finds the index of middle element')
-
-
-
-
-
+# Find the middle element
+# https://www.codewars.com/kata/545a4c5a61aa4c6916000755
 """As a part of this Kata, you need to create a function that when provided with a triplet, returns the index of the numerical element that lies between the other two elements.
 
 The input to the function will be an array of three distinct numbers (Haskell: a tuple).
@@ -5629,7 +5862,7 @@ gimme([5, 10, 14]) => 1
 
 def gimme(input_array):
     return input_array.index(sorted(input_array)[1])
-
+    
 
 import codewars_test as test
 from solution import gimme
@@ -5645,6 +5878,8 @@ def fixed_tests():
 
 
 
+# Grasshopper - Messi goals function
+# https://www.codewars.com/kata/55f73be6e12baaa5900000d4
 """Messi goals function
 Messi is a soccer player with goals in three leagues:
 
@@ -5681,6 +5916,8 @@ def fixed_tests():
 
 
 
+# Beginner Series #4 Cockroach
+# https://www.codewars.com/kata/55fab1ffda3e2e44f00000c6
 """The cockroach is one of the fastest insects. Write a function which takes its speed in km per hour and returns it in cm per second, rounded down to the integer (= floored).
 
 For example:
@@ -5690,7 +5927,7 @@ For example:
 
 import numpy as np
 def cockroach_speed(s):
-    return np.floor(s * 100000 / 3600)
+    return np.floor(s * 100_000 / 3600)
 cockroach_speed(1.08)
 
 
@@ -5714,6 +5951,8 @@ def fixed_tests():
 
 
 
+# Two fighters, one winner.
+# https://www.codewars.com/kata/577bd8d4ae2807c64b00045b
 """Create a function that returns the name of the winner in a fight between two fighters.
 
 Each fighter takes turns attacking the other and whoever kills the other first is victorious. Death is defined as having health <= 0.
@@ -5737,9 +5976,33 @@ class Fighter(object):
         self.name = name
         self.health = health
         self.damage_per_attack = damage_per_attack
-        
+
     def __str__(self): return "Fighter({}, {}, {})".format(self.name, self.health, self.damage_per_attack)
-    __repr__=__str__
+    __repr__ = __str__
+
+
+def declare_winner(fighter1, fighter2, first_attacker):
+    while True:
+        if fighter1.name == first_attacker:
+            fighter2.health -= fighter1.damage_per_attack
+            if fighter2.health <= 0:
+                return fighter1.name
+            fighter1.health -= fighter2.damage_per_attack
+            if fighter1.health <= 0:
+                return fighter2.name
+            
+        else:
+            fighter1.health -= fighter2.damage_per_attack
+            if fighter1.health <= 0:
+                return fighter2.name
+            fighter2.health -= fighter1.damage_per_attack
+            if fighter2.health <= 0:
+                return fighter1.name
+            
+declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew")
+declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry")
+declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry")
+declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry")
 
 import numpy as np
 def declare_winner(fighter1, fighter2, first_attacker):
@@ -5751,9 +6014,6 @@ def declare_winner(fighter1, fighter2, first_attacker):
         return fighter2.name
     else:
         return first_attacker
-declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew")
-declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry")
-declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry")
 
 def declare_winner(fighter1, fighter2, first_attacker):
     while fighter1.health > 0 and fighter2.health > 0:
@@ -5790,7 +6050,396 @@ def fixed_tests():
 
 
 
-""""""
+# Primes in numbers
+# https://www.codewars.com/kata/54d512e62a5e54c96200019e/
+"""Given a positive number n > 1 find the prime factor decomposition of n. The result will be a string with the following form :
+
+ "(p1**n1)(p2**n2)...(pk**nk)"
+with the p(i) in increasing order and n(i) empty if n(i) is 1.
+
+Example: n = 86240 should return "(2**5)(5)(7**2)(11)""""
+
+
+from collections import Counter
+
+def prime_factors(n):
+    dividers = []
+    while True:
+        for i in range(2, n + 1):
+            if not n % i:
+                n //= i
+                dividers.append(i)
+                break
+        if n == 1:
+            break
+    return "".join(f"({k})" if v == 1 else f"({k}**{v})" for k, v in Counter(dividers).items())
+
+prime_factors(86240), "(2**5)(5)(7**2)(11)"
+prime_factors(7775460), "(2**2)(3**3)(5)(7)(11**2)(17)"
+prime_factors(7919), "(7919)"
 
 
 
+
+
+
+# Count the divisors of a number
+# https://www.codewars.com/kata/542c0f198e077084c0000c2e
+
+
+"""Count the number of divisors of a positive integer n.
+
+Random tests go up to n = 500000.
+
+Examples (input --> output)
+4 --> 3 // we have 3 divisors - 1, 2 and 4
+5 --> 2 // we have 2 divisors - 1 and 5
+12 --> 6 // we have 6 divisors - 1, 2, 3, 4, 6 and 12
+30 --> 8 // we have 8 divisors - 1, 2, 3, 5, 6, 10, 15 and 30
+Note you should only return a number, the count of divisors. The numbers between parentheses are shown only for you to see which numbers are counted in each case."""
+
+
+def divisors(n):
+    return sum(True for i in range(1, n + 1) if not n % i)  # 3.687169998000172
+    return len([i for i in range(1, n + 1) if not n % i])  # 3.5938232469998184
+    return len([True for i in range(1, n + 1) if not n % i])  # 3.6050773840001966
+    return sum([True for i in range(1, n + 1) if not n % i])  # 3.6067721780000284
+    return len([not n % i for i in range(1, n + 1)])  # 4.191705105999972
+    return sum(not n % i for i in range(1, n + 1))  # 5.578456058000029
+    return sum(True if not n % i else False for i in range(1, n + 1))  # 5.622829734999868
+    return len(list(filter(lambda i: not n % i, range(1, n + 1))))  # 6.283454425999935
+
+divisors(1), 1
+divisors(4), 3
+divisors(5), 2
+divisors(12), 6
+divisors(30), 8
+divisors(4096), 13
+
+
+
+
+
+# Square Every Digit
+# https://www.codewars.com/kata/546e2562b03326a88e000020/train/python
+"""Welcome. In this kata, you are asked to square every digit of a number and concatenate them.
+
+For example, if we run 9119 through the function, 811181 will come out, because 92 is 81 and 12 is 1. (81-1-1-81)
+
+Example #2: An input of 765 will/should return 493625 because 72 is 49, 62 is 36, and 52 is 25. (49-36-25)
+
+Note: The function accepts an integer and returns an integer.
+
+Happy Coding!"""
+
+
+def square_digits(num):
+    return int("".join(str(int(i)**2) for i in str(num)))
+square_digits(9119)
+
+
+
+
+
+# Powers of 2
+# https://www.codewars.com/kata/57a083a57cb1f31db7000028
+"""Complete the function that takes a non-negative integer n as input, and returns a list of all the powers of 2 with the exponent ranging from 0 to n ( inclusive ).
+
+Examples
+n = 0  ==> [1]        # [2^0]
+n = 1  ==> [1, 2]     # [2^0, 2^1]
+n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]"""
+
+
+def powers_of_two(n):
+    return [2**i for i in range(n + 1)]
+    return list(map(lambda x: 2**x, range(n + 1)))
+powers_of_two(4), [1, 2, 4, 8, 16]
+
+
+
+
+
+# Thinkful - Logic Drills: Traffic light
+# https://www.codewars.com/kata/58649884a1659ed6cb000072
+"""You're writing code to control your town's traffic lights. You need a function to handle each change from green, to yellow, to red, and then to green again.
+
+Complete the function that takes a string as an argument representing the current state of the light and returns a string representing the state the light should change to.
+
+For example, when the input is green, output should be yellow."""
+
+
+def update_light(current):
+    lights = ("green", "yellow", "red", "green")
+    return lights[lights.index(current) + 1]
+update_light('green'), 'yellow'
+update_light('yellow'), 'red'
+update_light('red'), 'green'
+
+def update_light(current):
+    lights = ("green", "yellow", "red")
+    return lights[(lights.index(current)+1) % 3]
+
+def update_lights(current):
+    next_light = {"green": "yellow", "yellow": "red", "red": "green"}
+    return next_light.get(current)
+
+
+
+# Thinkful - Logic Drills: Traffic light
+# https://www.codewars.com/kata/58649884a1659ed6cb000072
+"""Your function takes two arguments:
+
+current father's age (years)
+current age of his son (years)
+Сalculate how many years ago the father was twice as old as his son (or in how many years he will be twice as old). The answer is always greater or equal to 0, no matter if it was in the past or it is in the future."""
+
+
+def twice_as_old(dad_years_old, son_years_old):
+    return abs(dad_years_old - 2 * son_years_old)
+(twice_as_old(36,7) , 22)
+(twice_as_old(55,30) , 5)
+(twice_as_old(42,21) , 0)
+(twice_as_old(22,1) , 20)
+(twice_as_old(29,0) , 29)
+
+
+
+
+
+# Disemvowel Trolls
+# https://www.codewars.com/kata/52fba66badcd10859f00097e
+"""Trolls are attacking your comment section!
+
+A common way to deal with this situation is to remove all of the vowels from the trolls' comments, neutralizing the threat.
+
+Your task is to write a function that takes a string and return a new string with all vowels removed.
+
+For example, the string "This website is for losers LOL!" would become "Ths wbst s fr lsrs LL!".
+
+Note: for this kata y isn't considered a vowel."""
+
+
+def disemvowel(string_):
+    for i in "aeoiuAEOIU":
+        string_ = string_.replace(i, "")
+    return string_
+(disemvowel("This website is for losers LOL!"), "Ths wbst s fr lsrs LL!")
+(disemvowel("No offense but,\nYour writing is among the worst I've ever read"), "N ffns bt,\nYr wrtng s mng th wrst 'v vr rd")
+(disemvowel("What are you, a communist?"), "Wht r y,  cmmnst?")
+
+def disemvowel(string_):
+    return "".join(i for i in string_ if i.lower() not in "aeoiu")
+
+import re
+def disemvowel(string_):
+    return re.sub(r"[aeoiu]", "", string_, re.IGNORECASE)
+
+
+
+
+
+# Isograms
+# https://www.codewars.com/kata/54ba84be607a92aa900000f1
+"""An isogram is a word that has no repeating letters, consecutive or non-consecutive. Implement a function that determines whether a string that contains only letters is an isogram. Assume the empty string is an isogram. Ignore letter case.
+
+Example: (Input --> Output)
+
+"Dermatoglyphics" --> true "aba" --> false "moOse" --> false (ignore letter case)
+
+isIsogram "Dermatoglyphics" = true
+isIsogram "moose" = false
+isIsogram "aba" = false"""
+
+
+import string as string_imp
+
+def is_isogram(string):
+    letters = string_imp.ascii_lowercase
+    for i in string.lower():
+        if i in letters:
+            letters = letters.replace(i, "")
+        else:
+            return False
+    return True
+(is_isogram("Dermatoglyphics"), True )
+(is_isogram("isogram"), True )
+(is_isogram("aba"), False, "same chars may not be adjacent" )
+(is_isogram("moOse"), False, "same chars may not be same case" )
+(is_isogram("isIsogram"), False )
+(is_isogram(""), True, "an empty string is a valid isogram" )
+
+def is_isogram(string):
+    return len(string) == len(set(string.lower()))
+
+def is_isogram(string):
+    for i in string.lower():
+        if string.lower().count(i) > 1:
+            return False
+    return True
+    
+
+
+
+
+# I love you, a little , a lot, passionately ... not at all
+# https://www.codewars.com/kata/57f24e6a18e9fad8eb000296
+"""Who remembers back to their time in the schoolyard, when girls would take a flower and tear its petals, saying each of the following phrases each time a petal was torn:
+
+"I love you"
+"a little"
+"a lot"
+"passionately"
+"madly"
+"not at all"
+If there are more than 6 petals, you start over with "I love you" for 7 petals, "a little" for 8 petals and so on.
+
+When the last petal was torn there were cries of excitement, dreams, surging thoughts and emotions.
+
+Your goal in this kata is to determine which phrase the girls would say at the last petal for a flower of a given number of petals. The number of petals is always greater than 0."""
+
+
+def how_much_i_love_you(nb_petals):
+    song = ("I love you", "a little", "a lot", "passionately", "madly", "not at all")
+    return song[(nb_petals - 1) % 6]
+(how_much_i_love_you(7),"I love you")
+(how_much_i_love_you(3),"a lot")
+(how_much_i_love_you(6),"not at all")
+
+def how_much_i_love_you(nb_petals):
+    song = ("not at all", "I love you", "a little", "a lot", "passionately", "madly")
+    return song[nb_petals % 6]
+
+
+
+
+
+# Who likes it?
+# https://www.codewars.com/kata/5266876b8f4bf2da9b000362
+"""You probably know the "like" system from Facebook and other pages. People can "like" blog posts, pictures or other items. We want to create the text that should be displayed next to such an item.
+
+Implement the function which takes an array containing the names of people that like an item. It must return the display text as shown in the examples:
+
+[]                                -->  "no one likes this"
+["Peter"]                         -->  "Peter likes this"
+["Jacob", "Alex"]                 -->  "Jacob and Alex like this"
+["Max", "John", "Mark"]           -->  "Max, John and Mark like this"
+["Alex", "Jacob", "Mark", "Max"]  -->  "Alex, Jacob and 2 others like this"
+Note: For 4 or more names, the number in "and 2 others" simply increases."""
+
+
+def likes(names):
+    if not names:
+        return "no one likes this"
+    elif len(names) == 1:
+        return f"{names[0]} likes this"
+    elif len(names) == 2:
+        return f"{names[0]} and {names[1]} like this"
+    elif len(names) == 3:
+        return f"{names[0]}, {names[1]} and {names[2]} like this"
+    else:
+        return f"{names[0]}, {names[1]} and {len(names) - 2} others like this"
+(likes([]), 'no one likes this')
+(likes(['Peter']), 'Peter likes this')
+(likes(['Jacob', 'Alex']), 'Jacob and Alex like this')
+(likes(['Max', 'John', 'Mark']), 'Max, John and Mark like this')
+(likes(['Alex', 'Jacob', 'Mark', 'Max']), 'Alex, Jacob and 2 others like this')
+
+
+
+
+
+
+
+
+# Sum of Pairs
+# https://www.codewars.com/kata/54d81488b981293527000c8f
+"""
+Given a list of integers and a single sum value, return the first two values (parse from the left please) in order of appearance that add up to form the sum.
+
+sum_pairs([11, 3, 7, 5],         10)
+#              ^--^      3 + 7 = 10
+== [3, 7]
+
+sum_pairs([4, 3, 2, 3, 4],         6)
+#          ^-----^         4 + 2 = 6, indices: 0, 2 *
+#             ^-----^      3 + 3 = 6, indices: 1, 3
+#                ^-----^   2 + 4 = 6, indices: 2, 4
+#  * entire pair is earlier, and therefore is the correct answer
+== [4, 2]
+
+sum_pairs([0, 0, -2, 3], 2)
+#  there are no pairs of values that can be added to produce 2.
+== None/nil/undefined (Based on the language)
+
+sum_pairs([10, 5, 2, 3, 7, 5],         10)
+#              ^-----------^   5 + 5 = 10, indices: 1, 5
+#                    ^--^      3 + 7 = 10, indices: 3, 4 *
+#  * entire pair is earlier, and therefore is the correct answer
+== [3, 7]
+Negative numbers and duplicate numbers can and will appear.
+
+NOTE: There will also be lists tested of lengths upwards of 10,000,000 elements. Be sure your code doesn't time out."""
+
+
+# still to slow
+def sum_pairs(ints, s):
+    for i in range(1, len(ints)):
+        for j in range(i):
+            if ints[i] + ints[j] == s:
+                return [ints[j], ints[i]]
+
+# too slow, uses dict to caputre all solutions
+def sum_pairs(ints, s):
+    sol = dict()
+    for i in range(len(ints)):
+        for j in range(i + 1, len(ints)):
+            if ints[i] + ints[j] == s:
+                sol[j] = [ints[i], ints[j]]
+                # return [ints[i], ints[j]]
+    return sol[min(sol)] if sol else None
+
+# caputures only ones form the beginning
+def sum_pairs(ints, s):
+    for i, val in enumerate(ints):
+        try:
+            ints[:i].index(s - val)
+            return [s - val, val]
+            # return i
+        except:
+            pass
+sum_pairs([10, 5, 2, 3, 7, 5], 10)
+sum_pairs([1, 4, 8, 7, 3, 15], 8)
+sum_pairs([1, -2, 3, 0, -6, 1], -6)
+
+# caputures only ones form the beginning
+def sum_pairs(ints, s):
+    for val in ints:
+        try:
+            ints.index(s - val)
+            return [val, s - val]
+        except:
+            pass
+
+
+
+
+
+l1 = [1, 4, 8, 7, 3, 15]
+l2 = [1, -2, 3, 0, -6, 1]
+l3 = [20, -13, 40]
+l4 = [1, 2, 3, 4, 1, 0]
+l5 = [10, 5, 2, 3, 7, 5]
+l6 = [4, -2, 3, 3, 4]
+l7 = [0, 2, 0]
+l8 = [5, 9, 13, -3]
+
+test.describe("Testing For Sum of Pairs")
+test.expect(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
+test.expect(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
+test.expect(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
+test.expect(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
+test.expect(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
+test.expect(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
+test.expect(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
+test.expect(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)

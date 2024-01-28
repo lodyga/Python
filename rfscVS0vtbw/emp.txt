@@ -1,0 +1,4 @@
+John worker
+Carpenter dentist
+Joanna dancer
+Paweł poledancer
