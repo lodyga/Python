@@ -6349,6 +6349,369 @@ def likes(names):
 
 
 
+# Count the Digit
+# https://www.codewars.com/kata/566fc12495810954b1000030/train/python
+"""Take an integer n (n >= 0) and a digit d (0 <= d <= 9) as an integer.
+
+Square all numbers k (0 <= k <= n) between 0 and n.
+
+Count the numbers of digits d used in the writing of all the k**2.
+
+Implement the function taking n and d as parameters and returning this count.
+
+Examples:
+n = 10, d = 1 
+the k*k are 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100
+We are using the digit 1 in: 1, 16, 81, 100. The total count is then 4.
+
+The function, when given n = 25 and d = 1 as argument, should return 11 since
+the k*k that contain the digit 1 are:
+1, 16, 81, 100, 121, 144, 169, 196, 361, 441.
+So there are 11 digits 1 for the squares of numbers between 0 and 25.
+Note that 121 has twice the digit 1."""
+
+
+def nb_dig(n, d):
+    return "".join(str(i**2) for i in range(n + 1)).count(str(d))
+    return "".join(map(lambda x: str(x**2), range(n + 1))).count(str(d))
+    return sum(str(i**2).count(str(d)) for i in range(n + 1))
+    return sum(map(lambda x: str(x**2).count(str(d)), range(n + 1)))
+(nb_dig(5750, 0), 4700)
+(nb_dig(11011, 2), 9481)
+(nb_dig(12224, 8), 7733)
+(nb_dig(11549, 1), 11905)
+(nb_dig(14550, 7), 8014)
+(nb_dig(8304, 7), 3927)
+(nb_dig(10576, 9), 7860)
+(nb_dig(12526, 1), 13558)
+(nb_dig(7856, 4), 7132)
+(nb_dig(14956, 1), 17267)
+
+n = 14656
+d = 1
+timeit.timeit(lambda: "".join(str(i**2) for i in range(n + 1)).count(str(d)), number=1_000)  # 8.781008230999987
+timeit.timeit(lambda: "".join(map(lambda x: str(x**2), range(n + 1))).count(str(d)), number=1_000)  # 10.25051729400002
+timeit.timeit(lambda: sum(str(i**2).count(str(d)) for i in range(n + 1)), number=1_000)  # 12.9422026430002
+timeit.timeit(lambda: sum(map(lambda x: str(x**2).count(str(d)), range(n + 1))), number=1_000)  # 12.971102688000201
+
+
+
+
+
+# Sum The Strings
+# https://www.codewars.com/kata/5966e33c4e686b508700002d/train/python
+"""Create a function that takes 2 integers in form of a string as an input, and outputs the sum (also as a string):
+
+Example: (Input1, Input2 -->Output)
+
+"4",  "5" --> "9"
+"34", "5" --> "39"
+"", "" --> "0"
+"2", "" --> "2"
+"-5", "3" --> "-2"
+Notes:
+
+If either input is an empty string, consider it as zero.
+
+Inputs and the expected output will never exceed the signed 32-bit integer limit (2^31 - 1)"""
+
+
+def sum_str(a, b):
+    if len(a + b) == 0:
+        return "0"
+    elif not (a and b):
+        return str(int(a + b))
+    else:
+        return str(int(a) + int(b))
+(sum_str("4","5"), "9")
+(sum_str("34","5"), "39")
+(sum_str("9",""), "9", "x + empty = x")
+(sum_str("","9"), "9", "empty + x = x")
+(sum_str("","") , "0", "empty + empty = 0")
+
+def sum_str(a, b):
+    return str(int(a or 0) + int(b or 0))
+
+
+
+
+
+# If you can't sleep, just count sheep!!
+# https://www.codewars.com/kata/5b077ebdaf15be5c7f000077/train/python
+"""If you can't sleep, just count sheep!!
+
+Task:
+Given a non-negative integer, 3 for example, return a string with a murmur: "1 sheep...2 sheep...3 sheep...". Input will always be valid, i.e. no negative integers."""
+
+
+def count_sheep(n):
+    return "".join(f"{i+1} sheep..." for i in range(n))
+(count_sheep(0), "");
+(count_sheep(1), "1 sheep...");
+(count_sheep(2), "1 sheep...2 sheep...")
+(count_sheep(3), "1 sheep...2 sheep...3 sheep...")
+
+
+
+
+
+# Anagram Detection
+# https://www.codewars.com/kata/529eef7a9194e0cbc1000255/train/python
+"""An anagram is the result of rearranging the letters of a word to produce a new word (see wikipedia).
+
+Note: anagrams are case insensitive
+
+Complete the function to return true if the two arguments given are anagrams of each other; return false otherwise.
+
+Examples
+"foefet" is an anagram of "toffee"
+
+"Buckethead" is an anagram of "DeathCubeK""""
+
+def is_anagram(test, original):
+    return sorted(test.lower()) == sorted(original.lower())
+(is_anagram("foefet", "toffee"), True, 'The word foefet is an anagram of toffee')
+(is_anagram("Buckethead", "DeathCubeK"), True, 'The word Buckethead is an anagram of DeathCubeK')
+(is_anagram("Twoo", "WooT"), True, 'The word Twoo is an anagram of WooT')
+(is_anagram("dumble", "bumble"), False, 'Characters do not match for test case dumble, bumble')
+(is_anagram("ound", "round"), False, 'Missing characters for test case ound, round')
+(is_anagram("apple", "pale"), False, 'Same letters, but different count')
+
+
+
+
+
+# Testing 1-2-3
+# https://www.codewars.com/kata/54bf85e3d5b56c7a05000cf9/train/python
+"""Your team is writing a fancy new text editor and you've been tasked with implementing the line numbering.
+
+Write a function which takes a list of strings and returns each line prepended by the correct number.
+
+The numbering starts at 1. The format is n: string. Notice the colon and space in between.
+
+Examples: (Input --> Output)
+
+[] --> []
+["a", "b", "c"] --> ["1: a", "2: b", "3: c"]"""
+
+
+def number(lines):
+    return [f"{i}: {line}" for i, line in enumerate(lines, start=1)]
+    return ["{}: {}".format(i, line) for i, line in enumerate(lines, start=1)]
+    return ["{}: {}".format(*line) for line in enumerate(lines, start=1)]
+    return ["%d: %s" % (i, line) for i, line in enumerate(lines, start=1)]
+    return [ str(i) + ": " + line for i, line in enumerate(lines, start=1)]
+(number([]), [])
+(number(["a", "b", "c"]), ["1: a", "2: b", "3: c"])
+
+
+
+
+
+# Delete occurrences of an element if it occurs more than n times
+# https://www.codewars.com/kata/554ca54ffa7d91b236000023/train/python
+"""Enough is enough!
+Alice and Bob were on a holiday. Both of them took many pictures of the places they've been, and now they want to show Charlie their entire collection. However, Charlie doesn't like these sessions, since the motif usually repeats. He isn't fond of seeing the Eiffel tower 40 times.
+He tells them that he will only sit for the session if they show the same motif at most N times. Luckily, Alice and Bob are able to encode the motif as a number. Can you help them to remove numbers such that their list contains each number only up to N times, without changing the order?
+
+Task
+Given a list and a number, create a new list that contains each number of list at most N times, without reordering.
+For example if the input number is 2, and the input list is [1,2,3,1,2,1,2,3], you take [1,2,3,1,2], drop the next [1,2] since this would lead to 1 and 2 being in the result 3 times, and then take 3, which leads to [1,2,3,1,2,3].
+With list [20,37,20,21] and number 1, the result would be [20,37,21]."""
+
+
+from collections import Counter
+
+def delete_nth(order,max_e):
+    to_remove = {k: v-max_e for k, v in Counter(order).items() if v > max_e}
+    order = list(reversed(order))
+    
+    for k, v in to_remove.items():
+        for _ in range(v):
+            order.remove(k)
+            
+    order = list(reversed(order))
+    return order
+(delete_nth([20, 37, 20, 21], 1), [20, 37, 21])
+
+def delete_nth(order,max_e):
+    sol = []
+    for elem in order:
+        if sol.count(elem) < max_e:
+            sol.append(elem)
+    return sol    
+
+
+
+
+
+# Sort and Star
+# https://www.codewars.com/kata/57cfdf34902f6ba3d300001e/train/python
+"""You will be given a list of strings. You must sort it alphabetically (case-sensitive, and based on the ASCII values of the chars) and then return the first value.
+
+The returned value must be a string, and have "***" between each of its letters.
+
+You should not remove or add elements from/to the array."""
+
+
+def two_sort(array):
+    return "***".join(elem for elem in sorted(array)[0])
+(two_sort(["bitcoin", "take", "over", "the", "world", "maybe", "who", "knows", "perhaps"]), 'b***i***t***c***o***i***n' )
+(two_sort(["turns", "out", "random", "test", "cases", "are", "easier", "than", "writing", "out", "basic", "ones"]), 'a***r***e')
+(two_sort(["lets", "talk", "about", "javascript", "the", "best", "language"]), 'a***b***o***u***t')
+(two_sort(["i", "want", "to", "travel", "the", "world", "writing", "code", "one", "day"]), 'c***o***d***e')
+(two_sort(["Lets", "all", "go", "on", "holiday", "somewhere", "very", "cold"]), 'L***e***t***s')
+
+def two_sort(array):
+    return "***".join(min(array))
+
+
+
+
+# Find the capitals
+# https://www.codewars.com/kata/539ee3b6757843632d00026b/train/python
+"""Instructions
+Write a function that takes a single non-empty string of only lowercase and uppercase ascii letters (word) as its argument, and returns an ordered list containing the indices of all capital (uppercase) letters in the string.
+
+Example (Input --> Output)
+"CodEWaRs" --> [0,3,4,6]"""
+
+
+def capitals(word):
+    return [i for i, letter in enumerate(word) if letter.isupper()]
+(capitals('CodEWaRs'), [0,3,4,6])
+
+
+
+
+
+# List Filtering
+# https://www.codewars.com/kata/53dbd5315a3c69eed20002dd/train/python
+"""In this kata you will create a function that takes a list of non-negative integers and strings and returns a new list with the strings filtered out.
+
+Example
+filter_list([1,2,'a','b']) == [1,2]
+filter_list([1,'a','b',0,15]) == [1,0,15]
+filter_list([1,2,'aasf','1','123',123]) == [1,2,123]"""
+
+
+def filter_list(l):
+    # return list(filter(lambda x: isinstance(x, int) , l))
+    return list(filter(lambda x: type(x) == int , l))
+(filter_list([1, 2, 'a', 'b']), [1, 2], 'For input [1, 2, "a", "b"]')
+(filter_list([1, 'a', 'b', 0, 15]), [1, 0, 15], 'Fot input [1, "a", "b", 0, 15]')
+(filter_list([1, 2, 'aasf', '1', '123', 123]), [1, 2, 123], 'For input [1, 2, "aasf", "1", "123", 123]')
+
+
+
+
+
+# Give me a Diamond
+# https://www.codewars.com/kata/5503013e34137eeeaa001648/train/python
+"""Jamie is a programmer, and James' girlfriend. She likes diamonds, and wants a diamond string from James. Since James doesn't know how to make this happen, he needs your help.
+
+Task
+You need to return a string that looks like a diamond shape when printed on the screen, using asterisk (*) characters. Trailing spaces should be removed, and every line must be terminated with a newline character (\n).
+
+Return null/nil/None/... if the input is an even number or negative, as it is not possible to print a diamond of even or negative size.
+
+Examples
+A size 3 diamond:
+
+ *
+***
+ *
+...which would appear as a string of " *\n***\n *\n"
+
+A size 5 diamond:
+
+  *
+ ***
+*****
+ ***
+  *
+...that is:
+
+"  *\n ***\n*****\n ***\n  *\n""""
+
+
+def diamond(n):
+    if n <= 0:
+        return None
+    elif (n - 1) % 2:
+        return None
+    else:
+        rows = n // 2
+        upper = [" " * (rows - i) + "*" * (2*i + 1) for i in range(rows + 1)]
+        lower = [" " * (rows - i) + "*" * (2*i + 1) for i in reversed(range(rows))]
+        return "\n".join(upper + lower) + "\n"
+(diamond(1), "*\n")
+(diamond(2), None)
+(diamond(3), " *\n***\n *\n")
+(diamond(5), "  *\n ***\n*****\n ***\n  *\n")
+(diamond(0), None)
+(diamond(-3), None)
+
+
+
+
+
+# Round up to the next multiple of 5
+# https://www.codewars.com/kata/55d1d6d5955ec6365400006d/train/python
+"""Given an integer as input, can you round it to the next (meaning, "greater than or equal") multiple of 5?
+
+Examples:
+
+input:    output:
+0    ->   0
+2    ->   5
+3    ->   5
+12   ->   15
+21   ->   25
+30   ->   30
+-2   ->   0
+-5   ->   -5
+etc.
+Input may be any positive or negative integer (including 0).
+
+You can assume that all inputs are valid integers."""
+
+
+def round_to_next5(n):
+    return n if not n % 5 else (n // 5) * 5 + 5
+(round_to_next5(0), 0)
+(round_to_next5(2), 5)
+(round_to_next5(3), 5)
+(round_to_next5(12), 15)
+(round_to_next5(21), 25)
+(round_to_next5(30), 30)
+(round_to_next5(-2), 0)
+(round_to_next5(-5), -5)
+
+import numpy as np
+def round_to_next5(n):
+    return int(np.ceil(n/5) * 5)
+
+def round_to_next5(n):
+    return n + (5 - n) % 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
