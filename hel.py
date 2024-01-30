@@ -594,7 +594,11 @@ from collections import Counter
 arr = [3, 10, 3, 3, 3, 10, 6]
 arr = "antidisestablishmentarianism"
 count_dict = Counter(arr)
-sorted(count_dict, key=count_dict.get)  # sort the keys by the values
+sorted(count_dict.items())  # [('a', 4), ('b', 1), ('d', 1), ('e', 2), ('h', 1), ('i', 5), ('l', 1), ('m', 2), ('n', 3), ('r', 1), ('s', 4), ('t', 3)]
+dict(sorted(count_dict.items()))  # {'a': 4, 'b': 1, 'd': 1, 'e': 2, 'h': 1, 'i': 5, 'l': 1, 'm': 2, 'n': 3, 'r': 1, 's': 4, 't': 3}
+dict(sorted(count_dict.items(), key=lambda x: x[1]))  # {'d': 1, 'b': 1, 'l': 1, 'h': 1, 'r': 1, 'e': 2, 'm': 2, 'n': 3, 't': 3, 'a': 4, 's': 4, 'i': 5}
+sorted(count_dict.keys())  # ['a', 'b', 'd', 'e', 'h', 'i', 'l', 'm', 'n', 'r', 's', 't']
+sorted(count_dict, key=count_dict.get)  # sort the keys by the values ['d', 'b', 'l', 'h', 'r', 'e', 'm', 'n', 't', 'a', 's', 'i']
 
 # sort elements by int in substrings
 def order(sentence):
@@ -916,6 +920,12 @@ isinstance(class1, MyClass)
 # Counter
 
 from collections import Counter
+
+# Counter without importing
+def count(s):
+    return {i: s.count(i) for i in set(s)}  # random order
+    # return {i: s.count(i) for i in s}
+count(word)
 
 word = "antidisestablishmentarianism"
 list(Counter(word).keys())  # ['a', 'n', 't', 'i', 'd', 's', 'e', 'b', 'l', 'h', 'm', 'r']

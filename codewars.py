@@ -6699,6 +6699,219 @@ def round_to_next5(n):
 
 
 
+# Quarter of the year
+# https://www.codewars.com/kata/5ce9c1000bab0b001134f5af/train/python
+"""Given a month as an integer from 1 to 12, return to which quarter of the year it belongs as an integer number.
+
+For example: month 2 (February), is part of the first quarter; month 6 (June), is part of the second quarter; and month 11 (November), is part of the fourth quarter.
+
+Constraint:
+
+1 <= month <= 12"""
+
+
+def quarter_of(month):
+    return month // 3 if not month % 3 else (month//3) + 1
+(quarter_of(3), 1)
+(quarter_of(8), 3)
+(quarter_of(11), 4)
+
+def quarter_of(month):
+    return (month + 2) // 3
+
+
+
+
+
+# Sum of two lowest positive integers
+# https://www.codewars.com/kata/558fc85d8fd1938afb000014/train/python
+"""Create a function that returns the sum of the two lowest positive numbers given an array of minimum 4 positive integers. No floats or non-positive integers will be passed.
+
+For example, when an array is passed like [19, 5, 42, 2, 77], the output should be 7.
+
+[10, 343445353, 3453445, 3453545353453] should return 3453455."""
+
+
+def sum_two_smallest_numbers(numbers):
+    min1 = min(numbers)
+    numbers.remove(min1)
+    return min1 + min(numbers)
+(sum_two_smallest_numbers([5, 8, 12, 18, 22]), 13)
+(sum_two_smallest_numbers([7, 15, 12, 18, 22]), 19)
+(sum_two_smallest_numbers([25, 42, 12, 18, 22]), 30)
+
+
+
+
+
+# Simple Encryption #1 - Alternating Split
+# https://www.codewars.com/kata/57814d79a56c88e3e0000786/solutions
+"""Implement a pseudo-encryption algorithm which given a string S and an integer N concatenates all the odd-indexed characters of S with all the even-indexed characters of S, this process should be repeated N times.
+
+Examples:
+
+encrypt("012345", 1)  =>  "135024"
+encrypt("012345", 2)  =>  "135024"  ->  "304152"
+encrypt("012345", 3)  =>  "135024"  ->  "304152"  ->  "012345"
+
+encrypt("01234", 1)  =>  "13024"
+encrypt("01234", 2)  =>  "13024"  ->  "32104"
+encrypt("01234", 3)  =>  "13024"  ->  "32104"  ->  "20314"
+Together with the encryption function, you should also implement a decryption function which reverses the process.
+
+If the string S is an empty value or the integer N is not positive, return the first argument without changes."""
+
+
+def decrypt(text, n):
+    if text == "":
+        return ""
+    if text == None:
+        return None
+    
+    if n <= 0:
+        return text
+    else:
+        t_odd = text[:len(text)//2]
+        t_even = text[len(text)//2:]
+
+        t = ""
+        for i in range(len(t_even)):
+        #     t += t_even[i]
+        #     try:
+        #         t += t_odd[i]
+        #     except:
+        #         t += ""
+            t += t_even[i:i+1]
+            t += t_odd[i:i+1]
+
+        return decrypt(t, n-1)
+
+    
+(decrypt("This is a test!", 0), "This is a test!")
+(decrypt("hsi  etTi sats!", 1), "This is a test!")
+(decrypt("s eT ashi tist!", 2), "This is a test!")
+(decrypt(" Tah itse sits!", 3), "This is a test!")
+(decrypt("This is a test!", 4), "This is a test!")
+(decrypt("This is a test!", -1), "This is a test!")
+(decrypt("hskt svr neetn!Ti aai eyitrsig", 1), "This kata is very interesting!")    
+
+
+def encrypt(text, n):
+    if n <= 0:
+        return text
+    else:
+        return encrypt("".join(elem for i, elem in enumerate(text) if i % 2) + "".join(elem for i, elem in enumerate(text) if not i % 2), n - 1)
+
+(encrypt("This is a test!", 0), "This is a test!")
+(encrypt("This is a test!", 1), "hsi  etTi sats!")
+(encrypt("This is a test!", 2), "s eT ashi tist!")
+(encrypt("This is a test!", 3), " Tah itse sits!")
+(encrypt("This is a test!", 4), "This is a test!")
+(encrypt("This is a test!", -1), "This is a test!")
+(encrypt("This kata is very interesting!", 1), "hskt svr neetn!Ti aai eyitrsig")
+
+def decrypt(text, n):
+    if text == "":
+        return ""
+    if text == None:
+        return None
+    if n <= 0:
+        return text    
+    else:        
+        o, l = len(text) // 2, list(text)
+        l[1::2], l[::2] = l[:o], l[o:]
+        return decrypt("".join(l), n-1)
+
+def encrypt(text, n):
+    for _ in range(n):
+        text = text[1::2] + text[::2]
+    return text
+
+def encrypt(text, n):
+    if n <= 0:
+        return text
+    return encrypt(text[1::2] + text[::2], n-1)
+
+
+
+
+
+# Complementary DNA
+# https://www.codewars.com/kata/554e4a2f232cdd87d9000038/train/python
+"""Deoxyribonucleic acid (DNA) is a chemical found in the nucleus of cells and carries the "instructions" for the development and functioning of living organisms.
+
+If you want to know more: http://en.wikipedia.org/wiki/DNA
+
+In DNA strings, symbols "A" and "T" are complements of each other, as "C" and "G". Your function receives one side of the DNA (string, except for Haskell); you need to return the other complementary side. DNA strand is never empty or there is no DNA at all (again, except for Haskell).
+
+More similar exercise are found here: http://rosalind.info/problems/list-view/ (source)
+
+Example: (input --> output)
+
+"ATTGC" --> "TAACG"
+"GTAT" --> "CATA""""
+
+
+def DNA_strand(dna):
+    return dna.replace("A", "Ą").replace("T", "A").replace("Ą", "T").replace("C", "Ą").replace("G", "C").replace("Ą", "G")
+(DNA_strand("AAAA"),"TTTT")
+(DNA_strand("ATTGC"),"TAACG")
+(DNA_strand("GTAT"),"CATA")
+
+def DNA_strand(dna):
+    return dna.translate(str.maketrans("ATCG","TAGC"))
+
+def DNA_strand(dna):
+    reference = { "A":"T",
+                  "T":"A",
+                  "C":"G",
+                  "G":"C"
+                  }
+    return "".join(reference[i] for i in dna)
+
+
+
+
+
+# Super Duper Easy
+# https://www.codewars.com/kata/55a5bfaa756cfede78000026/solutions
+"""Make a function that returns the value multiplied by 50 and increased by 6. If the value entered is a string it should return "Error"."""
+
+
+def problem(a):
+    return 50 * a + 6 if type(a) in [float, int] else "Error"
+(problem("hello"), "Error")
+(problem(1), 56)
+
+def problem(a):
+    return "Error" if type(a) == str else 50 * a + 6
+
+
+
+
+
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+    
+    
+    
+
+
 
 
 
