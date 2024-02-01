@@ -6914,7 +6914,86 @@ def add_length(str_):
 
 
 
-# 
+# Regex validate PIN code
+# https://www.codewars.com/kata/55f8a9c06c018a0d6e000132/train/python
+"""ATM machines allow 4 or 6 digit PIN codes and PIN codes cannot contain anything but exactly 4 digits or exactly 6 digits.
+
+If the function is passed a valid PIN string, return true, else return false.
+
+Examples (Input --> Output)
+"1234"   -->  true
+"12345"  -->  false
+"a234"   -->  false"""
+
+
+def validate_pin(pin):
+    return len(pin) in [4, 6] and pin.isdigit()
+(validate_pin("1234"),True, "Wrong output for '1234'")
+(validate_pin("1"),False, "Wrong output for '1'")
+(validate_pin("12"),False, "Wrong output for '12'")
+(validate_pin("123"),False, "Wrong output for '123'")
+(validate_pin("12345"),False, "Wrong output for '12345'")
+(validate_pin("1234567"),False, "Wrong output for '1234567'")
+(validate_pin("-1234"),False, "Wrong output for '-1234'")
+(validate_pin("-12345"),False, "Wrong output for '-12345'")
+(validate_pin("1.234"),False, "Wrong output for '1.234'")
+(validate_pin("00000000"),False, "Wrong output for '00000000'")
+
+
+
+
+
+# Rot13
+# https://www.codewars.com/kata/530e15517bc88ac656000716/train/python
+"""ROT13 is a simple letter substitution cipher that replaces a letter with the letter 13 letters after it in the alphabet. ROT13 is an example of the Caesar cipher.
+
+Create a function that takes a string and returns the string ciphered with Rot13. If there are numbers or special characters included in the string, they should be returned as they are. Only letters from the latin/english alphabet should be shifted, like in the original Rot13 "implementation".
+
+Please note that using encode is considered cheating."""
+
+
+import string
+
+def rot13(message):
+    letters_l = string.ascii_lowercase
+    letters_u = string.ascii_uppercase
+    return "".join(letters_l[(letters_l.find(i) + 13) % 26] if i.islower() \
+                else letters_u[(letters_u.find(i) + 13) % 26] if i.isupper() \
+                else i for i in message)
+(rot13('test'), 'grfg', 'Returned solution incorrect for fixed string = test')
+(rot13('Test'), 'Grfg', 'Returned solution incorrect for fixed string = Test')
+(rot13('aA bB zZ 1234 *!?%'), 'nN oO mM 1234 *!?%', 'Returned solution incorrect for fixed string = aA bB zZ 1234 *!?%')
+
+def rot13(message):
+    letters = 2 * string.ascii_lowercase + 2 * string.ascii_uppercase
+    return "".join(letters[(letters.find(i) + 13)] if i in letters else i for i in message)
+
+
+
+
+
+# Difference of Volumes of Cuboids
+# https://www.codewars.com/kata/58cb43f4256836ed95000f97/train/python
+"""In this simple exercise, you will create a program that will take two lists of integers, a and b. Each list will consist of 3 positive integers above 0, representing the dimensions of cuboids a and b. You must find the difference of the cuboids' volumes regardless of which is bigger.
+
+For example, if the parameters passed are ([2, 2, 3], [5, 4, 1]), the volume of a is 12 and the volume of b is 20. Therefore, the function should return 8.
+
+Your function will be tested with pre-made examples as well as random ones.
+
+If you can, try writing it in one line of code."""
+
+
+def find_difference(a, b):
+    return abs(a[0]*a[1]*a[2] - b[0]*b[1]*b[2])
+(find_difference([3, 2, 5], [1, 4, 4]), 14, "{0} should equal 14".format(find_difference([3, 2, 5], [1, 4, 4])))
+(find_difference([9, 7, 2], [5, 2, 2]), 106, "{0} should equal 106".format(find_difference([9, 7, 2], [5, 2, 2])))
+
+import numpy as np
+def find_difference(a, b):
+    return abs(np.product(a) - np.product(b))
+
+
+
 
 
 

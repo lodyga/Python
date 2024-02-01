@@ -102,7 +102,9 @@ string.capwords("abc't def")  # 'Abc't Def'
 
 
 # slice
+# part
 S = 'Python'
+S = ['P', 'y', 't', 'h', 'o', 'n']
 S[0]  # 'P' # first element
 S[-1]  # 'n' # last element
 
