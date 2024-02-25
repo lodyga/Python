@@ -302,7 +302,9 @@ a is b
 from pprint import pprint
 pprint(dir(str)) # dir in tree form
 
+print('int = ', 5, 10)  # int =  5 10
 print('int = ', 5, 10, sep='aaa', end='zzz\n')  # int = aaa5aaa10zzz
+print("meow\n" * 3, end="")  # "meow\nmeow\nmeow"
 print('abc' + ' ' + str(99))  # abc 99
 print('abc', ' ', str(99))  # abc   99
 
@@ -564,7 +566,7 @@ min([3, 9], key=arr.count)  # 9 # find the least frequent element in the 'key' l
 
 arr = ['notnot', 'some', 'random', 'text', '']
 max(arr, key=len)  # first longest element in list
-list(filter(lambda x: len(x) == len(max(arr, key=len)), arr)) # longest elements in list
+list(filter(lambda x: len(x) == len(max(arr, key=len)), arr)) # finds all longest elements in list
 
 
 # find min/max in list, dict, string
@@ -842,6 +844,25 @@ range(ord('a'), ord('c'))
 
 
 
+# match
+# case
+# switch
+# which
+
+def match_case(digit):
+    match digit:
+        case 5 | 6:
+            return "5 or 6"
+        case 4:
+            return 4
+        case _:
+            return "else"
+match_case(5)
+
+
+
+
+
 # Unicode
 
 py_unicode = [U'\u0050', u'\u0059', u'\u0054',
@@ -990,54 +1011,59 @@ goals(1, 2, 3)  # 6
 foo = ['hey', 'there', '', 'whats', ' ', 'up', None]
 list(filter(None, foo))  # ['hey', 'there', 'whats', ' ', 'up']
 list(filter(bool, foo))  # ['hey', 'there', 'whats', ' ', 'up']
+list(filter(lambda x: bool(x) == True, foo))  # ['hey', 'there', 'whats', ' ', 'up']
 
-# removes '', leaves ' '
+# removes '', leaves ' ', because ' ' has length
 foo = ['hey', 'there', '', 'whats', ' ', 'up']
 list(filter(len, foo))  # ['hey', 'there', 'whats', ' ', 'up'] # None has no len()
 list(filter(lambda x: len(x), foo))  # ['hey', 'there', 'whats', ' ', 'up'] # None has no len()
 
 # removes '' and ' '
 foo = ['cat', 'mammal', 'goat', 'is', '', ' ']
-list(filter(str.strip, foo))
+list(filter(str.strip, foo))  # ['cat', 'mammal', 'goat', 'is']
 
-''.join(filter(str.isdigit, '1is2')) # find digits in string
-from string import digits
-''.join(filter(lambda x: x in digits, '1is2')) # find digits in string
-''.join(filter(lambda x: x.isdigit(), '1is2')) # find digits in string
+''.join(filter(str.isdigit, '1is2'))  # 12 # finds digits in string
+''.join(filter(str.isdigit, ["1", "i", "s", "2"]))  # 12 # finds digits in string
+import string
+''.join(filter(lambda x: x in string.digits, '1is2'))  # 12 # finds digits in string
+''.join(filter(lambda x: x.isdigit(), '1is2'))  # 12 # finds digits in string
 
-''.join(filter(str.isalpha, '1is2')) # find letters in string
-''.join(filter(str.islower, '1is2')) # find lowercase in string
+''.join(filter(str.isalpha, '1is2'))  # 'is' # find letters in string
+''.join(filter(str.islower, '1is2'))  # 'is' # find lowercase in string
 
 # filter < 0
 list(filter(lambda x: x < 0, range(-5, 5)))  # [-5, -4, -3, -2, -1]
-def less_than_0(x):
-    return True if x < 0 else False 
+
+less_than_0 = lambda x: x < 0
 list(filter(less_than_0, range(-5, 5)))  # [-5, -4, -3, -2, -1]
+
+# function instead of a lambda
+def less_than_0(x):
+    return x < 0
 
 
 # function that filters vowels
 def filter_vowels(letter):
-    vowels = ['a', 'e', 'i', 'o', 'u']
-    if letter in vowels:
-        return True
-    else:
-        return False
+    vowels = "aeoiu"
+    return letter in vowels
+
+filter_vowels = lambda x: x in "aeoiu"
 
 # filter works as yield
-letters = 'abcdefghij'
+letters = 'abcdefghijklmnopqrstuvwxyz'
 filtered_vowels = filter(filter_vowels, letters)
-filtered_vowels = filter(lambda x: True if x in "aeoiu" else False, letters)
 
+"".join(list(filtered_vowels))
 for vowel in filtered_vowels:
     print(vowel)
 next(filtered_vowels)
-list(filtered_vowels)
 
 
 sequence = [10, 2, 8, 7, 5, 4, 3, 11, 0, 1]
 list(filter(lambda x: x > 4, sequence))  # [10, 8, 7, 5, 11]
 list(map(lambda x: x ** 2, sequence))  # [100, 4, 64, 49, 25, 16, 9, 121, 0, 1]
-filtered_result = map(lambda x: x ** 2 if not x % 2 else None, sequence) # functions return None
+filtered_result = map(lambda x: x ** 2 if not x % 2 else None, sequence) # functions returns map object
+next(filtered_result)
 list(filtered_result)  # [100, 4, 64, None, None, 16, None, None, 0, None]
 list(filter(None, filtered_result))  # [100, 4, 64, 16]
 
@@ -1063,7 +1089,7 @@ list(map(myMapFunc, [1, 2, 3], [4, 5, 6]))  # [5, 7, 9]
 list(map(lambda x: x ** 2 if not x % 2 else x ** 3, range(1, 11)))
 [x ** 2 if not x % 2 else x ** 3 for x in range(1, 11)]
 
-sum(map(lambda x: x[0] - x[1], [[10, 0], [3, 5], [5, 8]]))
+list(map(lambda x: x[0] - x[1], [[10, 0], [3, 5], [5, 8]]))
 
 
 # tuple of functions as inputs
@@ -1235,7 +1261,7 @@ next(lett)
 
 
 
-# import random
+# random
 
 import random
 
@@ -1326,13 +1352,14 @@ np.meshgrid(np.arange(0, 100, 20), np.linspace(0, 100, 11))
 np.random.random(3)  # [0.07208041, 0.25077184, 0.66814752]
 z = np.random.random(3)
 np.random.random((2, 3))  # [[0.03312195, 0.50714327, 0.5094406 ], [0.88311309, 0.29393605, 0.65023533]]
-np.random.choice([1, '2', 'tree'])
+np.random.choice([1, '2', 'tree'], 2)  # chooses 2 out of 3 with repetition
 np.random.seed(1)
 np.random.uniform(-1, 1)
 np.random.normal(size=(2, 3))
 np.random.normal(0, 1, (2, 3))
 np.random.randint(8, 10, (2, 3))
-
+arr = np.arange(5)
+np.random.shuffle(arr)
 
 np.random.sample(3) # works as np.random.random(), not like random.sample()
 
@@ -1534,6 +1561,17 @@ while i < 5:
 for i in range(4):
     pass
 
+ 
+def break_f():
+    while True:
+        n = int(input("Provide a positive number "))
+        if n > 0:
+            break
+    print(n)
+break_f()
+
+
+
 
 
 
@@ -1646,6 +1684,9 @@ re.search(r'[^abc\s]', 'abc def')  # <re.Match object; span=(4, 5), match='d'> #
 re.search(r'def', 'abc def abc').group()  # 'def'
 re.search(r'([a-zA-Z]+) (\d+)', 'June 24').group()  # 'June 24'
 
+matches =re.search(r"^(?:https?://)?(?:www\.)?twitter\.com/(.*)$", "https://twitter.com/ukasz", re.IGNORECASE)
+matches.group(1)
+
 # re.findall() The object returns a list of all occurrences.
 re.findall(r"[:;][-~]?[\)D]", "* ;-) ';~)'")  # [';-)', ';~)']
 re.findall('abc', 'abc def abc')  # ['abc', 'abc']
@@ -1682,6 +1723,7 @@ patt2.sub(r'\1 Earth', 'Hello World')  # 'Hello Earth'
 
 
 # re.sub() replaces the pattern with string
+re.sub(r"(https?://)?(www\.)?twitter\.com/", "", "https://twitter.com/ukasz")
 re.sub(r'\n', '\n\r', 'abc\ndef\nabc', 1)  # 'abc\n\rdef\nabc' # steps afters 1st occurrence
 re.sub(r'\n', '\n\r', 'abc\ndef\nabc')  # 'abc\n\rdef\n\rabc' # replace all
 re.sub(r'([A-Z])', r' \1', 'helloWorld')  # 'hello World' # break up camel casing
@@ -1704,6 +1746,20 @@ import re
 
 
 # Exceptions
+
+# accepts ints only
+def prin():
+    while True:
+        try:
+            x = input("Input ? ")
+            x = int(x)
+            # print(f"x is {int(x)}")
+        except ValueError as e:
+            print(f"'{x}' is not a number: {e}")
+        else:
+            break
+    print(f"x is {x}")
+prin()
 
 try:
     # 10/0
@@ -2056,7 +2112,7 @@ from os import path
 dire = '/edx/translation/'
 if path.exists(os.getcwd()+'/'+dire+'dna.txt'):
     src = path.realpath(os.getcwd()+'/'+dire+'dna.txt')
-    head, tail = path.split(src)
+    d, tail = path.split(src)
     print(src)
     print('patch: ', head)
     print('file: ', tail)
@@ -2578,7 +2634,7 @@ args_fun3(**kwargs)
 
 class Cal(object):
     # pi is a class variable
-    pi = 3.142
+    pi = 3.1415
 
     def __init__(self, radius):
         # self.radius is an instance variable
@@ -2696,7 +2752,8 @@ class MyList(list):
         self.append(sum(self))
 
     def remove_nth(self, i):
-        del self[i]
+        # del self[i]
+        self.pop(i)
 
 x = [1, 2, 3, 4, 5]
 y = MyList(x)

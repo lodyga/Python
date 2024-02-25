@@ -7096,50 +7096,323 @@ def solve(s):
 
 
 
-# 
+# Welcome to the City
+# https://www.codewars.com/kata/5302d846be2a9189af0001e4/train/python
+"""Create a method that takes as input a name, city, and state to welcome a person. Note that name will be an array consisting of one or more values that should be joined together with one space between each, and the length of the name array in test cases will vary.
+
+Example:
+
+['John', 'Smith'], 'Phoenix', 'Arizona'
+This example will return the string Hello, John Smith! Welcome to Phoenix, Arizona!
+
+"""
+
+
+def say_hello(name, city, state):
+    if len(name) == 2:
+        return f"Hello, {name[0]} {name[1]}! Welcome to {city}, {state}!"
+    elif len(name) == 3:
+        return f"Hello, {name[0]} {name[1]} {name[2]}! Welcome to {city}, {state}!"
+    else:
+        return f"Hello, {name[0]} {name[1]} {name[2]} {name[3]}! Welcome to {city}, {state}!"
+(say_hello(['John', 'Smith'], 'Phoenix', 'Arizona'), 'Hello, John Smith! Welcome to Phoenix, Arizona!')
+(say_hello(['Franklin','Delano','Roosevelt'], 'Chicago', 'Illinois'), 'Hello, Franklin Delano Roosevelt! Welcome to Chicago, Illinois!')
+(say_hello(['Wallace','Russel','Osbourne'],'Albany','New York'), 'Hello, Wallace Russel Osbourne! Welcome to Albany, New York!')
+(say_hello(['Lupin','the','Third'],'Los Angeles','California'), 'Hello, Lupin the Third! Welcome to Los Angeles, California!')
+(say_hello(['Marlo','Stanfield'],'Baltimore','Maryland'), 'Hello, Marlo Stanfield! Welcome to Baltimore, Maryland!')
+
+def say_hello(name, city, state):
+    return f"Hello, {' '.join(i for i in name)}! Welcome to {city}, {state}!"
+
+def say_hello(name, city, state):
+    return "Hello, {}! Welcome to {}, {}!".format(' '.join(i for i in name), city, state)
+
+def say_hello(name, city, state):
+    return "Hello, %s! Welcome to %s, %s!" % (' '.join(i for i in name), city, state)
 
 
 
 
 
+# Reversing Words in a String
+# https://www.codewars.com/kata/57a55c8b72292d057b000594/train/python
+"""ou need to write a function that reverses the words in a given string. A word can also fit an empty string. If this is not clear enough, here are some examples:
+
+As the input may have trailing spaces, you will also need to ignore unneccesary whitespace.
+
+Example (Input --> Output)
+
+"Hello World" --> "World Hello"
+"Hi There." --> "There. Hi""""
+
+
+def reverse(st):
+    return " ".join(reversed(st.split()))
+(reverse('Hello World'), 'World Hello')
+(reverse('Hi There.'), 'There. Hi')
+
+def reverse(st):
+    return " ".join(st.split()[::-1])
 
 
 
 
 
+# Alternate capitalization
+# https://www.codewars.com/kata/59cfc000aeb2844d16000075/train/python
+"""Given a string, capitalize the letters that occupy even indexes and odd indexes separately, and return as shown below. Index 0 will be considered even.
+
+For example, capitalize("abcdef") = ['AbCdEf', 'aBcDeF']. See test cases for more examples.
+
+The input will be a lowercase string with no spaces.
+
+Good luck!
+
+If you like this Kata, please try:"""
+
+
+def capitalize(s):
+    first_element = "".join(elem.upper() if not i % 2 else elem for i, elem in enumerate(s))
+    second_element = "".join(elem.upper() if i % 2 else elem for i, elem in enumerate(s))
+    return [first_element, second_element]
+(capitalize("abcdef"),['AbCdEf', 'aBcDeF'])
+(capitalize("codewars"),['CoDeWaRs', 'cOdEwArS'])
+(capitalize("abracadabra"),['AbRaCaDaBrA', 'aBrAcAdAbRa'])
+(capitalize("codewarriors"),['CoDeWaRrIoRs', 'cOdEwArRiOrS'])
+(capitalize("indexinglessons"),['InDeXiNgLeSsOnS', 'iNdExInGlEsSoNs'])
+(capitalize("codingisafunactivity"),['CoDiNgIsAfUnAcTiViTy', 'cOdInGiSaFuNaCtIvItY'])
+
+def capitalize(s):
+    first_element = "".join(elem.upper() if not i % 2 else elem for i, elem in enumerate(s))
+    return [first_element, first_element.swapcase()]
 
 
 
 
 
+# Tortoise racing
+# https://www.codewars.com/kata/55e2adece53b4cdcb900006c/train/python
+"""Two tortoises named A and B must run a race. A starts with an average speed of 720 feet per hour. Young B knows she runs faster than A, and furthermore has not finished her cabbage.
 
+When she starts, at last, she can see that A has a 70 feet lead but B's speed is 850 feet per hour. How long will it take B to catch A?
 
+More generally: given two speeds v1 (A's speed, integer > 0) and v2 (B's speed, integer > 0) and a lead g (integer > 0) how long will it take B to catch A?
 
+The result will be an array [hour, min, sec] which is the time needed in hours, minutes and seconds (round down to the nearest second) or a string in some languages.
 
+If v1 >= v2 then return nil, nothing, null, None or {-1, -1, -1} for C++, C, Go, Nim, Pascal, COBOL, Erlang, [-1, -1, -1] for Perl,[] for Kotlin or "-1 -1 -1" for others.
 
+Examples:
+(form of the result depends on the language)
 
-
-
-
+race(720, 850, 70) => [0, 32, 18] or "0 32 18"
+race(80, 91, 37)   => [3, 21, 49] or "3 21 49""""
 
  
+import numpy as np
+
+def race(v1, v2, g):
+    if v1 >= v2:
+        return None
     
+    x = (v1*g) / (v2 - v1)
+    t = x / v1
     
-    
-    
+    hours, rest = t // 1, t % 1
+    minutes, rest = rest * 60 // 1, rest * 60 % 1
+    seconds = np.floor(rest * 60 + 0.0000000001)  # problems with rounding
+    return [hours, minutes, seconds]
+(race(720, 850, 70), [0, 32, 18])
+(race(80, 91, 37), [3, 21, 49])
+(race(820, 81, 550), None)
 
 
 
 
 
+# How many lightsabers do you own?
+# https://www.codewars.com/kata/51f9d93b4095e0a7200001b8/train/python
+"""Inspired by the development team at Vooza, write the function that
+
+accepts the name of a programmer, and
+returns the number of lightsabers owned by that person.
+The only person who owns lightsabers is Zach, by the way. He owns 18, which is an awesome number of lightsabers. Anyone else owns 0.
+
+Note: your function should have a default parameter.
+
+For example(Input --> Output):
+
+"anyone else" --> 0
+"Zach" --> 18"""
+
+
+def how_many_light_sabers_do_you_own(name=""):
+    return 18 if name == "Zach" else 0
+(how_many_light_sabers_do_you_own("Zach"), 18)
+(how_many_light_sabers_do_you_own(), 0)
+(how_many_light_sabers_do_you_own("zach"), 0)
+
+how_many_light_sabers_do_you_own = lambda x="": 18 if x == "Zach" else 0
 
 
 
 
 
+# Enumerable Magic - Does My List Include This?
+# https://www.codewars.com/kata/545991b4cbae2a5fda000158/train/python
+"""Create a method that accepts a list and an item, and returns true if the item belongs to the list, otherwise false."""
+
+
+def include(arr, item):
+    return item in arr
+lst = [0,1,2,3,5,8,13,2,2,2,11]
+(include(lst, 100), False, "list does not include 100")
+(include(lst, 2), True, "list includes 2 multiple times")
+(include(lst, 11), True, "list includes 11")
+(include(lst, "2"), False, "list includes 2 (integer), not ''2'' (string)")
+(include(lst, 0), True, "list includes 0")
+(include([], 0), False, "empty list doesn't include anything")
+
+
+include = list.__contains__
+[1, 2, 0].__contains__(0)
 
 
 
+
+
+# Is the string uppercase?
+# https://www.codewars.com/kata/56cd44e1aa4ac7879200010b/train/python
+"""Create a method to see whether the string is ALL CAPS.
+
+Examples (input -> output)
+"c" -> False
+"C" -> True
+"hello I AM DONALD" -> False
+"HELLO I AM DONALD" -> True
+"ACSKLDFJSgSKLDFJSKLDFJ" -> False
+"ACSKLDFJSGSKLDFJSKLDFJ" -> True
+In this Kata, a string is said to be in ALL CAPS whenever it does not contain any lowercase letter so any string containing no letters at all is trivially considered to be in ALL CAPS."""
+
+
+def is_uppercase(inp):
+    return not any(i.islower() for i in inp)
+(is_uppercase("c"), False)
+(is_uppercase("C"), True)
+(is_uppercase("hello I AM DONALD"), False)
+(is_uppercase("HELLO I AM DONALD"), True)
+(is_uppercase("$%&"), True)
+
+"$%&".islower()  # False
+
+
+def is_uppercase(inp):
+    return inp.upper() == inp
+
+
+
+
+
+# Remove anchor from URL
+# https://www.codewars.com/kata/51f2b4448cadf20ed0000386/train/python
+"""Complete the function/method so that it returns the url with anything after the anchor (#) removed.
+
+Examples
+"www.codewars.com#about" --> "www.codewars.com"
+"www.codewars.com?page=1" -->"www.codewars.com?page=1""""
+
+
+
+def remove_url_anchor(url):
+    return url.split("#")[0]
+(remove_url_anchor("www.codewars.com#about"), "www.codewars.com")
+(remove_url_anchor("www.codewars.com/katas/?page=1#about"), "www.codewars.com/katas/?page=1")
+(remove_url_anchor("www.codewars.com/katas/"), "www.codewars.com/katas/")
+
+
+def remove_url_anchor(url): 
+    return url.partition("#")[0]
+
+import re
+def remove_url_anchor(url):
+    # return re.sub(r"#.*", "", url)
+    # return re.search(r"(.*)#.*", url).group(1) if "#" in url else url
+    return re.search(r"[^#]+", url).group(0)
+
+
+
+
+
+# Find the Remainder
+# https://www.codewars.com/kata/524f5125ad9c12894e00003f/train/python
+"""Task:
+Write a function that accepts two integers and returns the remainder of dividing the larger value by the smaller value.
+
+Division by zero should return an empty value.
+
+Examples:
+n = 17
+m = 5
+result = 2 (remainder of `17 / 5`)
+
+n = 13
+m = 72
+result = 7 (remainder of `72 / 13`)
+
+n = 0
+m = -1
+result = 0 (remainder of `0 / -1`)
+
+n = 0
+m = 1
+result - division by zero (refer to the specifications on how to handle this in your language)"""
+
+
+def remainder(a,b):
+    a, b = sorted((a, b))
+    if a != 0:
+        return b % a
+    else:
+        return None
+(remainder(17,5), 2, 'Returned value should be the value left over after dividing as much as possible.')
+(remainder(13, 72), remainder(72, 13), 'The order the arguments are passed should not matter.')
+(remainder(1, 0), None, 'Divide by zero should return None')
+(remainder(0, 0), None, 'Divide by zero should return None')
+(remainder(0, 1), None, 'Divide by zero should return None')
+(remainder(-1, 0), 0, 'Divide by zero should only be checked for the lowest number')
+(remainder(0, -1), 0, 'Divide by zero should only be checked for the lowest number')
+(remainder(-13, -13), 0, 'Should handle negative numbers')
+(remainder(-60, 340), -20, 'Should handle negative numbers')
+(remainder(60, -40), -20, 'Should handle negative numbers')
+
+
+
+
+
+# Regular Ball Super Ball
+# https://www.codewars.com/kata/53f0f358b9cb376eca001079/train/python
+"""Create a class Ball. Ball objects should accept one argument for "ball type" when instantiated.
+
+If no arguments are given, ball objects should instantiate with a "ball type" of "regular."
+
+ball1 = Ball()
+ball2 = Ball("super")
+ball1.ball_type  #=> "regular"
+ball2.ball_type  #=> "super""""
+
+
+class Ball(object):
+    def __init__(self, ball_type="regular"):
+        self.ball_type = ball_type
+
+ball1 = Ball()
+ball1.ball_type
+
+ball2 = Ball("super")
+ball2.ball_type
+
+Ball().ball_type
+Ball("super").ball_type
 
 
 
@@ -7173,6 +7446,17 @@ sum_pairs([10, 5, 2, 3, 7, 5],         10)
 Negative numbers and duplicate numbers can and will appear.
 
 NOTE: There will also be lists tested of lengths upwards of 10,000,000 elements. Be sure your code doesn't time out."""
+# https://leetcode.com/problems/two-sum/description/
+
+
+def sum_pairs(ints, s):
+    seen = set()
+    for num in ints:
+        diff = s - num
+        if diff in seen:
+            return [diff, num]
+        seen.add(num)
+    return None
 
 
 # still to slow
@@ -7215,9 +7499,6 @@ def sum_pairs(ints, s):
             pass
 
 
-
-
-
 l1 = [1, 4, 8, 7, 3, 15]
 l2 = [1, -2, 3, 0, -6, 1]
 l3 = [20, -13, 40]
@@ -7227,12 +7508,35 @@ l6 = [4, -2, 3, 3, 4]
 l7 = [0, 2, 0]
 l8 = [5, 9, 13, -3]
 
-test.describe("Testing For Sum of Pairs")
-test.expect(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
-test.expect(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
-test.expect(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
-test.expect(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
-test.expect(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
-test.expect(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
-test.expect(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
-test.expect(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)
+(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
+(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
+(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
+(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
+(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
+(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
+(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
+(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)
+
+
+
+
+
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
