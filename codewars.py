@@ -7521,15 +7521,114 @@ l8 = [5, 9, 13, -3]
 
 
 
+# Find the stray number
+# https://www.codewars.com/kata/57f609022f4d534f05000024/train/python
+"""You are given an odd-length array of integers, in which all of them are the same, except for one single number.
+
+Complete the method which accepts such an array, and returns that single different number.
+
+The input array will always be valid! (odd-length >= 3)
+
+Examples
+[1, 1, 2] ==> 2
+[17, 17, 3, 17, 17, 17, 17] ==> """
+
+
+def stray(arr):
+    # return {arr.count(number): number for number in set(arr)}[1]
+    return min(arr, key=arr.count)
+(stray([1, 1, 1, 1, 1, 1, 2]), 2)
+(stray([2, 3, 2, 2, 2]), 3)
+(stray([3, 2, 2, 2, 2]), 3)
+
+
+def stray(arr):
+    for elem in arr:
+        if arr.count(elem) == 1:
+            return elem
+
+
+
+
+
+# Summing a number's digits
+# https://www.codewars.com/kata/52f3149496de55aded000410/train/python
+"""Write a function named sumDigits which takes a number as input and returns the sum of the absolute value of each of the number's decimal digits.
+
+For example: (Input --> Output)
+
+10 --> 1
+99 --> 18
+-32 --> 5"""
+
+
+def sum_fun(x)
+
+def sum_digits(number):
+    return sum(int(elem) for elem in str(abs(number)))
+    # return sum(map(int, str(abs(number))))
+(sum_digits(10), 1)
+(sum_digits(99), 18)
+(sum_digits(-32), 5)
+
+
+
+
+
+# Sum of odd numbers
+# https://www.codewars.com/kata/55fd2d567d94ac3bc9000064/train/python
+"""Given the triangle of consecutive odd numbers:
+
+             1
+          3     5
+       7     9    11
+   13    15    17    19
+21    23    25    27    29
+...
+Calculate the sum of the numbers in the nth row of this triangle (starting at index 1) e.g.: (Input --> Output)
+
+1 -->  1
+2 --> 3 + 5 = 8"""
+
+
+def row_sum_odd_numbers(n):
+    number_count = sum(i + 1 for i in range(n))
+    # return sum([2*i + 1 for i in range(number_count)][-n:])
+    return sum([2*i + 1 for i in range(number_count - n, number_count)])
+(row_sum_odd_numbers(1), 1)
+(row_sum_odd_numbers(2), 8)
+(row_sum_odd_numbers(13), 2197)
+(row_sum_odd_numbers(19), 6859)
+(row_sum_odd_numbers(41), 68921)
+
+
+
+
+
+# Mumbling
+# https://www.codewars.com/kata/5667e8f4e3f572a8f2000039/train/python
+"""This time no story, no theory. The examples below show you how to write function accum:
+
+Examples:
+accum("abcd") -> "A-Bb-Ccc-Dddd"
+accum("RqaEzty") -> "R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy"
+accum("cwAt") -> "C-Ww-Aaa-Tttt"
+The parameter of accum is a string which includes only letters from a..z and A..Z."""
+
+
+def accum(st):
+    return "-".join((letter * i).capitalize() for i, letter in enumerate(st, 1))
+(accum("ZpglnRxqenU"), "Z-Pp-Ggg-Llll-Nnnnn-Rrrrrr-Xxxxxxx-Qqqqqqqq-Eeeeeeeee-Nnnnnnnnnn-Uuuuuuuuuuu")
+(accum("NyffsGeyylB"), "N-Yy-Fff-Ffff-Sssss-Gggggg-Eeeeeee-Yyyyyyyy-Yyyyyyyyy-Llllllllll-Bbbbbbbbbbb")
+(accum("MjtkuBovqrU"), "M-Jj-Ttt-Kkkk-Uuuuu-Bbbbbb-Ooooooo-Vvvvvvvv-Qqqqqqqqq-Rrrrrrrrrr-Uuuuuuuuuuu")
+(accum("EvidjUnokmM"), "E-Vv-Iii-Dddd-Jjjjj-Uuuuuu-Nnnnnnn-Oooooooo-Kkkkkkkkk-Mmmmmmmmmm-Mmmmmmmmmmm")
+(accum("HbideVbxncC"), "H-Bb-Iii-Dddd-Eeeee-Vvvvvv-Bbbbbbb-Xxxxxxxx-Nnnnnnnnn-Cccccccccc-Ccccccccccc")
+
+
+
+
+
 # 
-
-
-
-
-
-
-
-
 
 
 

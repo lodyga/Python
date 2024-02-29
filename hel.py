@@ -82,7 +82,9 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from string
 'abc'.upper()  # 'ABC'
 'ABc'.lower()  # 'abc'
 'abc def'.capitalize()  # 'Abc def'
+'ABC DEF'.capitalize()  # 'Abc def'
 'abc def'.title()  # 'Abc Def'
+'ABC DEF'.title()  # 'Abc Def'
 " ".join(map(str.capitalize, "abc def".split()))  # 'Abc Def'
 "abc't def".title()  # 'Abc'T Def'
 import string
@@ -118,10 +120,23 @@ S[4::-1]  # 'ohtyP' # starts from the 4th elem, ends on the start reversed # fir
 S[:-4:-1]  # 'noh' # starts form the end, ends on the 4th elem from right exclusive reversed # last three elements counting from right reversed
 S[-2::-1]  # 'ohtyP' # starts from the 2nd elem from right, ends on the start reversed # first five elements counting from right reversed
 
-[start counting from +left/-right:
- stop counting from +left/-right:
- step counting from +left/-right:
-]
+rev = slice(None, None, -1)  # creates reversed function based on slice
+S[rev]  # "nehtyP"
+f_five = slice(None, 5)  # first five chars based on slice
+S[f_five]  # "Pytho"
+
+
+
+
+
+"""
+start counting from +left/-right:
+stop counting from +left/-right:
+step counting from +left/-right:
+"""
+
+
+
 
 # format
 'a{}b'.format(['#', '!'])  # "a['#', '!']b"
@@ -148,6 +163,44 @@ S[-2::-1]  # 'ohtyP' # starts from the 2nd elem from right, ends on the start re
 '40'.rjust(5)
 '{:.2e}'.format(40)  # 4.00e+01' # scientific form
 '{:.2E}'.format(40)  # 4.00E+01' # scientific form
+
+
+
+
+
+
+# f""
+n = 1000000000
+f"{n:_}"  # '1_000_000_000'
+f"{n:,}"  # '1,000,000,000'
+
+n = "var"
+f"{n:>20}:"  # '                 var:'
+f"{n:_>20}:"  # '_________________var:'
+f"{n:<20}:"  # 'var                 :'
+f"{n:_<20}:"  # 'var_________________:'
+f"{n:^20}:"  # '        var         :'
+f"{n:_^20}:"  # '________var_________:'
+
+from datetime import datetime
+now = datetime.now()
+f"{now:%d.%m.%Y (%H:%M:%S)}"  # '28.02.2024 (10:49:43)'
+f"{now:%c}"  # 'Wed Feb 28 10:49:43 2024'
+
+n = 1234.5678
+f"{n:.2f}"  # '1234.57'
+f"{n:,.2f}"  # '1,234.57'
+
+a, b = 5, 10
+f"{a + b = }"  # 'a + b = 15'
+name = "Hello"
+f"{name = }"  # "name = 'Hello'"
+
+
+
+
+
+
 
 # Using class with format()
 class Class_format():
@@ -427,7 +480,7 @@ A | B  # OR, union
 A.union(B)
 A & B  # AND (ampersand), intersection
 A.intersection(B)
-A ^ B  # XOR, symmetric difference
+A ^ B  # XOR, symmetric difference, unique
 A.symmetric_difference(B)
 
 # implication =>
@@ -834,11 +887,9 @@ int(15.456)  # 15
 
 # Range
 
-for i in range(15, 5, -1):
-    print(i, end =' ')
-print(end='\n')
+[i for i in range(4, -1, -1)]  # [4, 3, 2, 1, 0]
+range(ord('a'), ord('c'))  # range(97, 99)
 
-range(ord('a'), ord('c'))
 
 
 
@@ -956,7 +1007,7 @@ list(Counter(word).values())  # [4, 3, 3, 5, 1, 4, 2, 1, 1, 1, 2, 1]
 list(Counter(word).elements())  # ['a', 'a', 'a', 'a', 'n', 'n', 'n', 't', 't', 't', 'i', 'i', 'i', 'i', 'i', 'd', 's', 's', 's', 's', 'e', 'e', 'b', 'l', 'h', 'm', 'm', 'r']
 list(Counter(word).items())  # [('a', 4), ('n', 3), ('t', 3), ('i', 5), ('d', 1), ('s', 4), ('e', 2), ('b', 1), ('l', 1), ('h', 1), ('m', 2), ('r', 1)]
 {k: v for k, v in Counter(word).items() if v > 2}  # {'a': 4, 'n': 3, 't': 3, 'i': 5, 's': 4} # filter pairs with val > 2
-Counter(word).most_common(2) # the most repetitive/frequent elements # powtarzające, najczęstsze
+Counter(word).most_common(2)  # [('i', 5), ('a', 4)] # the most repetitive/frequent elements # powtarzające, najczęstsze
 
 # counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'd': 1})
 counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'e': 0})
@@ -3050,6 +3101,9 @@ print("Hello " + name)
 number1 = input("Enter the first number ")
 number2 = input("Enter the second number ")
 print(float(number1) + float(number2))
+
+
+
 
 
 

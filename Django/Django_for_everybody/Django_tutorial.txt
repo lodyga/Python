@@ -1,0 +1,99 @@
+<img src="{{ item.image.url }}" class="rounded-xl">
+<img src="{% static 'images/chair.jpg' %}" class="center">
+<img src="/static/images/chair.jpg">
+<!-- template.html -->
+<img src="{{ STATIC_URL }}images/chair.jpg" class="rounded-xl" alt="Chair">
+
+<img src="{{ STATIC_URL }}'images/chair.jpg'" class="center">
+<img src="{{ STATIC_URL }}{{ item.image.url }}">
+<img src="{{ STATIC_URL }}'images/chair.jpg'">
+
+
+Intrduction to Dynamic Web Content
+HyperText Trantfer Protocol
+
+URL = Universal Resource Procotol
+protocol    host(doamin name)   document
+http://     youtube.com         page1.html
+
+HTTP = HyperText Transfer Protocol
+
+telnet data.pr4e.org 80
+GET http://data.pr4e.org/page1.htm HTTP/1.0 <Enter> # without headers
+<Headers>
+
+Netwok Sockets
+Sockets = computer phone calls
+port determines the application
+
+
+HTTP
+encode(unicoed) -> utf-8
+decode(ute-8) -> unicode
+simple_browser.py
+
+
+In the server
+simple_server.py
+$ python3 simple_server.py
+Access http://localhost:9000
+GET / HTTP/1.1
+GET /favicon.ico HTTP/1.1
+
+
+A Simple Web Client
+$ python3 simple_server.py
+$ python3 simple_WebClient.py
+
+
+The Structure of a Djanog Application
+
+MVC = Model View Controller
+Diagram: https://youtu.be/o0XbHvKxw7Y?si=7jN17OsbjLzIbLuo&t=4508
+DOM = Document Object Model
+
+
+
+
+Virtlal Hosting
+https://www.dj4e.com/assn/dj4e_install.md
+
+pythonanywhere terminal:
+$ mkvirtualenv django42 --python=/usr/bin/python3.9
+$ pip install django==4.2.7
+workon django42
+$ python --version
+$ python -m django --version
+
+cat /home/(your-account)/.bashrc
+# Auto switch into django42 virtual environment
+workon django4
+/home/ukasz/.virtualenvs/django42 # patch to venv
+
+sampl code:
+$ cd ~
+$ git clone https://github.com/csev/dj4e-samples
+$ cd ~/dj4e-samples
+$ pip install -r requirements42.txt
+python manage.py check  # sanity check for dj4e-samples
+python manage.py makemigrations
+python manage.py migrate
+
+
+ALLOWED_HOSTS = []  # which systems can talk to server
+Source code: /home/ukasz/django_projects/mysite
+Working directory: /home/ukasz/django_projects/mysite
+WSGI configuration file: Web Server Gateway Interface
+Virtlalenv: /home/ukasz/.virtualenvs/django42
+
+
+https://youtu.be/o0XbHvKxw7Y?si=BXHofnQ-M8FN3tH8&t=5679
+
+
+
+HTML
+
+
+
+
+
