@@ -571,38 +571,41 @@ def counter(input_string):
 counter(sentence)
 
 
-s_dict = {'Tim': 28,
-          'Jim': 35,
-          'Pam': 40
+students = {"Tim": 28,
+          "Jim": 35,
+          "Pam": 40
           }
-'Students names: {}'.format(list(s_dict.keys()))  # "Students names: ['Tim', 'Jim', 'Pam']"
-'Students names: %s' % list(s_dict.keys())  # "Students names: ['Tim', 'Jim', 'Pam']"
-f'Students names: {list(s_dict.keys())}'  # "Students names: ['Tim', 'Jim', 'Pam']"
 
+f"Students names: {list(students.keys())}"  # "Students names: ['Tim', 'Jim', 'Pam']"
+"Students names: {}".format(list(students.keys()))  # "Students names: ['Tim', 'Jim', 'Pam']"
+"Students names: %s" % list(students.keys())  # "Students names: ['Tim', 'Jim', 'Pam']"
 
-for key in s_dict:
-    print(key, s_dict[key])
+for student in students:
+    print(student, students[student])
 
-for (key, val) in s_dict.items():
-    print(key, val)
+for student, age in students.items():
+    print(student, age)
 
-for key in s_dict.keys():
-   print('{}: {}'.format(key, s_dict[key]))
+for student in students:
+    print(f"{student}: {students[student]}")
 
-for key in s_dict.keys():
-    print('%s: %d' % (key, s_dict[key]))
+for student, age in students.items():
+    print(f"{student}: {age}")
 
-for key in s_dict.keys():
-    print(f'{key}: {s_dict[key]}')
+for student in students.keys():
+   print("{}: {}".format(student, students[student]))
 
-for key in s_dict.keys():
-   print(key + ':', s_dict[key])
+for student in students.keys():
+    print("%s: %d" % (student, students[student]))
 
-for (key, val) in s_dict.items():
-    print(key + ": " + str(val) )
+for student in students.keys():
+   print(student + ":", students[student])
 
-for key in s_dict:
-    print(': '.join((key, str(s_dict[key]))))
+for student, age in students.items():
+    print(student + ": " + str(age) )
+
+for student in students:
+    print(": ".join((student, str(students[student]))))
 
 
 
@@ -1774,7 +1777,8 @@ patt2.sub(r'\1 Earth', 'Hello World')  # 'Hello Earth'
 
 
 # re.sub() replaces the pattern with string
-re.sub(r"(https?://)?(www\.)?twitter\.com/", "", "https://twitter.com/ukasz")
+re.sub(r"\D", "", "BBAR 150")  # "150"
+re.sub(r"(https?://)?(www\.)?twitter\.com/", "", "https://twitter.com/ukasz")  # "ukasz"
 re.sub(r'\n', '\n\r', 'abc\ndef\nabc', 1)  # 'abc\n\rdef\nabc' # steps afters 1st occurrence
 re.sub(r'\n', '\n\r', 'abc\ndef\nabc')  # 'abc\n\rdef\n\rabc' # replace all
 re.sub(r'([A-Z])', r' \1', 'helloWorld')  # 'hello World' # break up camel casing

@@ -7628,11 +7628,234 @@ def accum(st):
 
 
 
+# Remove First and Last Character Part Two
+# https://www.codewars.com/kata/570597e258b58f6edc00230d/train/python
+"""This is a spin off of my first kata.
+
+You are given a string containing a sequence of character sequences separated by commas.
+
+Write a function which returns a new string containing the same character sequences except the first and the last ones but this time separated by spaces.
+
+If the input string is empty or the removal of the first and last items would cause the resulting string to be empty, return an empty value (represented as a generic value NULL in the examples below).
+
+Examples
+"1,2,3"      =>  "2"
+"1,2,3,4"    =>  "2 3"
+"1,2,3,4,5"  =>  "2 3 4"
+
+""     =>  NULL
+"1"    =>  NULL
+"1,2"  =>  NULL"""
+
+
+def array(data):
+    # return data
+    if data.count(",") in {0, 1}:
+        return None
+    else: 
+        return " ".join(data.split(",")[1:-1])
+(array('1,2,3'), '2');
+(array('1,2,3,4'), '2 3');
+(array('1,2,3,4,5'), '2 3 4');
+(array(''), None);
+(array('1'), None);
+(array('1,2'), None);
+
+def array(data):
+    return " ".join(data.split(",")[1:-1]) or None
+
+
+
+
+
+
+# Sum of Multiples
+# https://www.codewars.com/kata/57241e0f440cd279b5000829/train/python
+"""Your Job
+Find the sum of all multiples of n below m
+
+Keep in Mind
+n and m are natural numbers (positive integers)
+m is excluded from the multiples
+Examples
+sumMul(2, 9)   ==> 2 + 4 + 6 + 8 = 20
+sumMul(3, 13)  ==> 3 + 6 + 9 + 12 = 30
+sumMul(4, 123) ==> 4 + 8 + 12 + ... = 1860
+sumMul(4, -7)  ==> "INVALID"""""
+
+
+def sum_mul(n, m):
+    if n <= 0 or m <= 0:
+        return "INVALID"
+    else:
+        return sum(i for i in range(n, m, n))
+(sum_mul(0, 0), 'INVALID')
+(sum_mul(2, 9), 20)
+(sum_mul(4, -7), 'INVALID')
+(sum_mul(4, 123), 1860)
+(sum_mul(123, 4567), 86469)
+
+
+
+
+
+# Sorted? yes? no? how?
+# https://www.codewars.com/kata/580a4734d6df748060000045/train/python
+"""Complete the method which accepts an array of integers, and returns one of the following:
+
+"yes, ascending" - if the numbers in the array are sorted in an ascending order
+"yes, descending" - if the numbers in the array are sorted in a descending order
+"no" - otherwise
+You can assume the array will always be valid, and there will always be one correct answer.
+"""
+
+
+def is_sorted_and_how(arr):
+    if arr == sorted(arr):
+        return "yes, ascending"
+    elif arr == sorted(arr, reverse=True):
+        return "yes, descending"
+    else:
+        return "no"
+(is_sorted_and_how([1, 2]), 'yes, ascending')
+(is_sorted_and_how([15, 7, 3, -8]), 'yes, descending')
+(is_sorted_and_how([4, 2, 30]), 'no')
+
+
+
+
+
+# Find Multiples of a Number
+# https://www.codewars.com/kata/58ca658cc0d6401f2700045f/train/python
+"""In this simple exercise, you will build a program that takes a value, integer , and returns a list of its multiples up to another value, limit . If limit is a multiple of integer, it should be included as well. There will only ever be positive integers passed into the function, not consisting of 0. The limit will always be higher than the base.
+For example, if the parameters passed are (2, 6), the function should return [2, 4, 6] as 2, 4, and 6 are the multiples of 2 up to 6.
+"""
+
+
+def find_multiples(integer, limit):
+    return list(range(integer, limit + 1, integer))
+(find_multiples(5, 25), [5, 10, 15, 20, 25])
+(find_multiples(1, 2), [1, 2])
+
+
+
+
+
+# Regex Password Validation
+# https://www.codewars.com/kata/52e1476c8147a7547a000811/train/python
+"""You need to write regex that will validate a password to make sure it meets the following criteria:
+
+At least six characters long
+contains a lowercase letter
+contains an uppercase letter
+contains a digit
+only contains alphanumeric characters (note that '_' is not alphanumeric)
+"""
+
+
+import re
+regex="^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d+)[A-Za-z\d]{6,}$"
+
+for word in data_table:
+    try:
+        sol = re.fullmatch(regex, word[0]).group(0)
+        print(sol, word[1])
+    except:
+        print("No match", word[1])
+
+data_table =(
+('fjd3IR9', True),
+('ghdfj32', False),
+('DSJKHD23', False),
+('dsF43', False),
+('4fdg5Fj3', True),
+('DHSJdhjsU', False),
+('fjd3IR9.;', False),
+('fjd3  IR9', False),
+('djI38D55', True),
+('a2.d412', False),
+('JHD5FJ53', False),
+('!fdjn345', False),
+('jfkdfj3j', False),
+('123', False),
+('abc', False),
+('123abcABC', True),
+('ABC123abc', True),
+('Password123', True),
+)
+
+from re import compile, VERBOSE
+
+regex = compile("""
+^              # begin word
+(?=.*?[a-z])   # at least one lowercase letter
+(?=.*?[A-Z])   # at least one uppercase letter
+(?=.*?[0-9])   # at least one number
+[A-Za-z\d]     # only alphanumeric
+{6,}           # at least 6 characters long
+$              # end word
+""", VERBOSE)
+
+
+
+
+
+# Help the bookseller !
+# https://www.codewars.com/kata/54dc6f5a224c26032800005c/train/python
+"""A bookseller has lots of books classified in 26 categories labeled A, B, ... Z. Each book has a code c of 3, 4, 5 or more characters. The 1st character of a code is a capital letter which defines the book category.
+
+In the bookseller's stocklist each code c is followed by a space and by a positive integer n (int n >= 0) which indicates the quantity of books of this code in stock.
+
+For example an extract of a stocklist could be:
+
+L = {"ABART 20", "CDXEF 50", "BKWRK 25", "BTSQZ 89", "DRTYM 60"}.
+or
+L = ["ABART 20", "CDXEF 50", "BKWRK 25", "BTSQZ 89", "DRTYM 60"] or ....
+You will be given a stocklist (e.g. : L) and a list of categories in capital letters e.g :
+
+M = {"A", "B", "C", "W"} 
+or
+M = ["A", "B", "C", "W"] or ...
+and your task is to find all the books of L with codes belonging to each category of M and to sum their quantity according to each category.
+
+For the lists L and M of example you have to return the string (in Haskell/Clojure/Racket/Prolog a list of pairs):
+
+(A : 20) - (B : 114) - (C : 50) - (W : 0)"""
+
+
+def stock_list(list_of_art, list_of_cat):
+    if not (list_of_cat and list_of_art):
+        return ""
+
+    dict_of_art = {cat: 0 for cat in list_of_cat}
+    
+    for art in list_of_art:
+        if art[0] in list_of_cat:
+            dict_of_art[art[0]] = dict_of_art.get(art[0], 0) + int(art.split(" ")[1])  # int(re.sub(r"\D", "", art))
+        
+    return(" - ".join(f"({k} : {v})" for k, v in dict_of_art.items()))
+(stock_list(["BBAR 150", "CDXE 515", "BKWR 250", "BTSQ 890", "DRTY 600"], ["A", "B", "C", "D"]), "(A : 0) - (B : 1290) - (C : 515) - (D : 600)")
+(stock_list(["ABAR 200", "CDXE 500", "BKWR 250", "BTSQ 890", "DRTY 600"], ["A", "B"]), "(A : 200) - (B : 1140)")
+
+
+import re
+def stock_list(list_of_art, list_of_cat):
+    if not (list_of_cat and list_of_art):
+        return ""
+
+    dict_of_art = {cat: 0 for cat in list_of_cat}
+    
+    for art in list_of_art:
+        if art[0] in list_of_cat:
+            dict_of_art[art[0]] = dict_of_art.get(art[0], 0) + int(re.sub(r"\D", "", art))
+        
+    return(" - ".join(f"({k} : {v})" for k, v in dict_of_art.items()))
+
+
+
+
+
 # 
-
-
-
-
 
 
 
