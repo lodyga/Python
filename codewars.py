@@ -24,9 +24,9 @@ Example: The binary representation of 1234 is 10011010010, so the function shoul
 
 def count_bits(n):
     return bin(n)[2:].count('1')
-    # return bin(n).count('1')
-    # return sum(True if int(i) else False for i in bin(n)[2:])
+    # return f"{number:>b}".count("1")
     # return '{:b}'.format(n).count('1')
+    # return sum(True if int(i) else False for i in bin(n)[2:])
     # return n.bit_count()
 count_bits(1234)
 
@@ -54,33 +54,13 @@ def digital_root(n):
 
 def digital_root(n):
     while len(str(n)) != 1:
-        n = np.sum((int(digit) for digit in str(n)))
+        n = sum((int(digit) for digit in str(n)))
     return n
 
-def digital_root(n):
-    while True:
-        n = sum(int(digit) for digit in str(n))
-        if len(str(n)) == 1:
-            return n
 digital_root(169)
 digital_root(942)
 digital_root(132189)
 
-
-def digital_root(n):
-    while True:
-        if n > 9:
-            n = sum([int(digit) for digit in str(n)])
-        else:
-            return n
-
-import numpy as np
-def digital_root(n):
-    while True:
-        if len(str(n)) != 1:
-            n = np.sum((int(digit) for digit in str(n)))
-        else:
-            return n
 
 test.assert_equals(digital_root(16), 7)
 test.assert_equals(digital_root(942), 6)
@@ -100,16 +80,15 @@ Given a string, detect whether or not it is a pangram. Return True if it is, Fal
 import string
 
 def is_pangram(s):
-    return all(True if letter in s.lower() else False for letter in string.ascii_lowercase)
-
-pangram = "The quick, brown fox jumps over the lazy dog!"
-is_pangram(pangram)
-
-def is_pangram(s):
     return set(string.ascii_lowercase) <= set(s.lower())
+is_pangram("The quick, brown fox jumps over the lazy dog!")
+
 
 def is_pangram(s):
     return set(s.lower()) >= set(string.ascii_lowercase)
+
+def is_pangram(s):
+    return all(True if letter in s.lower() else False for letter in string.ascii_lowercase)
 
 def is_pangram(s):
     return set(string.ascii_lowercase).issubset(set(s.lower()))
@@ -119,9 +98,6 @@ def is_pangram(s):
 
 def is_pangram(s):
     return set(string.ascii_lowercase) & set(s.lower()) == set(string.ascii_lowercase)
-
-def is_pangram(s):
-    return not sum(0 if letter in s.lower() else 1 for letter in string.ascii_lowercase)
 
 test.assert_equals(is_pangram(pangram), True)
 
@@ -138,16 +114,11 @@ Additionally, if the number is negative, return 0 (for languages that do have th
 Note: If the number is a multiple of both 3 and 5, only count it once."""
 
 def solution(numbers):
-    # return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
-    return sum(digit for digit in range(3, numbers) if not (digit % 3 and digit % 5))
+    return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
+    # return sum(digit for digit in range(3, numbers) if not (digit % 3 and digit % 5))
 solution(4)
 solution(6)
 solution(16)
-
-
-import numpy as np
-def solution(numbers):
-    return np.sum([number for number in range(numbers) if not number % 3 or not number % 5])
 
 
 test.assert_equals(solution(4), 3)    
@@ -183,36 +154,21 @@ Examples
 ""                                        =>  false"""
 
 def generate_hashtag(s):
-    solution = "#" + "".join(word.capitalize() for word in s.strip().split())
-    # solution = "#" + s.title().replace(" ", "")
-    return solution if (s and len(solution) <= 140) else False
+    if not s or len(s) > 140:
+        return False
+    return "#" + "".join(word.capitalize() for word in s.strip().split())
+    # return "#" + s.title().replace(" ", "")
 generate_hashtag('codewars is nice')
 generate_hashtag('CodeWars  is   nice')
 generate_hashtag('')
-
-def generate_hashtag(s):
-    solution = "#" + "".join(word.capitalize() for word in s.strip().split())
-    return False if not s or len(solution) > 140 else solution
+generate_hashtag(" Hello there thanks for trying my Kata")
 
 
-# final result must be > than 140 not input
 def generate_hashtag(s):
     if (len(s) > 140 or
-        not s):
-        return False
-    return '#' + ''.join(i.capitalize() for i in s.strip().split(' '))
-
-def generate_hashtag(s):
-    if (len(s) > 140 ore
             not s):
         return False
     return '#' + ''.join(map(lambda x: x.strip().capitalize(), s.split()))
-
-def generate_hashtag(s):
-    if len(s) > 140 or s == '':
-        return False
-    else:
-        return '#' + ''.join([string.strip().capitalize() for string in s.split()])
 
 def generate_hashtag(s):
     if len(s) > 140 or s == '':
@@ -261,44 +217,58 @@ productFib(714) # should return (21, 34, true),
 productFib(800) # should return (34, 55, false), 
                 # since F(8) = 21, F(9) = 34, F(10) = 55 and 21 * 34 < 800 < 34 * 55"""
 
-def productFib(prod):
+
+def fib_prod(n):
     a, b = 0, 1
-    while a * b < prod:
-        a, b = b, a + b
-    return [a, b, a * b == prod]
-productFib(714) # should return (21, 34, true) 
-productFib(800) # should return (34, 55, false)
-productFib(4895) # [55, 89, True] 
-productFib(5895) # [89, 144, False]
-
-def productFib(prod):
-    a, b = 0, 1
-    while a * b <= prod:
-        if prod == a * b:
-            return [a, b, True]
-        else:
-            a, b = b, a + b
-    return [a, b, False]
-
-def productFib(prod):
-    a, b = 0, 1
-    while a * b < prod:
-        a, b = b, a + b
-    return [a, b, a * b == prod]
-
-
-def productFib(prod):
-    if prod == 0: return [0, 1, True]
-    Fib = [0, 1]
-    i = 2
     while True:
-        Fib.append(Fib[i-1] + Fib[i-2])
-        if Fib[i] * Fib[i-1] >= prod:
-            break
-        i += 1
-    return [Fib[i-1], Fib[i], Fib[i] * Fib[i-1] == prod]
+        if n <= a * b:
+            return (a, b, a * b == n)
+        a, b = b, a + b
+
+fib_prod(714) # should return (21, 34, true) 
+fib_prod(800) # should return (34, 55, false)
+fib_prod(4895) # [55, 89, True] 
+fib_prod(5895) # [89, 144, False]
+fib_prod(0)
+
+def productFib(prod):
+    a, b = 0, 1
+    while a * b < prod:
+        a, b = b, a + b
+    return [a, b, a * b == prod]
+
+def productFib(prod):
+    a, b = 0, 1
+    while a * b < prod:
+        a, b = b, a + b
+    return [a, b, a * b == prod]
 
 
+# fib_prod(0) should be True
+class Fib(object):
+
+    """docstring for Fib"""
+
+    def __init__(self):
+        super(Fib, self).__init__()
+        self.a = 0
+        self.b = 1
+
+    def __call__(self):
+        self.a, self.b = self.b, self.a + self.b
+        return self.a, self.b
+
+
+def fib_prod(prod):
+    fib = Fib()
+    a, b = fib()
+    while (a * b) < prod:
+        a, b = fib()
+    return [a, b, (a * b) == prod]
+
+
+fib_prod(714)
+fib_prod(800)
 
 
 test.assert_equals(productFib(4895), [55, 89, True])
@@ -318,16 +288,18 @@ expanded_form(42) # Should return '40 + 2'
 expanded_form(70304) # Should return '70000 + 300 + 4'
 NOTE: All numbers will be whole numbers greater than 0."""
 
-def expanded_form(num):
-    return " + ".join(str(int(digit) * 10**(len(str(num)) - index)) for index, digit in enumerate(str(num), 1) if int(digit))
-expanded_form(70304)
 
 def expanded_form(num):
-    return ' + '.join(str(int(j) * 10**(len(str(num)) - i)) for i, j in enumerate(str(num), 1) if j != '0')
+    concat = ""
+    for index, digit in enumerate(str(num), 1):
+        if int(digit):
+            concat += str(int(digit) * 10**(len(str(num)) - index))
+            concat += " + "
+    return concat[:-2]
+(expanded_form(12), '10 + 2');
+(expanded_form(42), '40 + 2');
+(expanded_form(70304), '70000 + 300 + 4');
 
-def expanded_form(num):
-    filter_with_None = map(lambda i, j: str(int(j) * 10**(len(str(num)) - i)) if j != '0' else None, range(1, len(str(num)) + 1), iter(str(num)))
-    return ' + '.join(filter(bool, filter_with_None))
 
 def expanded_form(num):
     divided_number = []
@@ -336,10 +308,15 @@ def expanded_form(num):
             divided_number.append(str(int(digit) * 10**(len(str(num)) - index)))
     return " + ".join(divided_number)
 
+def expanded_form(num):
+    return " + ".join(str(int(digit) * 10**(len(str(num)) - index)) for index, digit in enumerate(str(num), 1) if int(digit))
 
-test.assert_equals(expanded_form(12), '10 + 2');
-test.assert_equals(expanded_form(42), '40 + 2');
-test.assert_equals(expanded_form(70304), '70000 + 300 + 4');
+def expanded_form(num):
+    return ' + '.join(str(int(j) * 10**(len(str(num)) - i)) for i, j in enumerate(str(num), 1) if j != '0')
+
+def expanded_form(num):
+    filter_with_None = map(lambda i, j: str(int(j) * 10**(len(str(num)) - i)) if j != '0' else None, range(1, len(str(num)) + 1), iter(str(num)))
+    return ' + '.join(filter(bool, filter_with_None))
 
 
 
@@ -359,13 +336,25 @@ rgb(0,0,0) # returns 000000
 rgb(148, 0, 211) # returns 9400D3"""
 
 
+def clean_color(color):
+    color = min(255, max(0, color))
+    color = hex(color)[2:].upper()
+    if len(color) == 1:
+        color = "0" + color
+    return color
+clean_color(-1)
+
+def rgb(r, g, b):
+    return "".join(clean_color(color) for color in (r, g, b))
+rgb(1, 2, 3)
+rgb(255, 255, 255)
+rgb(254, 253, 252)
+
+
 def rgb(r, g, b):
     rgb_round = lambda x: min(255, max(0, x))
     return ('{:02X}'*3).format(rgb_round(r), rgb_round(g), rgb_round(b))
     # return ('{:02X}'*3).format(*map(lambda x: rgb_round(x), (r, g, b)))
-rgb(1, 2, 3)
-rgb(255, 255, 255)
-rgb(254, 253, 252)
 
 def rgb(r, g, b):
     r, g, b = min(255, max(r, 0)), min(255, max(g, 0)), min(255, max(b, 0))
@@ -382,11 +371,11 @@ def rgb(r, g, b):
     return ('{:02X}'*3).format(*map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
 
 
-test.assert_equals(rgb(0,0,0),"000000", "testing zero values")
-test.assert_equals(rgb(1,2,3),"010203", "testing near zero values")
-test.assert_equals(rgb(255,255,255), "FFFFFF", "testing max values")
-test.assert_equals(rgb(254,253,252), "FEFDFC", "testing near max values")
-test.assert_equals(rgb(-20,275,125), "00FF7D", "testing out of range values")
+(rgb(0,0,0),"000000", "testing zero values")
+(rgb(1,2,3),"010203", "testing near zero values")
+(rgb(255,255,255), "FFFFFF", "testing max values")
+(rgb(254,253,252), "FEFDFC", "testing near max values")
+(rgb(-20,275,125), "00FF7D", "testing out of range values")
 
 
 
@@ -503,59 +492,28 @@ Empty list is considered to have zero greatest sum. Note that the empty list or 
 
 
 def max_sequence(arr):
-    # if (not arr or
-    #     not list(filter(lambda x: x >= 0, arr))):
-    if not (arr and
-        list(filter(lambda x: x >= 0, arr))):
-        return 0
-    return max(0, max(map(sum, (arr[i:j] for i in range(len(arr)) for j in range(1, len(arr) + 1) if j > i))))
+    result, seen = 0, 0
+    for i in arr:
+        if seen <= 0: 
+            seen = i
+        else:
+            seen += i
+        result = max(result, seen)
+    return result
 max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]) # sum([4, -1, 2, 1]) = 6
 max_sequence([-2]) # 0
 max_sequence([]) #
 max_sequence([-2, 1])
+(max_sequence([7, 4, 11, -11, 39, 36, 10, -6, 37, -10, -32, 44, -26, -34, 43, 43]), 155)
 
+
+# O(n2) 
 def max_sequence(arr):
-    array_max = 0
+    max_reselt = 0
     for i in range(len(arr)):
-        for j in range(1, len(arr) + 1):
-            if (i <= j and
-                array_max < sum(arr[i:j])):
-                array_max = sum(arr[i:j])
-    return array_max
-
-# doesn't work on empty arrays, must have at least 2 elements
-# in first if loop of '+0' - array must have at least 1 element
-# in first if loop of '+1' - empty array possible
-
-def max_sequence(arr):
-    return max([sum(arr[i:j]) for i in range(len(arr)) for j in range(1, len(arr) + 1) if i <= j])
-
-def max_sequence(arr):
-    return max([sum(arr[i:j]) for i in range(len(arr)+1) for j in range(len(arr)+1)])
-
-def max_sequence(arr):
-    if sum(1 if digit < 0 else 0 for digit in arr) == len(arr):
-        return 0
-    max_sum = 0
-    # i_max, j_max = 0, 0
-    for i in range(len(arr)):
-        for j in range(len(arr) - i):
-            print(arr[i:i+j+1])
-            # print(sum(arr[i:i+j+1]))
-            if sum(arr[i:i+j+1]) > max_sum:
-                max_sum = sum(arr[i:i+j+1])
-                # i_max, j_max = i, j
-    # return sum(arr[i_max:i_max+j_max+1])
-    return max_sum
-                
-def max_sequence(arr):
-    return max(max(sum(arr[i:i+j+1]) for i in range(len(arr)) for j in range(len(arr) - i)), 0) if arr else 0
-
-max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
-max_sequence([])
-max_sequence([-1, -2])
-
-test.assert_equals(max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
+        for j in range(i + 1, len(arr) + 1):
+            max_reselt = max(max_reselt, sum(arr[i:j]))
+    return max_reselt
 
 
 
@@ -582,24 +540,13 @@ When two numbers have the same "weight", let us class them as if they were strin
 All numbers in the list are positive numbers and the list can be empty."""
 
 
-def order_weight(strng):
-    # return ' '.join(sorted(strng.split(), key=lambda x: sum(int(d) for d in x))) # without second parameter `x` it sorts but `2000` is before `11`
-    return " ".join(sorted(strng.split(), key=lambda x: (sum(int(digit) for digit in x), x)))
-order_weight("2000 10003 1234000 44444444 9999 11 11 22 123")
-order_weight("103 123 4444 99 2000")
+sorting_fun = lambda x: (sum(int(digit) for digit in x), x)
 
 def order_weight(strng):
-    if not strng:
-        return ''
-    splitted = [char.strip() for char in strng.split()]
-    weight_list = [(sum(int(digit) for digit in number), number) for number in splitted]
-    # return ' '.join(np.array(sorted(weight_list))[:, 1])
-    return weight_list
-
-
-test.assert_equals(order_weight("103 123 4444 99 2000"), "2000 103 123 4444 99")
-test.assert_equals(order_weight("2000 10003 1234000 44444444 9999 11 11 22 123"), "11 11 2000 10003 22 123 1234000 44444444 9999")
-test.assert_equals(order_weight(""), "")
+    return " ".join(sorted(strng.split(), key=sorting_fun))
+(order_weight("103 123 4444 99 2000"), "2000 103 123 4444 99")
+(order_weight("2000 10003 1234000 44444444 9999 11 11 22 123"), "11 11 2000 10003 22 123 1234000 44444444 9999")
+(order_weight(""), "")
 
 
 
@@ -614,58 +561,26 @@ solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
 """
 
 
-import re
 def strip_comments(string, markers):
+    if not markers:
+        return string
     for i in markers:
-        string = string.replace(i, '!')
-    # return '\n'.join((i[:i.find('!')]).rstrip() for i in string.split('\n'))
-    return '\n'.join(i.split('!')[0].rstrip() for i in string.split('\n'))
+        string = string.replace(i, markers[0])
+    return '\n'.join(i.split(markers[0])[0].rstrip() for i in string.split('\n'))
 strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
 strip_comments(' a #b\nc\nd $e f g', ['#', '$'])
 strip_comments("' = lemons\napples pears\n. avocados\n= ! bananas strawberries avocados !\n= oranges", ['!', '^', '#', '@', '='])
-strip_comments('cherries bananas lemons\n, apples watermelons\nwatermelons cherries apples cherries strawberries oranges\ncherries ! apples\ncherries avocados pears 
+(strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
+(strip_comments('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
+(strip_comments(' a #b\nc\nd $e f g', ['#', '$']), ' a\nc\nd')
 
-# this is faster
-def strip_comments(string, markers):
-    splited_list = string.split('\n')
-    for marker in markers:
-        splited_list = [elem.split(marker)[0].rstrip() for elem in splited_list]
-        # splited_list = [elem if elem.find(marker) == -1 else elem[:elem.find(marker)].rstrip() for elem in splited_list]
-        # print([elem if elem.find(marker) == -1 else elem[:elem.find(marker)].rstrip() for elem in splited_list])
-    return '\n'.join(splited_list)
-
-def strip_comments(strng, markers):
-    if not markers:
-        return strng
-    cut_indexes = [min(line.find(char) if line.find(char) != -1 else len(line) for char in markers) for line in strng.split("\n")]
-    return "\n".join((strng.split("\n")[line_ind][:cut_index]).rstrip() for line_ind, cut_index in enumerate(cut_indexes))
-
-def strip_comments(string, markers):
-    splitted_list = string.split('\n')
-    for char in markers:
-        # splitted_list = [i if i.find(char) == -1 else i[:i.find(char)].rstrip() for i in splitted_list]
-        splitted_list = [i.split(char)[0].rstrip() for i in splitted_list]
-    return '\n'.join(splitted_list)
-
+# doesn't word for not escaped punctuations
 def strip_comments(string, markers):
     for marker in markers:
-        # the space before works as ' '.join()
-        # string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
-        string = re.sub(r' *?\{}.*$'.format(marker), '', string, flags=re.M)
+        string = re.sub(r' *?{}.*$'.format(marker), '', string, flags=re.M)
     return string
 
 
-test.assert_equals(solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
-test.assert_equals(solution('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
-test.assert_equals(solution(' a #b\nc\nd $e f g', ['#', '$']), ' a\nc\nd')
-
-
-# Some coding
-'a{}b'.format(['#', '!'])
-r' *?{}.*'.format(['#', '!'])
-
-regex = r' *?[#].*'
-re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe#c 12')
 
 
 
@@ -673,7 +588,6 @@ re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe#c 12')
 
 # Human readable duration format
 # https://www.codewars.com/kata/52742f58faf5485cae000b9a/train/python
-# works here but codewars is complaining
 """Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
 
 The function must accept a non-negative integer. If it is zero, it just returns "now". Otherwise, the duration is expressed as a combination of years, days, hours, minutes and seconds.
@@ -702,86 +616,43 @@ A component will not appear at all if its value happens to be zero. Hence, 1 min
 A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time."""
 
 
-def format_duration(seconds):
-    if not seconds:
-        return 'now'
-    time_digits = (60 * 60 * 24 * 365, 60 * 60 * 24, 60 * 60, 60, 1)
-    time_name = ('year', 'day', 'hour', 'minute', 'second')
-    time_list = []
-    for i in time_digits:
-        if seconds // i:
-            time_list.append(seconds // i)
-            seconds %= i
-    result = (i for i in zip(time_list, time_name[-len(time_list):]))
-    result2 = [str(i[0]) + ' ' + i[1] + 's' if i[0] > 1 else str(i[0]) + ' ' + i[1] for i in result]
-    return result2[0] if len(result2) == 1 else ', '.join(result2[:-1]) + ' and ' + result2[-1]
-format_duration(3662)
-
-# from codewars
-times = [("year", 365 * 24 * 60 * 60),
-         ("day", 24 * 60 * 60),
-         ("hour", 60 * 60),
-         ("minute", 60),
-         ("second", 1)]
+times = [
+    ("year", 60*60*24*365),
+    ("day", 60*60*24),
+    ("hour", 60*60),
+    ("minute", 60),
+    ("second", 1),
+]
 
 def format_duration(seconds):
     if not seconds:
         return "now"
     
-    chunks = []
-    for name, secs in times:
-        qty = seconds // secs
-        if qty:
-            if qty > 1:
-                name += "s"
-            chunks.append(str(qty) + " " + name)
+    date = []
+    for time in times:
+        d, m = seconds // time[1], seconds % time[1]
+        if d:
+            sol = f"{d} {time[0]}"
+            if d != 1:
+                sol += "s"
+            date.append(sol)
+        
+        seconds = m
 
-        seconds = seconds % secs
-
-    return ', '.join(chunks[:-1]) + ' and ' + chunks[-1] if len(chunks) > 1 else chunks[0]
-
-import datetime
-def format_duration(seconds):
-    if not seconds:
-        return 'now'
-    dict_time = {4: 'year', 3: 'day', 2: 'hour', 1: 'minute', 0: 'second', 
-                 14: 'years', 13: 'days', 12: 'hours', 11: 'minutes', 10: 'seconds'}
-    # str_time = time.strftime('%H:%M:%S', time.gmtime(seconds))
-    # transforms seconds to 'days, minuses:hours:seconds'
-    dirty_days = str(datetime.timedelta(seconds=seconds)) # days + '%H:%M:%S'
-    str_time = dirty_days[-8:].lstrip() # only '%H:%M:%S'
-    if 'day' in dirty_days:
-        days = int(dirty_days.split()[0])
-        if days > 365:
-            years = days // 365
-            days = days % 365
-            # years, days = divmod(days, 365)
-            str_time = str(years)+':'+str(days)+':'+str_time
-        else:
-            str_time = str(days)+':'+str_time
-    
-    sol = []
-    for enum, i in enumerate(reversed(str_time.split(':'))):
-        if int(i) != 0:
-            if int(i) == 1:
-                sol.append(str(int(i))+' '+dict_time[enum])
-            else:
-                sol.append(str(int(i))+' '+dict_time[enum + 10])
-    # sol = list(reversed(sol))
-    sol.reverse()
-    if len(sol) == 1:
-        return sol[0]
+    # # appending " and " and ", " to string
+    if len(date) == 1:
+        return date[0]
     else:
-        return ', '.join(sol[:-1]) + ' and ' + sol[-1]
-
-format_duration(6300000000)
+        return ", ".join(d for d in date[:-1]) + " and " + date[-1]
 
 
-test.assert_equals(format_duration(1), "1 second")
-test.assert_equals(format_duration(62), "1 minute and 2 seconds")
-test.assert_equals(format_duration(120), "2 minutes")
-test.assert_equals(format_duration(3600), "1 hour")
-test.assert_equals(format_duration(3662), "1 hour, 1 minute and 2 seconds")
+(format_duration(0), "now")
+(format_duration(1), "1 second")
+(format_duration(2), "2 seconds")
+(format_duration(62), "1 minute and 2 seconds")
+(format_duration(120), "2 minutes")
+(format_duration(3600), "1 hour")
+(format_duration(3662), "1 hour, 1 minute and 2 seconds")
 
 
 
@@ -801,42 +672,18 @@ For example (Input --> Output):
 
 def persistence(n):
     count = 0
-    while len(str(n)) > 1:
-        multi = 1
+    while n > 9:
+        prod = 1
         for digit in str(n):
-            multi *= int(digit)
-        n = multi
+            prod *= int(digit)
+        n = prod
+        # n = np.prod([int(digit) for digit in str(n)])
         count += 1
     return count
-persistence(39)
-persistence(999)
-
-import numpy as np
-def persistence(n):
-    ind = 0
-    while len(str(n)) != 1:
-        n = np.product([int(i) for i in str(n)])
-        ind += 1
-    return ind
-
-from itertools import reduce # stopped working
-from functools import reduce
-def persistence(n):
-    count = 0
-    while len(str(n)) > 1:
-        count += 1
-        n = reduce(lambda x, y: x * y, (int(i) for i in str(n)))
-    return count
-
-
-@test.describe("Persistent Bugger.")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(persistence(39), 3)
-        test.assert_equals(persistence(4), 0)
-        test.assert_equals(persistence(25), 2)
-        test.assert_equals(persistence(999), 4)
+(persistence(39), 3)
+(persistence(4), 0)
+(persistence(25), 2)
+(persistence(999), 4)
 
 
 
@@ -859,11 +706,9 @@ The second value in the first integer array is 0, since the bus is empty in the 
 
 def number(bus_stops):
     return sum(enter - exit for enter, exit in bus_stops)
-number([[10, 0], [3, 5], [5, 8]])
-
-def number(bus_stops):
-    return sum(enter for enter, _ in bus_stops) - sum(exit for _, exit in bus_stops)
-number([[10, 0], [3, 5], [5, 8]])
+(number([[10, 0], [3, 5], [5, 8]]), 5)
+(number([[3, 0], [9, 1], [4, 10], [12, 2], [6, 1], [7, 10]]), 17)
+(number([[3, 0], [9, 1], [4, 8], [12, 2], [6, 1], [7, 8]]), 21)
 
 def number(bus_stops):
     return sum(map(lambda x: x[0] - x[1], bus_stops))
@@ -879,15 +724,6 @@ import numpy as np
 def number(bus_stops):
     return np.subtract.reduce(np.sum((bus_stops), axis=0))
 number([[10, 0], [3, 5], [5, 8]])
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(number([[10,0],[3,5],[5,8]]),5)
-        test.assert_equals(number([[3,0],[9,1],[4,10],[12,2],[6,1],[7,10]]),17)
-        test.assert_equals(number([[3,0],[9,1],[4,8],[12,2],[6,1],[7,8]]),21)
 
 
 
@@ -907,6 +743,17 @@ For input [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15], you should r
 
 def count_positives_sum_negatives(arr):
     if not arr:
+        return []
+    pos, neg = 0, 0
+    for i in arr:
+        if i > 0:
+            pos += 1
+        else:
+            neg += i # can add 0 to negatives
+    return [pos, neg]
+
+def count_positives_sum_negatives(arr):
+    if not arr:
         return [] 
     return [len(list(filter(lambda x: x > 0, arr))), sum(filter(lambda x: x < 0, arr))] if arr else []
 count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15])
@@ -917,43 +764,13 @@ def count_positives_sum_negatives(arr):
     # return [sum(True for i in arr if i > 0), sum(i for i in arr if i < 0)]
     return [sum(i > 0 for i in arr), sum(i for i in arr if i < 0)]
 
-def count_positives_sum_negatives(arr):
-    if not arr:
-        return []
-    pos, neg = 0, 0
-    for i in arr:
-        if i > 0:
-            pos += 1
-        else:
-            neg += i # can add 0 to negatives
-    return [pos, neg]
 
-# positives are always first
-def count_positives_sum_negatives(arr):
-    if not arr:
-        return []
-    pos = 0
-    for i in arr:
-        if i > 0:
-            pos += 1
-        else:
-            break
-    return [pos, sum(arr[pos:])]
-
-
-import codewars_test as test
-from solution import count_positives_sum_negatives
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15]),[10,-65])
-        test.assert_equals(count_positives_sum_negatives([0, 2, 3, 0, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14]),[8,-50])
-        test.assert_equals(count_positives_sum_negatives([1]),[1,0])
-        test.assert_equals(count_positives_sum_negatives([-1]),[0,-1])
-        test.assert_equals(count_positives_sum_negatives([0,0,0,0,0,0,0,0,0]),[0,0])
-        test.assert_equals(count_positives_sum_negatives([]),[])
+(count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15]),[10,-65])
+(count_positives_sum_negatives([0, 2, 3, 0, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14]),[8,-50])
+(count_positives_sum_negatives([1]),[1,0])
+(count_positives_sum_negatives([-1]),[0,-1])
+(count_positives_sum_negatives([0,0,0,0,0,0,0,0,0]),[0,0])
+(count_positives_sum_negatives([]),[])
 
 
 
@@ -1025,9 +842,9 @@ You are given the total volume m of the building. Being given m can you find the
 The parameter of the function findNb (find_nb, find-nb, findNb, ...) will be an integer m and you have to return the integer n such as n^3 + (n-1)^3 + ... + 1^3 = m if such a n exists or -1 if there is no such n.
 
 Examples:
-findNb(1071225) --> 45
+find_nb(1071225) --> 45
 
-findNb(91716553919377) --> -1"""
+find_nb(91716553919377) --> -1"""
 
 
 def find_nb(m):
@@ -1136,17 +953,26 @@ def fixed_tests():
 # https://www.codewars.com/kata/585d7d5adb20cf33cb000235/train/python
 """There is an array with some numbers. All numbers are equal except for one. Try to find it!
 
-find_uniq([ 1, 1, 1, 2, 1, 1 ]) == 2
-find_uniq([ 0, 0, 0.55, 0, 0 ]) == 0.55
+find_uniq([1, 1, 1, 2, 1, 1]) == 2
+find_uniq([0, 0, 0.55, 0, 0]) == 0.55
 It's guaranteed that array contains at least 3 numbers.
 
 The tests contain some very huge arrays, so think about performance."""
 
 
 def find_uniq(arr):
+    a, b = set(arr)
+    return a if arr.count(a) == 1 else b
+(find_uniq([1, 1, 1, 2, 1, 1]), 2)
+(find_uniq([0, 0, 0.55, 0, 0]), 0.55)
+(find_uniq([3, 10, 3, 3, 3]), 10)
+
+
+def find_uniq(arr):
     return min(set(arr), key=arr.count)  # with 'set' computes much faster
-find_uniq([1, 1, 1, 2, 1, 1])
-find_uniq([3, 10, 3, 3, 3])
+
+def find_uniq(arr):
+    return min(set(arr), key=lambda x: arr.count(x))
 
 from collections import Counter
 def find_uniq(arr):
@@ -1158,17 +984,9 @@ def find_uniq(arr):
 
 from collections import Counter
 def find_uniq(arr):
-    count_dict = dict(Counter(arr))
-    return sorted(count_dict, key=count_dict.get)[0]
-
-
-@test.describe("Basic Tests")
-def f():
-    @test.it("Simple tests")
-    def _():
-        test.assert_equals(find_uniq([ 1, 1, 1, 2, 1, 1 ]), 2)
-        test.assert_equals(find_uniq([ 0, 0, 0.55, 0, 0 ]), 0.55)
-        test.assert_equals(find_uniq([ 3, 10, 3, 3, 3 ]), 10)
+    # count_dict = dict(Counter(arr))
+    count_dict = Counter(arr)
+    return sorted(set(arr), key=count_dict.get)[0]
 
 
 
@@ -1180,24 +998,15 @@ def f():
 
 Examples:
 Input: 42145 Output: 54421
-
 Input: 145263 Output: 654321
-
 Input: 123456789 Output: 987654321"""
 
 
 def descending_order(num):
     return int(''.join(sorted(str(num), reverse=True)))
-descending_order(123456789)
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(descending_order(0), 0)
-        test.assert_equals(descending_order(15), 51)
-        test.assert_equals(descending_order(123456789), 987654321)
+(descending_order(0), 0)
+(descending_order(15), 51)
+(descending_order(123456789), 987654321)
 
 
 
@@ -1215,11 +1024,12 @@ Examples
 
 
 def duplicate_encode(word):
-    return ''.join(['(' if word.lower().count(char) == 1 else ')' for char in word.lower()])
-duplicate_encode('Success')
-
-def duplicate_encode(word):
-    return "".join(")" if word.lower().count(letter) > 1 else "(" for letter in word.lower())
+    word = word.lower()
+    return "".join("(" if word.count(char) == 1 else ")" for char in word)
+(duplicate_encode("din"),"(((")
+(duplicate_encode("recede"),"()()()")
+(duplicate_encode("Success"),")())())","should ignore case")
+(duplicate_encode("(( @"),"))((")
 
 def duplicate_encode(word):
     return ''.join(map(lambda x: '(' if Counter(word.lower())[x] == 1 else ')', word.lower()))
@@ -1232,20 +1042,6 @@ def duplicate_encode(word):
 from collections import Counter
 def duplicate_encode(word):
     return ''.join('(' if Counter(word.lower())[char] == 1 else ')' for char in word.lower())
-duplicate_encode("din")
-duplicate_encode("recede")
-duplicate_encode("Success")
-duplicate_encode("(( @")
-
-
-@test.describe("Duplicate Encoder")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(duplicate_encode("din"),"(((")
-        test.assert_equals(duplicate_encode("recede"),"()()()")
-        test.assert_equals(duplicate_encode("Success"),")())())","should ignore case")
-        test.assert_equals(duplicate_encode("(( @"),"))((")
 
 
 
@@ -1683,11 +1479,9 @@ In case of an empty array return 0. You will not be tested with invalid input (i
 
 import re
 def count_smileys(arr):
-    return sum(True for elem in arr if re.match(r"[:;][-~]?[\)D]", elem))
-    # return sum(True for i in arr if re.match(r'^[;:][~-]?[\)D]$', i))
+    return sum(True for smiley in arr if re.match(r"[:;][-~]?[\)D]", smiley))
     # return sum(True for i in arr if re.search(r'^[;:][~-]?[\)D]$', i))
     # return sum(True for i in arr if re.findall(r'^[;:][~-]?[\)D]$', i))
-    # return sum(True if re.match(r"[:;][-~]?[\)D]", elem) else False for elem in arr)
 count_smileys([':)', ';(', ';}', ':-D'])
 count_smileys([';D', ':-(', ':-)', ';~)'])
 count_smileys([';]', ':[', ';*', ':$', ';-D'])
@@ -4105,18 +3899,21 @@ if you want to translate, please ask before translating."""
 
 def dir_reduc(arr):
     opos = {"NORTH": "SOUTH", "SOUTH": "NORTH", "EAST": "WEST", "WEST": "EAST"}
-    directions = []
-
-    for direct in arr:
-        if directions and directions[-1] == opos[direct]:
-            directions.pop()
-        else:
-            directions += [direct]
-            # directions.append(direct)
+    seen = []
     
-    return directions
+    for direction in arr:
+        if seen and direction == opos[seen[-1]]:
+            seen.pop() #seen = seen[:-1]
+        else:
+            seen.append(direction) # seen += directions
+    return seen
+
+
 dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])
+dir_reduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"])
 dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"])
+dir_reduc([])
+
 
 # from codewars
 def dir_reduc(arr):
@@ -4147,12 +3944,6 @@ def dir_reduc(arr):
         if test_len == len(arr2):
             rep = False
     return arr2.split()
-
-
-a = ["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]
-test.assert_equals(dir_reduc(a), ['WEST'])
-u=["NORTH", "WEST", "SOUTH", "EAST"]
-test.assert_equals(dir_reduc(u), ["NORTH", "WEST", "SOUTH", "EAST"])
 
 
 
@@ -7855,10 +7646,49 @@ def stock_list(list_of_art, list_of_cat):
 
 
 
+# Factorial
+# https://www.codewars.com/kata/57a049e253ba33ac5e000212/train/python
+"""Your task is to write function factorial.
+
+https://en.wikipedia.org/wiki/Factorial
+
+"""
+
+
+def factorial(n):
+    if n == 0:
+        return 1
+    return n * factorial(n - 1) if n > 1 else n
+
+tests = (
+    (0, 1),
+    (1, 1),
+    (2, 2),
+    (3, 6),
+    (4, 24),
+    (5, 120),
+    (6, 720),
+    (7, 5040),
+)
+
+for t in tests:
+    inp, exp = t
+    print(factorial(inp), exp)
+
+
+import numpy as np
+factorial = np.math.factorial
+
+def factorial(n):
+    j = 1
+    for i in range(2, n + 1):
+        j *= i
+    return j
+
+
+
+
+
 # 
-
-
-
-
 
 

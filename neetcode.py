@@ -420,7 +420,237 @@ Solution().twoSum([2, 3, 4], 6)
 
 
 
+# 15. 3Sum
+# https://leetcode.com/problems/3sum/
+"""
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+Notice that the solution set must not contain duplicate triplets.
+
+ 
+
+Example 1:
+
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+Explanation: 
+nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.
+nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.
+nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.
+The distinct triplets are [-1,0,1] and [-1,-1,2].
+Notice that the order of the output and the order of the triplets does not matter.
+Example 2:
+
+Input: nums = [0,1,1]
+Output: []
+Explanation: The only possible triplet does not sum up to 0.
+Example 3:
+
+Input: nums = [0,0,0]
+Output: [[0,0,0]]
+Explanation: The only possible triplet sums up to 0."""
+
+
+class Solution:
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
+        seen = []
+        nums.sort()
+
+        for ind, num in enumerate(nums[:-2]):
+            if ind > 0 and num == nums[ind-1]:
+                continue
+
+            l = ind + 1
+            r = len(nums) - 1
+
+            while l < r:
+                triplet = num + nums[l] + nums[r]
+                # if triplet > 0 or nums[r] == nums[r-1]:  # breaks on [0, 0, 0]
+                if triplet > 0:
+                    r -= 1
+                # elif triplet < 0 or nums[l] == nums[l+1]:
+                elif triplet < 0:
+                    l += 1
+                else:
+                    seen.append([num, nums[l], nums[r]])
+                    # r -= 1
+                    l += 1
+                    while nums[l] == nums[l-1] and l < r:
+                        l += 1                
+        return seen
+Solution().threeSum([-1, 0, 1, 2, -1, -4])
+Solution().threeSum([-1, 1, 1])
+Solution().threeSum([0, 0, 0])
+
+
+# 0(n3)
+class Solution:
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
+        triplets = []
+        for i in range(len(nums) - 2):
+            for j in range(i + 1, len(nums) - 1):
+                for k in range(j + 1, len(nums)):
+                    if nums[i] + nums[j] + nums[k] == 0:
+                        triplet = sorted([nums[i], nums[j], nums[k]])
+                        if not triplet in triplets:
+                            triplets.append(triplet)
+        return triplets
+
+
+
+
+
+# 11. Container With Most Water
+# https://leetcode.com/problems/container-with-most-water/description/
+"""You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+
+Find two lines that together with the x-axis form a container, such that the container contains the most water.
+
+Return the maximum amount of water a container can store.
+
+Notice that you may not slant the container."""
+
+
+class Solution:
+    def maxArea(self, height: list[int]) -> int:
+        l, r = 0, len(height) - 1
+        max_pool_size = 0
+
+        while l < r:
+            pool_size = min(height[l], height[r]) * (r - l)
+            if pool_size > max_pool_size:
+                max_pool_size = pool_size
+
+            if height[l] < height[r]:
+                l += 1
+            else:
+                r -= 1
+
+        return max_pool_size
+
+Solution().maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7])
+Solution().maxArea([1, 1])
+
+
+# O(n2)
+class Solution:
+    def maxArea(self, height: list[int]) -> int:
+        max_pool_size = 0
+
+        for i, h1 in enumerate(height[:-1]):
+            for j, h2 in enumerate(height[i+1:]):
+                pool_size = min(h1, h2) * (j + 1)
+                if  pool_size > max_pool_size:
+                    max_pool_size = pool_size
+
+        return max_pool_size
+
+
+
+
+
+# 121. Best Time to Buy and Sell Stock
+# https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
+"""You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+ 
+
+Example 1:
+
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+Example 2:
+
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transactions are done and the max profit = 0.
+"""
+
+
+class Solution:
+    def maxProfit(self, prices: list[int]):
+        l, r = 0, 1
+        deal = 0
+        while r < len(prices):
+            # if price is lower - buy
+            if prices[r] < prices[l]:
+                l = r
+            # if price is higher - calculate revenue
+            else:
+                deal = max(deal, prices[r] - prices[l])
+            r += 1
+        return deal
+
+Solution().maxProfit([2, 4, 1])
+Solution().maxProfit([7, 1, 5, 3, 6, 4])
+Solution().maxProfit([7, 6, 4, 3, 1])
+Solution().maxProfit([2, 1, 2, 1, 0, 1, 2])
+Solution().maxProfit([1, 2])
+
+
+
+
+
+# 3. Longest Substring Without Repeating Characters
+# https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+"""Given a string s, find the length of the longest 
+substring
+ without repeating characters.
+
+ 
+
+Example 1:
+
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+Example 2:
+
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+Example 3:
+
+Input: s = "pwwkew"
+Output: 3"""
+
+
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        unique_elements = set()
+        l = 0
+        max_len = 0
+
+        for r in range(len(s)):
+            while s[r] in unique_elements:
+                unique_elements.discard(s[l])
+                l += 1
+
+            unique_elements.add(s[r])
+            max_len = max(max_len, len(unique_elements))
+
+        return max_len
+
+Solution().lengthOfLongestSubstring("aabaab!bb")
+Solution().lengthOfLongestSubstring("aab")
+Solution().lengthOfLongestSubstring("abcabcbb")
+Solution().lengthOfLongestSubstring("bbbbb")
+Solution().lengthOfLongestSubstring("pwwkew")
+
+
+
+
+
 # 
+
+
+
 
 
 

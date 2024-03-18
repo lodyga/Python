@@ -170,6 +170,8 @@ step counting from +left/-right:
 
 
 # f""
+f"{8:>b}"  # '1000' # decimal to binary
+f"{0b100:>d}"  # '4' # binary to decimal
 n = 1000000000
 f"{n:_}"  # '1_000_000_000'
 f"{n:,}"  # '1,000,000,000'
@@ -616,8 +618,9 @@ for student in students:
 
 # from array
 arr = [3, 10, 3, 3, 3, 9, 9]
-min(set(arr), key=arr.count)  # 10 # find the first least frequent element in the list
+min(set(arr), key=arr.count)  # 10 # find the least frequent element in the list
 arr.index(max(arr))  # find index of the max element in array
+arr.index(min(arr))  # find the first index of the min element in array
 min([3, 9], key=arr.count)  # 9 # find the least frequent element in the 'key' list that's in input list
 
 arr = ['notnot', 'some', 'random', 'text', '']
@@ -1011,6 +1014,24 @@ list(Counter(word).elements())  # ['a', 'a', 'a', 'a', 'n', 'n', 'n', 't', 't', 
 list(Counter(word).items())  # [('a', 4), ('n', 3), ('t', 3), ('i', 5), ('d', 1), ('s', 4), ('e', 2), ('b', 1), ('l', 1), ('h', 1), ('m', 2), ('r', 1)]
 {k: v for k, v in Counter(word).items() if v > 2}  # {'a': 4, 'n': 3, 't': 3, 'i': 5, 's': 4} # filter pairs with val > 2
 Counter(word).most_common(2)  # [('i', 5), ('a', 4)] # the most repetitive/frequent elements # powtarzające, najczęstsze
+Counter(word).get("a")  # 4 # {"a": 4} like in dict
+Counter(word)["a"]  # 4 # {"a": 4} like in dict
+
+
+from collections import Counter
+def find_uniq(arr):
+    return min(set(arr), key=Counter(arr).get)
+(find_uniq([ 0, 0, 0.55, 0, 0 ]), 0.55)
+
+def find_uniq(arr):
+    return Counter(arr).most_common()[-1][0]
+
+def find_uniq(arr):
+    # count_dict = dict(Counter(arr))
+    count_dict = Counter(arr)
+    return sorted(set(arr), key=count_dict.get)[0]
+
+
 
 # counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'd': 1})
 counter1 = Counter({'a': 4, 'b': 2, 'c': -2, 'e': 0})
@@ -1703,40 +1724,42 @@ geeKs4
 gee<>
 \Z	Matches if the string ends with the given regex	ab\Z	abcdab
 abababab
-
-
 """
 
 import re
 
-# re.match() matches at the beginning
-re.match(r"[:;][-~]?[\)D]", ";-) ';~)'")  # <re.Match object; span=(0, 3), match=';-)'>
-re.match(r'abc', 'abc def')  # <re.Match object; span=(0, 3), match='abc'>
-re.match(r'def', 'abc def')  # None
-re.match(r'abc', 'abc def').start()  # 0
-re.match(r'abc', 'abc def').end()  # 3
-re.match(r'abc', 'abc def').span()  # (0, 3)
-re.match(r'abc', 'abc def').group()  # 'abc'
-re.match(r'abc', 'abc def').string  # 'abc def' # It returns a string passed into the function
-re.match(r'^[;:][~-]?[)D]$', ':)').span()  # (0, 2)
+# re.search() function searches for a specified pattern anywhere in the given string and stops the search on the first occurrence.
+re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'")  # <re.Match object; span=(2, 5), match=';-)'>
+re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").group()  # ";-)"
+re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").span()  # (2, 5)
+re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").start()  # 2
+re.search(r"foo", "foo bar foo")  # <re.Match object; span=(0, 3), match='foo'>
+re.search(r"bar", "foo bar foo")  # <re.Match object; span=(4, 7), match='bar'>
+re.search(r"bar", "foo bar foo")  # <re.Match object; span=(4, 7), match='bar'>
+re.search(r'[^abc\s]', 'abc def')  # <re.Match object; span=(4, 5), match='d'> # ^ invert character class
+re.search(r'def', 'abc def abc').group()  # 'def'
+re.search(r'([a-zA-Z]+) (\d+)', 'June 24').group()  # 'June 24'
+
+# re.match() matches first at the beginning
+re.match(r"foo", "foo bar")  # <re.Match object; span=(0, 3), match='foo'>
+re.match(r"bar", "foo bar")  # None
+re.match(r"foo", "foo bar").start()  # 0
+re.match(r"foo", "foo bar").end()  # 3
+re.match(r"foo", "foo bar").span()  # (0, 3)
+re.match(r"foo", "foo bar").group()  # "foo"
+re.match(r"foo", "foo bar").string  # "foo bar" # It returns a string passed into the function
+re.match(r"[:;][-~]?[\)D]", ";-) ;-)")  # <re.Match object; span=(0, 3), match=';-)'>
+re.match(r"[;:][~-]?[\)D]", ":) ").span()  # (0, 2)
 re.match(r'\d+', '507f1f77bcf86cd799439016').group()  # 507
 re.match(r'[0-9a-f]{24}$', '507f1f77bcf86cd799439016').group()  # '507f1f77bcf86cd799439016'
 re.match(r'[\w\.-]+@[\w\.-]+\.[\w]+', 'someone@mail.com').group()  # 'someone@mail.com'
 re.match(r'(https?://)?(www\.)?(?P<domain>[\w-]+)\..*$', 'https://www.codewars.com.com').group('domain')  # codewars
-re.match(r'.*?IV', 'IV')
+re.match(r'.*?IV', ' IV')
 re.match(r'(\w+)\s(\w+)', 'Hello World').group()  # 'Hello World'
 re.match(r'(\w+)\s(\w+)', 'Hello World').group(0)  # 'Hello World'
 re.match(r'(\w+)\s(\w+)', 'Hello World').group(1)  # 'Hello'
 re.match(r'(\w+)\s(\w+)', 'Hello World').group(2)  # 'World'
 re.match(r'(\w+)\s(\w+)', 'Hello World').groups()  # ('Hello', 'World')
-
-# re.search() function searches for a specified pattern anywhere in the given string and stops the search on the first occurrence.
-re.search(r"[:;][-~]?[\)D]", "* ;-) ';~)'")  # <re.Match object; span=(2, 5), match=';-)'>
-re.search(r'abc', 'abc def abc')  # <re.Match object; span=(0, 3), match='abc'>
-re.search(r'def', 'abc def abc')  # <re.Match object; span=(4, 7), match='def'>
-re.search(r'[^abc\s]', 'abc def')  # <re.Match object; span=(4, 5), match='d'> # ^ invert character class
-re.search(r'def', 'abc def abc').group()  # 'def'
-re.search(r'([a-zA-Z]+) (\d+)', 'June 24').group()  # 'June 24'
 
 matches =re.search(r"^(?:https?://)?(?:www\.)?twitter\.com/(.*)$", "https://twitter.com/ukasz", re.IGNORECASE)
 matches.group(1)
@@ -1776,17 +1799,41 @@ patt2 = re.compile(r'(\w+) World')  # create a pattern
 patt2.sub(r'\1 Earth', 'Hello World')  # 'Hello Earth'
 
 
-# re.sub() replaces the pattern with string
-re.sub(r"\D", "", "BBAR 150")  # "150"
-re.sub(r"(https?://)?(www\.)?twitter\.com/", "", "https://twitter.com/ukasz")  # "ukasz"
-re.sub(r'\n', '\n\r', 'abc\ndef\nabc', 1)  # 'abc\n\rdef\nabc' # steps afters 1st occurrence
-re.sub(r'\n', '\n\r', 'abc\ndef\nabc')  # 'abc\n\rdef\n\rabc' # replace all
-re.sub(r'([A-Z])', r' \1', 'helloWorld')  # 'hello World' # break up camel casing
-re.sub(r' *?[#!].*', '', 'June #24\nAugust 9\nDe!c 12')  # 'June\nAugust 9\nDe' # why space ?
-re.sub(r' *?["#", "!"].*', '', 'June #24\nAugust 9\nDe!c 12') # why space ?
-re.sub(r'([a-zA-Z]+)\s(\d+)', r'\2 of \1', 'June 24, August 9, Dec 12')  # '24 of June, 9 of August, 12 of Dec'
 
+# re.sub() replaces the pattern with string
 import re
+re.sub(r"\D", "", "Foo_- 999 @# Bar")  # get a number
+                    # "999"
+re.sub(r" ?[#!].*", "", "foo !bar #xxx")  # removes everything after first maker with optional space
+                        # "foo"
+re.sub(r" ?[#!].*", "", 'foo #123\nba!r 45')  # removes everything after maker in each line
+                        # 'foo\nba'
+re.sub(r"(^.*) ?[#!].*$", r"\1", "foo #123")  # removes everything after the maker
+                                # "foo"
+re.sub(r"(https?://)?(www\.)?twitter\.com/", "", "https://twitter.com/ukasz")  # get username
+                                                # "ukasz"
+re.sub(r"^(https?://)?(www.)?([\w-]+)\..*$", r"\3", "https://twitter.com/ukasz")  # get domain name
+                                                    # "twitter"
+re.sub(r"\n", " ", "foo\nbar\nfoo", 1)  # replace 1st occurrence
+                    # "foo bar\nfoo"
+re.sub(r"\n", " ", "foo\nbar\nfoo")  # replace all
+                    # "foo bar foo"
+re.sub(r"([A-Z])", r" \1", "helloWorlD")  # break up camel casing
+                            # "hello Worl D"
+re.sub(r"([a-zA-Z]+)\s(\d+)", r"\2 of \1", "June 24, August 9, Dec 12")
+                                            # "24 of June, 9 of August, 12 of Dec"
+
+
+
+
+# variable in regex pattern
+import re
+markers = "#!"
+re.sub(f" ?[{markers}].*", "", "bananas !apples")
+re.sub(r" ?[{}].*".format(markers), "", "bananas !apples")
+re.sub(r" ?[%s].*" % (markers), "", "bananas !apples")
+
+
 
 
 
