@@ -225,6 +225,12 @@ def fib_prod(n):
             return (a, b, a * b == n)
         a, b = b, a + b
 
+def fib_prod(n):
+    a, b = 0, 1
+    while n > a * b:
+        a, b = b, a + b
+    return (a, b, a * b == n)
+
 fib_prod(714) # should return (21, 34, true) 
 fib_prod(800) # should return (34, 55, false)
 fib_prod(4895) # [55, 89, True] 
@@ -1074,7 +1080,8 @@ array1 = [None,  np.NaN,  True,  False,
           False, False, True,  True ]
 
 def count_sheeps(sheep):
-    return sheep.count(True)
+    return sum(filter(lambda x: x == True, sheep))
+    # return sheep.count(True)
     # return sum(i == True for i in sheep)
     # return len([i for i in sheep if i == True])
     # return sheep.count(1)
@@ -1114,27 +1121,21 @@ Output string must be two numbers separated by a single space, and highest numbe
 
 
 def high_and_low(numbers):
+    return max(numbers.split(), key=int) + " " + min(numbers.split(), key=int)
+(high_and_low("8 3 -5 42 -1 0 0 -9 4 7 4 -4"), "42 -9")
+(high_and_low("1 2 3"), "3 1")
+
+def high_and_low(numbers):
     num_list = [int(number) for number in numbers.split(' ')]
-    # return ' '.join([str(max(num_list)), str(min(num_list))])
-    return '{} {}'.format(max(num_list), min(num_list))
-high_and_low('8 3 -5 42 -1 0 0 -9 4 7 4 -4')
+    return f"{max(num_list)} {min(num_list)}"
 
 def high_and_low(numbers):
-    return ' '.join((str(max(int(i) for i in numbers.split(' '))), str(min(int(i) for i in numbers.split(' ')))))
-
-def high_and_low(numbers):
-    list_of_digits = list(int(digit) for digit in numbers.strip().split())
+    list_of_digits = [int(digit) for digit in numbers.strip().split()]
     return str(max(list_of_digits)) + " " + str(min(list_of_digits))
 
 sorted(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
+max(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
 
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(high_and_low("8 3 -5 42 -1 0 0 -9 4 7 4 -4"), "42 -9");
-        test.assert_equals(high_and_low("1 2 3"), "3 1");
 
 
 
@@ -1213,23 +1214,25 @@ Examples
 
 
 def century(year):
-    ending = int(str(year)[-2:])
-    core = int(str(year)[-4:-2]) if str(year)[-4:-2] else 0
-    return core + 1 if ending else core
-century(1705)
-century(1900)
-century(1601)
-century(2000)
-century(356)
-century(89)
-century(0)
-
-def century(year):
-    return year // 100 + 1 if year % 100 else year // 100
+    return (year - 1) // 100 + 1
+(century(1705), 18, 'Testing for year 1705')
+(century(1900), 19, 'Testing for year 1900')
+(century(1601), 17, 'Testing for year 1601')
+(century(2000), 20, 'Testing for year 2000')
+(century(356), 4, 'Testing for year 356')
+(century(89), 1, 'Testing for year 89')
 
 import numpy as np
 def century(year):
     return int(np.ceil(year / 100))
+
+def century(year):
+    ending = int(str(year)[-2:])
+    core = int(str(year)[-4:-2]) if str(year)[-4:-2] else 0
+    return core + 1 if ending else core
+
+def century(year):
+    return year // 100 + 1 if year % 100 else year // 100
 
 def century(year):
     return (year + 99) // 100
@@ -1242,19 +1245,6 @@ def century(year):
         return 1
     return int(str(year)[:-2]) if int(str(year)[-2:]) == 0 else int(str(year)[:-2])+1 
     # return int(str(year)[:-2])
-century(1705)
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(century(1705), 18, 'Testing for year 1705')
-        test.assert_equals(century(1900), 19, 'Testing for year 1900')
-        test.assert_equals(century(1601), 17, 'Testing for year 1601')
-        test.assert_equals(century(2000), 20, 'Testing for year 2000')
-        test.assert_equals(century(356), 4, 'Testing for year 356')
-        test.assert_equals(century(89), 1, 'Testing for year 89')
 
 
 
@@ -1269,22 +1259,15 @@ def fixed_tests():
 
 
 def solution(string):
-    return ''.join(reversed(string))
-solution('world')
+    return string[::-1]
+(solution('world'), 'dlrow')
+(solution('hello'), 'olleh')
+(solution(''), '')
+(solution('h'), 'h')
 
 def solution(string):
-    return string[::-1]
-
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(solution('world'), 'dlrow')
-        test.assert_equals(solution('hello'), 'olleh')
-        test.assert_equals(solution(''), '')
-        test.assert_equals(solution('h'), 'h')
-    
+    return ''.join(reversed(string))
+solution('world')
 
 
 
@@ -1307,56 +1290,6 @@ The most outer function represents the left operand, the most inner function rep
 Division should be integer division. For example, this should return 2, not 2.666666...:
 eight(divided_by(three()))"""
 
-
-def zero(func=None):
-    if func:
-        return func(0)
-    return 0
-def one(func=None):
-    if func:
-        return func(1)
-    return 1
-def two(func=None):
-    if func:
-        return func(2)
-    return 2
-def three(func=None):
-    if func:
-        return func(3)
-    return 3
-def four(func=None):
-    if func:
-        return func(4)
-    return 4
-def five(func=None):
-    if func:
-        return func(5)
-    return 5
-def six(func=None):
-    if func:
-        return func(6)
-    return 6
-def seven(func=None):
-    if func:
-        return func(7)
-    return 7
-def eight(func=None):
-    if func:
-        return func(8)
-    return 8
-def nine(func=None):
-    if func:
-        return func(9)
-    return 9
-
-def plus(x):
-    return lambda y: x + y
-def minus(x):
-    return lambda y: y - x
-def times(x):
-    return lambda y: x * y    
-def divided_by(x):
-    return lambda y: y // x
 
 def zero(f=None): 
     return 0 if not f else f(0)
@@ -1381,13 +1314,13 @@ def nine(f=None):
 
 
 def plus(y):
-    return lambda x: x+y
+    return lambda x: x + y
 def minus(y):
-    return lambda x: x-y
+    return lambda x: x - y
 def times(y):
-    return lambda x: x*y
+    return lambda x: x * y
 def divided_by(y):
-    return lambda x: x/y
+    return lambda x: x / y
 
 seven(times(five()))
 one(plus(seven(times(five()))))
@@ -1402,11 +1335,10 @@ times = lambda x: lambda y: y * x
 divided_by = lambda x: lambda y: y / x
 
 
-test.describe('Basic Tests')
-test.assert_equals(seven(times(five())), 35)
-test.assert_equals(four(plus(nine())), 13)
-test.assert_equals(eight(minus(three())), 5)
-test.assert_equals(six(divided_by(two())), 3)
+(seven(times(five())), 35)
+(four(plus(nine())), 13)
+(eight(minus(three())), 5)
+(six(divided_by(two())), 3)
 
 
 
@@ -1431,23 +1363,18 @@ def check(seq, elem):
     return any([i for i in seq if i == elem])
 
 
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        tests = [
-            (True, ([66, 101], 66)),
-            (False, ([78, 117, 110, 99, 104, 117, 107, 115], 8)),
-            (True, ([101, 45, 75, 105, 99, 107], 107)),
-            (True, ([80, 117, 115, 104, 45, 85, 112, 115], 45)),
-            (True, (['t', 'e', 's', 't'], 'e')),
-            (False, (["what", "a", "great", "kata"], "kat")),
-            (True, ([66, "codewars", 11, "alex loves pushups"], "alex loves pushups")),
-            (False, (["come", "on", 110, "2500", 10, '!', 7, 15], "Come")),
-            (True, (["when's", "the", "next", "Katathon?", 9, 7], "Katathon?")),
-            (False, ([8, 7, 5, "bored", "of", "writing", "tests", 115], 45)),
-            (True, (["anyone", "want", "to", "hire", "me?"], "me?")),
-        ]
+(True, ([66, 101], 66)),
+(False, ([78, 117, 110, 99, 104, 117, 107, 115], 8)),
+(True, ([101, 45, 75, 105, 99, 107], 107)),
+(True, ([80, 117, 115, 104, 45, 85, 112, 115], 45)),
+(True, (['t', 'e', 's', 't'], 'e')),
+(False, (["what", "a", "great", "kata"], "kat")),
+(True, ([66, "codewars", 11, "alex loves pushups"], "alex loves pushups")),
+(False, (["come", "on", 110, "2500", 10, '!', 7, 15], "Come")),
+(True, (["when's", "the", "next", "Katathon?", 9, 7], "Katathon?")),
+(False, ([8, 7, 5, "bored", "of", "writing", "tests", 115], 45)),
+(True, (["anyone", "want", "to", "hire", "me?"], "me?")),
+        
 
 
 
@@ -1468,9 +1395,9 @@ Valid smiley face examples: :) :D ;-D :~)
 Invalid smiley faces: ;( :> :} :]
 
 Example
-countSmileys([':)', ';(', ';}', ':-D']);       // should return 2;
-countSmileys([';D', ':-(', ':-)', ';~)']);     // should return 3;
-countSmileys([';]', ':[', ';*', ':$', ';-D']); // should return 1;
+count_smileys([':)', ';(', ';}', ':-D']);       // should return 2;
+count_smileys([';D', ':-(', ':-)', ';~)']);     // should return 3;
+count_smileys([';]', ':[', ';*', ':$', ';-D']); // should return 1;
 Note
 In case of an empty array return 0. You will not be tested with invalid input (input will always be an array). Order of the face (eyes, nose, mouth) elements will always be the same.
 
@@ -1480,8 +1407,7 @@ In case of an empty array return 0. You will not be tested with invalid input (i
 import re
 def count_smileys(arr):
     return sum(True for smiley in arr if re.match(r"[:;][-~]?[\)D]", smiley))
-    # return sum(True for i in arr if re.search(r'^[;:][~-]?[\)D]$', i))
-    # return sum(True for i in arr if re.findall(r'^[;:][~-]?[\)D]$', i))
+    # return sum(True for smiley in arr if re.search(r'^[;:][~-]?[\)D]$', smiley))
 count_smileys([':)', ';(', ';}', ':-D'])
 count_smileys([';D', ':-(', ':-)', ';~)'])
 count_smileys([';]', ':[', ';*', ':$', ';-D'])
@@ -1541,20 +1467,31 @@ n being the length of the string array, if n = 0 or k > n or k <= 0 return "" (r
 
 
 def longest_consec(strarr, k):
-    # if not (k in range(1, len(strarr) + 1) and strarr):
-    if not (0 < k <= len(strarr) and strarr):
+    if not strarr or k <= 0:
         return ""
-    return max(["".join(strarr[i:i+k]) for i in range(len(strarr) - k + 1)], key=len)
-    # return max(["".join(strarr[i:i+k]) for i in range(len(strarr) - k + 1)], key=len) if k in range(1, len(strarr) + 1) and strarr else ""
-longest_consec(["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"], 2)
-longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], 2)
+    longest_word = ""
+    for i in range(len(strarr) + 1 - k):
+        longest_word = max(longest_word, "".join(strarr[i:i+k]), key=len)
+        # if len("".join(strarr[i:i+k])) > len(longest_word):
+            # longest_word = "".join(strarr[i:i+k])
+    return longest_word
+(longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], 2), "abigailtheta")
+(longest_consec(["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1), "oocccffuucccjjjkkkjyyyeehh")
+(longest_consec([], 3), "")
+(longest_consec(["itvayloxrp","wkppqsztdkmvcuwvereiupccauycnjutlv","vweqilsfytihvrzlaodfixoyxvyuyvgpck"], 2), "wkppqsztdkmvcuwvereiupccauycnjutlvvweqilsfytihvrzlaodfixoyxvyuyvgpck")
+(longest_consec(["wlwsasphmxx","owiaxujylentrklctozmymu","wpgozvxxiu"], 2), "wlwsasphmxxowiaxujylentrklctozmymu")
+(longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], -2), "")
+(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 3), "ixoyx3452zzzzzzzzzzzz")
+(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15), "")
+(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0), "")
+
 
 def longest_consec(strarr, k):
     if (not strarr or
         k > len(strarr) or
         k <= 0):
-        return ''
-    return max((''.join(strarr[i : i+k]) for i in range(len(strarr) - k + 1)), key=len)
+        return ""
+    return max(("".join(strarr[i : i+k]) for i in range(len(strarr) - k + 1)), key=len)
 
 # change next to list for all strings
 def longest_consec(strarr, k):
@@ -1564,19 +1501,6 @@ def longest_consec(strarr, k):
         return ''
     concat_list = [''.join(strarr[i : i+k]) for i in range(len(strarr) - k + 1)]
     return next(filter(lambda x: len(x) == len(max(concat_list, key=len)), concat_list))
-
-
-test.describe("longest_consec")
-test.it("Basic tests")
-testing(longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], 2), "abigailtheta")
-testing(longest_consec(["ejjjjmmtthh", "zxxuueeg", "aanlljrrrxx", "dqqqaaabbb", "oocccffuucccjjjkkkjyyyeehh"], 1), "oocccffuucccjjjkkkjyyyeehh")
-testing(longest_consec([], 3), "")
-testing(longest_consec(["itvayloxrp","wkppqsztdkmvcuwvereiupccauycnjutlv","vweqilsfytihvrzlaodfixoyxvyuyvgpck"], 2), "wkppqsztdkmvcuwvereiupccauycnjutlvvweqilsfytihvrzlaodfixoyxvyuyvgpck")
-testing(longest_consec(["wlwsasphmxx","owiaxujylentrklctozmymu","wpgozvxxiu"], 2), "wlwsasphmxxowiaxujylentrklctozmymu")
-testing(longest_consec(["zone", "abigail", "theta", "form", "libe", "zas"], -2), "")
-testing(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 3), "ixoyx3452zzzzzzzzzzzz")
-testing(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 15), "")
-testing(longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0), "")
 
 
 
@@ -1598,22 +1522,20 @@ For example, a tower with 3 floors looks like this:
 
 def tower_builder(n):
     return [("*" * (2*i + 1)).center(2*n - 1) for i in range(n)]
-tower_builder(3)
+(tower_builder(1), ['*', ])
+(tower_builder(2), [' * ', '***'])
+(tower_builder(3), ['  *  ', ' *** ', '*****'])
+
+
+f"{'*':^5}"
+def tower_builder(n):
+    return [f"{('*' * (2*i + 1)):^{2*n - 1}}" for i in range(n)]
 
 def tower_builder(n):
     return [" " * (n - i - 1) + "*" * (2*i + 1) + " " * (n - i - 1) for i in range(n)]
 
 def tower_builder(n):
     return ["{:^{}}".format("*" * (2*i + 1), (2*n - 1)) for i in range(n)]
-
-
-@test.describe("Build Tower")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(tower_builder(1), ['*', ])
-        test.assert_equals(tower_builder(2), [' * ', '***'])
-        test.assert_equals(tower_builder(3), ['  *  ', ' *** ', '*****'])
 
 
 
@@ -1636,47 +1558,23 @@ If an empty value ( null, None, Nothing etc. ) is given instead of an array, or 
 
 
 def sum_array(arr):
-    if (not arr or 
-        len(arr) == 1 or 
-        len(arr) == 2):
+    if not arr or len(arr) <= 2:
         return 0
-    return sum(arr) - min(arr) - max(arr)
-sum_array([3, 5])
-sum_array([-3, -5])
-sum_array([6, 2, 1, 8, 10])
-sum_array([1, 1, 11, 2, 3])
-sum_array([-6, 20, -1, 10, -12])
+    arr.remove(max(arr))
+    arr.remove(min(arr))
+    return sum(arr)
+    # return sum(arr) - min(arr) - max(arr)
+(sum_array(None), 0)
+(sum_array([]), 0)
+(sum_array([3]), 0)
+(sum_array([-3]), 0)
+(sum_array([ 3, 5]), 0)
+(sum_array([-3, -5]), 0)
+(sum_array([6, 2, 1, 8, 10]), 16)
+(sum_array([6, 0, 1, 10, 10]), 17)
+(sum_array([-6, -20, -1, -10, -12]), -28)
+(sum_array([-6, 20, -1, 10, -12]), 3)
 
-def sum_array(arr):
-    if (not arr or
-        len(arr) == 1):
-        return 0
-    return sum(sorted(arr)[1:-1])
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('None or Empty')
-    def basic_test_cases():
-        test.assert_equals(sum_array(None), 0)
-        test.assert_equals(sum_array([]), 0)
-
-    @test.it("Only one Element")
-    def one_test_cases():
-        test.assert_equals(sum_array([3]), 0)
-        test.assert_equals(sum_array([-3]), 0)
-        
-    @test.it("Only two Element")
-    def two_test_cases():
-        test.assert_equals(sum_array([ 3, 5]), 0)
-        test.assert_equals(sum_array([-3, -5]), 0)
-
-    @test.it("Real Tests")
-    def real_test_cases():
-        test.assert_equals(sum_array([6, 2, 1, 8, 10]), 16)
-        test.assert_equals(sum_array([6, 0, 1, 10, 10]), 17)
-        test.assert_equals(sum_array([-6, -20, -1, -10, -12]), -28)
-        test.assert_equals(sum_array([-6, 20, -1, 10, -12]), 3)
 
 
 
@@ -1701,14 +1599,10 @@ def are_you_playing_banjo(name):
 are_you_playing_banjo('rartin')
 
 
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(are_you_playing_banjo("martin"), "martin does not play banjo");
-        test.assert_equals(are_you_playing_banjo("Rikke"), "Rikke plays banjo");
-        test.assert_equals(are_you_playing_banjo("bravo"), "bravo does not play banjo")
-        test.assert_equals(are_you_playing_banjo("rolf"), "rolf plays banjo")
+(are_you_playing_banjo("martin"), "martin does not play banjo");
+(are_you_playing_banjo("Rikke"), "Rikke plays banjo");
+(are_you_playing_banjo("bravo"), "bravo does not play banjo")
+(are_you_playing_banjo("rolf"), "rolf plays banjo")
 
 
 
@@ -1728,52 +1622,15 @@ Examples
 
 
 def remove_smallest(numbers):
-    return numbers[:numbers.index(min(numbers))] + numbers[numbers.index(min(numbers)) + 1 :] if numbers else []
-
-def remove_smallest(numbers):
     if not numbers:
         return []
     num = numbers[:]
     num.remove(min(numbers[:]))
     return num
-remove_smallest([1, 2, 3, 4, 5])
-remove_smallest([5, 3, 2, 1, 4])
-remove_smallest([2, 2, 1, 2, 1])
-remove_smallest([])
-
-
-def remove_smallest(numbers):
-    new_numbers = numbers[:]
-    if numbers:
-        new_numbers.remove(min(new_numbers))
-    return new_numbers
-
-
-test.it("works for the examples")
-test.assert_equals(remove_smallest([1, 2, 3, 4, 5]), [
-                   2, 3, 4, 5], "Wrong result for [1, 2, 3, 4, 5]")
-test.assert_equals(remove_smallest([5, 3, 2, 1, 4]), [
-                   5, 3, 2, 4], "Wrong result for [5, 3, 2, 1, 4]")
-test.assert_equals(remove_smallest([1, 2, 3, 1, 1]), [
-                   2, 3, 1, 1], "Wrong result for [1, 2, 3, 1, 1]")
-test.assert_equals(remove_smallest([]), [], "Wrong result for []")
-
-
-def randlist():
-    return list(randint(400, size=randint(1, 10)))
-
-
-test.it("returns [] if list has only one element")
-for i in range(10):
-    x = randint(1, 400)
-    test.assert_equals(remove_smallest(
-        [x]), [], "Wrong result for [{}]".format(x))
-
-test.it("returns a list that misses only one element")
-for i in range(10):
-    arr = randlist()
-    test.assert_equals(len(remove_smallest(arr[:])), len(
-        arr) - 1, "Wrong sized result for {}".format(arr))
+(remove_smallest([1, 2, 3, 4, 5]), [2, 3, 4, 5], "Wrong result for [1, 2, 3, 4, 5]")
+(remove_smallest([5, 3, 2, 1, 4]), [5, 3, 2, 4], "Wrong result for [5, 3, 2, 1, 4]")
+(remove_smallest([1, 2, 3, 1, 1]), [2, 3, 1, 1], "Wrong result for [1, 2, 3, 1, 1]")
+(remove_smallest([]), [], "Wrong result for []")
 
 
 
@@ -1794,21 +1651,12 @@ longest(a, a) -> "abcdefghijklmnopqrstuvwxyz""""
 
 def longest(a1, a2):
     return ''.join(sorted(set(a1) | set(a2)))
-longest('xyaabbbccccdefww', 'xxxxyyyyabklmopq')
-longest('abcdefghijklmnopqrstuvwxyz', 'abcdefghijklmnopqrstuvwxyz')
-longest("aretheyhere", "yestheyarehere")
+(longest("aretheyhere", "yestheyarehere"), "aehrsty")
+(longest("loopingisfunbutdangerous", "lessdangerousthancoding"), "abcdefghilnoprstu")
+(longest("inmanylanguages", "theresapairoffunctions"), "acefghilmnoprstuy")
 
 def longest(a1, a2):
     return ''.join(sorted(set(a1 + a2)))
-
-
-@test.describe("longest")
-def tests():
-    @test.it("basic tests")
-    def basics():
-        test.assert_equals(longest("aretheyhere", "yestheyarehere"), "aehrsty")
-        test.assert_equals(longest("loopingisfunbutdangerous", "lessdangerousthancoding"), "abcdefghilnoprstu")
-        test.assert_equals(longest("inmanylanguages", "theresapairoffunctions"), "acefghilmnoprstuy")
 
 
 
@@ -1827,12 +1675,23 @@ unique_in_order([1,2,2,3,3])       == [1,2,3]"""
 def unique_in_order(iterable):
     if not iterable:
         return []
+    unique_lst = []
+    unique_lst.append(iterable[0])
+    for i in iterable[1:]:
+        if i != unique_lst[-1]:
+            unique_lst.append(i)
+    return unique_lst
+(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])
+(unique_in_order('ABBCcAD'), ['A', 'B', 'C', 'c', 'A', 'D'])
+(unique_in_order([1, 2, 2, 3, 3]), [1, 2, 3])
+
+
+def unique_in_order(iterable):
+    if not iterable:
+        return []
     unique_list = [iterable[i] for i in range(len(iterable) - 1) if iterable[i] != iterable[i+1]]
     unique_list.append(iterable[-1])
     return unique_list
-unique_in_order('AAAABBBCCDAABBB')
-unique_in_order('ABBCcAD')
-unique_in_order([1, 2, 2, 3, 3])
 
 def unique_in_order(iterable):
     if not iterable:
@@ -1844,19 +1703,6 @@ def unique_in_order(iterable):
 from itertools import groupby
 def unique_in_order(iterable):
     return [k for k, _ in groupby(iterable)]
-
-def unique_in_order(iterable):
-    if not iterable:
-        return []
-    taboo = []
-    taboo.append(iterable[0])
-    for i in iterable[1:]:
-        if i != taboo[-1]:
-            taboo.append(i)
-    return taboo
-
-
-test.assert_equals(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])
 
 
 
@@ -1905,9 +1751,11 @@ def bouncing_ball(h, bounce, window):
         counter += 2
         h *= bounce
     return counter
-bouncing_ball(3, 0.66, 1.5)
-bouncing_ball(2, 0.5, 1)
-bouncing_ball(2, 1, 1)
+(bouncing_ball(2, 1, 1), -1)
+(bouncing_ball(2, 0.5, 1), 1)
+(bouncing_ball(3, 0.66, 1.5), 3)
+(bouncing_ball(30, 0.66, 1.5), 15)
+(bouncing_ball(30, 0.75, 1.5), 21)
 
 def bouncing_ball(h, bounce, window):
     if not (h > 0 
@@ -1915,15 +1763,6 @@ def bouncing_ball(h, bounce, window):
             and window < h):
         return -1
     return 2 + bouncing_ball(bounce * h, bounce, window)
-
-
-
-@test.it('Fixed Tests')
-def tests():
-    testing(2, 0.5, 1, 1)
-    testing(3, 0.66, 1.5, 3)
-    testing(30, 0.66, 1.5, 15)
-    testing(30, 0.75, 1.5, 21)
 
 
 
@@ -1940,23 +1779,16 @@ Note: if there is nothing to sum, the sum is default to 0."""
 
 def positive_sum(arr):
     return sum(filter(lambda x: x > 0, arr))
-positive_sum([1, -4, 7, 12])
+(positive_sum([1, -4, 7, 12]), 20)
+(positive_sum([1, 2, 3, 4, 5]), 15)
+(positive_sum([1, -2, 3, 4, 5]), 13)
+(positive_sum([-1, 2, 3, 4, -5]), 9)
 
 def positive_sum(arr):
     return sum(i for i in arr if i > 0)
 
 
-@test.describe("positive_sum")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(positive_sum([1,2,3,4,5]),15)
-        test.assert_equals(positive_sum([1,-2,3,4,5]),13)
-        test.assert_equals(positive_sum([-1,2,3,4,-5]),9)
         
-    @test.it("returns 0 when array is empty")
-    def empty_case():
-        test.assert_equals(positive_sum([]),0)  
 
 
 
@@ -1972,8 +1804,10 @@ For example:
 
 
 def maps(a):
-    return [i * 2 for i in a]
-maps([1, 2, 3])
+    return [number * 2 for number in a]
+(maps([1, 2, 3]), [2, 4, 6])
+(maps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), [0, 2, 4, 6, 8, 10, 12, 14, 16, 18])
+(maps([]), [])
 
 def maps(a):
     return list(map(lambda x: x * 2, a))
@@ -1981,15 +1815,6 @@ def maps(a):
 import numpy as np
 def maps(a):
     return list(2 * np.array(a))
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(maps([1, 2, 3]), [2, 4, 6])
-        test.assert_equals(maps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), [0, 2, 4, 6, 8, 10, 12, 14, 16, 18])
-        test.assert_equals(maps([]), [])
 
 
 
@@ -2007,31 +1832,14 @@ solution('abc', 'd') # returns false"""
 
 def solution(string, ending):
     return string.endswith(ending)
-solution('abcde', 'cde')
-solution('sumo', 'omo')
-solution('samurai', 'ai')
-solution('samurai', '')
-
-def solution(text, ending):
-    return ending == text[-len(ending):]tex
+(solution('abcde', 'cde'), True)
+(solution('abcde', 'abc'), False)
+(solution('abcde', ''), True)
 
 def solution(string, ending):
     if not ending:
         return True
     return ending == string[-len(ending):]
-
-def solution(string, ending):
-    if not ending:
-        return True
-    return True if ''.join(reversed(string)).find(''.join(reversed(ending))) == 0 and string.find(ending) != -1 else False
-solution('abcde', 'cde')
-solution('sumo', 'omo')
-solution('samurai', 'ai')
-
-
-test.assert_equals(solution('abcde', 'cde'), True)
-test.assert_equals(solution('abcde', 'abc'), False)
-test.assert_equals(solution('abcde', ''), True)
 
 
 
@@ -2074,7 +1882,7 @@ def is_triangle(a, b, c):
     return 2 * max((a, b, c)) < sum((a, b, c))
 
 def is_triangle(a, b, c):
-    return (a < b+c) and (b < a+c) and (c < a+b)
+    return (a < b + c) and (b < a + c) and (c < a + b)
 
 
 
@@ -2094,10 +1902,10 @@ Should return "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 1
 
 
 def alphabet_position(text):
-    # text = text.replace(' ', '').lower()
     # return ' '.join(str(ord(i) - 96) for i in text.lower() if i.isalpha())
     return ' '.join(str(ord(i) - ord("a") + 1) for i in text.lower() if i.isalpha())
-alphabet_position("The sunset sets at twelve o' clock.")
+(alphabet_position("The sunset sets at twelve o' clock."), "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
+(alphabet_position("The narwhal bacons at midnight."), "20 8 5 14 1 18 23 8 1 12 2 1 3 15 14 19 1 20 13 9 4 14 9 7 8 20")
 
 import string
 def alphabet_position(text):
@@ -2114,16 +1922,6 @@ def alphabet_position(text):
     return ' '.join(str(ord(i.lower()) - 96) for i in filtered_text)
 
 
-from random import randint
-test.assert_equals(alphabet_position("The sunset sets at twelve o' clock."), "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
-test.assert_equals(alphabet_position("The narwhal bacons at midnight."), "20 8 5 14 1 18 23 8 1 12 2 1 3 15 14 19 1 20 13 9 4 14 9 7 8 20")
-
-number_test = ""
-for item in range(10):
-    number_test += str(randint(1, 9))
-test.assert_equals(alphabet_position(number_test), "")
-
-
 
 
 
@@ -2133,21 +1931,16 @@ test.assert_equals(alphabet_position(number_test), "")
 In this simple Kata your task is to create a function that turns a string into a Mexican Wave. You will be passed a string and you must return that string in an array where an uppercase letter is a person standing up. 
 Rules
  1.  The input string will always be lower case but maybe empty.
-
  2.  If the character in the string is whitespace then pass over it as if it was an empty seat
 Example
 wave("hello") => ["Hello", "hEllo", "heLlo", "helLo", "hellO"]"""
 
 
 def wave(people):
-    return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if (people[:i] + people[i].upper() + people[i+1:]) != people]
+    return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if people[i].isalpha()]
 wave('hello')
 wave('')
-
-def wave(people):
-    return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if people[i].isalpha()]
-
-
+wave('codewars')
 result = ["Codewars", "cOdewars", "coDewars", "codEwars", "codeWars", "codewArs", "codewaRs", "codewarS"]
 
 
@@ -2170,38 +1963,29 @@ The array will always have at least 2 elements1 and all elements will be numbers
 
 
 def first_non_consecutive(arr):
+    for ind, number in enumerate(arr[1:]):
+        if number != arr[ind] + 1:
+            return number
+    return None
+(first_non_consecutive([1, 2, 3, 4, 6, 7, 8]), 6)
+(first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 8]), None)
+(first_non_consecutive([4, 6, 7, 8, 9, 11]), 6)
+(first_non_consecutive([4, 5, 6, 7, 8, 9, 11]), 11)
+(first_non_consecutive([31, 32]), None)
+(first_non_consecutive([-3, -2, 0, 1]), 0)
+(first_non_consecutive([-5, -4, -3, -1]), -1)
+
+
+def first_non_consecutive(arr):
     for i in range(len(arr) - 1):
         if arr[i+1] - arr[i] != 1:
             return arr[i+1]
     return None
-first_non_consecutive([1, 2, 3, 4, 6, 7, 8])
-first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 9])
-first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 8])
-first_non_consecutive([31, 32])
 
 def first_non_consecutive(arr):
     for i, v in enumerate(arr, arr[0]):
         if v != i:
             return v
-
-import numpy as np
-def first_non_consecutive(arr):
-    index = np.array(arr[1:])[list(map(lambda x: x > 1, (arr[i+1] - arr[i] for i in range(len(arr) - 1))))]
-    index = np.array(arr[1:])[list(True if arr[i+1] - arr[i] > 1 else False for i in range(len(arr) - 1))]
-    # return index
-    return None if not index else arr[index[0] - 2]
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(first_non_consecutive([1,2,3,4,6,7,8]), 6)
-        test.assert_equals(first_non_consecutive([1,2,3,4,5,6,7,8]), None)
-        test.assert_equals(first_non_consecutive([4,6,7,8,9,11]), 6)
-        test.assert_equals(first_non_consecutive([4,5,6,7,8,9,11]), 11)
-        test.assert_equals(first_non_consecutive([31,32]), None)
-        test.assert_equals(first_non_consecutive([-3,-2,0,1]), 0)
-        test.assert_equals(first_non_consecutive([-5,-4,-3,-1]), -1)
 
 
 
@@ -2219,7 +2003,7 @@ Jaden-Cased:     "How Can Mirrors Be Real If Our Eyes Aren't Real"
 
 def to_jaden_case(string_text):
     return ' '.join(i.capitalize() for i in string_text.split())
-to_jaden_case("How can mirrors be real if our eyes aren't real")
+(to_jaden_case("How can mirrors be real if our eyes aren't real"), "How Can Mirrors Be Real If Our Eyes Aren't Real")
 
 def to_jaden_case(string_text):
     return ' '.join(map(str.capitalize, string_text.split()))
@@ -2229,9 +2013,6 @@ to_jaden_case("How can mirrors be real if our eyes aren't real")
 import string
 def to_jaden_case(string_text):
     return string.capwords(string_text)
-
-quote = "How can mirrors be real if our eyes aren't real"
-test.assert_equals(to_jaden_case(quote), "How Can Mirrors Be Real If Our Eyes Aren't Real")
 
 
 
@@ -2252,8 +2033,21 @@ Examples
 
 
 def find_it(seq):
-    return [i for i in set(seq) if seq.count(i) % 2][0]
-find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5])
+    return [number for number in set(seq) if seq.count(number) % 2][0]
+(find_it([1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 2, 2, 1]), 4)
+(find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5]), 5)
+(find_it([1, 1, 2, -2, 5, 2, 4, 4, -1, -2, 5]), -1)
+(find_it([20, 1, 1, 2, 2, 3, 3, 5, 5, 4, 20, 4, 5]), 5)
+(find_it([10]), 10)
+(find_it([10, 10, 10]), 10)
+(find_it([1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1]), 10)
+(find_it([5, 4, 3, 2, 1, 5, 4, 3, 2, 10, 10]), 1)
+
+def find_it(seq):
+    for number in set(seq):
+        if seq.count(number) % 2:
+            return number
+    return None
 
 from collections import Counter
 def find_it(seq):
@@ -2267,52 +2061,38 @@ def find_it(seq):
     return None
 
 
-@test.describe("Sample tests")
-def sample_tests():
-    
-    @test.it("find_it([20,1,-1,2,-2,3,3,5,5,1,2,4,20,4,-1,-2,5]) should return 5 (because it appears 3 times)")
-    def _():
-        test.assert_equals(find_it([20,1,-1,2,-2,3,3,5,5,1,2,4,20,4,-1,-2,5]), 5)
-        
-    @test.it("find_it([1,1,2,-2,5,2,4,4,-1,-2,5]) should return -1 (because it appears 1 time)")
-    def _():
-        test.assert_equals(find_it([1,1,2,-2,5,2,4,4,-1,-2,5]), -1);
-        
-    @test.it("find_it([20,1,1,2,2,3,3,5,5,4,20,4,5]) should return 5 (because it appears 3 times)")
-    def _():
-        test.assert_equals(find_it([20,1,1,2,2,3,3,5,5,4,20,4,5]), 5);
-        
-    @test.it("find_it([10]) should return 10 (because it appears 1 time)")
-    def _():
-        test.assert_equals(find_it([10]), 10);
-
-    @test.it("find_it([10, 10, 10]) should return 10 (because it appears 3 times)")
-    def _():
-        test.assert_equals(find_it([10, 10, 10]), 10);        
-        
-    @test.it("find_it([1,1,1,1,1,1,10,1,1,1,1]) should return 10 (because it appears 1 time)")
-    def _():
-        test.assert_equals(find_it([1,1,1,1,1,1,10,1,1,1,1]), 10);
-
-    @test.it("find_it([5,4,3,2,1,5,4,3,2,10,10]) should return 1 (because it appears 1 time)")
-    def _():
-        test.assert_equals(find_it([5,4,3,2,1,5,4,3,2,10,10]), 1);
-
-
 
 
 
 # Highest Scoring Word
 # https://www.codewars.com/kata/57eb8fcdf670e99d9b000272
 """Given a string of words, you need to find the highest scoring word.
-
 Each letter of a word scores points according to its position in the alphabet: a = 1, b = 2, c = 3 etc.
-
 You need to return the highest scoring word as a string.
-
 If two words score the same, return the word that appears earliest in the original string.
+All letters will be lowercase and all inputs will be valid.
 
-All letters will be lowercase and all inputs will be valid."""
+(high('take me to semynak'), 'semynak')
+"""
+
+
+def high(x):
+    longest_score = 0
+    longest_word = ""
+    for word in x.split():
+        word_score = sum(ord(letter) - 96 for letter in word)
+        if word_score > longest_score:
+            longest_score = word_score
+            longest_word = word
+    return longest_word
+(high('man i need a taxi up to ubud'), 'taxi')
+(high('what time are we climbing up the volcano'), 'volcano')
+(high('take me to semynak'), 'semynak')
+(high('aa b'), 'aa')
+(high('b aa'), 'b')
+(high('bb d'), 'bb')
+(high('d bb'), 'd')
+(high("aaa b"), "aaa")
 
 
 def high(x):
@@ -2324,40 +2104,32 @@ def high(x):
     word_list = [sum(ord(letter) - ord("a") + 1 for letter in word) for word in x.split()]
     return x.split()[word_list.index(max(word_list))]
 
+# slick
 def high(x):
-    return max(x.split(), key=lambda x: sum(ord(i) - ord("a") + 1 for i in x))
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(high('man i need a taxi up to ubud'), 'taxi')
-        test.assert_equals(high('what time are we climbing up the volcano'), 'volcano')
-        test.assert_equals(high('take me to semynak'), 'semynak')
-        test.assert_equals(high('aa b'), 'aa')
-        test.assert_equals(high('b aa'), 'b')
-        test.assert_equals(high('bb d'), 'bb')
-        test.assert_equals(high('d bb'), 'd')
-        test.assert_equals(high("aaa b"), "aaa")
+    return max(x.split(), key=lambda word: sum(ord(letter) - 96 for letter in word))
 
 
 
 
 
-# 
+
+# Reverse words
+# https://www.codewars.com/kata/5259b20d6021e9e14c0010d4
 """Complete the function that accepts a string parameter, and reverses each word in the string. All spaces in the string should be retained.
 
 Examples
 "This is an example!" ==> "sihT si na !elpmaxe"
-"double  spaces"      ==> "elbuod  secaps""""
+"double  spaces"      ==> "elbuod  secaps"
+"""
 
 
 # string.split(' ') works
 def reverse_words(text):
-    return ' '.join(i[::-1] for i in text.split(' '))
-reverse_words('double   spaced  words')
-reverse_words('The quick brown fox jumps over the lazy dog.')
+    return " ".join(word[::-1] for word in text.split(" "))
+(reverse_words('The quick brown fox jumps over the lazy dog.'), 'ehT kciuq nworb xof spmuj revo eht yzal .god')
+(reverse_words('apple'), 'elppa')
+(reverse_words('a b c d'), 'a b c d')
+(reverse_words('double  spaced  words'), 'elbuod  decaps  sdrow')
 
 def reverse_words(text):
     return ' '.join(''.join(reversed(i)) for i in text.split(' '))
@@ -2375,16 +2147,6 @@ def reverse_words(text):
     return sentence + word
 
 
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(reverse_words('The quick brown fox jumps over the lazy dog.'), 'ehT kciuq nworb xof spmuj revo eht yzal .god')
-        test.assert_equals(reverse_words('apple'), 'elppa')
-        test.assert_equals(reverse_words('a b c d'), 'a b c d')
-        test.assert_equals(reverse_words('double  spaced  words'), 'elbuod  decaps  sdrow')
-
-
 
 
 
@@ -2398,23 +2160,17 @@ The input string will only consist of lower case letters and/or spaces."""
 
 
 def get_count(sentence):
-    return sum(i in 'aeiou' for i in sentence)
-get_count('abracadabra')
-
-def get_count(sentence):
-    return sum(True for i in sentence if i in 'aeiou')
+    return sum(letter in 'aeiou' for letter in sentence)
+    # return sum(True for letter in sentence if letter in 'aeiou')
+(get_count("abracadabra"), 5, f"Incorrect answer for \"abracadabra\"")
 
 import re
 def get_count(sentence):
     return len(re.findall(r"[aeiou]", sentence))
 
 def get_count(sentence):
-    return sum(map(lambda x: True if x in 'aeiou' else False, sentence))
-
-
-@test.it("Should return 5 for \"abracadabra\"")
-def test_abracadabra():    
-    test.assert_equals(get_count("abracadabra"), 5, f"Incorrect answer for \"abracadabra\"")
+    return sum(map(lambda x: x in "aeoiu", sentence))
+    # return sum(map(lambda x: True if x in 'aeiou' else False, sentence))
 
 
 
@@ -2436,33 +2192,20 @@ A few cases:
 (4, 1, 4)     ->  true
 (15, -5, 3)   ->  true"""
 
-def is_divide_by(number, a, b):
-    return not (number % a or number % b)
-is_divide_by(8, 2, 4)
-is_divide_by(-12, 2, -5)
-is_divide_by(45, 1, 6)
-is_divide_by(45, 5, 15)
-is_divide_by(4, 1, 4)
-is_divide_by(15, -5, 3) 
 
 def is_divide_by(number, a, b):
     return not number % a and not number % b
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(is_divide_by(8, 2, 4), True)
-        test.assert_equals(is_divide_by(12, -3, 4), True)
-        test.assert_equals(is_divide_by(8, 3, 4), False)
-        test.assert_equals(is_divide_by(48, 2, -5), False)
-        test.assert_equals(is_divide_by(-100, -25, 10), True)
-        test.assert_equals(is_divide_by(10000, 5, -3), False)
-        test.assert_equals(is_divide_by(4, 4, 2), True)
-        test.assert_equals(is_divide_by(5, 2, 3), False)
-        test.assert_equals(is_divide_by(-96, 25, 17), False)
-        test.assert_equals(is_divide_by(33, 1, 33), True)
+    # return not (number % a or number % b)
+(is_divide_by(8, 2, 4), True)
+(is_divide_by(12, -3, 4), True)
+(is_divide_by(8, 3, 4), False)
+(is_divide_by(48, 2, -5), False)
+(is_divide_by(-100, -25, 10), True)
+(is_divide_by(10000, 5, -3), False)
+(is_divide_by(4, 4, 2), True)
+(is_divide_by(5, 2, 3), False)
+(is_divide_by(-96, 25, 17), False)
+(is_divide_by(33, 1, 33), True)
 
 
 
@@ -2518,27 +2261,23 @@ spade         s            3
 def encode(cards):
     figures = "A23456789TJQK"
     symbols = "cdhs"
-    return sorted(figures.find(i[0]) + 13 * symbols.find(i[1]) for i in cards)
-encode(['Ac', 'Ks', '5h', 'Td', '3c'])
-encode(["Td", "8c", "Ks"])
-
-def decode(cards):
-    figures = "A23456789TJQK"
-    symbols = "cdhs"
-    card_list = [figures[i % 13] + symbols[i // 13] for i in cards]
-    return sorted(card_list, key=lambda x: figures.find(x[0]) + 13 * symbols.find(x[1]))
-decode([0, 51, 30, 22, 2])
-decode([7, 22, 51])    
-
-def encode(cards):
-    figures = 'A23456789TJQK'
-    symbols = 'cdhs'
-    return sorted(figures.index(i[0]) + symbols.find(i[1]) * 13 for i in cards)
+    return sorted(figures.index(figure) + symbols.index(symbol) * 13 for figure, symbol in cards)
+(encode(['Ac', 'Ks', '5h', 'Td', '3c']), [0, 2 ,22, 30, 51])
+(encode(["Td", "8c", "Ks"]), [7, 22, 51])
+(encode(["Qh", "5h", "Ad"]), [13, 30, 37])
+(encode(["8c", "Ks", "Td"]), [7, 22, 51])
+(encode(["Qh", "Ad", "5h"]), [13, 30, 37])
 
 def decode(cards):
     figures = 'A23456789TJQK'
     symbols = 'cdhs'
-    return [figures[i % 13] + symbols[i // 13] for i in sorted(cards)]
+    return [figures[card % 13] + symbols[card // 13] for card in sorted(cards)]
+(decode([0, 51, 30, 22, 2]), ['Ac', '3c', 'Td', '5h', 'Ks'])
+(decode([7, 22, 51]), ["8c", "Td", "Ks"])
+(decode([13, 30, 37]), ["Ad", "5h", "Qh"])
+(decode([7, 51, 22]), ["8c", "Td", "Ks"])
+(decode([13, 37, 30]), ["Ad", "5h", "Qh"])
+
 
 encoding_dict = {'Ac': 0, 'Ad': 13, 'Ah': 26, 'As': 39,
                  '2c': 1, '2d': 14, '2h': 27, '2s': 40,
@@ -2576,25 +2315,6 @@ encode(["Td", "8c", "Ks"])
 def decode(cards):
     return [decoding_dict[i] for i in sorted(cards)]
 decode([7, 22, 51])    
-
-
-
-
-@test.describe("Sample tests")
-def sample_tests():
-    @test.it("Encode")
-    def it_1():
-        test.assert_equals(encode(["Td", "8c", "Ks"]), [7, 22, 51])
-        test.assert_equals(encode(["Qh", "5h", "Ad"]), [13, 30, 37])
-        test.assert_equals(encode(["8c", "Ks", "Td"]), [7, 22, 51])
-        test.assert_equals(encode(["Qh", "Ad", "5h"]), [13, 30, 37])
-
-    @test.it("Decode")
-    def it_2():
-        test.assert_equals(decode([7, 22, 51]), ["8c", "Td", "Ks"])
-        test.assert_equals(decode([13, 30, 37]), ["Ad", "5h", "Qh"])
-        test.assert_equals(decode([7, 51, 22]), ["8c", "Td", "Ks"])
-        test.assert_equals(decode([13, 37, 30]), ["Ad", "5h", "Qh"])
 
 
 
@@ -2833,7 +2553,7 @@ def getAllPrimeFactors(n):
         # if n == 1:
             # break
     return sol
-getAllPrimeFactors(100)
+(getAllPrimeFactors(100), [2, 2, 5, 5])
 
 def getAllPrimeFactors(n):
     decomp = []
@@ -2848,31 +2568,38 @@ def getAllPrimeFactors(n):
 getAllPrimeFactors(100)
 
 
+
 from collections import Counter
 def getUniquePrimeFactorsWithCount(n):
     factors = Counter(getAllPrimeFactors(n))
-    return [list(factors.keys()), list(factors.values())]
-getUniquePrimeFactorsWithCount(100)
+    return list(zip(*factors.items()))
+    # return [list(factors.keys()), list(factors.values())]
+(getUniquePrimeFactorsWithCount(100), [[2, 5], [2, 2]])
 getUniquePrimeFactorsWithCount(1)
 getUniquePrimeFactorsWithCount(0)
 getUniquePrimeFactorsWithCount(-1)
 
 def getUniquePrimeFactorsWithCount(n):
-    prime_set = set(getAllPrimeFactors(n))
-    values = [getAllPrimeFactors(n).count(i) for i in prime_set]
-    return [sorted(list(prime_set)), values]
+    prime_set = getAllPrimeFactors(n)
+    factors = {number: prime_set.count(number) for number in set(prime_set)}
+    return list(zip(*factors.items()))
+    # return [list(factors.keys()), list(factors.values())]
+
+
 
 def getUniquePrimeFactorsWithProducts(n):
-    factors = getUniquePrimeFactorsWithCount(n)
-    return [a**b for a, b in zip(*factors)]
-    return [a**b for a, b in zip(factors[0], factors[1])]
-getUniquePrimeFactorsWithProducts(100)
+    getAll = getAllPrimeFactors(n)
+    return [number ** getAll.count(number) for number in set(getAll)]
+    # return [k ** v for k, v in Counter(getAllPrimeFactors(n)).items()]
+(getUniquePrimeFactorsWithProducts(100), [4, 25])
 getUniquePrimeFactorsWithProducts(1)
 getUniquePrimeFactorsWithProducts(0)
 getUniquePrimeFactorsWithProducts(-1)
 
 def getUniquePrimeFactorsWithProducts(n):
-    return [k ** v for k, v in Counter(getAllPrimeFactors(n)).items()]
+    factors = getUniquePrimeFactorsWithCount(n)
+    return [a**b for a, b in zip(*factors)]
+    return [a**b for a, b in zip(factors[0], factors[1])]
 
 def getUniquePrimeFactorsWithProducts(n):
     power1 = getUniquePrimeFactorsWithCount(n)
@@ -2881,16 +2608,7 @@ def getUniquePrimeFactorsWithProducts(n):
 
 import numpy as np
 def getUniquePrimeFactorsWithProducts(n):
-    return list(np.power(list(Counter(getAllPrimeFactors(n)).keys()), 
-                         list(Counter(getAllPrimeFactors(n)).values())))
-
-def getUniquePrimeFactorsWithProducts(n):
     return list(np.power(*getUniquePrimeFactorsWithCount(n)))
-
-
-test.assert_equals(getAllPrimeFactors(100), [2,2,5,5])
-test.assert_equals(getUniquePrimeFactorsWithCount(100), [[2,5],[2,2]])
-test.assert_equals(getUniquePrimeFactorsWithProducts(100), [4,25])
 
 
 
@@ -3002,6 +2720,31 @@ def mix(s1, s2):
             hist[ch] = (-max(val1, val2), which + ":" + ch * max(val1, val2))
     return "/".join(hist[ch][1] for ch in sorted(hist, key=lambda x: hist[x]))
 
+# proble with: '2:eeeee/=:hh/=:rr/2:yy' should equal '2:eeeee/2:yy/=:hh/=:rr'
+import string
+from collections import Counter
+def mix(s1, s2):
+    dict1 = {letter: s1.count(letter) for letter in s1 if letter in string.ascii_lowercase and s1.count(letter) > 1}
+    dict2 = {letter: s2.count(letter) for letter in s2 if letter in string.ascii_lowercase and s2.count(letter) > 1}
+    dict3 =  Counter(dict1) | Counter(dict2)
+    sol = ""
+    for k, v in sorted(dict3.items(), key=lambda x: (-x[1], x[0])):
+        if v == dict1.get(k, -1) and v != dict2.get(k, -1):
+            sol += "1:" + k * v
+        elif v == dict2.get(k, -1) and v != dict1.get(k, -1):
+            sol += "2:" + k * v
+        else:
+            sol += "=:" + k * v
+        sol += "/"
+    return sol[:-1]
+mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &")
+
+
+# c1 {'y': 2, 'e': 2, 'a': 4, 'h': 3, 's': 2}
+# c2 {'m': 3, 'y': 3, 'f': 2, 'r': 2, 'i': 2, 'e': 2, 'n': 5, 'd': 2, 'h': 2, 'a': 3, 's': 2}
+Counter({'n': 5, 'a': 4, 'y': 3, 'h': 3, 'm': 3, 'e': 2, 's': 2, 'f': 2, 'r': 2, 'i': 2, 'd': 2})
+dict_items([('y', 3), ('e', 2), ('oa', 4), ('h', 3), ('s', 2), ('m', 3), ('f', 2), ('r', 2), ('i', 2), ('n', 5), ('d', 2)])
+
 
 test.describe("Mix")
 test.it("Basic Tests")
@@ -3039,16 +2782,22 @@ def tribonacci(signature, n):
     if n == 1:
         return [a]
     """
-    trib_lst = [a, b]
-    for _ in range(n - 2):
-        trib_lst += [c]
-        a, b, c = b, c, a + b + c
-    return trib_lst[:n]
-tribonacci([1, 1, 1], 10)
-tribonacci([1, 1, 1], 0)
-tribonacci([1, 1, 1], 1)
-tribonacci([1, 1, 1], 2)
-tribonacci([0, 0, 1], 6)
+    trib_lst = []
+    for _ in range(n):
+        trib_lst.append(a)
+        a, b, c = b, c, a + b + c 
+    return trib_lst
+(tribonacci([1, 1, 1], 10), [1, 1, 1, 3, 5, 9, 17, 31, 57, 105])
+(tribonacci([0, 0, 1], 10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44])
+(tribonacci([0, 1, 1], 10), [0, 1, 1, 2, 4, 7, 13, 24, 44, 81])
+(tribonacci([1, 0, 0], 10), [1, 0, 0, 1, 1, 2, 4, 7, 13, 24])
+(tribonacci([0, 0, 0], 10), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+(tribonacci([1, 2, 3], 10), [1, 2, 3, 6, 11, 20, 37, 68, 125, 230])
+(tribonacci([3, 2, 1], 10), [3, 2, 1, 6, 9, 16, 31, 56, 103, 190])
+(tribonacci([1, 1, 1], 1), [1])
+(tribonacci([300, 200, 100], 0), [])
+(tribonacci([0.5, 0.5, 0.5], 30), [0.5, 0.5, 0.5, 1.5, 2.5, 4.5, 8.5, 15.5, 28.5, 52.5, 96.5, 177.5, 326.5, 600.5, 1104.5, 2031.5, 3736.5, 6872.5, 12640.5, 23249.5, 42762.5, 78652.5, 144664.5, 266079.5, 489396.5, 900140.5, 1655616.5, 3045153.5, 5600910.5, 10301680.5])
+(tribonacci([5], 1), [])
 
 def gen_tri(signature):
     a, b, c = signature
@@ -3074,31 +2823,11 @@ def tribonacci(signature, n):
     return signature[0:2] + [next(tri_gen) for _ in range(n - 2)]
 
 # from codewars
-def tribonacci(signature, n):
-    res = signature[:n]
-    for _ in range(n - 3): 
-        # res.append(sum(res[-3:]))
-        res += [sum(res[-3:])]
-    return res
-
-# from codewars
 def tribonacci(signature,n):
+    signature = list(signature)
     while len(signature) < n:
         signature.append(sum(signature[-3:]))    
     return signature[:n]
-
-
-test.describe("Basic tests")
-test.assert_equals(tribonacci([1, 1, 1], 10), [1, 1, 1, 3, 5, 9, 17, 31, 57, 105])
-test.assert_equals(tribonacci([0, 0, 1], 10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44])
-test.assert_equals(tribonacci([0, 1, 1], 10), [0, 1, 1, 2, 4, 7, 13, 24, 44, 81])
-test.assert_equals(tribonacci([1, 0, 0], 10), [1, 0, 0, 1, 1, 2, 4, 7, 13, 24])
-test.assert_equals(tribonacci([0, 0, 0], 10), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-test.assert_equals(tribonacci([1, 2, 3], 10), [1, 2, 3, 6, 11, 20, 37, 68, 125, 230])
-test.assert_equals(tribonacci([3, 2, 1], 10), [3, 2, 1, 6, 9, 16, 31, 56, 103, 190])
-test.assert_equals(tribonacci([1, 1, 1], 1), [1])
-test.assert_equals(tribonacci([300, 200, 100], 0), [])
-test.assert_equals(tribonacci([0.5, 0.5, 0.5], 30), [0.5, 0.5, 0.5, 1.5, 2.5, 4.5, 8.5, 15.5, 28.5, 52.5, 96.5, 177.5, 326.5, 600.5, 1104.5, 2031.5, 3736.5, 6872.5, 12640.5, 23249.5, 42762.5, 78652.5, 144664.5, 266079.5, 489396.5, 900140.5, 1655616.5, 3045153.5, 5600910.5, 10301680.5])
 
 
 
@@ -3133,6 +2862,18 @@ Index of the best match."""
 
 
 def best_match(goals1, goals2):
+    ran = range(len(goals1))
+    diff = [goals1[i] - goals2[i] for i in ran]
+    return min(zip(*(ran, diff, goals2)), key=lambda x: (x[1], -x[2]))[0]
+    # return max(zip(*(ran, diff, goals2)), key=lambda x: (-x[1], x[2]))[0]
+(best_match([6, 4],[1, 2]), 1)
+(best_match([1],[0]), 0)
+(best_match([1, 2, 3, 4, 5],[0, 1, 2, 3, 4]), 4)
+(best_match([3, 4, 3],[1, 1, 2]), 2)
+(best_match([4, 3, 4],[1, 1, 1]), 1)
+
+
+def best_match(goals1, goals2):
     to_sort = [(i, a - b, b) for i, (a, b) in enumerate(list(zip(goals1, goals2)))]
     return sorted(to_sort, key=lambda x: (x[1], -x[2]))[0][0]
     # return min(to_sort, key=lambda x: (x[1], -x[2]))[0]
@@ -3153,18 +2894,7 @@ def best_match(goals1, goals2):
     return sorted(range(len(goals)), key=lambda x: (goals[x][0], -goals[x][1]))[0]
 
 
-best_match([6, 4], [1, 2])
-best_match([1], [0])
-best_match([1, 2, 3, 4, 5], [0, 1, 2, 3, 4])
-best_match([3, 4, 3], [1, 1, 2])
-best_match([4, 3, 4], [1, 1, 1])
 
-test.it("Basic Tests")
-test.assert_equals(best_match([6, 4],[1, 2]),1)
-test.assert_equals(best_match([1],[0]),0)
-test.assert_equals(best_match([1, 2, 3, 4, 5],[0, 1, 2, 3, 4]),4)
-test.assert_equals(best_match([3, 4, 3],[1, 1, 2]),2)
-test.assert_equals(best_match([4, 3, 4],[1, 1, 1]),1)
 
 
 
@@ -3206,6 +2936,35 @@ roman_dict = {'I': 1,
 
 bool(re.search(r"DM", "MDM"))
 
+def solution(roman):
+    result = 0
+    if roman.find("CM") != -1:
+        result += 900
+        roman = roman.replace('CM', '')
+    if roman.find("CD") != -1:
+        result += 400
+        roman = roman.replace('CD', '')
+    if roman.find("XC") != -1:
+        result += 90
+        roman = roman.replace('XC', '')
+    if roman.find("XL") != -1:
+        result += 40
+        roman = roman.replace('XL', '')
+    if roman.find("IX") != -1:
+        result += 9
+        roman = roman.replace('IX', '')
+    if roman.find("IV") != -1:
+        result += 4
+        roman = roman.replace('IV', '')
+    return result + sum(roman_dict[i] for i in roman)
+
+(solution('XXI'), 21, 'XXI should == 21')
+(solution('I'), 1, 'I should == 1')
+(solution('IV'), 4, 'IV should == 4')
+(solution('MMVIII'), 2008, 'MMVIII should == 2008')
+(solution('MDCLXVI'), 1666, 'MDCLXVI should == 1666')
+
+
 import re
 def solution(roman):
     result = 0
@@ -3244,64 +3003,7 @@ solution('MDCLXVI')
 solution('MMDCLXVI')
 solution('XIV')
 
-# playground
-solution("MMM")
-solution("MMMCM")
 
-def solution(roman):
-    value = 0
-    
-    value += 1000 * roman.count("M")
-    roman = roman.replace("M", "")
-    
-    if not len(roman):
-        return value
-
-    if roman[0] == "C":
-        value -= 100
-        roman = roman[1:]
-    return value
-
-    value += 500 * roman.count("D")
-    roman = roman.replace("D", "")
-
-    if roman[0] == "C":
-        value -= 100
-        roman = roman[1:]
-
-    value += 100 * roman.count("C")
-    roman = roman.replace("C", "")
-
-    if roman[0] == "X":
-        value -= 10
-        roman = roman[1:]
-
-    value += 50 * roman.count("L")
-    roman = roman.replace("L", "")
-
-    if roman[0] == "X":
-        value -= 10
-        roman = roman[1:]
-
-    value += 10 * roman.count("X")
-    roman = roman.replace("X", "")
-
-    if roman[0] == "I":
-        value -= 1
-        roman = roman[1:]
-
-    value += 5 * roman.count("V")
-    roman = roman.replace("V", "")
-
-    if roman[0] == "I":
-        value -= 1
-        roman = roman[1:]
-
-    value += 1 * roman.count("I")
-    roman = roman.replace("I", "")
-
-    # value += sum(decoder[i] for i in roman)
-    return value
 
 # from codewars, modded
 def solution(roman):
@@ -3326,42 +3028,31 @@ def solution(roman):
 
 
 SYMBOLS = {
-    'M': 1000,
-    'CM': 900,
-    'D': 500,
-    'CD': 400,
-    'C': 100,
-    'XC': 90,
-    'L': 50,
-    'XL': 40,
-    'X': 10,
-    'IX': 9,
-    'V': 5,
-    'IV': 4,
+    'M': 1000, 'CM': -200,
+    'D': 500, 'CD': -200,
+    'C': 100, 'XC': -20,
+    'L': 50, 'XL': -20,
+    'X': 10, 'IX': -2,
+    'V': 5, 'IV': -2,
     'I': 1,
 }
 
 def solution(roman):
     if not roman:
         return 0
-    for k, v in SYMBOLS.items():
-        if roman.startswith(k):
-            return v + solution(roman[len(k):])
+    return sum(roman.count(k) * v for k, v in SYMBOLS.items())
 solution('IV')
 
-values = [('M', 1000), ('CM', -200), ('D', 500), ('CD', -200),
-          ('C', 100), ('XC', -20), ('L', 50), ('XL', -20),
-          ('X', 10), ('IX', -2), ('V', 5), ('IV', -2),
-          ('I', 1)]
+values = [  ('M', 1000), ('CM', -200),
+            ('D', 500), ('CD', -200),
+            ('C', 100), ('XC', -20),
+            ('L', 50), ('XL', -20),
+            ('X', 10), ('IX', -2),
+            ('V', 5), ('IV', -2),
+            ('I', 1)]
 def solution(roman):
     return sum(roman.count(s)*v for s, v in values)
 
-test.describe("Example Tests")
-test.assert_equals(solution('XXI'), 21, 'XXI should == 21')
-test.assert_equals(solution('I'), 1, 'I should == 1')
-test.assert_equals(solution('IV'), 4, 'IV should == 4')
-test.assert_equals(solution('MMVIII'), 2008, 'MMVIII should == 2008')
-test.assert_equals(solution('MDCLXVI'), 1666, 'MDCLXVI should == 1666')
 
 
 
@@ -3383,22 +3074,10 @@ Note: keep the original order of the names in the output."""
 
 def friend(x):
     return [i for i in x if len(i) == 4]
-friend(["Ryan", "Kieran", "Mark"])
-
-def friend(x):
-    return list(filter(lambda y: len(y) == 4, x))
-
-
-import codewars_test as test
-from solution import friend
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Sample Test Cases')
-    def sample_test_cases():
-        test.assert_equals(friend(["Ryan", "Kieran", "Mark",]), ["Ryan", "Mark"])
-        test.assert_equals(friend(["Ryan", "Jimmy", "123", "4", "Cool Man"]), ["Ryan"])
-        test.assert_equals(friend(["Jimm", "Cari", "aret", "truehdnviegkwgvke", "sixtyiscooooool"]), ["Jimm", "Cari", "aret"])
+    # return list(filter(lambda y: len(y) == 4, x))
+(friend(["Ryan", "Kieran", "Mark",]), ["Ryan", "Mark"])
+(friend(["Ryan", "Jimmy", "123", "4", "Cool Man"]), ["Ryan"])
+(friend(["Jimm", "Cari", "aret", "truehdnviegkwgvke", "sixtyiscooooool"]), ["Jimm", "Cari", "aret"])
 
 
 
@@ -3419,23 +3098,20 @@ should return "found the needle at position 5" (in COBOL "found the needle at po
 
 
 def find_needle(haystack):
+    try: 
+        return f"found the needle at position {haystack.index('needle')}" 
+    except ValueError as err:
+        return f"Found a bug !!!: {err}"
+(find_needle(['3', '123124234', None, 'needle', 'world', 'hay', 2, '3', True, False]), 'found the needle at position 3')
+(find_needle(['283497238987234', 'a dog', 'a cat', 'some random junk', 'a piece of hay', 'needle', 'something somebody lost a while ago']), 'found the needle at position 5')
+(find_needle([1,2,3,4,5,6,7,8,8,7,5,4,3,4,5,6,67,5,5,3,3,4,2,34,234,23,4,234,324,324,'needle',1,2,3,4,5,5,6,5,4,32,3,45,54]), 'found the needle at position 30')
+
+
+def find_needle(haystack):
+    return f'found the needle at position {haystack.index("needle")}'
     return 'found the needle at position {}'.format(haystack.index('needle'))
     return 'found the needle at position %d' % haystack.index('needle')
-    return f'found the needle at position {haystack.index("needle")}'
     return "found the needle at position " + str(haystack.index("needle"))
-find_needle(['3', '123124234', None, 'needle', 'world', 'hay', 2, '3', True, False])
-
-
-import codewars_test as test
-from solution import find_needle
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(find_needle(['3', '123124234', None, 'needle', 'world', 'hay', 2, '3', True, False]), 'found the needle at position 3')
-        test.assert_equals(find_needle(['283497238987234', 'a dog', 'a cat', 'some random junk', 'a piece of hay', 'needle', 'something somebody lost a while ago']), 'found the needle at position 5')
-        test.assert_equals(find_needle([1,2,3,4,5,6,7,8,8,7,5,4,3,4,5,6,67,5,5,3,3,4,2,34,234,23,4,234,324,324,'needle',1,2,3,4,5,5,6,5,4,32,3,45,54]), 'found the needle at position 30')
 
 
 
@@ -3454,17 +3130,8 @@ otherwise	'Hello guest'"""
 
 def greet(name, owner):
     return 'Hello boss' if name == owner else 'Hello guest'
-
-
-import codewars_test as test
-from solution import greet
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(greet('Daniel', 'Daniel'), 'Hello boss')
-        test.assert_equals(greet('Greg', 'Daniel'), 'Hello guest')
+(greet('Daniel', 'Daniel'), 'Hello boss')
+(greet('Greg', 'Daniel'), 'Hello guest')
 
 
 
@@ -3483,22 +3150,10 @@ Assume that beast and dish are always lowercase strings, and that each has at le
 
 def feast(beast, dish):
     return beast[0] == dish[0] and beast[-1] == dish[-1]
-feast("great blue heron", "garlic naan")
-
-def feast(beast, dish):
-    return beast.startswith(dish[0]) and beast.endswith(dish[-1])
-
-
-import codewars_test as test
-from solution import feast
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(feast("great blue heron", "garlic naan"), True)
-        test.assert_equals(feast("chickadee", "chocolate cake"), True)
-        test.assert_equals(feast("brown bear", "bear claw"), False)
+#     return beast.startswith(dish[0]) and beast.endswith(dish[-1])
+(feast("great blue heron", "garlic naan"), True)
+(feast("chickadee", "chocolate cake"), True)
+(feast("brown bear", "bear claw"), False)
 
 
 
@@ -3514,25 +3169,21 @@ Example
 ""             =>  """""
 
 
+
+
 def solution(s):
-    return ''.join(' ' + i if i.isupper() else i for i in s)
-solution("helloWorld")
-solution("camelCase")
-solution("breakCamelCase")
+    return "".join([" " + letter if letter.isupper() else letter for letter in s])
+    # return re.sub(r"([A-Z])", r" \1", s)  # import re
+    # return "".join([" " + letter if letter in string.ascii_uppercase else letter for letter in s])  # import string
+(solution("helloWorld"), "hello World")
+(solution("camelCase"), "camel Case")
+(solution("breakCamelCase"), "break Camel Case")
 
 import string
 def solution(s):
     for i in string.ascii_uppercase:
         s = s.replace(i, ' ' + i)
     return s
-
-import re
-def solution(s):
-    return re.sub(r'([A-Z])', r' \1', s)
-
-test.assert_equals(solution("helloWorld"), "hello World")
-test.assert_equals(solution("camelCase"), "camel Case")
-test.assert_equals(solution("breakCamelCase"), "break Camel Case")
 
 
 
@@ -3555,43 +3206,29 @@ s="aaabbbbhaijjjm"
 printer_error(s) => "0/14"
 
 s="aaaxbbbbyyhwawiwjjjwwm"
-printer_error(s) => "8/22""""
+printer_error(s) => "8/22"
+"""
 
 
 def printer_error(s):
-    return '{}/{}'.format(sum(i > 'm' for i in s), len(s))
-    return '{}/{}'.format(sum(ord(i) > 109 for i in s), len(s))
-    return '%d/%d' % (sum(i > 'm' for i in s), len(s))
-    return f"{sum(i > 'm' for i in s)}/{len(s)}"
-printer_error("aaaxbbbbyyhwawiwjjjwwm")
+    return f'{sum(letter > "m" for letter in s)}/{len(s)}'
+    # return f'{sum(True for letter in s if letter > "m" )}/{len(s)}'
+    # return '{}/{}'.format(sum(ord(i) > 109 for i in s), len(s))
+    # return '%d/%d' % (sum(i > 'm' for i in s), len(s))
+(printer_error("aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyz"), "3/56")
+(printer_error("kkkwwwaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyz"), "6/60")
+(printer_error("kkkwwwaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyzuuuuu") , "11/65")
+
+import re
+def printer_error(s):
+    return f'{len(re.findall(r"[o-z]", s))}/{len(s)}'
+    return f'{len(re.sub(r"[a-m]", "", s))}/{len(s)}'    
 
 import string
 def printer_error(s):
     nominator = str(sum(i in string.ascii_lowercase[14:] for i in s))
     denominator = str(len(s))
     return  nominator + "/" + denominator
-
-import re
-def printer_error(s):
-    return '{}/{}'.format(len(re.sub('[a-m]', '', s)), len(s))
-
-import re
-def printer_error(s):
-    return '{}/{}'.format(len(re.findall('[n-z]', s)), len(s))
-
-
-import codewars_test as test
-
-@test.describe("printer_error")
-def basic_tests():
-    @test.it('Example Test Cases')
-    def example_test_cases():
-        s="aaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyz"
-        test.assert_equals(printer_error(s), "3/56")
-        s = "kkkwwwaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyz"
-        test.assert_equals(printer_error(s), "6/60")
-        s = "kkkwwwaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbmmmmmmmmmmmmmmmmmmmxyzuuuuu"
-        test.assert_equals(printer_error(s) , "11/65")
 
 
 
@@ -3613,40 +3250,23 @@ def rps(p1, p2):
     if p1 == p2:
         return 'Draw!'
     winner = {'rock': 'paper', 'scissors': 'rock', 'paper': 'scissors'}
-    if winner[p2] == p1:
-        return 'Player 1 won!'
+    if winner[p1] == p2:
+        return "Player 2 won!"
     else:
-        return 'Player 2 won!'
-rps('scissors','paper')
-rps('scissors','rock')
-rps('paper','paper')
-rps('rock','paper')
-rps('paper','rock')
+        return "Player 1 won!"
+(rps('rock', 'scissors'), "Player 1 won!")
+(rps('scissors', 'rock'), "Player 2 won!")
+(rps('rock', 'rock'), 'Draw!')
 
 def rps(p1, p2):
-    items = ["rock", "paper", "scissors"]
-    items2 = ["paper", "scissors", "rock"]
+    next_win = ("rock", "paper", "scissors")
     if p1 == p2:
         return "Draw!"
-    if items2.index(p1) == items.index(p2):
+    if p2 == next_win[(next_win.index(p1) + 1) % 3]:
+        return "Player 2 won!"
+    else:
         return "Player 1 won!"
-    return "Player 2 won!"
 
-
-import codewars_test as test
-from solution import rps
-
-@test.describe("rock paper scissors")
-def basic_tests():
-    @test.it("Player 1 wins")
-    def player_1():
-        test.assert_equals(rps('rock', 'scissors'), "Player 1 won!")
-    @test.it("Player 1 wins")
-    def player_1():
-        test.assert_equals(rps('scissors', 'rock'), "Player 2 won!")
-    @test.it("Draw")
-    def draw():
-        test.assert_equals(rps('rock', 'rock'), 'Draw!')
 
 
 
@@ -3667,25 +3287,15 @@ Examples(Operator, value1, value2) --> output
 
 
 def basic_op(operator, value1, value2):
-    return eval(str(value1) + operator + str(value2))
     return eval(f'{value1}{operator}{value2}')
-    return eval("{}{}{}".format(value1, operator, value2))
-    return eval('value1' + operator + 'value2')
-    return {'+':a+b,'-':a-b,'*':a*b,'/':a/b}[o]
-basic_op('+', 4, 7)
-
-
-import codewars_test as test
-from solution import basic_op
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(basic_op('+', 4, 7), 11)
-        test.assert_equals(basic_op('-', 15, 18), -3)
-        test.assert_equals(basic_op('*', 5, 5), 25)
-        test.assert_equals(basic_op('/', 49, 7), 7)
+    # return eval(str(value1) + operator + str(value2))
+    # return eval("{}{}{}".format(value1, operator, value2))
+    # return eval('value1' + operator + 'value2')
+    # return {'+':a+b,'-':a-b,'*':a*b,'/':a/b}[o]
+(basic_op('+', 4, 7), 11)
+(basic_op('-', 15, 18), -3)
+(basic_op('*', 5, 5), 25)
+(basic_op('/', 49, 7), 7)
 
 
 
@@ -3727,20 +3337,23 @@ P.S. The situation in this kata can be likened to the more-computer-science-rela
 
 # from codewars
 def queue_time(customers, n):
-    cashiers = [0] * n
+    chechout = [0] * n
     for customer in customers:
-        min_ind = cashiers.index(min(cashiers))
-        cashiers[min_ind] += customer
-    return max(cashiers)
-queue_time([2, 2, 3, 3, 4, 4], 2)
-queue_time([1,2,3,4,5], 1)
-queue_time([1,2,3,4,5], 100)
+        min_ind = chechout.index(min(chechout))
+        chechout[min_ind] += customer
+    return max(chechout)
+(queue_time([], 1), 0, "wrong answer for case with an empty queue")
+(queue_time([5], 1), 5, "wrong answer for a single person in the queue")
+(queue_time([2], 5), 2, "wrong answer for a single person in the queue")
+(queue_time([1, 2, 3, 4, 5], 1), 15, "wrong answer for a single till")
+(queue_time([1, 2, 3, 4, 5], 100), 5, "wrong answer for a case with a large number of tills")
+(queue_time([2, 2, 3, 3, 4, 4], 2), 9, "wrong answer for a case with two tills")
 
 import numpy as np
 def queue_time(customers, n):
     nparray = np.zeros(n, dtype=int)
-    for i in customers:
-        nparray[np.where(nparray == min(nparray))[0][0]] += i
+    for customer in customers:
+        nparray[np.where(nparray == min(nparray))[0][0]] += customer
     return np.max(nparray)
 
 # from codewars
@@ -3782,13 +3395,6 @@ def queue_time(customers,n):
     return MarketQueue(customers,n).calculate_total_time()
 
 
-test.assert_equals(queue_time([], 1), 0, "wrong answer for case with an empty queue")
-test.assert_equals(queue_time([5], 1), 5, "wrong answer for a single person in the queue")
-test.assert_equals(queue_time([2], 5), 2, "wrong answer for a single person in the queue")
-test.assert_equals(queue_time([1,2,3,4,5], 1), 15, "wrong answer for a single till")
-test.assert_equals(queue_time([1,2,3,4,5], 100), 5, "wrong answer for a case with a large number of tills")
-test.assert_equals(queue_time([2,2,3,3,4,4], 2), 9, "wrong answer for a case with two tills")
-
 
 
 
@@ -3826,31 +3432,17 @@ The two arrays have the same size (> 0) given as parameter in function comp."""
 
 
 def comp(array1, array2):
-    if array1 == [] and array2 == []:
-        return True
-    if not (array1 and array2) :
-        return False
-    return sorted(i ** 2 for i in array1) == sorted(array2)
-comp([121, 144, 19, 161, 19, 144, 19, 11], [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19])
-comp([], [])
-
-
-import codewars_test as test
-from solution import comp
-
-@test.describe("Same")
-def tests():
-    @test.it("Fixed tests")
-    def basics():
-        a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-        a2 = [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
-        test.assert_equals(comp(a1, a2), True)
-        a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-        a2 = [11*21, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
-        test.assert_equals(comp(a1, a2), False)
-        a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-        a2 = [11*11, 121*121, 144*144, 190*190, 161*161, 19*19, 144*144, 19*19]
-        test.assert_equals(comp(a1, a2), False)
+    # return set([number ** 2 for number in array1]) == set(array2)
+    return set(map(lambda x: x ** 2, array1)) == set(array2)
+a1 = [121, 144, 19, 161, 19, 144, 19, 11]
+a2 = [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
+(comp(a1, a2), True)
+a1 = [121, 144, 19, 161, 19, 144, 19, 11]
+a2 = [11*21, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
+(comp(a1, a2), False)
+a1 = [121, 144, 19, 161, 19, 144, 19, 11]
+a2 = [11*11, 121*121, 144*144, 190*190, 161*161, 19*19, 144*144, 19*19]
+(comp(a1, a2), False)
 
 
 
@@ -3931,20 +3523,6 @@ def dir_reduc(arr):
     arr2 = arr2.split()
     return arr2 if len(arr) == len(arr2) else dir_reduc(arr2)
 
-import re
-def dir_reduc(arr):
-    arr2 = ' '.join(arr)
-    rep = True
-    while rep:
-        test_len = len(arr2)
-        arr2 = re.sub(r'NORTH SOUTH\s?', '', arr2)
-        arr2 = re.sub(r'SOUTH NORTH\s?', '', arr2)
-        arr2 = re.sub(r'EAST WEST\s?', '', arr2)
-        arr2 = re.sub(r'WEST EAST\s?', '', arr2)
-        if test_len == len(arr2):
-            rep = False
-    return arr2.split()
-
 
 
 
@@ -3964,12 +3542,8 @@ XO("zzoo") => false"""
 
 def xo(s):
     return s.lower().count('x') == s.lower().count('o')
-xo('xo')
-
-
-test.expect(xo('xo'), 'True expected')
-test.expect(xo('xo0'), 'True expected')
-test.expect(not xo('xxxoo'), 'False expected')
+(xo('xo'), 'True expected')
+(xo('xo0'), 'True expected')
 
 
 
@@ -3989,12 +3563,26 @@ We need a function to collect these numbers, that may receive two integers a, b 
 
 Let's see some cases:
 
-sum_dig_pow(1, 10) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+is_power_sum(1, 10) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-sum_dig_pow(1, 100) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 89]
+is_power_sum(1, 100) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 89]
 If there are no numbers of this kind in the range [a, b] the function should output an empty list.
 
-sum_dig_pow(90, 100) == []"""
+is_power_sum(90, 100) == []"""
+
+
+def sum_dig_pow(a, b):
+    sum_dig = []
+    for number in range(a, b + 1):
+        if number == sum(int(digit) ** index for index, digit in enumerate(str(number), 1)):
+            sum_dig.append(number)
+    return sum_dig
+(sum_dig_pow(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9])
+(sum_dig_pow(1, 100), [1, 2, 3, 4, 5, 6, 7, 8, 9, 89])
+(sum_dig_pow(10, 89),  [89])
+(sum_dig_pow(10, 100),  [89])
+(sum_dig_pow(90, 100), [])
+(sum_dig_pow(89, 135), [89, 135])
 
 
 # from codewars
@@ -4003,23 +3591,9 @@ def is_power_sum(number):
 
 def sum_dig_pow(a, b):
     return list(filter(is_power_sum, range(a, b + 1)))
-sum_dig_pow(1, 100)
-sum_dig_pow(89, 135)
 
 def sum_dig_pow(a, b):
     return [number for number in range(a, b + 1) if is_power_sum(number)]
-
-def sum_dig_pow(a, b):  # range(a, b + 1) will be studied by the function
-    return [number for number in range(a, b + 1) if number == sum(int(digit) ** (i + 1) for i, digit in enumerate(str(number)))]
-
-
-test.describe("Example Tests")
-test.assert_equals(sum_dig_pow(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9])
-test.assert_equals(sum_dig_pow(1, 100), [1, 2, 3, 4, 5, 6, 7, 8, 9, 89])
-test.assert_equals(sum_dig_pow(10, 89),  [89])
-test.assert_equals(sum_dig_pow(10, 100),  [89])
-test.assert_equals(sum_dig_pow(90, 100), [])
-test.assert_equals(sum_dig_pow(89, 135), [89, 135])
 
 
 
@@ -4045,18 +3619,8 @@ output = ["Open", "Open", "Senior", "Open", "Open", "Senior"]
 
 def open_or_senior(data):
     return ['Senior' if age > 54 and handicap > 7 else 'Open' for age, handicap in data]
-open_or_senior([(45, 12),(55,21),(19, -2),(104, 20)])
-
-
-import codewars_test as test
-from solution import open_or_senior
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():    
-        test.assert_equals(open_or_senior([(45, 12),(55,21),(19, -2),(104, 20)]),['Open', 'Senior', 'Open', 'Senior'])
-        test.assert_equals(open_or_senior([(16, 23),(73,1),(56, 20),(1, -1)]),['Open', 'Open', 'Senior', 'Open'])
+(open_or_senior([(45, 12),(55,21),(19, -2),(104, 20)]),['Open', 'Senior', 'Open', 'Senior'])
+(open_or_senior([(16, 23),(73,1),(56, 20),(1, -1)]),['Open', 'Open', 'Senior', 'Open'])
 
 
 
@@ -4064,7 +3628,7 @@ def fixed_tests():
 
 # Opposites Attract
 # https://www.codewars.com/kata/555086d53eac039a2a000083
-"""Timmy & Sarah think they are in love, but around where they live, they will only know once they pick a flower each. If one of the flowers has an even number of petals and the other has an odd number of petals it means they are in love.
+"""Timmy & Sarah think they are in love, but around where they live, they will only know once they pick a flower each. If one of the flowers has an even number of petals uand the other has an odd number of petals it means they are in love.
 
 Write a function that will take the number of petals of each flower and return true if they are in love and false if they aren't.
 
@@ -4073,32 +3637,13 @@ Write a function that will take the number of petals of each flower and return t
 
 def lovefunc(flower1, flower2):
     return bool((flower1 + flower2) % 2)
-lovefunc(1,4)
-lovefunc(2,2)
-lovefunc(0,1)
-lovefunc(0,0)
-
-def lovefunc(flower1, flower2):
-    return (flower1 + flower2) % 2
-
-def lovefunc( flower1, flower2 ):
-    return (flower1 + flower2) % 2 == 1
+(lovefunc(1,4), True)
+(lovefunc(2,2), False)
+(lovefunc(0,1), True)
+(lovefunc(0,0), False)
 
 def lovefunc(flower1, flower2):
     return bool(flower1 % 2 ^ flower2 % 2)
-
-
-import codewars_test as test
-from solution import lovefunc
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(lovefunc(1,4), True)
-        test.assert_equals(lovefunc(2,2), False)
-        test.assert_equals(lovefunc(0,1), True)
-        test.assert_equals(lovefunc(0,0), False)
 
 
 
@@ -4132,16 +3677,13 @@ dig_pow(46288, 3) should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 236068
 
 
 def dig_pow(n, p):
-    sum_of_pow = sum(pow(int(digit), ind) for ind, digit in enumerate(str(n), p)) / n
+    sum_of_pow = sum(int(digit) ** index for index, digit in enumerate(str(n), p)) / n
+    # sum_of_pow = sum(pow(int(digit), ind) for ind, digit in enumerate(str(n), p)) / n
     return sum_of_pow if not sum_of_pow % 1 else -1
-dig_pow(89, 1)
-dig_pow(92, 1)
-dig_pow(46288, 3)
-dig_pow(695, 2)
-
-def dig_pow(n, p):
-    sum_of_pow = sum(int(digit) ** ind for ind, digit in enumerate(str(n), p)) / n
-    return sum_of_pow if not sum_of_pow % 1 else -1
+(dig_pow(695, 2), 2)
+(dig_pow(89, 1), 1)
+(dig_pow(92, 1), -1)
+(dig_pow(46288, 3), 51)
 
 def dig_pow(n, p):
     sum_of_pow = sum(int(digit) ** ind for ind, digit in enumerate(str(n), p))
@@ -4157,9 +3699,6 @@ def dig_pow(n, p):
     return the_sum // n if not the_sum % n else -1
 
 
-test.assert_equals(dig_pow(89, 1), 1)
-test.assert_equals(dig_pow(92, 1), -1)
-test.assert_equals(dig_pow(46288, 3), 51)
 
 
 
@@ -4178,19 +3717,10 @@ setAlarm(true, false) -> true"""
 
 def set_alarm(employed, vacation):
     return employed and not vacation
-
-
-import codewars_test as test
-from solution import set_alarm
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(set_alarm(True, True), False, "Fails when input is True, True")
-        test.assert_equals(set_alarm(False, True), False, "Fails when input is False, True")
-        test.assert_equals(set_alarm(False, False), False, "Fails when input is False, False")
-        test.assert_equals(set_alarm(True, False), True, "Fails when input is True, False")
+(set_alarm(True, True), False, "Fails when input is True, True")
+(set_alarm(False, True), False, "Fails when input is False, True")
+(set_alarm(False, False), False, "Fails when input is False, False")
+(set_alarm(True, False), True, "Fails when input is True, False")
 
 
 
@@ -4216,22 +3746,10 @@ cap = 100, on = 60, wait = 50 --> 10 # He can't fit 10 of the 50 waiting"""
 
 def enough(cap, on, wait):
     return -min(cap - on - wait, 0)
-enough(10, 5, 5)
-enough(100, 60, 5)
-enough(100, 60, 50)
-enough(20, 5, 5)
-
-def enough(cap, on, wait):
-    return max(0, wait - cap + on)
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(enough(10, 5, 5), 0)
-        test.assert_equals(enough(100, 60, 50), 10)
-        test.assert_equals(enough(20, 5, 5), 0)
+    # return max(0, wait - cap + on)
+(enough(10, 5, 5), 0)
+(enough(100, 60, 50), 10)
+(enough(20, 5, 5), 0)
 
 
 
@@ -4259,49 +3777,13 @@ Examples:(Input --> Output)
 
 def series_sum(n):
     sequence_sum = sum(1/(3*i + 1) for i in range(n))
-    return '{:.2f}'.format(sequence_sum)
+    return f"{sequence_sum:.2f}"
+    return "{:.2f}".format(sequence_sum)
     return "%.2f" % sequence_sum
-    return f"{sequence_sumr:.2f}"
-series_sum(1)
-series_sum(2)
-series_sum(3)
-series_sum(5)
-
-def series_sum(n):
-    if n == 1:
-        return "1.00"
-    if n == 0:
-        return "0.00"
-    the_sum = sum(1/((3*ind) + 1) for ind in range(n))
-    sol = str(round(the_sum, 2)) 
-    return sol + "0" if len(sol) == 3 else sol
-
-# prime numbers generator
-def series_sum(n):
-    prime_list = []
-    i = 1
-    while True:
-        i += 1
-        ifin = []
-        for j in range(2, i + 1):
-            ifin.append(not i % j)
-        if sum(ifin) == 1:
-            prime_list.append(i)
-        if len(prime_list) == n:
-            break
-    return prime_list
-
-
-import codewars_test as test
-from solution import series_sum
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(series_sum(1), "1.00")
-        test.assert_equals(series_sum(2), "1.25")
-        test.assert_equals(series_sum(3), "1.39")
+(series_sum(0), "0.00")
+(series_sum(1), "1.00")
+(series_sum(2), "1.25")
+(series_sum(3), "1.39")
 
 
 
@@ -4319,27 +3801,18 @@ Example:
 
 
 def digitize(n):
-    return list(reversed([int(i) for i in str(n)]))
-    return [int(i) for i in str(n)][::-1]
-    return [int(i) for i in reversed(str(n))]
+    return [int(digit) for digit in reversed(str(n))]
+    return list(reversed([int(digit) for digit in str(n)]))
+    return [int(digit) for digit in str(n)][::-1]
     return list(map(int, str(n)[::-1]))
     return list(map(int, str(n)))[::-1]
-digitize(35231)
-
-
-import codewars_test as test
-from solution import digitize
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(digitize(35231),[1,3,2,5,3])
-        test.assert_equals(digitize(0),[0])
-        test.assert_equals(digitize(23582357),[7,5,3,2,8,5,3,2])
-        test.assert_equals(digitize(984764738),[8,3,7,4,6,7,4,8,9])
-        test.assert_equals(digitize(45762893920),[0,2,9,3,9,8,2,6,7,5,4])
-        test.assert_equals(digitize(548702838394),[4,9,3,8,3,8,2,0,7,8,4,5])
+(digitize(348597), [7, 9, 5, 8, 4, 3])
+(digitize(35231), [1, 3, 2, 5, 3])
+(digitize(0), [0])
+(digitize(23582357), [7, 5, 3, 2, 8, 5, 3, 2])
+(digitize(984764738), [8, 3, 7, 4, 6, 7, 4, 8, 9])
+(digitize(45762893920), [0, 2, 9, 3, 9, 8, 2, 6, 7, 5, 4])
+(digitize(548702838394), [4, 9, 3, 8, 3, 8, 2, 0, 7, 8, 4, 5])
 
 
 
@@ -4369,22 +3842,17 @@ def get_middle(s):
         return s[(len_s-1) // 2]
     else:
         return s[len_s//2 - 1 : len_s//2 + 1]
-get_middle("testing")
-get_middle("test")
-get_middle('')
-
-def get_middle(s):
-    return get_middle(s[1:-1]) if len(s) > 2 else s
+(get_middle("test"), "es")
+(get_middle("testing"), "t")
+(get_middle("middle"), "dd")
+(get_middle("A"), "A")
+(get_middle("of"), "of")
 
 def get_middle(s):
     return s[(len(s)-1) // 2 : len(s)//2 + 1]
 
-
-test.assert_equals(get_middle("test"),"es")
-test.assert_equals(get_middle("testing"),"t")
-test.assert_equals(get_middle("middle"),"dd")
-test.assert_equals(get_middle("A"),"A")
-test.assert_equals(get_middle("of"),"of")
+def get_middle(s):
+    return get_middle(s[1:-1]) if len(s) > 2 else s
 
 
 
@@ -4409,30 +3877,17 @@ def rental_car_cost(d):
         return d * 40 - 20
     else:
         return d * 40
+(rental_car_cost(1), 40)
+(rental_car_cost(4), 140)
+(rental_car_cost(7), 230)
+(rental_car_cost(8), 270)
     
 def rental_car_cost(d):
     return 40*d if d < 3 else 40*d - 20 if d < 7 else 40*d - 50
-rental_car_cost(1)
-rental_car_cost(4)
-rental_car_cost(7)
-rental_car_cost(8)
 
 # from codewars
 def rental_car_cost(d):
     return 40*d - (d > 2)*20 - (d > 6)*30
-
-
-import codewars_test as test
-from solution import rental_car_cost
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(rental_car_cost(1),40)
-        test.assert_equals(rental_car_cost(4),140)
-        test.assert_equals(rental_car_cost(7),230)
-        test.assert_equals(rental_car_cost(8),270)
 
 
 
@@ -4455,25 +3910,11 @@ def abbrev_name(name):
     return ".".join(i[0].upper() for i in name.split())
     return '.'.join(i[0] for i in name.split()).upper()
     return ".".join(map(lambda x: x[0].upper(), name.split()))
-abbrev_name("Sam Harris")
-
-
-import codewars_test as test
-
-try:
-    from solution import abbrevName as abbrev_name
-except ImportError:
-    from solution import abbrev_name
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(abbrev_name("Sam Harris"), "S.H")
-        test.assert_equals(abbrev_name("patrick feenan"), "P.F")
-        test.assert_equals(abbrev_name("Evan C"), "E.C")
-        test.assert_equals(abbrev_name("P Favuzzi"), "P.F")
-        test.assert_equals(abbrev_name("David Mendieta"), "D.M")
+(abbrev_name("Sam Harris"), "S.H")
+(abbrev_name("patrick feenan"), "P.F")
+(abbrev_name("Evan C"), "E.C")
+(abbrev_name("P Favuzzi"), "P.F")
+(abbrev_name("David Mendieta"), "D.M")
 
 
 
@@ -4497,25 +3938,16 @@ def count_by(x, n):
     return list(range(x, n*x + 1, x))
     return [x * i for i in range(1, n + 1)]
     return list(map(lambda y: x*y, range(1, n+1)))
-count_by(2, 5)
+(count_by(1, 5), [1, 2, 3, 4, 5])
+(count_by(2, 5), [2, 4, 6, 8, 10])
+(count_by(3, 5), [3, 6, 9, 12, 15])
+(count_by(50, 5), [50, 100, 150, 200, 250])
+(count_by(100, 5), [100, 200, 300, 400, 500])
 
 import numpy as np
 def count_by(x, n):
     return list(np.array(range(1, n + 1)) * x)
 
-
-import codewars_test as test
-from solution import count_by
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it("Fixed tests")
-    def fixed_tests():   
-        test.assert_equals(count_by(1, 5), [1, 2, 3, 4, 5])
-        test.assert_equals(count_by(2, 5), [2, 4, 6, 8, 10])
-        test.assert_equals(count_by(3, 5), [3, 6, 9, 12, 15])
-        test.assert_equals(count_by(50, 5), [50, 100, 150, 200, 250])
-        test.assert_equals(count_by(100, 5), [100, 200, 300, 400, 500])
 
 
 
@@ -4532,24 +3964,13 @@ n=-5, m=5:  0"""
 
 
 def paperwork(n, m):
-    return n * m if n > 0 and m > 0 else 0
     return max(n, 0) * max(m, 0)
-paperwork(5, 5)
-paperwork(-5, 5)
-
-
-import codewars_test as test
-from solution import paperwork
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(paperwork(5,5), 25, "Failed at Paperwork(5,5)")
-        test.assert_equals(paperwork(-5,5), 0, "Failed at Paperwork(-5,5)")
-        test.assert_equals(paperwork(5,-5), 0, "Failed at Paperwork(5,-5)")
-        test.assert_equals(paperwork(-5,-5), 0, "Failed at Paperwork(-5,-5)")
-        test.assert_equals(paperwork(5,0), 0, "Failed at Paperwork(5,0)")
+    return n * m if n > 0 and m > 0 else 0
+(paperwork(5,5), 25, "Failed at Paperwork(5,5)")
+(paperwork(-5,5), 0, "Failed at Paperwork(-5,5)")
+(paperwork(5,-5), 0, "Failed at Paperwork(5,-5)")
+(paperwork(-5,-5), 0, "Failed at Paperwork(-5,-5)")
+(paperwork(5,0), 0, "Failed at Paperwork(5,0)")
 
 
 
@@ -4575,25 +3996,12 @@ However, the arrays can have varying lengths, not just limited to 4."""
 
 
 def binary_array_to_number(arr):
-    return int(''.join(map(str, arr)), 2)
-binary_array_to_number([0, 0, 0, 1])
-binary_array_to_number([1, 1, 1, 1])
-
-def binary_array_to_number(arr):
     return int(''.join(str(i) for i in arr), 2)
-
-
-import codewars_test as test
-from solution import binary_array_to_number
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(binary_array_to_number([0,0,0,1]), 1)
-        test.assert_equals(binary_array_to_number([0,0,1,0]), 2)
-        test.assert_equals(binary_array_to_number([1,1,1,1]), 15)
-        test.assert_equals(binary_array_to_number([0,1,1,0]), 6)
+    return int(''.join(map(str, arr)), 2)
+(binary_array_to_number([0, 0, 0, 1]), 1)
+(binary_array_to_number([0, 0, 1, 0]), 2)
+(binary_array_to_number([1, 1, 1, 1]), 15)
+(binary_array_to_number([0, 1, 1, 0]), 6)
 
 
 
@@ -4608,23 +4016,15 @@ String will never be empty and you do not need to account for different data typ
 
 def find_short(s):
     return len(min(s.split(), key=len))
-    return min(map(len, s.split()))
-    return min(len(i) for i in s.split())
-
-
-import codewars_test as test
-from solution import find_short
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(find_short("bitcoin take over the world maybe who knows perhaps"), 3)
-        test.assert_equals(find_short("turns out random test cases are easier than writing out basic ones"), 3)
-        test.assert_equals(find_short("lets talk about javascript the best language"), 3)
-        test.assert_equals(find_short("i want to travel the world writing code one day"), 1)
-        test.assert_equals(find_short("Lets all go on holiday somewhere very cold"), 2)   
-        test.assert_equals(find_short("Let's travel abroad shall we"), 2)
+    # return len(min(s.split(), key=lambda x: len(x)))
+    # return min(map(len, s.split()))
+    # return min(len(i) for i in s.split())
+(find_short("bitcoin take over the world maybe who knows perhaps"), 3)
+(find_short("turns out random test cases are easier than writing out basic ones"), 3)
+(find_short("lets talk about javascript the best language"), 3)
+(find_short("i want to travel the world writing code one day"), 1)
+(find_short("Lets all go on holiday somewhere very cold"), 2)   
+(find_short("Let's travel abroad shall we"), 2)
 
 
 
@@ -4638,30 +4038,18 @@ Note: input will never be an empty string"""
 
 
 def fake_bin(x):
-    return ''.join('0' if int(i) < 5 else '1' for i in x)
-    return ''.join('0' if i < '5' else '1' for i in x)
-    return ''.join(map(lambda x: '0' if int(x) < 5 else '1', x))
-fake_bin("45385593107843568")
+    # return "".join("1" if digit >= "5" else "0" for digit in str(x))
+    return "".join(map(lambda x: "1" if x >= "5" else "0", str(x)))
 
+tests = [["01011110001100111", "45385593107843568"],
+         ["101000111101101", "509321967506747"],
+         ["011011110000101010000011011", "366058562030849490134388085"],
+         ["01111100", "15889923"],
+         ["100111001111", "800857237867"],
+         ]
 
-import codewars_test as test
-from solution import fake_bin
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        tests = [
-            # [expected, input]
-            ["01011110001100111", "45385593107843568"],
-            ["101000111101101", "509321967506747"],
-            ["011011110000101010000011011", "366058562030849490134388085"],
-            ["01111100", "15889923"],
-            ["100111001111", "800857237867"],
-        ]
-        
-        for exp, inp in tests:
-            test.assert_equals(fake_bin(inp), exp)
+for exp, inp in tests:
+    (fake_bin(inp), exp)
 
 
 
@@ -4675,15 +4063,11 @@ Note: you will always receive a valid array (string in COBOL) containing a rando
 
 
 def is_valid_walk(walk):
-    return walk.count('n') == walk.count('s') and walk.count('e') == walk.count('w') and len(walk) == 10
-is_valid_walk(['n','s','n','s','n','s','n','s','n','s'])
-
-
-#some test cases for you...
-test.expect(is_valid_walk(['n','s','n','s','n','s','n','s','n','s']), 'should return True');
-test.expect(not is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']), 'should return False');
-test.expect(not is_valid_walk(['w']), 'should return False');
-test.expect(not is_valid_walk(['n','n','n','s','n','s','n','s','n','s']), 'should return False');
+    return len(walk) == 10 and walk.count("n") == walk.count("s") and walk.count("e") == walk.count("w")
+(is_valid_walk(['n','s','n','s','n','s','n','s','n','s']), 'should return True');
+(not is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']), 'should return False');
+(not is_valid_walk(['w']), 'should return False');
+(not is_valid_walk(['n','n','n','s','n','s','n','s','n','s']), 'should return False');
 
 
 
@@ -4697,9 +4081,9 @@ Note: Empty arrays should return 0."""
 
 
 def find_average(numbers):
-    return sum(numbers)/len(numbers) if numbers else 0
-find_average([1, 2, 3])
-find_average([])
+    return sum(numbers) / len(numbers) if numbers else 0
+(find_average([1, 2, 3]), 2)
+(find_average([]), 0)
 
 import numpy as np
 
@@ -4708,19 +4092,9 @@ def find_average(numbers):
 
 def find_average(numbers):
     try:
-        return sum(numbers) / len(numbers) 
-    except ZeroDivisionError:
-        return 0
-
-
-import codewars_test as test
-from solution import find_average
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(find_average([1, 2, 3]), 2)
+        return sum(numbers) / len(numbers)
+    except ZeroDivisionError as err:
+        return f"Error!!!: {err}"
 
 
 
@@ -4735,21 +4109,11 @@ Return your answer as a number."""
 
 def sum_mix(arr):
     return sum(map(int, arr))
-sum_mix([9, 3, '7', '3'])
-
-
-import codewars_test as test
-from solution import sum_mix
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(sum_mix([9, 3, '7', '3']), 22)
-        test.assert_equals(sum_mix(['5', '0', 9, 3, 2, 1, '9', 6, 7]), 42)
-        test.assert_equals(sum_mix(['3', 6, 6, 0, '5', 8, 5, '6', 2,'0']), 41)
-        test.assert_equals(sum_mix(['1', '5', '8', 8, 9, 9, 2, '3']), 45)
-        test.assert_equals(sum_mix([8, 0, 0, 8, 5, 7, 2, 3, 7, 8, 6, 7]), 61)
+(sum_mix([9, 3, '7', '3']), 22)
+(sum_mix(['5', '0', 9, 3, 2, 1, '9', 6, 7]), 42)
+(sum_mix(['3', 6, 6, 0, '5', 8, 5, '6', 2,'0']), 41)
+(sum_mix(['1', '5', '8', 8, 9, 9, 2, '3']), 45)
+(sum_mix([8, 0, 0, 8, 5, 7, 2, 3, 7, 8, 6, 7]), 61)
 
 
 
@@ -4778,22 +4142,11 @@ def switch_it_up(number):
                    8: 'Eight',
                    9: 'Nine'}
     return number_dict[number]
-switch_it_up(0)
-switch_it_up(9)
+(switch_it_up(0), "Zero")
+(switch_it_up(9), "Nine")
 
 def switch_it_up(number):
     return 'Zero One Two Three Four Five Six Seven Eight Nine'.split()[number]
-
-
-import codewars_test as test
-from solution import switch_it_up
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(switch_it_up(0), "Zero")
-        test.assert_equals(switch_it_up(9), "Nine")
 
 
 
@@ -4811,42 +4164,18 @@ If a value is present in b, all of its occurrences must be removed from the othe
 array_diff([1,2,2,2,3],[2]) == [1,3]"""
 
 
-# from codewars
 def array_diff(a, b):
     return [i for i in a if i not in set(b)]
-array_diff([1, 2], [1])
-array_diff([1, 2, 2, 3], [2])
+(array_diff([1,2], [1]), [2], "a was [1,2], b was [1], expected [2]")
+(array_diff([1,2,2], [1]), [2,2], "a was [1,2,2], b was [1], expected [2,2]")
+(array_diff([1,2,2], [2]), [1], "a was [1,2,2], b was [2], expected [1]")
+(array_diff([1,2,2], []), [1,2,2], "a was [1,2,2], b was [], expected [1,2,2]")
+(array_diff([], [1,2]), [], "a was [], b was [1,2], expected []")
+(array_diff([1,2,3], [1, 2]), [3], "a was [1,2,3], b was [1, 2], expected [3]")
 
 # from codewars
 def array_diff(a, b):
     return list(filter(lambda x: x not in b, a))
-
-def array_diff(a, b):
-    for i in b:
-        for _ in range(a.count(i)):
-            a.remove(i)
-    return a
-
-def array_diff(a, b):
-    a = ''.join(map(str, a))
-    for i in b:
-        a = a.replace(str(i), '')
-    return [int(i) for i in a]
-
-
-import codewars_test as test
-from solution import array_diff
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(array_diff([1,2], [1]), [2], "a was [1,2], b was [1], expected [2]")
-        test.assert_equals(array_diff([1,2,2], [1]), [2,2], "a was [1,2,2], b was [1], expected [2,2]")
-        test.assert_equals(array_diff([1,2,2], [2]), [1], "a was [1,2,2], b was [2], expected [1]")
-        test.assert_equals(array_diff([1,2,2], []), [1,2,2], "a was [1,2,2], b was [], expected [1,2,2]")
-        test.assert_equals(array_diff([], [1,2]), [], "a was [], b was [1,2], expected []")
-        test.assert_equals(array_diff([1,2,3], [1, 2]), [3], "a was [1,2,3], b was [1, 2], expected [3]")
 
 
 
@@ -4884,17 +4213,6 @@ IP_ADDRESS_NOT_FOUND - ip address not in the database
 IP_ADDRESS_REQUIRED - no ip address was supplied"""
 
 
-def greet(language):
-    lan_dict = [("english", "Welcome"), ("czech", "Vitejte"), ("danish", "Velkomst"), ("dutch", "Welkom"), ("estonian", "Tere tulemast"), ("finnish", "Tervetuloa"), ("flemish", "Welgekomen"), ("french", "Bienvenue"), ("german", "Willkommen"), ("irish", "Failte"), ("italian", "Benvenuto"), ("latvian", "Gaidits"), ("lithuanian", "Laukiamas"), ("polish", "Witamy"), ("spanish", "Bienvenido"), ("swedish", "Valkommen"), ("welsh", "Croeso")                ]
-    real_dict = {k: v for k, v in lan_dict}
-    # return real_dict[language] if language in list(zip(*lan_dict))[0] else "Welcome"
-    # return real_dict[language] if language in real_dict.keys() else "Welcome"
-    return real_dict.get(language, real_dict["english"])
-greet('dutch')
-greet('IP_ADDRESS_INVALID')
-greet('')
-greet(2)
-
 # from codewars
 def greet(language):
     lang_db = {'english': 'Welcome',
@@ -4915,43 +4233,14 @@ def greet(language):
                'swedish': 'Valkommen',
                'welsh': 'Croeso'
                }
-    return lang_db.get(language, lang_db['english'])
+    return lang_db.get(language, lang_db["english"])
+    # return lang_db[language] if language in lang_db else lang_db["english"]
 
-def greet(language):
-    lang_db = {'english': 'Welcome',
-               'czech': 'Vitejte',
-               'danish': 'Velkomst',
-               'dutch': 'Welkom',
-               'estonian': 'Tere tulemast',
-               'finnish': 'Tervetuloa',
-               'flemish': 'Welgekomen',
-               'french': 'Bienvenue',
-               'german': 'Willkommen',
-               'irish': 'Failte',
-               'italian': 'Benvenuto',
-               'latvian': 'Gaidits',
-               'lithuanian': 'Laukiamas',
-               'polish': 'Witamy',
-               'spanish': 'Bienvenido',
-               'swedish': 'Valkommen',
-               'welsh': 'Croeso'
-               }
-    if language == 'IP_ADDRESS_INVALID'\
-        or language == 'IP_ADDRESS_NOT_FOUND'\
-        or language == 'IP_ADDRESS_REQUIRED'\
-        or language == ''\
-        or type(language) != str:
-        # or isinstance(language, str) == False:
-        return lang_db['english']
-    return lang_db.get(language)
-
-
-test.describe("Basic tests")
-test.assert_equals(greet('english'), 'Welcome')
-test.assert_equals(greet('dutch'), 'Welkom')
-test.assert_equals(greet('IP_ADDRESS_INVALID'), 'Welcome')
-test.assert_equals(greet(''), 'Welcome')
-test.assert_equals(greet(2), 'Welcome')
+(greet('english'), 'Welcome')
+(greet('dutch'), 'Welkom')
+(greet('IP_ADDRESS_INVALID'), 'Welcome')
+(greet(''), 'Welcome')
+(greet(2), 'Welcome')
 
 
 
@@ -4969,21 +4258,10 @@ Note: for the purposes of this kata you will assume that it is a square if its l
 
 def area_or_perimeter(l, w):
     return l ** 2 if l == w else (l+w) << 1
-area_or_perimeter(4, 4)
-area_or_perimeter(6, 10)
+(area_or_perimeter(4, 4), 16)
+(area_or_perimeter(6, 10), 32)
 
 area_or_perimeter = lambda l, w: l ** 2 if l == w else (l+w) << 1
-
-
-import codewars_test as test
-from solution import area_or_perimeter
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(area_or_perimeter(4, 4), 16)
-        test.assert_equals(area_or_perimeter(6, 10), 32)
 
 
 
@@ -5008,39 +4286,23 @@ there are 10 matches in the championship
 
 
 def points(games):
+    points = 0
+    for game in games:
+        a, b = re.findall(r"\d+", game)  # re.split(r":", game)
+        if a == b:
+            points += 1
+        elif a > b:
+            points += 3
+    return points
+(points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3']), 30)
+(points(['1:1','2:2','3:3','4:4','2:2','3:3','4:4','3:3','4:4','4:4']), 10)
+(points(['0:1','0:2','0:3','0:4','1:2','1:3','1:4','2:3','2:4','3:4']), 0)
+(points(['1:0','2:0','3:0','4:0','2:1','1:3','1:4','2:3','2:4','3:4']), 15)
+(points(['1:0','2:0','3:0','4:4','2:2','3:3','1:4','2:3','2:4','3:4']), 12)
+
+def points(games):
     return sum(3 if x > y else 1 for x, _, y in games if x >= y)
     return sum(3 if x[0] > x[-1] else 1 for x in games if x[0] >= x[-1])
-points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3'])
-
-# from codewars
-def points(games):
-    return sum((x > y)*3 or x == y for x, _, y in games)
-
-# from codewars
-def points(games):
-    return sum((x >= y) + 2 * (x > y) for x, y in (s.split(":") for s in games))
-
-def points(games):
-	return sum(3 if i[0] > i[-1] else 1 if i[0] == i[-1] else 0 for i in games)
-
-def points(games):
-	return sum(map(lambda x: 3 if x[0] > x[-1] else 1 if x[0] == x[-1] else 0, games))
-
-
-1 > 0 * 3
-
-import codewars_test as test
-from solution import points
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3']), 30)
-        test.assert_equals(points(['1:1','2:2','3:3','4:4','2:2','3:3','4:4','3:3','4:4','4:4']), 10)
-        test.assert_equals(points(['0:1','0:2','0:3','0:4','1:2','1:3','1:4','2:3','2:4','3:4']), 0)
-        test.assert_equals(points(['1:0','2:0','3:0','4:0','2:1','1:3','1:4','2:3','2:4','3:4']), 15)
-        test.assert_equals(points(['1:0','2:0','3:0','4:4','2:2','3:3','1:4','2:3','2:4','3:4']), 12)
 
 
 
@@ -5060,28 +4322,25 @@ twoSum [1, 2, 3] 4 === (0, 2)"""
 
 
 def two_sum(numbers, target):
-    for i in range(len(numbers)):
-        for j in range(i):
-            if numbers[i] + numbers[j] == target:
-                return (i, j)
-two_sum([1, 2, 3], 4)
+    seen = dict()
+    for index, number in enumerate(numbers):
+        diff = target - number
+        if diff in seen:
+            return [seen[diff], index]
+        else:
+            seen[number] = index
+            # seen[number] = seen.get(number, 0) + index
+    return None
+(sorted(two_sum([1, 2, 3], 4)), [0, 2])
+(sorted(two_sum([1234, 5678, 9012], 14690)), [1, 2])
+(sorted(two_sum([2, 2, 3], 4)), [0, 1])
 
+# O(n2)
 def two_sum(numbers, target):
     for i in range(len(numbers) - 1):
         for j in range(i + 1, len(numbers)):
             if numbers[i] + numbers[j] == target:
                 return (i, j)
-
-def two_sum(numbers, target):
-    for i, x in enumerate(numbers):
-        for j, y in enumerate(numbers):
-            if i != j and x + y == target:
-                return (i, j)
-
-
-test.assert_equals(sorted(two_sum([1,2,3], 4)), [0,2])
-test.assert_equals(sorted(two_sum([1234,5678,9012], 14690)), [1,2])
-test.assert_equals(sorted(two_sum([2,2,3], 4)), [0,1])
 
 
 
@@ -5111,23 +4370,11 @@ def better_than_average(class_points, your_points):
 
 better_than_average = lambda class_points, your_points: your_points > np.mean(class_points + [your_points])
 
-
-test.describe("Basic Tests")
-
-test.it("better_than_average([2, 3], 5) should return True")
-test.assert_equals(better_than_average([2, 3], 5), True)
-
-test.it("better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75) should return True")
-test.assert_equals(better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75), True)
-
-test.it("better_than_average([12, 23, 34, 45, 56, 67, 78, 89, 90], 69) should return True")
-test.assert_equals(better_than_average([12, 23, 34, 45, 56, 67, 78, 89, 90], 69), True)
-
-test.it("better_than_average([41, 75, 72, 56, 80, 82, 81, 33], 50) should return False")
-test.assert_equals(better_than_average([41, 75, 72, 56, 80, 82, 81, 33], 50), False)
-
-test.it("better_than_average([29, 55, 74, 60, 11, 90, 67, 28], 21) should return False")
-test.assert_equals(better_than_average([29, 55, 74, 60, 11, 90, 67, 28], 21), False)
+(better_than_average([2, 3], 5), True)
+(better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75), True)
+(better_than_average([12, 23, 34, 45, 56, 67, 78, 89, 90], 69), True)
+(better_than_average([41, 75, 72, 56, 80, 82, 81, 33], 50), False)
+(better_than_average([29, 55, 74, 60, 11, 90, 67, 28], 21), False)
 
 
 
@@ -5137,12 +4384,12 @@ test.assert_equals(better_than_average([29, 55, 74, 60, 11, 90, 67, 28], 21), Fa
 altERnaTIng cAsE <=> ALTerNAtiNG CaSe
 Define String.prototype.toAlternatingCase (or a similar function/method such as to_alternating_case/toAlternatingCase/ToAlternatingCase in your selected language; see the initial solution for details) such that each lowercase letter becomes uppercase and each uppercase letter becomes lowercase. For example:
 
-"hello world".toAlternatingCase() === "HELLO WORLD"
-"HELLO WORLD".toAlternatingCase() === "hello world"
-"hello WORLD".toAlternatingCase() === "HELLO world"
-"HeLLo WoRLD".toAlternatingCase() === "hEllO wOrld"
-"12345".toAlternatingCase() === "12345" // Non-alphabetical characters are unaffected
-"1a2b3c4d5e".toAlternatingCase() === "1A2B3C4D5E"
+"hello world".to_alternating_case() === "HELLO WORLD"
+"HELLO WORLD".to_alternating_case() === "hello world"
+"hello WORLD".to_alternating_case() === "HELLO world"
+"HeLLo WoRLD".to_alternating_case() === "hEllO wOrld"
+"12345".to_alternating_case() === "12345" // Non-alphabetical characters are unaffected
+"1a2b3c4d5e".to_alternating_case() === "1A2B3C4D5E"
 "String.prototype.toAlternatingCase".toAlternatingCase() === "sTRING.PROTOTYPE.TOaLTERNATINGcASE"
 As usual, your function/method should be pure, i.e. it should not mutate the original string."""
 
@@ -5152,39 +4399,18 @@ def to_alternating_case(string):
     return "".join(i.upper() if i.islower() else i.lower() for i in string)
 
 to_alternating_case = lambda string: string.swapcase()
-to_alternating_case = str.swapcase()
+to_alternating_case = str.swapcase
 to_alternating_case("hello1 WORLD")
 
 
-test.describe("Basic tests")
-test.it("should work for fixed tests (provided in the description)")
-test.assert_equals(to_alternating_case("hello world"), "HELLO WORLD")
-test.assert_equals(to_alternating_case("HELLO WORLD"), "hello world")
-test.assert_equals(to_alternating_case("hello WORLD"), "HELLO world")
-test.assert_equals(to_alternating_case("HeLLo WoRLD"), "hEllO wOrld")
-test.assert_equals(to_alternating_case("12345"), "12345")
-test.assert_equals(to_alternating_case("1a2b3c4d5e"), "1A2B3C4D5E")
-test.assert_equals(to_alternating_case("String.prototype.toAlternatingCase"), "sTRING.PROTOTYPE.TOaLTERNATINGcASE")
-test.assert_equals(to_alternating_case(to_alternating_case("Hello World")), "Hello World")
-test.it("should work for the title of this Kata")
-title = "altERnaTIng cAsE"
-title = to_alternating_case(title)
-test.assert_equals(title, "ALTerNAtiNG CaSe")
-title = to_alternating_case(title)
-test.assert_equals(title, "altERnaTIng cAsE")
-title = to_alternating_case(title)
-test.assert_equals(title, "ALTerNAtiNG CaSe")
-title = to_alternating_case(title)
-test.assert_equals(title, "altERnaTIng cAsE")
-title = "altERnaTIng cAsE <=> ALTerNAtiNG CaSe"
-title = to_alternating_case(title)
-test.assert_equals(title, "ALTerNAtiNG CaSe <=> altERnaTIng cAsE")
-title = to_alternating_case(title)
-test.assert_equals(title, "altERnaTIng cAsE <=> ALTerNAtiNG CaSe")
-title = to_alternating_case(title)
-test.assert_equals(title, "ALTerNAtiNG CaSe <=> altERnaTIng cAsE")
-title = to_alternating_case(title)
-test.assert_equals(title, "altERnaTIng cAsE <=> ALTerNAtiNG CaSe")
+(to_alternating_case("hello world"), "HELLO WORLD")
+(to_alternating_case("HELLO WORLD"), "hello world")
+(to_alternating_case("hello WORLD"), "HELLO world")
+(to_alternating_case("HeLLo WoRLD"), "hEllO wOrld")
+(to_alternating_case("12345"), "12345")
+(to_alternating_case("1a2b3c4d5e"), "1A2B3C4D5E")
+(to_alternating_case("String.prototype.toAlternatingCase"), "sTRING.PROTOTYPE.TOaLTERNATINGcASE")
+(to_alternating_case(to_alternating_case("Hello World")), "Hello World")
 
 
 
@@ -5200,17 +4426,13 @@ Examples
 [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]  =>  [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]"""
 
 
-# partially from codewars
 def sort_array(source_array):
-    # odds = list(reversed(sorted(filter(lambda x: x % 2, source_array))))
     odds = sorted(filter(lambda x: x % 2, source_array), reverse=True)
-    return [odds.pop() if i % 2 else i for i in source_array]
+    return [odds.pop() if digit % 2 else digit for digit in source_array]
 sort_array([5, 3, 2, 8, 1, 4])
-
-# partially from codewars
-def sort_array(source_array):
-    odds = iter(sorted(filter(lambda x: x % 2, source_array)))
-    return [next(odds) if i % 2 else i for i in source_array]
+(sort_array([5, 3, 2, 8, 1, 4]), [1, 3, 2, 8, 5, 4])
+(sort_array([5, 3, 1, 8, 0]), [1, 3, 5, 8, 0])
+(sort_array([]),[])
 
 def sort_array(source_array):
     odds = sorted(filter(lambda x: x % 2, source_array))
@@ -5225,11 +4447,6 @@ def sort_array(source_array):
     return result_list
 
 
-test.assert_equals(sort_array([5, 3, 2, 8, 1, 4]), [1, 3, 2, 8, 5, 4])
-test.assert_equals(sort_array([5, 3, 1, 8, 0]), [1, 3, 5, 8, 0])
-test.assert_equals(sort_array([]),[])
-
-
 
 
 
@@ -5240,19 +4457,18 @@ test.assert_equals(sort_array([]),[])
 Examples (Input -> Output):
 * "String"      -> "SSttrriinngg"
 * "Hello World" -> "HHeelllloo  WWoorrlldd"
-* "1234!_ "     -> "11223344!!__  """"
+* "1234!_ "     -> "11223344!!__  "
+"""
 
 
 def double_char(s):
-    return "".join(map(lambda x: 2*x, s))
+    return "".join(map(lambda x: x*2, s))
+    # return "".join([char*2 for char in s])
+(double_char("String"),"SSttrriinngg")
+(double_char("Hello World"),"HHeelllloo  WWoorrlldd")
+(double_char("1234!_ "),"11223344!!__  ")
 
 double_char = lambda s: ''.join(i * 2 for i in s)
-double_char("String")
-
-
-test.assert_equals(double_char("String"),"SSttrriinngg")
-test.assert_equals(double_char("Hello World"),"HHeelllloo  WWoorrlldd")
-test.assert_equals(double_char("1234!_ "),"11223344!!__  ")
 
 
 
@@ -5268,7 +4484,8 @@ if bmi <= 25.0 return "Normal"
 
 if bmi <= 30.0 return "Overweight"
 
-if bmi > 30 return "Obese""""
+if bmi > 30 return "Obese"
+"""
 
 
 def bmi(weight, height):
@@ -5281,25 +4498,16 @@ def bmi(weight, height):
         return 'Normal'
     else:
         return 'Underweight'
-bmi(50, 1.80)
-bmi(80, 1.80)
-bmi(90, 1.80)
-
+(bmi(50, 1.80), "Underweight")
+(bmi(80, 1.80), "Normal")
+(bmi(90, 1.80), "Overweight")
+(bmi(110, 1.80), "Obese")
+(bmi(50, 1.50), "Normal")
 
 # from codewars
 def bmi(weight, height):
     b = weight / height ** 2
     return ['Underweight', 'Normal', 'Overweight', 'Obese'][(b > 30) + (b > 25) + (b > 18.5)]
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(bmi(50, 1.80), "Underweight")
-        test.assert_equals(bmi(80, 1.80), "Normal")
-        test.assert_equals(bmi(90, 1.80), "Overweight")
-        test.assert_equals(bmi(110, 1.80), "Obese")
-        test.assert_equals(bmi(50, 1.50), "Normal")
 
 
 
@@ -5324,33 +4532,24 @@ sort_by_length = lambda arr: sorted(arr, key=len)
 sort_by_length(["Telescopes", "Glasses", "Eyes", "Monocles"])
 
 def sort_by_length(arr):
-    # return sorted(arr, key=len)
+    return sorted(arr, key=len)
     # return sorted(arr, key=lambda x: len(x))
 
 def sort_by_length(arr):
     arr.sort(key=len)
     return arr
 
-
-import codewars_test as test
-from solution import sort_by_length
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-
-        tests = [
-            [["i", "to", "beg", "life"], ["beg", "life", "i", "to"]],
-            [["", "pizza", "brains", "moderately"], ["", "moderately", "brains", "pizza"]],
-            [["short", "longer", "longest"], ["longer", "longest", "short"]],
-            [["a", "of", "dog", "food"], ["dog", "food", "a", "of"]],
-            [["", "bees", "eloquent", "dictionary"], ["", "dictionary", "eloquent", "bees"]],
-            [["a short sentence", "a longer sentence", "the longest sentence"], ["a longer sentence", "the longest sentence", "a short sentence"]],
-        ]
+tests = [
+    [["i", "to", "beg", "life"], ["beg", "life", "i", "to"]],
+    [["", "pizza", "brains", "moderately"], ["", "moderately", "brains", "pizza"]],
+    [["short", "longer", "longest"], ["longer", "longest", "short"]],
+    [["a", "of", "dog", "food"], ["dog", "food", "a", "of"]],
+    [["", "bees", "eloquent", "dictionary"], ["", "dictionary", "eloquent", "bees"]],
+    [["a short sentence", "a longer sentence", "the longest sentence"], ["a longer sentence", "the longest sentence", "a short sentence"]],
+]
         
-        for exp, inp in tests:
-            test.assert_equals(sort_by_length(inp), exp)
+for exp, inp in tests:
+    (sort_by_length(inp), exp)
 
 
 
@@ -5377,7 +4576,10 @@ def arithmetic(a, b, operator):
     ar_dict = {'add': '+', 'subtract': '-', 'multiply': '*', 'divide': '/'}
     return eval(f"{a}{ar_dict[operator]}{b}")
     # return eval('(' + 'a' + ar_dict[operator] + 'b' + ')')
-arithmetic(1, 2, "add")
+(arithmetic(1, 2, "add"), 3, "'add' should return the two numbers added together!")
+(arithmetic(8, 2, "subtract"), 6, "'subtract' should return a minus b!")
+(arithmetic(5, 2, "multiply"), 10, "'multiply' should return a multiplied by b!")
+(arithmetic(8, 2, "divide"), 4, "'divide' should return a divided by b!")
 
 # from codewars
 def arithmetic(a, b, operator):
@@ -5387,20 +4589,6 @@ from operator import add, sub, mul, truediv
 def arithmetic(a, b, operator):
     ops = {'add': add, 'subtract': sub, 'multiply': mul, 'divide': truediv}
     return ops[operator](a, b)
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(arithmetic(1, 2, "add"), 3,
-                           "'add' should return the two numbers added together!")
-        test.assert_equals(arithmetic(8, 2, "subtract"), 6,
-                           "'subtract' should return a minus b!")
-        test.assert_equals(arithmetic(5, 2, "multiply"), 10,
-                           "'multiply' should return a multiplied by b!")
-        test.assert_equals(arithmetic(8, 2, "divide"), 4,
-                           "'divide' should return a divided by b!")
 
 
 
@@ -5424,12 +4612,11 @@ Examples (a, b) --> output (explanation)
 def get_sum(a, b):
     a, b = sorted((a, b))
     return sum(range(a, b + 1))
-get_sum(0, 1)
+(get_sum(0, 1), 1)
+(get_sum(0, -1), -1)
 
 get_sum = lambda a, b: sum(range(min(a, b), max(a, b) + 1))
 
-test.assert_equals(get_sum(0,1),1)
-test.assert_equals(get_sum(0,-1),-1)
 
 
 
@@ -5468,34 +4655,28 @@ If you are given an array with multiple answers, return the lowest correct index
 
 
 def find_even_index(arr):
-    r = [i for i in range(len(arr)) if (sum(arr[:i]) == sum(arr[i + 1:]))]
-    return r[0] if r else -1
-find_even_index([1, 2, 3, 4, 3, 2, 1])
-find_even_index([1, 2, 3, 4, 5, 6])
-
-def find_even_index(arr):
-    try:
-        return [i for i in range(len(arr)) if (sum(arr[:i]) == sum(arr[i + 1:]))][0]
-    except:
-        return -1
-
-def find_even_index(arr):
     for i in range(len(arr)):
         if sum(arr[:i]) == sum(arr[i+1:]):
             return i
     return -1
+(find_even_index([1, 2, 3, 4, 3, 2, 1]), 3)
+(find_even_index([1, 100, 50, -51, 1, 1]), 1,)
+(find_even_index([1, 2, 3, 4, 5, 6]), -1)
+(find_even_index([20, 10, 30, 10, 10, 15, 35]), 3)
+(find_even_index([20, 10, -80, 10, 10, 15, 35]), 0)
+(find_even_index([10, -80, 10, 10, 15, 35, 20]), 6)
+(find_even_index(list(range(1, 100))), -1)
+(find_even_index([0, 0, 0, 0, 0]), 0, "Should pick the first index if more cases are valid")
+(find_even_index([-1, -2, -3, -4, -3, -2, -1]), 3)
+(find_even_index(list(range(-100, -1))), -1)
 
 
-test.assert_equals(find_even_index([1,2,3,4,3,2,1]),3)
-test.assert_equals(find_even_index([1,100,50,-51,1,1]),1,)
-test.assert_equals(find_even_index([1,2,3,4,5,6]),-1)
-test.assert_equals(find_even_index([20,10,30,10,10,15,35]),3)
-test.assert_equals(find_even_index([20,10,-80,10,10,15,35]),0)
-test.assert_equals(find_even_index([10,-80,10,10,15,35,20]),6)
-test.assert_equals(find_even_index(list(range(1,100))),-1)
-test.assert_equals(find_even_index([0,0,0,0,0]),0,"Should pick the first index if more cases are valid")
-test.assert_equals(find_even_index([-1,-2,-3,-4,-3,-2,-1]),3)
-test.assert_equals(find_even_index(list(range(-100,-1))),-1)
+def find_even_index(arr):
+    try:
+        return [ind for ind in range(len(arr)) if (sum(arr[:ind]) == sum(arr[ind + 1:]))][0]
+        # return [(sum(arr[:ind]) == sum(arr[ind + 1:])) for ind in range(len(arr))].index(True)
+    except:
+        return -1
 
 
 
@@ -5524,18 +4705,11 @@ simple_multiplication = lambda number: number * (8 + (number&1))
 0b100 | 0b101  # 5
 0b100 ^ 0b101  # 1
 
-import codewars_test as test
-from solution import simple_multiplication
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(simple_multiplication(2), 16)
-        test.assert_equals(simple_multiplication(1), 9)
-        test.assert_equals(simple_multiplication(8), 64)
-        test.assert_equals(simple_multiplication(4), 32)
-        test.assert_equals(simple_multiplication(5), 45)
+(simple_multiplication(2), 16)
+(simple_multiplication(1), 9)
+(simple_multiplication(8), 64)
+(simple_multiplication(4), 32)
+(simple_multiplication(5), 45)
 
 
 
@@ -5559,26 +4733,16 @@ Examples
 
 def sequence_sum(begin_number, end_number, step):
     return sum(range(begin_number, end_number + 1, step))
-sequence_sum(2, 6, 2)
-
-
-import codewars_test as test
-from solution import sequence_sum
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(sequence_sum(2, 6, 2), 12)
-        test.assert_equals(sequence_sum(1, 5, 1), 15)
-        test.assert_equals(sequence_sum(1, 5, 3), 5)
-        test.assert_equals(sequence_sum(0, 15, 3), 45)
-        test.assert_equals(sequence_sum(16, 15, 3), 0)
-        test.assert_equals(sequence_sum(2, 24, 22), 26)
-        test.assert_equals(sequence_sum(2, 2, 2), 2)
-        test.assert_equals(sequence_sum(2, 2, 1), 2)
-        test.assert_equals(sequence_sum(1, 15, 3), 35)
-        test.assert_equals(sequence_sum(15, 1, 3), 0)
+(sequence_sum(2, 6, 2), 12)
+(sequence_sum(1, 5, 1), 15)
+(sequence_sum(1, 5, 3), 5)
+(sequence_sum(0, 15, 3), 45)
+(sequence_sum(16, 15, 3), 0)
+(sequence_sum(2, 24, 22), 26)
+(sequence_sum(2, 2, 2), 2)
+(sequence_sum(2, 2, 1), 2)
+(sequence_sum(1, 15, 3), 35)
+(sequence_sum(15, 1, 3), 0)
 
 
 
@@ -5594,15 +4758,9 @@ def fixed_tests():
 """
 
 
-import re
 def domain_name(url):
-    return re.search(r"(:\/\/www\.|:\/\/|www\.|^)([\w-]+)\.", url).group(2)
-
-(:\/\/www\.|:\/\/|www\.)  # captures ://www.
-(:\/\/|:\/\/www\.|www\.)  # captures :// and www.
-
-def domain_name(url):
-    return re.sub(r'^(https?://)?(www\.)?((\w|-)+)\..*$', r'\3', url)
+    return re.sub(r'^(https?://)?(www\.)?([\w-]+)\..*$', r"\3", url)
+    return re.sub(r"(https?://)?(www\.)?([\w-]+)(\..*)", r"\3", url)
 domain_name('http://google.com')
 domain_name('https://google.com')
 domain_name('https://www.codewars.com')
@@ -5610,6 +4768,7 @@ domain_name('https://google.co.jp')
 domain_name('www.xakep.ru')
 domain_name('https://hyphen-site.org')
 domain_name('icann.org')
+
 
 # from codewars
 import re
@@ -5619,16 +4778,6 @@ def domain_name(url):
 # from codewars
 def domain_name(url):
     return url.split('//')[-1].split('www.')[-1].split('.')[0]
-domain_name('https://en.wikipedia.org')
-domain_name('http://www.googlewww.com')
-
-
-
-
-test.assert_equals(domain_name("http://google.com"), "google")
-test.assert_equals(domain_name("http://google.co.jp"), "google")
-test.assert_equals(domain_name("www.xakep.ru"), "xakep")
-test.assert_equals(domain_name("https://youtube.com"), "youtube")
 
 
 
@@ -5653,17 +4802,8 @@ gimme([5, 10, 14]) => 1
 
 def gimme(input_array):
     return input_array.index(sorted(input_array)[1])
-    
-
-import codewars_test as test
-from solution import gimme
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(gimme([2, 3, 1]), 0, 'Finds the index of middle element')
-        test.assert_equals(gimme([5, 10, 14]), 1, 'Finds the index of middle element')
+(gimme([2, 3, 1]), 0, 'Finds the index of middle element')
+(gimme([5, 10, 14]), 1, 'Finds the index of middle element')
 
 
 
@@ -5687,21 +4827,11 @@ For example:
 
 
 goals = lambda *x: sum(x)
-goals(1, 2, 3)  # 6
+(goals(0, 0, 0), 0)
+(goals(5, 10, 2), 17)
 
 def goals(*x):
     return sum(x)
-
-
-import codewars_test as test
-from solution import goals
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(goals(0, 0, 0), 0)
-        test.assert_equals(goals(5, 10, 2), 17)
 
 
 
@@ -5726,17 +4856,9 @@ def cockroach_speed(s):
     return int(s * 100000 / 3600)
 
 cockroach_speed = lambda s: s * 100000 // 3600
-
-import codewars_test as test
-from solution import cockroach_speed
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(cockroach_speed(1.08),30)
-        test.assert_equals(cockroach_speed(1.09),30)
-        test.assert_equals(cockroach_speed(0),0)
+(cockroach_speed(1.08),30)
+(cockroach_speed(1.09),30)
+(cockroach_speed(0),0)
 
 
 
@@ -5768,7 +4890,8 @@ class Fighter(object):
         self.health = health
         self.damage_per_attack = damage_per_attack
 
-    def __str__(self): return "Fighter({}, {}, {})".format(self.name, self.health, self.damage_per_attack)
+    def __str__(self):
+        return f"Fighter({self.name}, {self.health}, {self.damage_per_attack})"
     __repr__ = __str__
 
 
@@ -5790,10 +4913,12 @@ def declare_winner(fighter1, fighter2, first_attacker):
             if fighter2.health <= 0:
                 return fighter1.name
             
-declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew")
-declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry")
-declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry")
-declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry")
+(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew"), "Lew")
+(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry"),"Harry")
+(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry"),"Harald")
+(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harald"),"Harald")
+(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry"), "Harald")
+(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Harald"),"Harald")
 
 import numpy as np
 def declare_winner(fighter1, fighter2, first_attacker):
@@ -5817,27 +4942,6 @@ def declare_winner(fighter1, fighter2, first_attacker):
     return fighter1.name if fighter2.health < 1 else fighter2.name
 
 
-import codewars_test as test
-from preloaded import Fighter
-from solution import declare_winner
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(declare_winner(Fighter("Lew", 10, 2),Fighter("Harry", 5, 4), "Lew"), "Lew")
-        
-        test.assert_equals(declare_winner(Fighter("Lew", 10, 2),Fighter("Harry", 5, 4), "Harry"),"Harry")
-        
-        test.assert_equals(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry"),"Harald")
-        
-        test.assert_equals(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harald"),"Harald")
-        
-        test.assert_equals(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry"), "Harald")
-            
-        test.assert_equals(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Harald"),"Harald")
-
-
 
 
 
@@ -5848,26 +4952,42 @@ def fixed_tests():
  "(p1**n1)(p2**n2)...(pk**nk)"
 with the p(i) in increasing order and n(i) empty if n(i) is 1.
 
-Example: n = 86240 should return "(2**5)(5)(7**2)(11)""""
+Example: n = 86240 should return "(2**5)(5)(7**2)(11)"
+"""
+
+
+def prime_factors(n):
+    factors = []
+    while n > 1:
+        for i in range(2, n + 1):
+            if not n % i:
+                factors.append(i)
+                n //= i
+                break
+    
+    solution = ""
+    for digit in sorted(set(factors)):
+        if factors.count(digit) == 1:
+            solution += f"({digit})"
+        else:
+            solution += f"({digit}**{factors.count(digit)})"
+    return solution         
+    # return "".join([f"({digit})" if factors.count(digit) == 1 else f"({digit}**{factors.count(digit)})" for digit in sorted(set(factors))])
+(prime_factors(86240), "(2**5)(5)(7**2)(11)")
+(prime_factors(7775460), "(2**2)(3**3)(5)(7)(11**2)(17)")
+(prime_factors(7919), "(7919)")
 
 
 from collections import Counter
-
 def prime_factors(n):
-    dividers = []
-    while True:
+    factors = []
+    while n > 1:
         for i in range(2, n + 1):
             if not n % i:
+                factors.append(i)
                 n //= i
-                dividers.append(i)
                 break
-        if n == 1:
-            break
-    return "".join(f"({k})" if v == 1 else f"({k}**{v})" for k, v in Counter(dividers).items())
-
-prime_factors(86240), "(2**5)(5)(7**2)(11)"
-prime_factors(7775460), "(2**2)(3**3)(5)(7)(11**2)(17)"
-prime_factors(7919), "(7919)"
+    return "".join(f"({k})" if v == 1 else f"({k}**{v})" for k, v in Counter(factors).items())
 
 
 
@@ -5899,13 +5019,14 @@ def divisors(n):
     return sum(not n % i for i in range(1, n + 1))  # 5.578456058000029
     return sum(True if not n % i else False for i in range(1, n + 1))  # 5.622829734999868
     return len(list(filter(lambda i: not n % i, range(1, n + 1))))  # 6.283454425999935
+    return sum(map(lambda x: not n % x, range(1, n + 1)))
 
-divisors(1), 1
-divisors(4), 3
-divisors(5), 2
-divisors(12), 6
-divisors(30), 8
-divisors(4096), 13
+(divisors(1), 1)
+(divisors(4), 3)
+(divisors(5), 2)
+(divisors(12), 6)
+(divisors(30), 8)
+(divisors(4096), 13)
 
 
 
@@ -5925,8 +5046,9 @@ Happy Coding!"""
 
 
 def square_digits(num):
-    return int("".join(str(int(i)**2) for i in str(num)))
-square_digits(9119)
+    # return int("".join(str(int(digit)**2) for digit in str(num)))
+    return "".join(map(lambda x: str(int(x)**2), str(num)))
+(square_digits(9119), 811181)
 
 
 
@@ -5943,9 +5065,9 @@ n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]"""
 
 
 def powers_of_two(n):
-    return [2**i for i in range(n + 1)]
+    # return [2**index for index in range(n + 1)]
     return list(map(lambda x: 2**x, range(n + 1)))
-powers_of_two(4), [1, 2, 4, 8, 16]
+(powers_of_two(4), [1, 2, 4, 8, 16])
 
 
 
@@ -5960,20 +5082,22 @@ Complete the function that takes a string as an argument representing the curren
 For example, when the input is green, output should be yellow."""
 
 
-def update_light(current):
-    lights = ("green", "yellow", "red", "green")
-    return lights[lights.index(current) + 1]
-update_light('green'), 'yellow'
-update_light('yellow'), 'red'
-update_light('red'), 'green'
-
-def update_light(current):
-    lights = ("green", "yellow", "red")
-    return lights[(lights.index(current)+1) % 3]
-
 def update_lights(current):
     next_light = {"green": "yellow", "yellow": "red", "red": "green"}
     return next_light.get(current)
+(update_light('green'), 'yellow')
+(update_light('yellow'), 'red')
+(update_light('red'), 'green')
+
+def update_light(current):
+    lights = ("green", "yellow", "red", "green")
+    return lights[lights.index(current) + 1]
+
+def update_light(current):
+    lights = ("green", "yellow", "red")
+    return lights[(lights.index(current) + 1) % 3]
+
+
 
 
 
@@ -5983,7 +5107,7 @@ def update_lights(current):
 
 current father's age (years)
 current age of his son (years)
-Сalculate how many years ago the father was twice as old as his son (or in how many years he will be twice as old). The answer is always greater or equal to 0, no matter if it was in the past or it is in the future."""
+Calculate how many years ago the father was twice as old as his son (or in how many years he will be twice as old). The answer is always greater or equal to 0, no matter if it was in the past or it is in the future."""
 
 
 def twice_as_old(dad_years_old, son_years_old):
@@ -6043,16 +5167,8 @@ isIsogram "moose" = false
 isIsogram "aba" = false"""
 
 
-import string as string_imp
-
 def is_isogram(string):
-    letters = string_imp.ascii_lowercase
-    for i in string.lower():
-        if i in letters:
-            letters = letters.replace(i, "")
-        else:
-            return False
-    return True
+    return len(string) == len(set(string.lower()))
 (is_isogram("Dermatoglyphics"), True )
 (is_isogram("isogram"), True )
 (is_isogram("aba"), False, "same chars may not be adjacent" )
@@ -6060,8 +5176,6 @@ def is_isogram(string):
 (is_isogram("isIsogram"), False )
 (is_isogram(""), True, "an empty string is a valid isogram" )
 
-def is_isogram(string):
-    return len(string) == len(set(string.lower()))
 
 def is_isogram(string):
     for i in string.lower():
@@ -6163,9 +5277,9 @@ Note that 121 has twice the digit 1."""
 
 
 def nb_dig(n, d):
-    return "".join(str(i**2) for i in range(n + 1)).count(str(d))
+    return "".join(str(number**2) for number in range(n + 1)).count(str(d))
     return "".join(map(lambda x: str(x**2), range(n + 1))).count(str(d))
-    return sum(str(i**2).count(str(d)) for i in range(n + 1))
+    return sum(str(number**2).count(str(d)) for number in range(n + 1))
     return sum(map(lambda x: str(x**2).count(str(d)), range(n + 1)))
 (nb_dig(5750, 0), 4700)
 (nb_dig(11011, 2), 9481)
@@ -6180,9 +5294,9 @@ def nb_dig(n, d):
 
 n = 14656
 d = 1
-timeit.timeit(lambda: "".join(str(i**2) for i in range(n + 1)).count(str(d)), number=1_000)  # 8.781008230999987
+timeit.timeit(lambda: "".join(str(number**2) for number in range(n + 1)).count(str(d)), number=1_000)  # 8.781008230999987
 timeit.timeit(lambda: "".join(map(lambda x: str(x**2), range(n + 1))).count(str(d)), number=1_000)  # 10.25051729400002
-timeit.timeit(lambda: sum(str(i**2).count(str(d)) for i in range(n + 1)), number=1_000)  # 12.9422026430002
+timeit.timeit(lambda: sum(str(number**2).count(str(d)) for number in range(n + 1)), number=1_000)  # 12.9422026430002
 timeit.timeit(lambda: sum(map(lambda x: str(x**2).count(str(d)), range(n + 1))), number=1_000)  # 12.971102688000201
 
 
@@ -6208,12 +5322,11 @@ Inputs and the expected output will never exceed the signed 32-bit integer limit
 
 
 def sum_str(a, b):
-    if len(a + b) == 0:
-        return "0"
-    elif not (a and b):
-        return str(int(a + b))
-    else:
-        return str(int(a) + int(b))
+    if not a:
+        a = "0"
+    if not b:
+        b = "0"
+    return str(int(a) + int(b))
 (sum_str("4","5"), "9")
 (sum_str("34","5"), "39")
 (sum_str("9",""), "9", "x + empty = x")
@@ -6222,6 +5335,14 @@ def sum_str(a, b):
 
 def sum_str(a, b):
     return str(int(a or 0) + int(b or 0))
+
+def sum_str(a, b):
+    if len(a + b) == 0:
+        return "0"
+    elif not (a and b):
+        return str(int(a + b))
+    else:
+        return str(int(a) + int(b))
 
 
 
@@ -6257,16 +5378,30 @@ Complete the function to return true if the two arguments given are anagrams of 
 Examples
 "foefet" is an anagram of "toffee"
 
-"Buckethead" is an anagram of "DeathCubeK""""
+"Buckethead" is an anagram of "DeathCubeK"
+"""
+
 
 def is_anagram(test, original):
-    return sorted(test.lower()) == sorted(original.lower())
+    if not len(test) == len(original):
+        return False
+    test = test.lower()
+    original = original.lower()
+    for letter in test:
+        if letter in original:
+            original = original[:original.index(letter)] + original[original.index(letter)+1:]
+    return False if original else True
 (is_anagram("foefet", "toffee"), True, 'The word foefet is an anagram of toffee')
 (is_anagram("Buckethead", "DeathCubeK"), True, 'The word Buckethead is an anagram of DeathCubeK')
 (is_anagram("Twoo", "WooT"), True, 'The word Twoo is an anagram of WooT')
 (is_anagram("dumble", "bumble"), False, 'Characters do not match for test case dumble, bumble')
 (is_anagram("ound", "round"), False, 'Missing characters for test case ound, round')
 (is_anagram("apple", "pale"), False, 'Same letters, but different count')
+
+
+# O(nlogn)
+def is_anagram(test, original):
+    return sorted(test.lower()) == sorted(original.lower())
 
 
 
@@ -6287,7 +5422,7 @@ Examples: (Input --> Output)
 
 
 def number(lines):
-    return [f"{i}: {line}" for i, line in enumerate(lines, start=1)]
+    return [f"{ind}: {line}" for ind, line in enumerate(lines, start=1)]
     return ["{}: {}".format(i, line) for i, line in enumerate(lines, start=1)]
     return ["{}: {}".format(*line) for line in enumerate(lines, start=1)]
     return ["%d: %s" % (i, line) for i, line in enumerate(lines, start=1)]
@@ -6311,18 +5446,14 @@ For example if the input number is 2, and the input list is [1,2,3,1,2,1,2,3], y
 With list [20,37,20,21] and number 1, the result would be [20,37,21]."""
 
 
-from collections import Counter
-
-def delete_nth(order,max_e):
-    to_remove = {k: v-max_e for k, v in Counter(order).items() if v > max_e}
-    order = list(reversed(order))
-    
-    for k, v in to_remove.items():
-        for _ in range(v):
-            order.remove(k)
-            
-    order = list(reversed(order))
-    return order
+def delete_nth(order, max_e):
+    counter = {}
+    result = []
+    for number in order:
+        if counter.get(number, 0) < max_e:
+            counter[number] = counter.get(number, 0) + 1
+            result.append(number)
+    return result
 (delete_nth([20, 37, 20, 21], 1), [20, 37, 21])
 
 def delete_nth(order,max_e):
@@ -6346,15 +5477,13 @@ You should not remove or add elements from/to the array."""
 
 
 def two_sort(array):
-    return "***".join(elem for elem in sorted(array)[0])
+    return "***".join(min(array))
+    # return "***".join(elem for elem in min(array))
 (two_sort(["bitcoin", "take", "over", "the", "world", "maybe", "who", "knows", "perhaps"]), 'b***i***t***c***o***i***n' )
 (two_sort(["turns", "out", "random", "test", "cases", "are", "easier", "than", "writing", "out", "basic", "ones"]), 'a***r***e')
 (two_sort(["lets", "talk", "about", "javascript", "the", "best", "language"]), 'a***b***o***u***t')
 (two_sort(["i", "want", "to", "travel", "the", "world", "writing", "code", "one", "day"]), 'c***o***d***e')
 (two_sort(["Lets", "all", "go", "on", "holiday", "somewhere", "very", "cold"]), 'L***e***t***s')
-
-def two_sort(array):
-    return "***".join(min(array))
 
 
 
@@ -6369,8 +5498,9 @@ Example (Input --> Output)
 
 
 def capitals(word):
-    return [i for i, letter in enumerate(word) if letter.isupper()]
-(capitals('CodEWaRs'), [0,3,4,6])
+    return [ind for ind, letter in enumerate(word) if letter.isupper()]
+    # return list(zip(*filter(lambda x: x[1].isupper(), enumerate(word))))[0]
+(capitals('CodEWaRs'), [0, 3, 4, 6])
 
 
 
@@ -6387,8 +5517,10 @@ filter_list([1,2,'aasf','1','123',123]) == [1,2,123]"""
 
 
 def filter_list(l):
-    # return list(filter(lambda x: isinstance(x, int) , l))
     return list(filter(lambda x: type(x) == int , l))
+    # return list(filter(lambda x: isinstance(x, int) , l))
+    # return [alnum for alnum in l if type(alnum) == int]
+    # return [alnum for alnum in l if isinstance(alnum, int)]
 (filter_list([1, 2, 'a', 'b']), [1, 2], 'For input [1, 2, "a", "b"]')
 (filter_list([1, 'a', 'b', 0, 15]), [1, 0, 15], 'Fot input [1, "a", "b", 0, 15]')
 (filter_list([1, 2, 'aasf', '1', '123', 123]), [1, 2, 123], 'For input [1, 2, "aasf", "1", "123", 123]')
@@ -6443,6 +5575,13 @@ def diamond(n):
 (diamond(0), None)
 (diamond(-3), None)
 
+# Computes '  *  \n *** \n*****\n *** \n  *  ' instead of "  *\n ***\n*****\n ***\n  *\n"
+def diamond(n):
+    # upper = "\n".join([("*"*(2*ind + 1)).center(n) for ind in range((n // 2) + 1)])
+    lower = "\n".join([("*"*(2*ind + 1)).center(n) for ind in reversed(range((n // 2) ))])
+    upper = "\n".join([f"{'*'*(2*ind + 1):^{n}}" for ind in range((n // 2) + 1)])
+    # lower = "\n".join([f"{'*'*(2*ind + 1):^{n}}" for ind in reversed(range((n // 2) ))])
+    return upper + "\n" + lower
 
 
 
@@ -6469,7 +5608,7 @@ You can assume that all inputs are valid integers."""
 
 
 def round_to_next5(n):
-    return n if not n % 5 else (n // 5) * 5 + 5
+    return n if not n % 5 else (n // 5 + 1) * 5
 (round_to_next5(0), 0)
 (round_to_next5(2), 5)
 (round_to_next5(3), 5)
@@ -6502,13 +5641,10 @@ Constraint:
 
 
 def quarter_of(month):
-    return month // 3 if not month % 3 else (month//3) + 1
+    return (month - 1) // 3 + 1
 (quarter_of(3), 1)
 (quarter_of(8), 3)
 (quarter_of(11), 4)
-
-def quarter_of(month):
-    return (month + 2) // 3
 
 
 
@@ -6552,47 +5688,16 @@ Together with the encryption function, you should also implement a decryption fu
 
 If the string S is an empty value or the integer N is not positive, return the first argument without changes."""
 
-
-def decrypt(text, n):
-    if text == "":
-        return ""
-    if text == None:
-        return None
-    
-    if n <= 0:
-        return text
-    else:
-        t_odd = text[:len(text)//2]
-        t_even = text[len(text)//2:]
-
-        t = ""
-        for i in range(len(t_even)):
-        #     t += t_even[i]
-        #     try:
-        #         t += t_odd[i]
-        #     except:
-        #         t += ""
-            t += t_even[i:i+1]
-            t += t_odd[i:i+1]
-
-        return decrypt(t, n-1)
-
-    
-(decrypt("This is a test!", 0), "This is a test!")
-(decrypt("hsi  etTi sats!", 1), "This is a test!")
-(decrypt("s eT ashi tist!", 2), "This is a test!")
-(decrypt(" Tah itse sits!", 3), "This is a test!")
-(decrypt("This is a test!", 4), "This is a test!")
-(decrypt("This is a test!", -1), "This is a test!")
-(decrypt("hskt svr neetn!Ti aai eyitrsig", 1), "This kata is very interesting!")    
-
-
 def encrypt(text, n):
-    if n <= 0:
-        return text
-    else:
-        return encrypt("".join(elem for i, elem in enumerate(text) if i % 2) + "".join(elem for i, elem in enumerate(text) if not i % 2), n - 1)
-
+    for _ in range(n):
+        odd, even = "", ""
+        for ind, digit in enumerate(text):
+            if ind % 2:
+                odd += digit
+            else:
+                even += digit
+        text = odd + even
+    return text
 (encrypt("This is a test!", 0), "This is a test!")
 (encrypt("This is a test!", 1), "hsi  etTi sats!")
 (encrypt("This is a test!", 2), "s eT ashi tist!")
@@ -6600,6 +5705,48 @@ def encrypt(text, n):
 (encrypt("This is a test!", 4), "This is a test!")
 (encrypt("This is a test!", -1), "This is a test!")
 (encrypt("This kata is very interesting!", 1), "hskt svr neetn!Ti aai eyitrsig")
+(encrypt("012345", 1), '135024')
+(encrypt("01234", 1), '13024')
+
+def encrypt(text, n):
+    for _ in range(n):
+        text = text[1::2] + text[::2]
+    return text
+
+def encrypt(text, n):
+    if n <= 0:
+        return text
+    return encrypt(text[1::2] + text[::2], n-1)
+
+def encrypt(text, n):
+    if n <= 0:
+        return text
+    else:
+        return encrypt("".join(elem for i, elem in enumerate(text) if i % 2) + "".join(elem for i, elem in enumerate(text) if not i % 2), n - 1)
+
+
+def decrypt(text, n):
+    for _ in range(n):
+        odd = text[:len(text)//2]
+        even = text[len(text)//2:]
+        solution = ""
+        for i in range(len(even)):
+            solution += even[i:i+1]
+            solution += odd[i:i+1]
+        text = solution
+    return text
+(decrypt("This is a test!", 0), "This is a test!")
+(decrypt("hsi  etTi sats!", 1), "This is a test!")
+(decrypt("s eT ashi tist!", 2), "This is a test!")
+(decrypt(" Tah itse sits!", 3), "This is a test!")
+(decrypt("This is a test!", 4), "This is a test!")
+(decrypt("This is a test!", -1), "This is a test!")
+(decrypt("hskt svr neetn!Ti aai eyitrsig", 1), "This kata is very interesting!")    
+(decrypt("135024", 1), "012345")
+(decrypt("13024", 1), "01234")
+(decrypt("304152", 2), "012345")
+(decrypt("32104", 2), "01234")
+
 
 def decrypt(text, n):
     if text == "":
@@ -6612,16 +5759,6 @@ def decrypt(text, n):
         o, l = len(text) // 2, list(text)
         l[1::2], l[::2] = l[:o], l[o:]
         return decrypt("".join(l), n-1)
-
-def encrypt(text, n):
-    for _ in range(n):
-        text = text[1::2] + text[::2]
-    return text
-
-def encrypt(text, n):
-    if n <= 0:
-        return text
-    return encrypt(text[1::2] + text[::2], n-1)
 
 
 
@@ -6640,7 +5777,8 @@ More similar exercise are found here: http://rosalind.info/problems/list-view/ (
 Example: (input --> output)
 
 "ATTGC" --> "TAACG"
-"GTAT" --> "CATA""""
+"GTAT" --> "CATA"
+"""
 
 
 def DNA_strand(dna):
@@ -6667,7 +5805,6 @@ def DNA_strand(dna):
 # Super Duper Easy
 # https://www.codewars.com/kata/55a5bfaa756cfede78000026/solutions
 """Make a function that returns the value multiplied by 50 and increased by 6. If the value entered is a string it should return "Error"."""
-
 
 def problem(a):
     return 50 * a + 6 if type(a) in [float, int] else "Error"
@@ -6781,7 +5918,7 @@ def find_difference(a, b):
 
 import numpy as np
 def find_difference(a, b):
-    return abs(np.product(a) - np.product(b))
+    return abs(np.prod(a) - np.prod(b))
 
 
 
@@ -6827,6 +5964,7 @@ def grow(arr):
     return math.prod(arr)
 grow([596, 321, 384, 132, 649, 224, 157, 729, 531, 115, 555, 540, 838, 243, 168, 538, 667, 53, 613, 10, 486, 437, 143, 167, 722, 422, 866, 534, 261, 3, 505, 881, 228, 203, 102, 237, 152, 32, 320, 731, 943, 723, 557, 730, 525, 353, 606, 274, 613, 582, 96, 585, 120, 426, 513, 232, 52, 584, 591, 806, 417, 70, 96, 902, 538, 681, 341, 927, 301, 97, 812, 30, 32, 405, 923, 730, 118, 64, 795, 226, 840, 653, 388, 784, 651, 332, 418, 682, 241, 781, 592, 150, 23, 134, 144, 626, 536, 482, 195, 811, 208, 707, 344, 735, 535, 945, 277, 725, 627, 135, 304, 585, 580, 409, 556, 839, 659, 1000, 861, 416, 914, 571, 691, 554, 502, 399, 111, 885, 142, 445, 880, 592, 255, 662, 423, 682, 384, 103, 722, 847, 320, 189, 693, 653, 230, 411, 204, 608, 481, 814, 297, 394, 864, 594, 549, 197, 628, 40, 185, 485, 162, 671, 395, 585, 428, 733, 811, 854, 344, 660, 475, 936, 807, 879, 404, 704, 515, 919, 549, 178, 942, 307, 553, 840, 451, 335, 44, 531, 726, 547, 238, 549, 987, 345, 368, 549, 107, 932, 521, 23, 95, 35, 488, 513, 573, 667, 388, 951, 654, 685, 974, 142, 533, 370, 847, 574, 848, 729, 237, 968, 185, 738, 660, 827, 110, 930, 497, 390, 542, 535, 223, 366, 98, 194, 771, 948, 864, 200, 801, 588, 468, 672, 61, 689, 893, 980, 525, 365, 593, 948, 920, 593, 939, 288, 424, 886, 203, 229, 911, 814, 157, 112, 390, 88, 312, 477, 35, 795, 959, 370, 950, 824, 456, 648, 184, 106, 896])
 
+from functools import reduce
 def grow(arr):
     return reduce((lambda x, y: x * y), arr, 1)
 
@@ -6843,7 +5981,8 @@ Examples
 replace("Hi!") === "H!!"
 replace("!Hi! Hi!") === "!H!! H!!"
 replace("aeiou") === "!!!!!"
-replace("ABCDE") === "!BCD!""""
+replace("ABCDE") === "!BCD!"
+"""
 
 
 def replace_exclamation(st):
@@ -6900,26 +6039,14 @@ This example will return the string Hello, John Smith! Welcome to Phoenix, Arizo
 
 
 def say_hello(name, city, state):
-    if len(name) == 2:
-        return f"Hello, {name[0]} {name[1]}! Welcome to {city}, {state}!"
-    elif len(name) == 3:
-        return f"Hello, {name[0]} {name[1]} {name[2]}! Welcome to {city}, {state}!"
-    else:
-        return f"Hello, {name[0]} {name[1]} {name[2]} {name[3]}! Welcome to {city}, {state}!"
+    return f"Hello, {' '.join(i for i in name)}! Welcome to {city}, {state}!"
+    # return "Hello, {}! Welcome to {}, {}!".format(' '.join(i for i in name), city, state)
+    # return "Hello, %s! Welcome to %s, %s!" % (' '.join(i for i in name), city, state)
 (say_hello(['John', 'Smith'], 'Phoenix', 'Arizona'), 'Hello, John Smith! Welcome to Phoenix, Arizona!')
 (say_hello(['Franklin','Delano','Roosevelt'], 'Chicago', 'Illinois'), 'Hello, Franklin Delano Roosevelt! Welcome to Chicago, Illinois!')
 (say_hello(['Wallace','Russel','Osbourne'],'Albany','New York'), 'Hello, Wallace Russel Osbourne! Welcome to Albany, New York!')
 (say_hello(['Lupin','the','Third'],'Los Angeles','California'), 'Hello, Lupin the Third! Welcome to Los Angeles, California!')
 (say_hello(['Marlo','Stanfield'],'Baltimore','Maryland'), 'Hello, Marlo Stanfield! Welcome to Baltimore, Maryland!')
-
-def say_hello(name, city, state):
-    return f"Hello, {' '.join(i for i in name)}! Welcome to {city}, {state}!"
-
-def say_hello(name, city, state):
-    return "Hello, {}! Welcome to {}, {}!".format(' '.join(i for i in name), city, state)
-
-def say_hello(name, city, state):
-    return "Hello, %s! Welcome to %s, %s!" % (' '.join(i for i in name), city, state)
 
 
 
@@ -6934,16 +6061,15 @@ As the input may have trailing spaces, you will also need to ignore unneccesary 
 Example (Input --> Output)
 
 "Hello World" --> "World Hello"
-"Hi There." --> "There. Hi""""
+"Hi There." --> "There. Hi"
+"""
 
-
-def reverse(st):
-    return " ".join(reversed(st.split()))
-(reverse('Hello World'), 'World Hello')
-(reverse('Hi There.'), 'There. Hi')
 
 def reverse(st):
     return " ".join(st.split()[::-1])
+    # return " ".join(reversed(st.split()))
+(reverse('Hello World'), 'World Hello')
+(reverse('Hi There.'), 'There. Hi')
 
 
 
@@ -6973,6 +6099,11 @@ def capitalize(s):
 (capitalize("indexinglessons"),['InDeXiNgLeSsOnS', 'iNdExInGlEsSoNs'])
 (capitalize("codingisafunactivity"),['CoDiNgIsAfUnAcTiViTy', 'cOdInGiSaFuNaCtIvItY'])
 
+
+def capitalize(s):
+    one_elem = ((char.upper(), char) if not ind % 2 else (char, char.upper()) for ind, char in enumerate(s))
+    return ["".join(i) for i in zip(*one_elem)]
+
 def capitalize(s):
     first_element = "".join(elem.upper() if not i % 2 else elem for i, elem in enumerate(s))
     return [first_element, first_element.swapcase()]
@@ -6997,7 +6128,8 @@ Examples:
 (form of the result depends on the language)
 
 race(720, 850, 70) => [0, 32, 18] or "0 32 18"
-race(80, 91, 37)   => [3, 21, 49] or "3 21 49""""
+race(80, 91, 37)   => [3, 21, 49] or "3 21 49"
+"""
 
  
 import numpy as np
@@ -7056,7 +6188,7 @@ how_many_light_sabers_do_you_own = lambda x="": 18 if x == "Zach" else 0
 
 def include(arr, item):
     return item in arr
-lst = [0,1,2,3,5,8,13,2,2,2,11]
+lst = [0, 1, 2, 3, 5, 8, 13, 2, 2, 2, 11]
 (include(lst, 100), False, "list does not include 100")
 (include(lst, 2), True, "list includes 2 multiple times")
 (include(lst, 11), True, "list includes 11")
@@ -7087,7 +6219,9 @@ In this Kata, a string is said to be in ALL CAPS whenever it does not contain an
 
 
 def is_uppercase(inp):
-    return not any(i.islower() for i in inp)
+    return inp.isupper()
+    # return inp.upper() == inp
+    # return not any(i.islower() for i in inp)
 (is_uppercase("c"), False)
 (is_uppercase("C"), True)
 (is_uppercase("hello I AM DONALD"), False)
@@ -7095,10 +6229,6 @@ def is_uppercase(inp):
 (is_uppercase("$%&"), True)
 
 "$%&".islower()  # False
-
-
-def is_uppercase(inp):
-    return inp.upper() == inp
 
 
 
@@ -7110,7 +6240,8 @@ def is_uppercase(inp):
 
 Examples
 "www.codewars.com#about" --> "www.codewars.com"
-"www.codewars.com?page=1" -->"www.codewars.com?page=1""""
+"www.codewars.com?page=1" -->"www.codewars.com?page=1"
+"""
 
 
 
@@ -7126,9 +6257,9 @@ def remove_url_anchor(url):
 
 import re
 def remove_url_anchor(url):
-    # return re.sub(r"#.*", "", url)
+    return re.sub(r"#.*", "", url)
     # return re.search(r"(.*)#.*", url).group(1) if "#" in url else url
-    return re.search(r"[^#]+", url).group(0)
+    # return re.search(r"[^#]+", url).group(0)
 
 
 
@@ -7161,9 +6292,9 @@ result - division by zero (refer to the specifications on how to handle this in 
 
 def remainder(a,b):
     a, b = sorted((a, b))
-    if a != 0:
+    try:
         return b % a
-    else:
+    except:
         return None
 (remainder(17,5), 2, 'Returned value should be the value left over after dividing as much as possible.')
 (remainder(13, 72), remainder(72, 13), 'The order the arguments are passed should not matter.')
@@ -7189,7 +6320,8 @@ If no arguments are given, ball objects should instantiate with a "ball type" of
 ball1 = Ball()
 ball2 = Ball("super")
 ball1.ball_type  #=> "regular"
-ball2.ball_type  #=> "super""""
+ball2.ball_type  #=> "super"
+"""
 
 
 class Ball(object):
@@ -7248,6 +6380,25 @@ def sum_pairs(ints, s):
             return [diff, num]
         seen.add(num)
     return None
+sum_pairs([10, 5, 2, 3, 7, 5], 10)
+sum_pairs([1, 4, 8, 7, 3, 15], 8)
+sum_pairs([1, -2, 3, 0, -6, 1], -6)
+l1 = [1, 4, 8, 7, 3, 15]
+l2 = [1, -2, 3, 0, -6, 1]
+l3 = [20, -13, 40]
+l4 = [1, 2, 3, 4, 1, 0]
+l5 = [10, 5, 2, 3, 7, 5]
+l6 = [4, -2, 3, 3, 4]
+l7 = [0, 2, 0]
+l8 = [5, 9, 13, -3]
+(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
+(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
+(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
+(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
+(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
+(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
+(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
+(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)
 
 
 # still to slow
@@ -7266,47 +6417,6 @@ def sum_pairs(ints, s):
                 sol[j] = [ints[i], ints[j]]
                 # return [ints[i], ints[j]]
     return sol[min(sol)] if sol else None
-
-# caputures only ones form the beginning
-def sum_pairs(ints, s):
-    for i, val in enumerate(ints):
-        try:
-            ints[:i].index(s - val)
-            return [s - val, val]
-            # return i
-        except:
-            pass
-sum_pairs([10, 5, 2, 3, 7, 5], 10)
-sum_pairs([1, 4, 8, 7, 3, 15], 8)
-sum_pairs([1, -2, 3, 0, -6, 1], -6)
-
-# caputures only ones form the beginning
-def sum_pairs(ints, s):
-    for val in ints:
-        try:
-            ints.index(s - val)
-            return [val, s - val]
-        except:
-            pass
-
-
-l1 = [1, 4, 8, 7, 3, 15]
-l2 = [1, -2, 3, 0, -6, 1]
-l3 = [20, -13, 40]
-l4 = [1, 2, 3, 4, 1, 0]
-l5 = [10, 5, 2, 3, 7, 5]
-l6 = [4, -2, 3, 3, 4]
-l7 = [0, 2, 0]
-l8 = [5, 9, 13, -3]
-
-(sum_pairs(l1, 8) == [1, 7], "Basic: %s should return [1, 7] for sum = 8" % l1)
-(sum_pairs(l2, -6) == [0, -6], "Negatives: %s should return [0, -6] for sum = -6" % l2)
-(sum_pairs(l3, -7) == None, "No Match: %s should return None for sum = -7" % l3)
-(sum_pairs(l4, 2) == [1, 1], "First Match From Left: %s should return [1, 1] for sum = 2 " % l4)
-(sum_pairs(l5, 10) == [3, 7], "First Match From Left REDUX!: %s should return [3, 7] for sum = 10 " % l5)
-(sum_pairs(l6, 8) == [4, 4], "Duplicates: %s should return [4, 4] for sum = 8" % l6)
-(sum_pairs(l7, 0) == [0, 0], "Zeroes: %s should return [0, 0] for sum = 0" % l7)
-(sum_pairs(l8, 10) == [13, -3], "Subtraction: %s should return [13, -3] for sum = 10" % l8)
 
 
 
@@ -7344,7 +6454,7 @@ def stray(arr):
 
 # Summing a number's digits
 # https://www.codewars.com/kata/52f3149496de55aded000410/train/python
-"""Write a function named sumDigits which takes a number as input and returns the sum of the absolute value of each of the number's decimal digits.
+"""Write a function named sum_digits which takes a number as input and returns the sum of the absolute value of each of the number's decimal digits.
 
 For example: (Input --> Output)
 
@@ -7379,13 +6489,13 @@ def sum_digits(number):
 Calculate the sum of the numbers in the nth row of this triangle (starting at index 1) e.g.: (Input --> Output)
 
 1 -->  1
-2 --> 3 + 5 = 8"""
-
+2 --> 3 + 5 = 8
+3 --> 7 + 9 + 11 = 27
+"""
 
 def row_sum_odd_numbers(n):
     number_count = sum(i + 1 for i in range(n))
-    # return sum([2*i + 1 for i in range(number_count)][-n:])
-    return sum([2*i + 1 for i in range(number_count - n, number_count)])
+    return sum([2*i + 1 for i in range(number_count)][-n:])
 (row_sum_odd_numbers(1), 1)
 (row_sum_odd_numbers(2), 8)
 (row_sum_odd_numbers(13), 2197)
@@ -7408,7 +6518,7 @@ The parameter of accum is a string which includes only letters from a..z and A..
 
 
 def accum(st):
-    return "-".join((letter * i).capitalize() for i, letter in enumerate(st, 1))
+    return "-".join((letter * ind).capitalize() for ind, letter in enumerate(st, 1))
 (accum("ZpglnRxqenU"), "Z-Pp-Ggg-Llll-Nnnnn-Rrrrrr-Xxxxxxx-Qqqqqqqq-Eeeeeeeee-Nnnnnnnnnn-Uuuuuuuuuuu")
 (accum("NyffsGeyylB"), "N-Yy-Fff-Ffff-Sssss-Gggggg-Eeeeeee-Yyyyyyyy-Yyyyyyyyy-Llllllllll-Bbbbbbbbbbb")
 (accum("MjtkuBovqrU"), "M-Jj-Ttt-Kkkk-Uuuuu-Bbbbbb-Ooooooo-Vvvvvvvv-Qqqqqqqqq-Rrrrrrrrrr-Uuuuuuuuuuu")
@@ -7440,17 +6550,17 @@ Examples
 
 
 def array(data):
-    # return data
     if data.count(",") in {0, 1}:
         return None
     else: 
-        return " ".join(data.split(",")[1:-1])
-(array('1,2,3'), '2');
-(array('1,2,3,4'), '2 3');
-(array('1,2,3,4,5'), '2 3 4');
-(array(''), None);
-(array('1'), None);
-(array('1,2'), None);
+        return " ".join(digit.strip() for digit in data.split(",")[1:-1])
+(array('1,2,3'), '2')
+(array('1,2,3,4'), '2 3')
+(array('1, 2, 3, 4'), '2 3')
+(array('1,2,3,4,5'), '2 3 4')
+(array(''), None)
+(array('1'), None)
+(array('1,2'), None)
 
 def array(data):
     return " ".join(data.split(",")[1:-1]) or None
@@ -7469,10 +6579,10 @@ Keep in Mind
 n and m are natural numbers (positive integers)
 m is excluded from the multiples
 Examples
-sumMul(2, 9)   ==> 2 + 4 + 6 + 8 = 20
-sumMul(3, 13)  ==> 3 + 6 + 9 + 12 = 30
-sumMul(4, 123) ==> 4 + 8 + 12 + ... = 1860
-sumMul(4, -7)  ==> "INVALID"""""
+sum_mul(2, 9)   ==> 2 + 4 + 6 + 8 = 20
+sum_mul(3, 13)  ==> 3 + 6 + 9 + 12 = 30
+sum_mul(4, 123) ==> 4 + 8 + 12 + ... = 1860
+sum_mul(4, -7)  ==> "INVALID"""""
 
 
 def sum_mul(n, m):
@@ -7634,13 +6744,13 @@ def stock_list(list_of_art, list_of_cat):
     if not (list_of_cat and list_of_art):
         return ""
 
-    dict_of_art = {cat: 0 for cat in list_of_cat}
+    art_dict = {}
+    for row in list_of_art:
+        letter = row.split()[0][0]
+        number = row.split()[1]
+        art_dict[letter] = art_dict.get(letter, 0) + int(number)
     
-    for art in list_of_art:
-        if art[0] in list_of_cat:
-            dict_of_art[art[0]] = dict_of_art.get(art[0], 0) + int(re.sub(r"\D", "", art))
-        
-    return(" - ".join(f"({k} : {v})" for k, v in dict_of_art.items()))
+    return " - ".join(f"({cat} : {art_dict.get(cat, 0)})" for cat in list_of_cat)
 
 
 
@@ -7684,6 +6794,37 @@ def factorial(n):
     for i in range(2, n + 1):
         j *= i
     return j
+
+
+
+
+
+# Remove duplicates from list
+# https://www.codewars.com/kata/57a5b0dfcf1fa526bb000118/train/python
+"""Define a function that removes duplicates from an array of non negative numbers and returns it as a result.
+
+The order of the sequence has to stay the same.
+
+Examples:
+
+Input -> Output
+[1, 1, 2] -> [1, 2]
+[1, 2, 1, 1, 3, 2] -> [1, 2, 3]"""
+
+
+def distinct(seq):
+    seen = set()
+    unique_list = []
+    for elem in seq:
+        if not elem in seen:
+            unique_list.append(elem)
+            seen.add(elem)
+    return unique_list
+(distinct([1]), [1])
+(distinct([1, 2]), [1, 2])
+(distinct([1, 1, 2]), [1, 2])
+(distinct([1, 1, 1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
+(distinct([1, 2, 2, 3, 3, 4, 4, 5, 6, 7, 7, 7]), [1, 2, 3, 4, 5, 6, 7])
 
 
 

@@ -171,7 +171,9 @@ step counting from +left/-right:
 
 # f""
 f"{8:>b}"  # '1000' # decimal to binary
-f"{0b100:>d}"  # '4' # binary to decimal
+f"{0b100:>d}"  # '4' # binary to dec
+f"{0xff:>d}"  # 255 # hex to dec
+f"{255:>x}"  # "ff" # dec to hex
 n = 1000000000
 f"{n:_}"  # '1_000_000_000'
 f"{n:,}"  # '1,000,000,000'
@@ -182,6 +184,7 @@ f"{n:_>20}:"  # '_________________var:'
 f"{n:<20}:"  # 'var                 :'
 f"{n:_<20}:"  # 'var_________________:'
 f"{n:^20}:"  # '        var         :'
+f"{'*'*(2*2 + 1):^{20}}"
 f"{n:_^20}:"  # '________var_________:'
 
 from datetime import datetime
@@ -240,6 +243,7 @@ int('11111111', 2)  # 255 # bin to dec
 int('0b11111111', 2)  # 255 # bin to dec
 '{:d}'.format(0b11111111)  # '255'  # bin to dec
 int('0xff', 16)  # 255 # hex to dec
+int('ff', 16)  # 255 # hex to dec
 hex(0b11111111)  # '0xff' # bin to hex
 print(0b11111111)  # 255 # binary int to decimal
 hex(int('11111111', 2))  # '0xff'# bin to dec to hex
@@ -625,7 +629,10 @@ min([3, 9], key=arr.count)  # 9 # find the least frequent element in the 'key' l
 
 arr = ['notnot', 'some', 'random', 'text', '']
 max(arr, key=len)  # first longest element in list
+max("foobar", "barfoo", key=len)  # first lengest element
 list(filter(lambda x: len(x) == len(max(arr, key=len)), arr)) # finds all longest elements in list
+
+max(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)  # 42 # max chars with int key.
 
 
 # find min/max in list, dict, string
@@ -894,6 +901,7 @@ int(15.456)  # 15
 # Range
 
 [i for i in range(4, -1, -1)]  # [4, 3, 2, 1, 0]
+[i for i in range(1, 3*2, 3)]  # [1, 4]
 range(ord('a'), ord('c'))  # range(97, 99)
 
 
@@ -1259,6 +1267,8 @@ people_list = (('Joe', 'Schmoe', 23),
 
 list(zip(*people_list))
 
+zip(ran, diff, goals2) == zip(*(ran, diff, goals2))
+
 
 
 
@@ -1530,7 +1540,7 @@ print('This message will be printed after a wait of 5 seconds')
 
 
 
-# import timeit
+# timeit
 
 import timeit
 
@@ -1551,6 +1561,7 @@ timeit.timeit(lambda: sum([True for i in range(1, n + 1) if not n % i]), number=
 timeit.timeit(lambda: len([not n % i for i in range(1, n + 1)]), number=10_000)  # 4.191705105999972
 timeit.timeit(lambda: sum(not n % i for i in range(1, n + 1)), number=10_000)  # 5.578456058000029
 timeit.timeit(lambda: sum(True if not n % i else False for i in range(1, n + 1)), number=10_000)  # 5.622829734999868
+timeit.timeit(lambda: sum(map(lambda x: not n % x, range(1, n + 1))), number=10_000)  # 5.872954612000058
 timeit.timeit(lambda: len(list(filter(lambda i: not n % i, range(1, n + 1)))), number=10_000)  # 6.283454425999935
 
 
@@ -1653,8 +1664,8 @@ break_f()
 
 # eval
 
-eval('1' '+' '2') # evaluates a string
-
+eval("1 + 2")  # 3 # evaluates a string
+eval(f"3" "+" "4")  # 7
 
 
 
@@ -1733,6 +1744,8 @@ re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'")  # <re.Match object; span=(2, 5), ma
 re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").group()  # ";-)"
 re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").span()  # (2, 5)
 re.search(r"[:;][-~]?[\)D]", "a ;-) ';~)'").start()  # 2
+re.search(r".*?CM.*", "MCMXC")  # <re.Match object; span=(0, 5), match='MCMXC'>
+re.search(r".*?CM.*?", "MCMXC")  # <re.Match object; span=(0, 3), match='MCMXC'>
 re.search(r"foo", "foo bar foo")  # <re.Match object; span=(0, 3), match='foo'>
 re.search(r"bar", "foo bar foo")  # <re.Match object; span=(4, 7), match='bar'>
 re.search(r"bar", "foo bar foo")  # <re.Match object; span=(4, 7), match='bar'>
@@ -1765,14 +1778,15 @@ matches =re.search(r"^(?:https?://)?(?:www\.)?twitter\.com/(.*)$", "https://twit
 matches.group(1)
 
 # re.findall() The object returns a list of all occurrences.
+re.findall(r'\d', '12ia22')  # ['1', '2', '2', '2']
+re.findall(r'\d+', '12ia22')  # ['12', '22']
+re.findall(r"[aeoiu]", "sentence")
 re.findall(r"[:;][-~]?[\)D]", "* ;-) ';~)'")  # [';-)', ';~)']
 re.findall('abc', 'abc def abc')  # ['abc', 'abc']
 re.findall('\d+', 'my number is 123 and not 456, and definitely not 789')  # ['123', '456', '789']
 re.findall(r'^\w+', 'education is fun')  # ['education]
 re.findall(r'\w+', 'education is fun')  # ['education', 'is', 'fun']
 re.findall(r'\w+$', 'education is fun')  # ['fun']
-re.findall(r'\d', '12ia22')  # ['1', '2', '2', '2']
-re.findall(r'\d+', '12ia22')  # ['12', '22']
 re.findall(r'[;:][~-]?[)D]', ' '.join([':)', ';(', ';}', ':-D']))  # [':)', ':-D']
 re.findall(r'^\w', 'abc\ndef\nabc')  # ['a'] # search only first line
 re.findall(r'^\w', 'abc\ndef\nabc', re.MULTILINE)  # ['a', 'd', 'a'] # search all lines

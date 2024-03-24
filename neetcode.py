@@ -600,10 +600,7 @@ Solution().maxProfit([1, 2])
 # 3. Longest Substring Without Repeating Characters
 # https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
 """Given a string s, find the length of the longest 
-substring
- without repeating characters.
-
- 
+substring without repeating characters.
 
 Example 1:
 
@@ -643,16 +640,106 @@ Solution().lengthOfLongestSubstring("abcabcbb")
 Solution().lengthOfLongestSubstring("bbbbb")
 Solution().lengthOfLongestSubstring("pwwkew")
 
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+
+        seen = []
+        slider = ""
+        max_len = 0
+        for char in s:
+            if char in seen:
+                slider = slider[slider.index(char) + 1:]
+                while char in seen:
+                    seen.pop(0)
+            seen.append(char)
+            slider += char
+            max_len = max(max_len, len(slider))
+        return max_len
 
 
 
 
-# 
+
+
+# 424. Longest Repeating Character Replacement
+# https://leetcode.com/problems/longest-repeating-character-replacement/description/
+"""You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times.
+
+Return the length of the longest substring containing the same letter you can get after performing the above operations.
+
+ 
+
+Example 1:
+
+Input: s = "ABAB", k = 2
+Output: 4
+Explanation: Replace the two 'A's with two 'B's or vice versa.
+Example 2:
+
+Input: s = "AABABBA", k = 1
+Output: 4
+Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+The substring "BBBB" has the longest repeating letters, which is 4.
+There may exists other ways to achieve this answer too."""
+
+
+# in progress
+class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        
+        seen = []
+        seen_dict = {}
+        slider = ""
+        max_len = 0
+        for char in s:
+            if char in seen:
+                slider = slider[slider.index(char) + 1:]
+                while char in seen:
+                    seen.pop(0)
+            seen.append(char)
+            seen_dict[char] = seen_dict.get(char, 0) + 1
+            slider += char
+            max_len = max(max_len, len(slider) - max(seen_dict.values()))
+        return max_len
+
+Solution().characterReplacement("ABAB", 2)
+Solution().characterReplacement("AABABBA", 1)
 
 
 
 
 
+class Solution:
+    def isValid(self, s: str) -> bool:
+        seen = []
+        oppos_bracket = {")": "(", "]": "[", "}": "{"}
+        for bracket in s:
+            # if seen and oppos_bracket.get(bracket, "foo") == seen[-1]:
+            if seen and seen[-1] == oppos_bracket[bracket]:
+                seen.pop()
+            else:
+                seen.append(bracket)
+        return not bool(seen)
+
+Solution().isValid("[(])")
+Solution().isValid("()")
+Solution().isValid("([])")
+
+
+class Solution:
+    def isValid(self, s: str) -> bool:
+        seen = []
+        oppos_bracket = {")": "(", "]": "[", "}": "{"}
+
+        for bracket in s:
+            if bracket in oppos_bracket:
+                if seen and oppos_bracket[bracket] == seen[-1]:
+                    seen.pop()
+                else:
+                    return False
+            else:
+                seen.append(bracket)
+        return not bool(seen)
 
 
 
