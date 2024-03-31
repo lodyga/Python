@@ -709,21 +709,30 @@ Solution().characterReplacement("AABABBA", 1)
 
 
 
-class Solution:
-    def isValid(self, s: str) -> bool:
-        seen = []
-        oppos_bracket = {")": "(", "]": "[", "}": "{"}
-        for bracket in s:
-            # if seen and oppos_bracket.get(bracket, "foo") == seen[-1]:
-            if seen and seen[-1] == oppos_bracket[bracket]:
-                seen.pop()
-            else:
-                seen.append(bracket)
-        return not bool(seen)
+# 20. Valid Parentheses
+# https://leetcode.com/problems/valid-parentheses/description/
+"""Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
-Solution().isValid("[(])")
-Solution().isValid("()")
-Solution().isValid("([])")
+An input string is valid if:
+
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Every close bracket has a corresponding open bracket of the same type.
+ 
+
+Example 1:
+
+Input: s = "()"
+Output: true
+Example 2:
+
+Input: s = "()[]{}"
+Output: true
+Example 3:
+
+Input: s = "(]"
+Output: false
+"""
 
 
 class Solution:
@@ -739,7 +748,582 @@ class Solution:
                     return False
             else:
                 seen.append(bracket)
-        return not bool(seen)
+        return not seen
+(Solution().isValid("()"), True)
+(Solution().isValid("({})"), True)
+(Solution().isValid("(})"), False)
+(Solution().isValid("([)"), False)
+
+
+
+
+
+# 153. Find Minimum in Rotated Sorted Array
+# https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
+"""Suppose an array of length n sorted in ascending order is rotated between 1 and n times. For example, the array nums = [0,1,2,4,5,6,7] might become:
+
+[4,5,6,7,0,1,2] if it was rotated 4 times.
+[0,1,2,4,5,6,7] if it was rotated 7 times.
+Notice that rotating an array [a[0], a[1], a[2], ..., a[n-1]] 1 time results in the array [a[n-1], a[0], a[1], a[2], ..., a[n-2]].
+
+Given the sorted rotated array nums of unique elements, return the minimum element of this array.
+
+You must write an algorithm that runs in O(log n) time.
+
+ 
+
+Example 1:
+
+Input: nums = [3,4,5,1,2]
+Output: 1
+Explanation: The original array was [1,2,3,4,5] rotated 3 times.
+Example 2:
+
+Input: nums = [4,5,6,7,0,1,2]
+Output: 0
+Explanation: The original array was [0,1,2,4,5,6,7] and it was rotated 4 times.
+Example 3:
+
+Input: nums = [11,13,15,17]
+Output: 11
+Explanation: The original array was [11,13,15,17] and it was rotated 4 times. 
+"""
+
+
+class Solution:
+    def findMin(self, nums: list[int]) -> int:
+        start, stop = 0, len(nums) - 1
+        min_num = float("inf")
+
+        while start <= stop:
+            mid = (start + stop) // 2 # start + (stop - start) // 2
+            min_num = min(min_num, nums[mid])
+
+            if min_num > nums[stop]:
+                start = mid + 1
+            else:
+                stop = mid - 1
+
+        return min_num
+
+(Solution().findMin([3, 4, 5, 1, 2]), 1)
+Solution().findMin([2, 3, 4, 5, 1])
+Solution().findMin([1, 2, 3, 4, 5])
+(Solution().findMin([4, 5, 6, 7, 0, 1, 2]), 0)
+(Solution().findMin([11, 13, 15, 17]), 11)
+
+
+
+
+
+# 33. Search in Rotated Sorted Array
+# https://leetcode.com/problems/search-in-rotated-sorted-array/description/
+"""There is an integer array nums sorted in ascending order (with distinct values).
+
+Prior to being passed to your function, nums is possibly rotated at an unknown pivot index k (1 <= k < nums.length) such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). For example, [0,1,2,4,5,6,7] might be rotated at pivot index 3 and become [4,5,6,7,0,1,2].
+
+Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+Example 1:
+
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+Example 2:
+
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+Example 3:
+"""
+
+
+
+
+
+# 39. Combination Sum
+# https://leetcode.com/problems/combination-sum/description/
+"""Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
+
+The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the 
+frequency
+ of at least one of the chosen numbers is different.
+
+The test cases are generated such that the number of unique combinations that sum up to target is less than 150 combinations for the given input.
+
+ 
+
+Example 1:
+
+Input: candidates = [2,3,6,7], target = 7
+Output: [[2,2,3],[7]]
+Explanation:
+2 and 3 are candidates, and 2 + 2 + 3 = 7. Note that 2 can be used multiple times.
+7 is a candidate, and 7 = 7.
+These are the only two combinations.
+Example 2:
+
+Input: candidates = [2,3,5], target = 8
+Output: [[2,2,2,2],[2,3,3],[3,5]]
+Example 3:
+
+Input: candidates = [2], target = 1
+Output: []
+"""
+
+class Solution:
+    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
+        
+
+
+Solution().combinationSum([2,3,6,7])
+
+
+
+
+
+
+# 70. Climbing Stairs
+# https://leetcode.com/problems/climbing-stairs/description/
+"""You are climbing a staircase. It takes n steps to reach the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+ 
+
+Example 1:
+
+Input: n = 2
+Output: 2
+Explanation: There are two ways to climb to the top.
+1. 1 step + 1 step
+2. 2 steps
+Example 2:
+
+Input: n = 3
+Output: 3
+Explanation: There are three ways to climb to the top.
+1. 1 step + 1 step + 1 step
+2. 1 step + 2 steps
+3. 2 steps + 1 step"""
+
+
+# Fibonnacci problem
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        a, b = 1, 1
+        for _ in range(n):
+            a, b = b, a + b
+        return a
+Solution().climbStairs(2)
+Solution().climbStairs(3)
+Solution().climbStairs(4)
+
+
+def Fib_gen(n):
+    a, b = 1, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+fib5 = Fib_gen(5)
+
+for i in fib5:
+    print(i)
+next(fib5)
+
+
+
+
+
+# 198. House Robber
+# https://leetcode.com/problems/house-robber/description/
+"""You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+Example 2:
+
+Input: nums = [2,7,9,3,1]
+Output: 12
+Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
+Total amount you can rob = 2 + 9 + 1 = 12.
+"""
+
+
+class Solution:
+    def rob(self, nums: list[int]) -> int:
+        rob1, rob2 = 0, 0
+
+        for num in nums:
+            # [rob1, rob2, rob1 + num]
+            tmp = max(rob1 + num, rob2)
+            rob1 = rob2
+            rob2 = tmp
+
+        return rob2
+(Solution().rob([1, 2, 3, 1]), 4)
+(Solution().rob([2, 7, 9, 3, 1]), 12)
+
+
+
+
+
+# 213. House Robber II
+# https://leetcode.com/problems/house-robber-ii/description/
+"""You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+
+ 
+
+Example 1:
+
+Input: nums = [2,3,2]
+Output: 3
+Explanation: You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses.
+Example 2:
+
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+Total amount you can rob = 1 + 3 = 4.
+Example 3:
+
+Input: nums = [1,2,3]
+Output: 3
+"""
+
+
+class Solution:
+    def rob_list(self, nums: list[int]) -> int:
+        rob1, rob2 = 0, 0
+
+        for num in nums:
+            tmp = max(rob1 + num, rob2)
+            rob1 = rob2
+            rob2 = tmp
+
+        return rob2
+    
+    def rob(self, nums: list[int]) -> int:
+        return max(nums[0], self.rob_list(nums[1:]), self.rob_list(nums[:-1]))
+(Solution().rob([2, 3, 2]), 3)
+(Solution().rob([1, 2, 3, 1]), 4)
+(Solution().rob([1, 2, 3]), 3)
+(Solution().rob([1]), 1)
+
+
+
+
+
+# 5. Longest Palindromic Substring
+# https://leetcode.com/problems/longest-palindromic-substring/description/
+"""Given a string s, return the longest 
+palindromic 
+substring
+ in s.
+
+Example 1:
+
+Input: s = "babad"
+Output: "bab"
+Explanation: "aba" is also a valid answer.
+Example 2:
+
+Input: s = "cbbd"
+Output: "bb"
+"""
+
+
+# O(n2)
+class Solution:
+    def __init__(self) -> None:
+        self.longest = ""
+
+    def longest_pal(self, left: int, right: int, s: str) -> str:
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            if (right - left + 1) > len(self.longest):
+                self.longest = s[left:right + 1]
+            left -= 1
+            right += 1
+
+    def longestPalindrome(self, s: str) -> str:
+        for i in range(len(s)):
+            self.longest_pal(i, i, s)
+            self.longest_pal(i, i + 1, s)
+        return self.longest
+
+(Solution().longestPalindrome("babad"), "bab")
+(Solution().longestPalindrome("cbbd"), "bb")
+(Solution().longestPalindrome("a"), "a")
+(Solution().longestPalindrome(""), "")
+(Solution().longestPalindrome("bb"), "bb")
+(Solution().longestPalindrome("ab"), "a")
+(Solution().longestPalindrome("aacabdkacaa"), "aca")
+(Solution().longestPalindrome("abdka"), "a")
+
+class Solution:
+    def longest_pal(self, left: int, right: int, s: str, longest: str) -> str:
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            if (right - left + 1) > len(longest):
+                longest = s[left:right + 1]
+            left -= 1
+            right += 1
+        return longest
+        
+
+    def longestPalindrome(self, s: str) -> str:
+        longest = ""
+        for i in range(len(s)):
+            longest = self.longest_pal(i, i, s, longest)
+            longest = self.longest_pal(i, i + 1, s, longest)
+        return longest
+
+
+
+# O(n3)
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        if not s:
+            return None
+        longest = s[0]
+        for left in range(len(s) - 1):
+            for right in range(left + 1, len(s)):
+                is_longest = s[left:right + 1]
+                if is_longest == (is_longest)[::-1] and len(is_longest) > len(longest):
+                    longest = is_longest
+        return longest
+
+
+
+
+
+# 647. Palindromic Substrings
+# https://leetcode.com/problems/palindromic-substrings/
+"""Given a string s, return the number of palindromic substrings in it.
+
+A string is a palindrome when it reads the same backward as forward.
+
+A substring is a contiguous sequence of characters within the string.
+
+ 
+
+Example 1:
+
+Input: s = "abc"
+Output: 3
+Explanation: Three palindromic strings: "a", "b", "c".
+Example 2:
+
+Input: s = "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+"""
+
+
+class Solution:
+    def __init__(self) -> None:
+        self.substrings_count = 0
+
+    def count_pal(self, left: int, right: int, s: str) -> None:
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            self.substrings_count += 1
+            left -= 1
+            right += 1
+        
+    def countSubstrings(self, s: str) -> int:
+        for i in range(len(s)):
+            self.count_pal(i, i, s)
+            self.count_pal(i, i + 1, s)
+        return self.substrings_count
+(Solution().countSubstrings("abc"), 3)
+(Solution().countSubstrings("aaa"), 6)
+
+
+
+
+
+# 322. Coin Change
+# https://leetcode.com/problems/coin-change/description/
+"""You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+
+Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.
+
+You may assume that you have an infinite number of each kind of coin.
+
+ 
+
+Example 1:
+
+Input: coins = [1,2,5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1
+Example 2:
+
+Input: coins = [2], amount = 3
+Output: -1
+Example 3:
+
+Input: coins = [1], amount = 0
+Output: 0
+"""
+
+# bottom up dynamic programming
+
+class Solution:
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        coin_count = [amount + 1] * (amount + 1)
+        coin_count[0] = 0
+
+        for amount_iter in range(1, amount + 1):
+            for coin in coins:
+                if amount_iter - coin >= 0:
+                    coin_count[amount_iter] = min(coin_count[amount_iter], 1 + coin_count[amount_iter - coin])
+
+        return coin_count[amount] if coin_count[amount] != amount + 1 else -1
+
+(Solution().coinChange([1, 2, 5], 11), 3)
+(Solution().coinChange([2], 3), -1)
+(Solution().coinChange([1], 0), 0)
+(Solution().coinChange([2, 5, 10, 1], 27), 4)
+(Solution().coinChange([186, 419, 83, 408], 6249), 20)
+
+# greedy
+class Solution:
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        count = 0
+        test = []
+
+        for coin in sorted(coins, reverse=True):
+            div = amount // coin
+            mod = amount % coin
+
+            count += div
+            amount = mod
+
+            test.append(div)
+
+        return count if not amount else -1
+        # return amount
+
+
+
+
+
+# 152. Maximum Product Subarray
+# https://leetcode.com/problems/maximum-product-subarray/description/
+"""
+Given an integer array nums, find a 
+subarray
+ that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+ 
+
+Example 1:
+
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+Example 2:
+
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+"""
+
+
+# {Time: O(n), Memory: O(1)}
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        res = nums[0]
+        curMin, curMax = 1, 1
+
+        for n in nums:
+            # if n == 0:
+            #     curMin, curMax = 1, 1
+            #     continue
+            # curMin, _, curMax = sorted((n * curMax, n * curMin, n))
+            # curMin, curMax = min(n * curMax, n * curMin), max(n * curMax, n * curMin)
+            curMin, curMax = min(n * curMax, n * curMin, n), max(n * curMax, n * curMin, n)
+            # tmp = curMax * n
+            # curMax = max(n * curMax, n * curMin)
+            # curMin = min(tmp, n * curMin)
+            res = max(res, curMax)
+        return res
+(Solution().maxProduct([2, 3, -2, 4]), 6)
+(Solution().maxProduct([0, 2]), 2)
+(Solution().maxProduct([-2]), -2)
+(Solution().maxProduct([-4, -3]), 12)
+
+
+# O(n2)
+import numpy as np
+
+
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        max_prod = -float("inf")
+        for i in range(len(nums)):
+            for j in range(i, len(nums)):
+                max_prod = max(max_prod, np.prod(nums[i:j + 1]))
+                # print(nums[i:j + 1])
+        return max_prod
+
+
+
+
+
+# 152. Maximum Product Subarray
+# https://leetcode.com/problems/maximum-product-subarray/description/
+"""
+Given an integer array nums, find a 
+subarray
+ that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+Example 1:
+
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+Example 2:
+
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+"""
+
+
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        max_prod = nums[0]
+        min_num, max_num = 1, 1
+
+        for num in nums:
+            min_temp = min_num
+            min_num = min(min_num*num, max_num*num, num)
+            max_num = max(min_temp*num, max_num*num, num)
+
+            max_prod = max(max_prod, max_num)
+        return max_prod
+(Solution().maxProduct([2, 3, -2, 4]), 6)
+(Solution().maxProduct([-2, 0, -1]), 0)
+
+
+
 
 
 

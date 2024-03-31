@@ -1,16 +1,16 @@
 # codewars kata
 
-from xml import dom
-from nbformat import read
-from solution import arithmetic
-from gettext import find
-from regex import D
-from solution import enough
-import enum
-from itertools import reduce
-import itertools
-from operator import index
-from hel import add
+# from xml import dom
+# from nbformat import read
+# from solution import arithmetic
+# from gettext import find
+# from regex import D
+# from solution import enough
+# import enum
+# from itertools import reduce
+# import itertools
+# from operator import index
+# from hel import add
 
 
 
@@ -20,7 +20,11 @@ from hel import add
 # https://www.codewars.com/kata/526571aae218b8ee490006f4
 """Write a function that takes an integer as input, and returns the number of bits that are equal
 to one in the binary representation of that number. You can guarantee that input is non-negative.
-Example: The binary representation of 1234 is 10011010010, so the function should return 5 in this case"""
+Example: The binary representation of 1234 is 10011010010, so the function should return 5 in this case
+
+(count_bits(1234), 5)
+"""
+
 
 def count_bits(n):
     return bin(n)[2:].count('1')
@@ -28,7 +32,7 @@ def count_bits(n):
     # return '{:b}'.format(n).count('1')
     # return sum(True if int(i) else False for i in bin(n)[2:])
     # return n.bit_count()
-count_bits(1234)
+(count_bits(1234), 5)
 
 
 
@@ -39,6 +43,8 @@ count_bits(1234)
 """Digital root is the recursive sum of all the digits in a number.
 Given n, take the sum of the digits of n. If that value has more than one digit, 
 continue reducing in this way until a single-digit number is produced. The input will be a non-negative integer.
+
+(digital_root(169), 7)
 """
 
 from more_itertools import iterate
@@ -48,6 +54,11 @@ def digital_root(n):
     while n > 9:
         n = sum(map(int, str(n)))
     return n
+(digital_root(16), 7)
+(digital_root(169), 7)
+(digital_root(942), 6)
+(digital_root(132189), 6)
+(digital_root(493193), 2)
 
 def digital_root(n):
     return n if n < 10 else digital_root(sum(map(int, str(n))))
@@ -57,16 +68,6 @@ def digital_root(n):
         n = sum((int(digit) for digit in str(n)))
     return n
 
-digital_root(169)
-digital_root(942)
-digital_root(132189)
-
-
-test.assert_equals(digital_root(16), 7)
-test.assert_equals(digital_root(942), 6)
-test.assert_equals(digital_root(132189), 6)
-test.assert_equals(digital_root(493193), 2)
-
 
 
 
@@ -75,13 +76,16 @@ test.assert_equals(digital_root(493193), 2)
 # https://www.codewars.com/kata/545cedaa9943f7fe7b000048/train/
 """A pangram is a sentence that contains every single letter of the alphabet at least once.
 For example, the sentence "The quick brown fox jumps over the lazy dog" is a pangram, because it uses the letters A-Z at least once (case is irrelevant).
-Given a string, detect whether or not it is a pangram. Return True if it is, False if not. Ignore numbers and punctuation."""
+Given a string, detect whether or not it is a pangram. Return True if it is, False if not. Ignore numbers and punctuation.
+
+(is_pangram("The quick, brown fox jumps over the lazy dog!"), True)
+"""
 
 import string
 
 def is_pangram(s):
     return set(string.ascii_lowercase) <= set(s.lower())
-is_pangram("The quick, brown fox jumps over the lazy dog!")
+(is_pangram("The quick, brown fox jumps over the lazy dog!"), True)
 
 
 def is_pangram(s):
@@ -99,8 +103,6 @@ def is_pangram(s):
 def is_pangram(s):
     return set(string.ascii_lowercase) & set(s.lower()) == set(string.ascii_lowercase)
 
-test.assert_equals(is_pangram(pangram), True)
-
 
 
 
@@ -111,27 +113,25 @@ test.assert_equals(is_pangram(pangram), True)
 The sum of these multiples is 23.
 Finish the solution so that it returns the sum of all the multiples of 3 or 5 below the number passed in.
 Additionally, if the number is negative, return 0 (for languages that do have them).
-Note: If the number is a multiple of both 3 and 5, only count it once."""
+Note: If the number is a multiple of both 3 and 5, only count it once.
+
+(solution(4), 3)
+"""
 
 def solution(numbers):
     return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
     # return sum(digit for digit in range(3, numbers) if not (digit % 3 and digit % 5))
-solution(4)
-solution(6)
-solution(16)
-
-
-test.assert_equals(solution(4), 3)    
-test.assert_equals(solution(6), 8)
-test.assert_equals(solution(16), 60)
-test.assert_equals(solution(3), 0)
-test.assert_equals(solution(5), 3)
-test.assert_equals(solution(15), 45)
-test.assert_equals(solution(0), 0)
-test.assert_equals(solution(-1), 0)
-test.assert_equals(solution(10), 23)
-test.assert_equals(solution(20), 78)
-test.assert_equals(solution(200), 9168)
+(solution(4), 3)
+(solution(6), 8)
+(solution(16), 60)
+(solution(3), 0)
+(solution(5), 3)
+(solution(15), 45)
+(solution(0), 0)
+(solution(-1), 0)
+(solution(10), 23)
+(solution(20), 78)
+(solution(200), 9168)
 
 
 
@@ -158,10 +158,19 @@ def generate_hashtag(s):
         return False
     return "#" + "".join(word.capitalize() for word in s.strip().split())
     # return "#" + s.title().replace(" ", "")
-generate_hashtag('codewars is nice')
 generate_hashtag('CodeWars  is   nice')
 generate_hashtag('')
 generate_hashtag(" Hello there thanks for trying my Kata")
+(generate_hashtag(''), False, 'Expected an empty string to return False')
+(generate_hashtag('Do We have A Hashtag')[0], '#', 'Expeted a Hashtag (#) at the beginning.')
+(generate_hashtag('Codewars'), '#Codewars', 'Should handle a single word.')
+(generate_hashtag('Codewars      '), '#Codewars', 'Should handle trailing whitespace.')
+(generate_hashtag('Codewars Is Nice'), '#CodewarsIsNice', 'Should remove spaces.')
+(generate_hashtag('codewars is nice'), '#CodewarsIsNice', 'Should capitalize first letters of words.')
+(generate_hashtag('CodeWars is nice'), '#CodewarsIsNice', 'Should capitalize all letters of words - all lower case but the first.')
+(generate_hashtag('c i n'), '#CIN', 'Should capitalize first letters of words even when single letters.')
+(generate_hashtag('codewars  is  nice'), '#CodewarsIsNice', 'Should deal with unnecessary middle spaces.')
+(generate_hashtag('Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Cat'), False, 'Should return False if the final word is longer than 140 chars.')
 
 
 def generate_hashtag(s):
@@ -180,17 +189,6 @@ def generate_hashtag(s):
     return formatedstring
 
 
-test.describe("Basic tests")
-test.assert_equals(generate_hashtag(''), False, 'Expected an empty string to return False')
-test.assert_equals(generate_hashtag('Do We have A Hashtag')[0], '#', 'Expeted a Hashtag (#) at the beginning.')
-test.assert_equals(generate_hashtag('Codewars'), '#Codewars', 'Should handle a single word.')
-test.assert_equals(generate_hashtag('Codewars      '), '#Codewars', 'Should handle trailing whitespace.')
-test.assert_equals(generate_hashtag('Codewars Is Nice'), '#CodewarsIsNice', 'Should remove spaces.')
-test.assert_equals(generate_hashtag('codewars is nice'), '#CodewarsIsNice', 'Should capitalize first letters of words.')
-test.assert_equals(generate_hashtag('CodeWars is nice'), '#CodewarsIsNice', 'Should capitalize all letters of words - all lower case but the first.')
-test.assert_equals(generate_hashtag('c i n'), '#CIN', 'Should capitalize first letters of words even when single letters.')
-test.assert_equals(generate_hashtag('codewars  is  nice'), '#CodewarsIsNice', 'Should deal with unnecessary middle spaces.')
-test.assert_equals(generate_hashtag('Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Cat'), False, 'Should return False if the final word is longer than 140 chars.')
 
 
 
@@ -215,7 +213,10 @@ Some Examples of Return:
 productFib(714) # should return (21, 34, true), 
                 # since F(8) = 21, F(9) = 34 and 714 = 21 * 34
 productFib(800) # should return (34, 55, false), 
-                # since F(8) = 21, F(9) = 34, F(10) = 55 and 21 * 34 < 800 < 34 * 55"""
+                # since F(8) = 21, F(9) = 34, F(10) = 55 and 21 * 34 < 800 < 34 * 55
+                
+(fib_prod(4895), [55, 89, True])
+"""
 
 
 def fib_prod(n):
@@ -233,8 +234,8 @@ def fib_prod(n):
 
 fib_prod(714) # should return (21, 34, true) 
 fib_prod(800) # should return (34, 55, false)
-fib_prod(4895) # [55, 89, True] 
-fib_prod(5895) # [89, 144, False]
+(fib_prod(4895), [55, 89, True])
+(fib_prod(5895), [89, 144, False])
 fib_prod(0)
 
 def productFib(prod):
@@ -273,14 +274,6 @@ def fib_prod(prod):
     return [a, b, (a * b) == prod]
 
 
-fib_prod(714)
-fib_prod(800)
-
-
-test.assert_equals(productFib(4895), [55, 89, True])
-test.assert_equals(productFib(5895), [89, 144, False])
-
-
 
 
 
@@ -292,7 +285,10 @@ You will be given a number and you will need to return it as a string in Expande
 expanded_form(12) # Should return '10 + 2'
 expanded_form(42) # Should return '40 + 2'
 expanded_form(70304) # Should return '70000 + 300 + 4'
-NOTE: All numbers will be whole numbers greater than 0."""
+NOTE: All numbers will be whole numbers greater than 0.
+
+(expanded_form(42), '40 + 2');
+"""
 
 
 def expanded_form(num):
@@ -302,9 +298,9 @@ def expanded_form(num):
             concat += str(int(digit) * 10**(len(str(num)) - index))
             concat += " + "
     return concat[:-2]
-(expanded_form(12), '10 + 2');
-(expanded_form(42), '40 + 2');
-(expanded_form(70304), '70000 + 300 + 4');
+(expanded_form(12), '10 + 2')
+(expanded_form(42), '40 + 2')
+(expanded_form(70304), '70000 + 300 + 4')
 
 
 def expanded_form(num):
@@ -339,7 +335,10 @@ The following are examples of expected output values:
 rgb(255, 255, 255) # returns FFFFFF
 rgb(255, 255, 300) # returns FFFFFF
 rgb(0,0,0) # returns 000000
-rgb(148, 0, 211) # returns 9400D3"""
+rgb(148, 0, 211) # returns 9400D3
+
+(rgb(-20,275,125), "00FF7D", "testing out of range values")
+"""
 
 
 def clean_color(color):
@@ -352,9 +351,11 @@ clean_color(-1)
 
 def rgb(r, g, b):
     return "".join(clean_color(color) for color in (r, g, b))
-rgb(1, 2, 3)
-rgb(255, 255, 255)
-rgb(254, 253, 252)
+(rgb(0,0,0),"000000", "testing zero values")
+(rgb(1,2,3),"010203", "testing near zero values")
+(rgb(255,255,255), "FFFFFF", "testing max values")
+(rgb(254,253,252), "FEFDFC", "testing near max values")
+(rgb(-20,275,125), "00FF7D", "testing out of range values")
 
 
 def rgb(r, g, b):
@@ -375,13 +376,6 @@ def rgb(r, g, b):
     # r, g, b = list(map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
     # return ('{:02X}'*3).format(r, g, b)
     return ('{:02X}'*3).format(*map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
-
-
-(rgb(0,0,0),"000000", "testing zero values")
-(rgb(1,2,3),"010203", "testing near zero values")
-(rgb(255,255,255), "FFFFFF", "testing max values")
-(rgb(254,253,252), "FEFDFC", "testing near max values")
-(rgb(-20,275,125), "00FF7D", "testing out of range values")
 
 
 
@@ -3501,10 +3495,10 @@ def dir_reduc(arr):
     return seen
 
 
-dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"])
-dir_reduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"])
-dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"])
-dir_reduc([])
+(dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]), "WEST")
+(dir_reduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"]), ["WEST", "WEST"])
+(dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"]), ["NORTH", "WEST", "SOUTH", "EAST"])
+(dir_reduc([]), [])
 
 
 # from codewars
@@ -6830,6 +6824,140 @@ def distinct(seq):
 
 
 
+# Convert to Binary
+# https://www.codewars.com/kata/59fca81a5712f9fa4700159a/train/python
+"""Task Overview
+Given a non-negative integer n, write a function to_binary/ToBinary which returns that number in a binary format.
+
+to_binary(1)  # should return 1 
+to_binary(5)  # should return 101
+to_binary(11) # should return 1011"""
+
+
+def to_binary(n):
+    # return int(bin(n)[2:])
+    return int(f"{n:>b}")
+(to_binary(1), 1)
+(to_binary(2), 10)
+(to_binary(3), 11)
+(to_binary(5), 101)
+
+
+
+
+
+# Factorial
+# https://www.codewars.com/kata/54ff0d1f355cfd20e60001fc/train/python
+"""
+In mathematics, the factorial of a non-negative integer n, denoted by n!, is the product of all positive integers less than or equal to n. For example: 5! = 5 * 4 * 3 * 2 * 1 = 120. By convention the value of 0! is 1. 
+Write a function to calculate factorial for a given input. If input is below 0 or above 12 throw an exception of type ArgumentOutOfRangeException (C#) or IllegalArgumentException (Java) or RangeException (PHP) or throw a RangeError (JavaScript) or ValueError (Python) or return -1 (C).
+"""
+
+
+def factorial(n):
+    if n < 0 or n > 12:
+        raise ValueError
+    elif n == 0:
+        return 1
+    else: 
+        sol = 1
+        for i in range(1, n + 1):
+            sol *= i
+        return sol
+(factorial(0), 1, "factorial for 0 is 1"),
+(factorial(1), 1, "factorial for 1 is 1"),
+(factorial(2), 2, "factorial for 2 is 2"),
+(factorial(3), 6, "factorial for 3 is 6"),
+
+
+
+
+
+# Simple Fun #176: Reverse Letter
+# https://www.codewars.com/kata/58b8c94b7df3f116eb00005b/train/python
+"""Task
+Given a string str, reverse it and omit all non-alphabetic characters.
+
+Example
+For str = "krishan", the output should be "nahsirk".
+
+For str = "ultr53o?n", the output should be "nortlu".
+
+(reverse_letter("krishan"),"nahsirk")
+"""
+
+def reverse_letter(st):
+    # return "".join(alph for alph in st[::-1] if alph.isalpha())
+    return "".join(filter(str.isalpha, st[::-1]))
+(reverse_letter("krishan"),"nahsirk")
+(reverse_letter("ultr53o?n"),"nortlu")
+(reverse_letter("ab23c"),"cba")
+(reverse_letter("krish21an"),"nahsirk")
+
+
+
+
+
+# Alphabet war
+# https://www.codewars.com/kata/59377c53e66267c8f6000027/train/python
+"""
+The left side letters and their power:
+
+ w - 4
+ p - 3
+ b - 2
+ s - 1
+The right side letters and their power:
+
+ m - 4
+ q - 3
+ d - 2
+ z - 1
+The other letters don't have power and are only victims.
+
+Example
+AlphabetWar("z");        //=> Right side wins!
+AlphabetWar("zdqmwpbs"); //=> Let's fight again!
+AlphabetWar("zzzzs");    //=> Right side wins!
+AlphabetWar("wwwwwwz");  //=> Left side wins!
+"""
+
+
+def alphabet_war(fight):
+    l = "sbpw"
+    r = "zdqm"
+    sol = 0
+    for letter in fight:
+        if letter in r:
+            sol += r.index(letter) + 1
+        elif letter in l:
+            sol -= l.index(letter) + 1
+    if sol > 0:
+        return "Right side wins!"
+    elif sol < 0:
+        return "Left side wins!"
+    else:
+        return "Let's fight again!"
+(alphabet_war("z"), "Right side wins!")
+(alphabet_war("zdqmwpbs"), "Let's fight again!")
+(alphabet_war("wq"), "Left side wins!")
+(alphabet_war("zzzzs"), "Right side wins!")
+(alphabet_war("wwwwww"), "Left side wins!")
+
+
+
+
+
 # 
+
+
+
+
+
+
+
+
+
+
 
 
