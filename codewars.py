@@ -492,19 +492,29 @@ Empty list is considered to have zero greatest sum. Note that the empty list or 
 
 
 def max_sequence(arr):
-    result, seen = 0, 0
-    for i in arr:
-        if seen <= 0: 
-            seen = i
-        else:
-            seen += i
-        result = max(result, seen)
+    result, current = 0, 0
+    for number in arr:
+        if current < 0: 
+            current = 0
+        current += number
+        result = max(result, current)
     return result
 max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]) # sum([4, -1, 2, 1]) = 6
 max_sequence([-2]) # 0
 max_sequence([]) #
 max_sequence([-2, 1])
 (max_sequence([7, 4, 11, -11, 39, 36, 10, -6, 37, -10, -32, 44, -26, -34, 43, 43]), 155)
+
+def max_sequence(arr):
+    result, current = 0, 0
+    for number in arr:
+        if current <= 0: 
+            current = number
+        else:
+            current += number
+        result = max(result, current)
+    return result
+
 
 
 # O(n2) 
@@ -6948,7 +6958,52 @@ def alphabet_war(fight):
 
 
 
-# 
+# Predict your age!
+# https://www.codewars.com/kata/5aff237c578a14752d0035ae/train/python
+"""In honor of my grandfather's memory we will write a function using his formula!
+
+Take a list of ages when each of your great-grandparent died.
+Multiply each number by itself.
+Add them all together.
+Take the square root of the result.
+Divide by two.
+Example
+predict_age(65, 60, 75, 55, 60, 63, 64, 45) == 86
+Note: the result should be rounded down to the nearest integer.
+"""
+
+
+def predict_age(*ages):
+    return (sum(i**2 for i in ages)**.5)/2 // 1
+(predict_age(65,60,75,55,60,63,64,45), 86)
+
+
+
+
+
+# Multiplication table
+# https://www.codewars.com/kata/534d2f5b5371ecf8d2000a08/train/python
+"""
+Your task, is to create N×N multiplication table, of size provided in parameter.
+
+For example, when given size is 3:
+
+1 2 3
+2 4 6
+3 6 9
+For the given example, the return value should be:
+
+[[1,2,3],[2,4,6],[3,6,9]]
+"""
+
+
+def multiplication_table(size):
+    return [[i*j for i in range(1, size + 1)] for j in range(1, size + 1)]
+(multiplication_table(1), [[1]])
+(multiplication_table(2), [[1, 2], [2, 4]])
+(multiplication_table(3), [[1, 2, 3], [2, 4, 6], [3, 6, 9]])
+(multiplication_table(4), [[1, 2, 3, 4], [2, 4, 6, 8], [3, 6, 9, 12], [4, 8, 12, 16]])
+(multiplication_table(5), [[1, 2, 3, 4, 5], [2, 4, 6, 8, 10], [3, 6, 9, 12, 15], [4, 8, 12, 16, 20], [5, 10, 15, 20, 25]])
 
 
 

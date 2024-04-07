@@ -10,7 +10,7 @@ django.get_version()
 $ virtualenv .  # creates virtualenv here; virtualenv -p python3 .
 $ virtualenv my_env  # creates virtualenv in my_env folder
 $ virtualenv my_env -p /usr/bin/python3 # uses python from provided path
-$ python3 -m my_env . # creates virtualenv with python module
+$ python3 -m venv . # creates virtualenv with python module
 $ source bin/activate  # activates virtualenv "bin/activate" = path
 $ pip install Django==2.0.7  # install Django
 $ deactivete  # deactivates virtualenv
@@ -149,6 +149,9 @@ def get_absolute_url(self):
 def get_absolute_url(self):
     return reverse("product-detail", kwargs={"id": self.id})
 
+<a href="{{ product.get_absolute_url }}">  # url with id from list_view to detail_view
+<a href="{% url 'products:product-detail' product.id %}">
+
 # 35 - In App URLs and Namespacing
 app_name ="products" # namespace name in urls.py
 def get_absolute_url(self):
@@ -160,4 +163,17 @@ blog/article_list.html
 <app_name>/<motel_name>_<view_name>.html
 
 pk: primary key
+
+
+
+
+
+{{ request.path }} == /foo/bar
+{% if user.is_authenticated %}
+modelname = self.model._meta.verbose_name.lower() # substracts model name
+python3 manage.py runscript <script_name> # load a script form "dir_name/script_name.py"
+reverse('form:success') # -> /form/success
+{% if make_count > 0 %}  # counts make in django html
+
+
 

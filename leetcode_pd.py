@@ -116,8 +116,122 @@ Explanation: a@b.com is repeated two times.
 
 import pandas as pd
 
-def duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
-    return person.groupby('email').filter(lambda x: len(x) > 1)[['email']].drop_duplicates()
+per = pd.DataFrame({
+    "id": [1, 2, 3], 
+    "email": ["a@b.com", "b@c.com", "a@b.com"]
+})
 
+def duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
+    # # return person.groupby('email').filter(lambda x: len(x) > 1)[['email']].drop_duplicates()
+    # grouped = person.groupby('email').size() > 1
+    # # return grouped
+    # return person[person['email'].isin(grouped)]
+
+    grouped = person.groupby("email")
+    filtered = grouped.filter(lambda x: x["email"].count() > 1)
+    return filtered[["email"]].drop_duplicates()
+duplicate_emails(per)
+
+
+
+
+
+# 183. Customers Who Never Order
+# https://leetcode.com/problems/customers-who-never-order/description/
+"""
+Write a solution to find all customers who never order anything.
+
+Return the result table in any order.
+
+The result format is in the following example.
+
+Example 1:
+
+Input: 
+Customers table:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
++----+-------+
+Orders table:
++----+------------+
+| id | customerId |
++----+------------+
+| 1  | 3          |
+| 2  | 1          |
++----+------------+
+Output: 
++-----------+
+| Customers |
++-----------+
+| Henry     |
+| Max       |
++-----------+
+"""
+
+
+import pandas as pd
+
+def find_customers(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
+    joined = customers.merge(orders, how="left", left_on="id", right_on="customerId", suffixes=("_c", "_o"))
+    filtered = joined[joined["customerId"].isna()]
+    return filtered[["name"]].rename(columns={"name": "Customers"})
+
+
+
+
+
+# 196. Delete Duplicate Emails
+# https://leetcode.com/problems/delete-duplicate-emails/
+"""
+Write a solution to delete all duplicate emails, keeping only one unique email with the smallest id.
+
+For SQL users, please note that you are supposed to write a DELETE statement and not a SELECT one.
+
+For Pandas users, please note that you are supposed to modify Person in place.
+
+After running your script, the answer shown is the Person table. The driver will first compile and run your piece of code and then show the Person table. The final order of the Person table does not matter.
+
+The result format is in the following example.
+
+ 
+
+Example 1:
+
+Input: 
+Person table:
++----+------------------+
+| id | email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
+| 3  | john@example.com |
++----+------------------+
+Output: 
++----+------------------+
+| id | email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
++----+------------------+
+Explanation: john@example.com is repeated two times. We keep the row with the smallest Id = 1.
+"""
+
+
+import pandas as pd
+
+def delete_duplicate_emails(person: pd.DataFrame) -> None:
+    person.sort_values(by="id", inplace=True)
+    person.drop_duplicates(subset="email", keep="first", inplace=True)
+
+
+
+
+
+# 
 
 

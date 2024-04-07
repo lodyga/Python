@@ -51,7 +51,7 @@ f'welcome {arg} too {arg2}'
 'abca'.count('a')  # 1
 'abc'.count('a', 1, 1)  # 0 # count with start, stop
 
-'A Alan'.replace('A', 'a')  # 'a alan' # replace 'A' with 'a'
+'A Alan'.replace('A', 'a', 1)  # 'a alan' # replace the first occurence 'A' with 'a'
 # 'GGTCAG' # remove new line and carret return
 'GGT\nCAG\r'.replace('\n', '').replace('\r', '')
 print('GGT\nCAG\r')
@@ -1987,7 +1987,6 @@ ss.norm(0, 1).rvs((5, 2)) # generate normal distribution array; rvs = random var
 ss.norm.rvs(0, 1, (5, 2))
 
 ss.uniform.rvs(size=3)
-
 
 
 

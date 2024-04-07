@@ -16,7 +16,9 @@ def contact_view(request):
 
 def signup_view(request):
     form = SignupForm(request.POST or None)
-    context = {"form": form}
+    context = {
+        "form": form
+    }
     if form.is_valid():
         form.save()
         return redirect("/login/")

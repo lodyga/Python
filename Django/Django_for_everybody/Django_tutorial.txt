@@ -180,6 +180,28 @@ changing data in database
 
 python manage.py shell
 
+.objects.values()  # list of objects from a database
+.objects.values().order_by('-name')
+
+.objects.all()  # list of objects
+.objects.all().delete()  # delete all entires
+
+.objects.get(pk=1)  # object with primary key = 1
+.objects.get(id=1)  # object with id = 1
+.objects.get(pk=2).person.name
+
+.objects.filter(name='<some_name>').values()
+.objects.filter(name='<some_name>').delete()
+
+.objects.get_or_create(name=cat["Breed"])
+
+.objects.create(name="<some_name>")  # creating an database element directly
+.objects.create(nickname=cat["Name"], breed=b, weight=cat["Weight"])
+
+x = Horse(name='Bravo')  # == Horse.objects.create(name="Bravo")
+x.save()
+
+
 from users.models import User
 
 CRUD in ORM
@@ -332,7 +354,7 @@ in Django shell
 
 Loading data to Django from CSV
 django-extensions needed with django_extensions in settings.py
-python 3 manage.py runscript cat_load
+python3 manage.py runscript cats_load
 scritp in: scritp/cats_load.py
 data in: cats/meow.csv
 
@@ -378,9 +400,8 @@ path('awesome', views.MyView.as_view(template_name='crispy/awesome.html')),
 
 Bootstrap Navigation Bar
 navbar
-<a href="{% url 'menu:main' %}" class="nav-link {% if request.get_full_path == xyz %}{% endif %}">Home</a>
-<a href="{% url 'menu:main' %}"  {% if request.get_full_path == xyz %}class= "nav-link" {% else %}class="nav-item"{% endif %}>
 <a href="{% url 'menu:page1' %}" class="nav-link {% if request.get_full_path == abc1 %}active{% endif %}">Page 1</a>
+<a href="{% url 'menu:main' %}"  {% if request.get_full_path == xyz %}class= "nav-link" {% else %}class="nav-item"{% endif %}>
 
 
 
@@ -483,8 +504,7 @@ https://youtu.be/o0XbHvKxw7Y?si=v6gCErk04ry8IMAK&t=52924
 
 
 
-JQuerry
-is like DOM
+JQuerry simple JS is like DOM
 
 
 

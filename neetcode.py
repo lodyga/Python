@@ -1326,6 +1326,306 @@ class Solution:
 
 
 
+# 139. Word Break
+# https://leetcode.com/problems/word-break/description/
+"""
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+ 
+
+Example 1:
+
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+Example 2:
+
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+Note that you are allowed to reuse a dictionary word.
+Example 3:
+
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+"""
+
+class Solution:
+    def wordBreak(self, s: str, wordDict: list[str]) -> bool:
+        dp = [False] * len(s)
+        dp.append(True)
+
+        for ind in range(len(s) - 1, -1, -1):
+            for word in wordDict:
+                if word == s[ind: ind + len(word)]:
+                    if dp[ind + len(word)]:
+                        dp[ind] = True
+                        break
+
+        return dp[0]
+
+(Solution().wordBreak("leetcode", ["leet", "code"]), True)
+(Solution().wordBreak("cars", ["car", "ca", "rs"]), True)
+
+
+
+
+
+# 300. Longest Increasing Subsequence
+# https://leetcode.com/problems/longest-increasing-subsequence/description/
+"""
+Given an integer array nums, return the length of the longest strictly increasing 
+subsequence
+
+Example 1:
+
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+Example 2:
+
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+Example 3:
+
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+"""
+
+
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        dp = [1] * len(nums)
+
+        for i in range(len(nums) - 1, -1, -1):
+            for j in range(i + 1, len(nums)):
+                if nums[i] < nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)
+(Solution().lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]), 4)
+(Solution().lengthOfLIS([0, 1, 0, 3, 2, 3]), 4)
+(Solution().lengthOfLIS([7, 7, 7, 7, 7, 7, 7]), 1)
+
+
+
+
+
+# 62. Unique Paths
+# https://leetcode.com/problems/unique-paths/description/
+"""
+There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
+
+Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+
+The test cases are generated so that the answer will be less than or equal to 2 * 109.
+
+Example 1:
+
+
+Input: m = 3, n = 7
+Output: 28
+Example 2:
+
+Input: m = 3, n = 2
+Output: 3
+Explanation: From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+1. Right -> Down -> Down
+2. Down -> Down -> Right
+3. Down -> Right -> Down
+"""
+
+
+class Solution:
+    def uniquePaths(self, m: int, n: int) -> int:
+        bottom_row = [1] * n
+
+        for _ in range(m - 2, -1, -1):
+            curr_row = [1] * n
+            for i in range(n - 2, -1, -1):
+                curr_row[i] = curr_row[i + 1] + bottom_row[i]
+            bottom_row = curr_row
+
+        return curr_row[0]
+(Solution().uniquePaths(3, 7), 28)
+(Solution().uniquePaths(3, 2), 3)
+
+
+
+
+
+
+# 1143. Longest Common Subsequence
+# https://leetcode.com/problems/longest-common-subsequence/description/
+"""
+Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.
+
+A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+
+For example, "ace" is a subsequence of "abcde".
+A common subsequence of two strings is a subsequence that is common to both strings.
+
+Example 1:
+
+Input: text1 = "abcde", text2 = "ace" 
+Output: 3  
+Explanation: The longest common subsequence is "ace" and its length is 3.
+Example 2:
+
+Input: text1 = "abc", text2 = "abc"
+Output: 3
+Explanation: The longest common subsequence is "abc" and its length is 3.
+Example 3:
+
+Input: text1 = "abc", text2 = "def"
+Output: 0
+Explanation: There is no such common subsequence, so the result is 0.
+"""
+
+
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        dp = [[0 for i in range(len(text2) + 1)] for j in range(len(text1) + 1)]
+        
+        for i in range(len(text1) - 1, -1, -1):
+            for j in range(len(text2) -1, -1, -1):
+                if text1[i] == text2[j]:
+                    dp[i][j] = dp[i + 1][j + 1] + 1
+                else:
+                    dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])
+
+        return dp[0][0]
+(Solution().longestCommonSubsequence("abcde", "ace"), 3)
+(Solution().longestCommonSubsequence("abc", "abc"), 3)
+(Solution().longestCommonSubsequence("abc", "dew"), 0)
+
+
+
+
+
+# 53. Maximum Subarray
+# https://leetcode.com/problems/maximum-subarray/description/
+"""
+Given an integer array nums, find the subarray with the largest sum, and return its sum.
+
+Example 1:
+
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: The subarray [4,-1,2,1] has the largest sum 6.
+Example 2:
+
+Input: nums = [1]
+Output: 1
+Explanation: The subarray [1] has the largest sum 1.
+Example 3:
+
+Input: nums = [5,4,-1,7,8]
+Output: 23
+Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
+"""
+
+
+class Solution:
+    def maxSubArray(self, nums: list[int]) -> int:
+        result = nums[0]
+        current = 0
+
+        for num in nums:
+            if current < 0:
+                current = 0
+            current += num
+            result = max(result, current)
+        return result
+(Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
+(Solution().maxSubArray([1]), 1)
+(Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
+
+
+
+
+
+# 55. Jump Game
+# https://leetcode.com/problems/jump-game/description/
+"""
+You are given an integer array nums. You are initially positioned at the array's first index, and each element in the array represents your maximum jump length at that position.
+
+Return true if you can reach the last index, or false otherwise.
+
+Example 1:
+
+Input: nums = [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+Example 2:
+
+Input: nums = [3,2,1,0,4]
+Output: false
+Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
+"""
+
+
+class Solution:
+    def canJump(self, nums: list[int]) -> bool:
+        curr = 0
+
+        for num in nums[:-1]: # no need to check the last element
+            curr = max(num, curr - 1)
+            if curr < 1:
+                return False
+
+        return True
+(Solution().canJump([2, 3, 1, 1, 4]), True)
+(Solution().canJump([3, 2, 1, 0, 4]), False)
+
+
+class Solution:
+    def canJump(self, nums: list[int]) -> bool:
+        stop = len(nums) - 1
+
+        for num in range(len(nums) - 1)[::-1]:
+            if num + nums[num] >= stop:
+                stop = num
+
+        return not stop 
+
+
+
+
+
+# Meeting Rooms
+class Solution:
+    # @param A : list of list of integers
+    # @return an integer
+    def solve(self, intervals):
+        intervals.sort(key=lambda x: x[0])
+        # return all([intervals[ind + 1][0] >= intervals[ind][1] for ind in range(len(intervals) - 1) ])
+        for ind in range(len(intervals) - 1):
+            if intervals[ind][1] > intervals[ind + 1][0]:
+                return False
+        return True
+
+
+(Solution().solve([[0, 30], [5, 10], [15, 20]]), False)
+(Solution().solve([[5, 10], [15, 20]]), True)
+
+ 
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
 
 
 

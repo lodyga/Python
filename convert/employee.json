@@ -1,0 +1,22 @@
+[
+    {
+        "name":"John",
+        "managerId":1,
+        "salary":50000
+    },
+    {
+        "name":"Alice",
+        "managerId":2,
+        "salary":60000
+    },
+    {
+        "name":"Bob",
+        "managerId":2,
+        "salary":55000
+    },
+    {
+        "name":"Emma",
+        "managerId":1,
+        "salary":48000
+    }
+]
