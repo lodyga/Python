@@ -7,6 +7,7 @@
 # pd["<col_name>"] = : add a new column
 # pd.drop_duplicates(subset="<col_name>", keep="first", inplace=False)
 # customers.email == customers["email"]
+# new_pd = pd.merge(df1, df2, how='inner', on='col_name', suffixes=("_x", "_y"))
 # pd.attr.notnull()
 # pd.dropna(subset=["attr"])
 # pd.rename(columns:{"old": "new})
@@ -16,6 +17,9 @@
 # copy=True, inplace=False
 # weather.pivot(index="month", columns="city", values="temperature")
 # pd.sort_values(by="attr", ascending=False)
+# pd2 = pd.copy()
+# pd['col_name'] += pd.Timedelta(days=1) # add 1 day to date
+
 
 
 import pandas as pd

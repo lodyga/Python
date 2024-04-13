@@ -1477,6 +1477,7 @@ np.product([1, 2, 3]) # for multiple list product see itertools.product # reduce
 
 np.min([9, 16, 25])  # 9
 np.max([9, 16, 25])  # 25
+np.max([[5, 6], [7, 8]])  # 8
 np.mean([9, 16, 25])  # 16.6
 np.median([9, 16, 25])  # 16.0
 np.std([9, 16, 25])  # 6.54

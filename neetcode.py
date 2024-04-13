@@ -1595,7 +1595,22 @@ class Solution:
 
 
 
-# Meeting Rooms
+# 252. Meeting Rooms
+"""
+Question
+Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), determine if a person could attend all meetings.
+
+Example 1:
+
+Input: [[0,30],[5,10],[15,20]]
+Output: false
+Example 2:
+
+Input: [[7,10],[2,4]]
+Output: true
+"""
+
+
 class Solution:
     # @param A : list of list of integers
     # @return an integer
@@ -1610,6 +1625,490 @@ class Solution:
 
 (Solution().solve([[0, 30], [5, 10], [15, 20]]), False)
 (Solution().solve([[5, 10], [15, 20]]), True)
+
+
+
+
+
+# 253. Meeting Rooms II
+"""
+Question
+Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei), find the minimum number of conference rooms required.
+
+For example, Given [[0, 30],[5, 10],[15, 20]], return 2.
+"""
+
+
+# O(n2)
+import numpy as np
+class Solution:
+    def solve(self, intervals):
+        time = [0] * np.max(intervals)
+        for interval in intervals:
+            for i in range(*interval):
+                time[i] +=1
+        return time
+(Solution().solve([[0, 30], [5, 10], [15, 20]]), 2)
+(Solution().solve([[5, 10], [15, 20]]), 1)
+
+
+
+
+
+# 57. Insert Interval
+# https://leetcode.com/problems/insert-interval/description/
+"""
+You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+
+Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+
+Return intervals after the insertion.
+
+Note that you don't need to modify intervals in-place. You can make a new array and return it.
+
+ 
+
+Example 1:
+
+Input: intervals = [[1,3],[6,9]], newInterval = [2,5]
+Output: [[1,5],[6,9]]
+Example 2:
+
+Input: intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+Output: [[1,2],[3,10],[12,16]]
+Explanation: Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].
+"""
+
+
+class Solution:
+    def insert(self, intervals: list[list[int]], newInterval: list[int]) -> list[list[int]]:
+        sol = []
+
+        for ind, interval in enumerate(intervals):
+            if newInterval[1] < interval[0]:
+                sol.append(newInterval)
+                return sol + intervals[ind:]
+            elif newInterval[0] > interval[1]:
+                sol.append(interval)
+            else:
+                newInterval[0] = min(newInterval[0], interval[0])
+                newInterval[1] = max(newInterval[1], interval[1])
+        
+        sol.append(newInterval)
+        return sol
+
+
+(Solution().insert([[1, 3], [6, 9]], [2, 5]), [[1, 5], [6, 9]])
+(Solution().insert([[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], [4, 8]), [[1, 2], [3, 10], [12, 16]])
+(Solution().insert([], [5, 7]), [[5, 7]])
+(Solution().insert([[1, 5]], [2, 3]), [[1, 5]])
+
+
+
+
+
+# 56. Merge Intervals
+# https://leetcode.com/problems/merge-intervals/description/
+"""
+Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+Example 1:
+
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+Example 2:
+
+Input: intervals = [[1,4],[4,5]]
+Output: [[1,5]]
+Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+"""
+
+
+# O(nlogn)
+class Solution:
+    def merge(self, intervals: list[list[int]]) -> list[list[int]]:
+        sol = []
+        intervals.sort(key=lambda x: x[0])
+
+        for ind, interval in enumerate(intervals[:-1]):
+            if intervals[ind][1] >= intervals[ind + 1][0]:
+                intervals[ind + 1][0] = min(interval[0], intervals[ind + 1][0])
+                intervals[ind + 1][1] = max(interval[1], intervals[ind + 1][1])
+            else:
+                sol.append(interval)
+        
+        sol.append(intervals[-1])
+        return sol
+
+
+(Solution().merge([[1, 3], [2, 6], [8, 10], [15, 18]]), [[1, 6], [8, 10], [15, 18]])
+(Solution().merge([[1, 4], [4, 5]]), [[1, 5]])
+(Solution().merge([[1, 4], [0, 0]]), [[0, 0], [1, 4]])
+
+
+class Solution:
+    def merge(self, intervals: list[list[int]]) -> list[list[int]]:
+        intervals.sort(key=lambda pair: pair[0])
+        sol = [intervals[0]]
+
+        for interval in intervals[1:]:
+            if interval[0] <= sol[-1][1]:
+                (sol[-1][1]) = max(sol[-1][1], interval[1])
+            else:
+                sol.append(interval)
+
+        return sol
+
+
+
+
+
+# 435. Non-overlapping Intervals
+# https://leetcode.com/problems/non-overlapping-intervals/description/
+"""
+Given an array of intervals intervals where intervals[i] = [starti, endi], return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
+
+ 
+
+Example 1:
+
+Input: intervals = [[1,2],[2,3],[3,4],[1,3]]
+Output: 1
+Explanation: [1,3] can be removed and the rest of the intervals are non-overlapping.
+Example 2:
+
+Input: intervals = [[1,2],[1,2],[1,2]]
+Output: 2
+Explanation: You need to remove two [1,2] to make the rest of the intervals non-overlapping.
+Example 3:
+
+Input: intervals = [[1,2],[2,3]]
+Output: 0
+Explanation: You don't need to remove any of the intervals since they're already non-overlapping.
+"""
+
+
+class Solution:
+    def eraseOverlapIntervals(self, intervals: list[list[int]]) -> int:
+        intervals.sort(key=lambda x: (x[0], x[1]))
+        curr_stop = intervals[0][1]
+        counter = 0
+
+        for start, stop in intervals[1:]:
+            if start < curr_stop:
+                counter += 1
+                curr_stop = min(curr_stop, stop)
+            else:
+                curr_stop = stop
+
+        return counter
+
+
+(Solution().eraseOverlapIntervals([[1, 2], [2, 3], [3, 4], [1, 3]]), 1)
+(Solution().eraseOverlapIntervals([[1, 2], [1, 2], [1, 2]]), 2)
+(Solution().eraseOverlapIntervals([[1, 2], [2, 3]]), 0)
+(Solution().eraseOverlapIntervals([[1, 100], [11, 22], [1, 11], [2, 12]]), 2)
+(Solution().eraseOverlapIntervals([[-52, 31], [-73, -26], [82, 97], [-65, -11], [-62, -49], [95, 99], [58, 95], [-31, 49], [66, 98], [-63, 2], [30, 47], [-40, -26]]), 7)
+
+
+
+
+
+# 48. Rotate Image
+# https://leetcode.com/problems/rotate-image/description/
+"""
+You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
+
+You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. DO NOT allocate another 2D matrix and do the rotation.
+
+Example 1:
+
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [[7,4,1],[8,5,2],[9,6,3]]
+Example 2:
+
+Input: matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+Output: [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+"""
+
+
+class Solution:
+    def rotate(self, matrix: list[list[int]]) -> None:
+        left, right = 0, len(matrix) - 1
+
+        while left < right:
+
+            top = left
+            down = right
+
+            for i in range(right - left):
+                temp = matrix[top][left + i]
+                matrix[top][left + i] = matrix[down - i][left]
+                matrix[down - i][left] = matrix[down][right - i]
+                matrix[down][right - i] = matrix[top + i][right]
+                matrix[top + i][right] = temp
+
+            left += 1
+            right -= 1
+        return matrix
+
+(Solution().rotate([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), [[7, 4, 1], [8, 5, 2], [9, 6, 3]])
+(Solution().rotate([[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]), [[15, 13, 2, 5], [14, 3, 4, 1], [12, 6, 8, 9], [16, 7, 10, 11]])
+
+
+import numpy as np
+class Solution:
+    def rotate(self, matrix: list[list[int]]) -> None:
+        matrix = np.rot90(matrix, -1, (0, 1))
+        return matrix
+
+
+
+
+
+# 54. Spiral Matrix
+# https://leetcode.com/problems/spiral-matrix/description/
+"""
+Given an m x n matrix, return all elements of the matrix in spiral order.
+
+Example 1:
+
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [1,2,3,6,9,8,7,4,5]
+Example 2:
+
+Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+"""
+
+
+# O(n*m), O(1)
+class Solution:
+    def spiralOrder(self, matrix: list[list[int]]) -> list[int]:
+        sol = []
+
+        while matrix:
+            for ind in range(len(matrix[0])):
+                sol.append(matrix[0][ind])
+            matrix.pop(0)
+            if not matrix or not matrix[0]:
+                return sol
+
+            right = len(matrix[0]) - 1
+            for ind in range(len(matrix)):
+                sol.append(matrix[ind][right])
+                matrix[ind].pop(right)
+            if not matrix or not matrix[0]:
+                return sol
+
+            down = len(matrix) - 1
+            for ind in range(len(matrix[0]))[::-1]:
+                sol.append(matrix[down][ind])
+            matrix.pop(-1)
+            if not matrix or not matrix[0]:
+                return sol
+
+            for ind in range(len(matrix))[::-1]:
+                sol.append(matrix[ind][0])
+                matrix[ind].pop(0)
+            if not matrix or not matrix[0]:
+                return sol
+
+        return sol
+
+
+(Solution().spiralOrder([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), [1, 2, 3, 6, 9, 8, 7, 4, 5])
+(Solution().spiralOrder([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]), [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7])
+(Solution().spiralOrder([[7], [9], [6]]), [7, 9, 6])
+
+
+
+
+
+# 73. Set Matrix Zeroes
+# https://leetcode.com/problems/set-matrix-zeroes/description/
+"""
+Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+
+You must do it in place.
+
+Example 1:
+
+Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+Example 2:
+
+Input: matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+Output: [[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+"""
+
+
+# O(n*m), O(n+m)
+class Solution:
+    def setZeroes(self, matrix: list[list[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        zeros_r = set()
+        zeros_c = set()
+        rows = len(matrix)
+        cols = len(matrix[0])
+
+        for r in range(rows):
+            for c in range(cols):
+                if matrix[r][c] == 0:
+                    zeros_r.add(r)
+                    zeros_c.add(c)
+
+        for r in range(rows):
+            for c in range(cols):
+                if r in zeros_r or c in zeros_c:
+                    matrix[r][c] = 0
+
+        return matrix
+(Solution().setZeroes([[1, 1, 1], [1, 0, 1], [1, 1, 1]]), [[1, 0, 1], [0, 0, 0], [1, 0, 1]])
+(Solution().setZeroes([[0, 1, 2, 0], [3, 4, 5, 2], [1, 3, 1, 5]]), [[0, 0, 0, 0], [0, 4, 5, 0], [0, 3, 1, 0]])
+(Solution().setZeroes([[1, 2, 3, 4], [5, 0, 7, 8], [0, 10, 11, 12], [13, 14, 15, 0]]), [[0, 0, 3, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+
+
+
+
+
+# 191. Number of 1 Bits
+# https://leetcode.com/problems/number-of-1-bits/description/
+"""
+Write a function that takes the binary representation of a positive integer and returns the number of 
+set bits
+ it has (also known as the Hamming weight).
+
+ 
+
+Example 1:
+
+Input: n = 11
+
+Output: 3
+
+Explanation:
+
+The input binary string 1011 has a total of three set bits.
+
+Example 2:
+
+Input: n = 128
+
+Output: 1
+
+Explanation:
+
+The input binary string 10000000 has a total of one set bit.
+
+Example 3:
+
+Input: n = 2147483645
+
+Output: 30
+
+Explanation:
+
+The input binary string 1111111111111111111111111111101 has a total of thirty set bits.
+"""
+
+class Solution:
+    def hammingWeight(self, n: int) -> int:
+        # return bin(n).count("1")
+        counter = 0
+        
+        while n:
+            counter += n % 2
+            n = n >> 1
+
+        return counter    
+Solution().hammingWeight(11)
+Solution().hammingWeight(128)
+
+
+
+
+
+# 338. Counting Bits
+# https://leetcode.com/problems/counting-bits/description/
+"""
+Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.
+
+Example 1:
+
+Input: n = 2
+Output: [0,1,1]
+Explanation:
+0 --> 0
+1 --> 1
+2 --> 10
+Example 2:
+
+Input: n = 5
+Output: [0,1,1,2,1,2]
+Explanation:
+0 --> 0
+1 --> 1
+2 --> 10
+3 --> 11
+4 --> 100
+5 --> 101
+ 
+"""
+
+
+
+class Solution:
+    def countBits(self, n: int) -> list[int]:
+        sol = []
+        for i in range(n + 1):
+            counter = 0
+            while i:
+                counter += i % 2
+                i = i >> 1
+            sol.append(counter)
+        return sol
+    
+class Solution:
+    def countBits(self, n: int) -> list[int]:
+        return[bin(i).count("1") for i in range(n + 1)]
+
+class Solution:
+    def countBits(self, n: int) -> list[int]:
+        dp = [0] * (n + 1)
+        offset = 1
+
+        for i in range(1, n + 1):
+            if offset * 2 == i:
+                offset = i
+            dp[i] = 1 + dp[i - offset]
+        return dp
+
+
+
+
+ 
+# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
 

@@ -174,6 +174,7 @@ modelname = self.model._meta.verbose_name.lower() # substracts model name
 python3 manage.py runscript <script_name> # load a script form "dir_name/script_name.py"
 reverse('form:success') # -> /form/success
 {% if make_count > 0 %}  # counts make in django html
+{% load crispy_forms_tags %}; {{ form|crispy }}
 
 
 

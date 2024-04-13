@@ -7009,10 +7009,100 @@ def multiplication_table(size):
 
 
 
+# Integers: Recreation One
+# https://www.codewars.com/kata/55aa075506463dac6600010d/train/python
+# FUNDAMENTALS, ALGORITHMS
+"""
+1, 246, 2, 123, 3, 82, 6, 41 are the divisors of number 246. Squaring these divisors we get: 1, 60516, 4, 15129, 9, 6724, 36, 1681. The sum of these squares is 84100 which is 290 * 290.
+
+Task
+Find all integers between m and n (m and n integers with 1 <= m <= n) such that the sum of their squared divisors is itself a square.
+
+We will return an array of subarrays or of tuples (in C an array of Pair) or a string. The subarrays (or tuples or Pairs) will have two elements: first the number the squared divisors of which is a square and then the sum of the squared divisors.
+
+Example:
+list_squared(1, 250) --> [[1, 1], [42, 2500], [246, 84100]]
+list_squared(42, 250) --> [[42, 2500], [246, 84100]]
+"""
+
+
+# Brute Force, O(nsqrt(n)), O(1)
+def list_squared(m, n):
+    sol = []
+    
+    for number in range(m, n + 1):
+        divs_sum = 0
+        
+        for num in range(1, int(number**.5) + 1):
+            if not number % num:
+                divs_sum += num**2
+                if num**2 != number:
+                    divs_sum += (number//num)**2
+
+        if not divs_sum ** .5 % 1:
+            sol.append([number, divs_sum])
+    
+    return sol
+list_squared(246, 246)
+(list_squared(1, 250), [[1, 1], [42, 2500], [246, 84100]])
+(list_squared(42, 250), [[42, 2500], [246, 84100]])
+(list_squared(250, 500), [[287, 84100]])
+
+
+# Brute Force, O(n2), O(1)
+def list_squared(m, n):
+    sol = []
+    
+    for number in range(m, n + 1):
+        divs_sum = number**2
+        
+        for i in range(1, number//2 + 1):
+            if not number % i:
+                divs_sum += i**2
+
+        if not divs_sum ** .5 % 1:
+            sol.append([number, divs_sum])
+    
+    return sol
 
 
 
 
 
+# Money, Money, Money
+# https://www.codewars.com/kata/563f037412e5ada593000114/train/python
+"""
+Mr. Scrooge has a sum of money 'P' that he wants to invest. Before he does, he wants to know how many years 'Y' this sum 'P' has to be kept in the bank in order for it to amount to a desired sum of money 'D'.
+
+The sum is kept for 'Y' years in the bank where interest 'I' is paid yearly. After paying taxes 'T' for the year the new sum is re-invested.
+
+Note to Tax: not the invested principal is taxed, but only the year's accrued interest
+
+Example:
+
+  Let P be the Principal = 1000.00      
+  Let I be the Interest Rate = 0.05      
+  Let T be the Tax Rate = 0.18      
+  Let D be the Desired Sum = 1100.00
+
+
+After 1st Year -->
+  P = 1041.00
+After 2nd Year -->
+  P = 1083.86
+After 3rd Year -->
+  P = 1128.30
+"""
+
+
+def calculate_years(principal, interest, tax, desired):
+    counter = 0
+    while principal < desired:
+        principal = principal * (1 + interest) - principal * interest * tax
+        counter += 1
+    return counter
+(calculate_years(1000, 0.05, 0.18, 1100), 3)
+(calculate_years(1000,0.01625,0.18,1200), 14)
+(calculate_years(1000,0.05,0.18,1000), 0)
 
 
