@@ -3454,7 +3454,8 @@ a2 = [11*11, 121*121, 144*144, 190*190, 161*161, 19*19, 144*144, 19*19]
 
 # Directions Reduction
 # https://www.codewars.com/kata/550f22f4d758534c1100025a
-"""Once upon a time, on a way through the old wild mountainous west,…
+"""
+Once upon a time, on a way through the old wild mountainous west,…
 … a man was given directions to go from one point to another. The directions were "NORTH", "SOUTH", "WEST", "EAST". Clearly "NORTH" and "SOUTH" are opposite, "WEST" and "EAST" too.
 
 Going to one direction and coming back the opposite direction right away is a needless effort. Since this is the wild west, with dreadfull weather and not much water, it's important to save yourself some energy, otherwise you might die of thirst!
@@ -3490,7 +3491,8 @@ The Rust version takes a slice of enum Direction {North, East, West, South}.
 See more examples in "Sample Tests:"
 Notes
 Not all paths can be made simpler. The path ["NORTH", "WEST", "SOUTH", "EAST"] is not reducible. "NORTH" and "WEST", "WEST" and "SOUTH", "SOUTH" and "EAST" are not directly opposite of each other and can't become such. Hence the result path is itself : ["NORTH", "WEST", "SOUTH", "EAST"].
-if you want to translate, please ask before translating."""
+if you want to translate, please ask before translating.
+"""
 
 
 def dir_reduc(arr):
@@ -7104,5 +7106,34 @@ def calculate_years(principal, interest, tax, desired):
 (calculate_years(1000, 0.05, 0.18, 1100), 3)
 (calculate_years(1000,0.01625,0.18,1200), 14)
 (calculate_years(1000,0.05,0.18,1000), 0)
+
+
+
+
+
+# Printing Array elements with Comma delimiters
+# https://www.codewars.com/kata/56e2f59fb2ed128081001328/train/python
+"""
+Input: Array of elements
+
+["h","o","l","a"]
+
+Output: String with comma delimited elements of the array in th same order.
+
+"h,o,l,a"
+
+Note: if this seems too simple for you try the next level
+
+Note2: the input data can be: boolean array, array of objects, array of string arrays, array of number arrays... 😕
+"""
+
+
+def print_array(arr):
+    # return ",".join(str(letter) for letter in arr)
+    return ",".join(map(str, arr))
+(print_array([2, 4, 5, 2]),"2,4,5,2")
+
+
+
 
 

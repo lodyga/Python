@@ -9,8 +9,6 @@ Given a balanced string s, split it into some number of substrings such that:
 Each substring is balanced.
 Return the maximum number of balanced strings you can obtain.
 
- 
-
 Example 1:
 
 Input: s = "RLRRLLRLRL"

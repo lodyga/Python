@@ -69,9 +69,11 @@ Solution().isAnagram("rat", "car")
 
 
 
-# 1
+# 1. Two Sum
 # https://leetcode.com/problems/two-sum/description/
-"""Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+# ["Array", "Hash Table"]
+"""
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 
@@ -81,30 +83,30 @@ Example 1:
 
 Input: nums = [2,7,11,15], target = 9
 Output: [0,1]
-Explanation: Because nums[0] + nums[1] == 9, we return [0, 1]."""
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+"""
 # https://www.codewars.com/kata/54d81488b981293527000c8f
 
 
+# O(n), O(n)
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
-        nums_dict = {}  # 55, 18; O(n), O(n)
+        nums_dict = {}
         for ind, num in enumerate(nums):
             diff = target - num
             if diff in nums_dict:
                 return [nums_dict[diff], ind]
             nums_dict[num] = ind
         return None
+Solution().twoSum([2, 7, 11, 15], 9)
+Solution().twoSum([3, 2, 4], 6)
+Solution().twoSum([3, 3], 6)
 
     # alt solution
     #     for i in range(len(nums) - 1):  # 1600, 17; O(n2), O(1)
     #         for j in range(i + 1, len(nums)):
     #             if nums[i] + nums[j] == target:
     #                 return [i, j]
-
-
-Solution().twoSum([2, 7, 11, 15], 9)
-Solution().twoSum([3, 2, 4], 6)
-Solution().twoSum([3, 3], 6)
 
 
 
@@ -338,17 +340,17 @@ Solution().longestConsecutive([100, 4, 200, 1, 3, 2])
 
 # 125. Valid Palindrome
 # https://leetcode.com/problems/valid-palindrome/description/
-"""A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+"""
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
 
 Given a string s, return true if it is a palindrome, or false otherwise.
-
- 
 
 Example 1:
 
 Input: s = "A man, a plan, a canal: Panama"
 Output: true
-Explanation: "amanaplanacanalpanama" is a palindrome."""
+Explanation: "amanaplanacanalpanama" is a palindrome.
+"""
 
 
 import string
@@ -381,7 +383,8 @@ Solution().isPalindrome("A man, a plan, a canal: Panama")
 
 # 167. Two Sum II - Input Array Is Sorted
 # https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
-"""Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
+"""
+Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
 
 Return the indices of the two numbers, index1 and index2, added by one as an integer array [index1, index2] of length 2.
 
@@ -393,7 +396,8 @@ Example 1:
 
 Input: numbers = [2,7,11,15], target = 9
 Output: [1,2]
-Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2]."""
+Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+"""
 
 
 class Solution:
@@ -711,7 +715,8 @@ Solution().characterReplacement("AABABBA", 1)
 
 # 20. Valid Parentheses
 # https://leetcode.com/problems/valid-parentheses/description/
-"""Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+"""
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
 An input string is valid if:
 
