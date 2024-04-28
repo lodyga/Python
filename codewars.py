@@ -6374,21 +6374,25 @@ sum_pairs([10, 5, 2, 3, 7, 5],         10)
 == [3, 7]
 Negative numbers and duplicate numbers can and will appear.
 
-NOTE: There will also be lists tested of lengths upwards of 10,000,000 elements. Be sure your code doesn't time out."""
+NOTE: There will also be lists tested of lengths upwards of 10,000,000 elements. Be sure your code doesn't time out.
+"""
 # https://leetcode.com/problems/two-sum/description/
 
 
 def sum_pairs(ints, s):
     seen = set()
-    for num in ints:
-        diff = s - num
+
+    for number in ints:
+        diff = s - number
+
         if diff in seen:
-            return [diff, num]
-        seen.add(num)
+            return [diff, number]
+        seen.add(number)
+
     return None
-sum_pairs([10, 5, 2, 3, 7, 5], 10)
-sum_pairs([1, 4, 8, 7, 3, 15], 8)
-sum_pairs([1, -2, 3, 0, -6, 1], -6)
+(sum_pairs([10, 5, 2, 3, 7, 5], 10), [3, 7])
+(sum_pairs([1, 4, 8, 7, 3, 15], 8), [1, 7])
+(sum_pairs([1, -2, 3, 0, -6, 1], -6), [0, -6])
 l1 = [1, 4, 8, 7, 3, 15]
 l2 = [1, -2, 3, 0, -6, 1]
 l3 = [20, -13, 40]

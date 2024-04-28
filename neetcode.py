@@ -353,6 +353,32 @@ Explanation: "amanaplanacanalpanama" is a palindrome.
 """
 
 
+# O(n), O(1)
+# Two Pointers
+import string
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        l = 0
+        r = len(s) - 1
+
+        while l < r:
+            while s[l] in string.punctuation + " " and l < r:
+                l += 1
+
+            while s[r] in string.punctuation + " "  and l < r:
+                r -= 1
+            
+            if s[l].lower() != s[r].lower():
+                return False
+
+            l += 1
+            r -= 1
+        
+        return True
+Solution().isPalindrome("A man, a plan, a canal: Panama")
+
+
+# replace
 import string
 class Solution:
     def isPalindrome(self, s: str) -> bool:
@@ -361,6 +387,8 @@ class Solution:
         return s.lower() == s[::-1].lower()
 Solution().isPalindrome("A man, a plan, a canal: Panama")
 
+
+# regex
 import re
 class Solution:
     def isPalindrome(self, s: str) -> bool:
@@ -368,13 +396,23 @@ class Solution:
         return s == s[::-1]
 Solution().isPalindrome("A man, a plan, a canal: Panama")
 
+
+# comprehension list, isalpha()
 class Solution:
     def isPalindrome(self, s: str) -> bool:
-        cleaned_s = ""
-        for i in s:
-            if i.isalpha():
-                cleaned_s += i.lower()
+        cleaned_s = [alph.lower() for alph in s if alph.isalpha()]
         return cleaned_s == cleaned_s[::-1]
+Solution().isPalindrome("A man, a plan, a canal: Panama")
+
+
+# comprehension list
+import string
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        # filtered_s = list(filter(lambda x: not x in string.punctuation + " ", s))
+        filtered_s = list(alph.lower() for alph in s if not alph in string.punctuation + " ")
+        # return "".join(filtered_s).lower() == "".join(filtered_s[::-1]).lower()
+        return filtered_s == filtered_s[::-1]
 Solution().isPalindrome("A man, a plan, a canal: Panama")
 
 
