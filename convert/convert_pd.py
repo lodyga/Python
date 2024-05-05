@@ -1,44 +1,48 @@
+# Conversion type
+# sql -> df : pd.read_sql()
+# csv -> df : pd.read_csv(".csv")
+# json -> df : pd.read_json(".json")
+# df -> csv : df.to_csv(".csv", index=False)
+# df -> sql : df.to_sql("<table_name>", sqlite_connection, if_exists="replace", index_label="index")
+# df -> json : df.to_json(".json", indent=4, orient="records")
+# dict -> df : pd.DataFrame(<dict>)
+# df -> dict : df.to_dict()
+
+
+
+
+
 import pandas as pd
-
-## sql -> df : pd.read_sql()
-## csv -> df : pd.read_csv(".csv")
-## json -> df : pd.read_json(".json")
-## df -> csv : df.to_csv(".csv", index=False)
-## df -> sql : df.to_sql("<table_name>", sqlite_connection, if_exists="replace", index_label="index")
-## df -> json : df.to_json(".json", indent=4, orient="records")
-## dict -> df : pd.DataFrame(<dict>)
-## df -> dict : df.to_dict()
-
-
-
-
-
 ## csv -> df
 file = pd.read_csv("mtcars.csv")
+# 4 cars with 3 attributes
+four_cars = file[:4][["brand", "mpg", "wt"]].to_dict(orient="list")
 
 
 
 ## df -> csv
-file.to_csv("mtcars.csv", index=False)
+file.to_csv("mtcars_ind.csv", index=True)
 print(file.to_csv())
 
 
 
 ## dict -> df
-emp_data = {
-    'name': ['John', 'Alice', 'Bob', 'Emma'],
-    'managerId': [1, 2, 2, 1],
-    'salary': [50000, 60000, 55000, 48000]
+four_cars = {
+    'brand': ['Mazda RX4', 'Mazda RX4 Wag', 'Datsun 710', 'Hornet 4 Drive'],
+    'mpg': [21.0, 21.0, 22.8, 21.4],
+    'wt': [2.62, 2.875, 2.32, 3.215],
 }
 
-empleyees = pd.DataFrame(emp_data)
-# empleyees[empleyees["salary"] > 51000]
 
-empleyees.to_csv("empleyees.csv", index=False)
+mtcars_pd = pd.DataFrame(four_cars)
+mtcars_pd[mtcars_pd["wt"] > 2.5]
+
+mtcars_pd.to_csv("mtcars_pd.csv", index=True)
 
 ## df –> dict
-empleyees.to_dict()
-empleyees.to_dict("records")
+mtcars_pd.to_dict()
+mtcars_pd.to_dict("list")
+mtcars_pd.to_dict("records")
 
 
 
@@ -47,7 +51,7 @@ empleyees.to_dict("records")
 # Create an in-memory SQLite database.
 from sqlalchemy import create_engine
 engine = create_engine('sqlite://', echo=False)
-empleyees.to_sql(name='emplo_db_name', con=engine)
+mtcars_pd.to_sql(name='emplo_db_name', con=engine)
 
 # Fetch data from in-memory database.
 from sqlalchemy import text
@@ -55,20 +59,21 @@ with engine.connect() as conn:
     conn.execute(text("SELECT * FROM emplo_db_name")).fetchall()
 
 
-
+# merge with another df -> db
 ## df -> db # Save database to SQLite3
 from sqlalchemy import create_engine
-engine = create_engine('sqlite:///employees.db', echo=True)
+engine = create_engine('sqlite:///mtcars_4.db', echo=True)
 sqlite_connection = engine.connect()
-empleyees.to_sql("employees", sqlite_connection, if_exists="replace", index_label="index")
+mtcars_pd.to_sql("mtcars", sqlite_connection, if_exists="replace", index_label="index")
 sqlite_connection.close()
+
 
 ## db -> df
 from sqlalchemy import create_engine
-engine = create_engine('sqlite:///mtcars.db', echo=True)
+engine = create_engine('sqlite:///mtcars_4.db', echo=True)
 with engine.connect() as conn, conn.begin():
-    data_from_db = pd.read_sql("mtcars", conn, index_col="index")
-data_from_db
+    mtcars_from_db = pd.read_sql("mtcars", conn, index_col="index")
+mtcars_from_db
 
 
 

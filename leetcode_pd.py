@@ -1,6 +1,10 @@
 # 175. Combine Two Tables
 # https://leetcode.com/problems/combine-two-tables/
 """
+Write a solution to report the first name, last name, city, and state of each person in the Person table. If the address of a personId is not present in the Address table, report null instead.
+
+Return the result table in any order.
+
 Input: 
 Person table:
 +----------+----------+-----------+
@@ -70,13 +74,9 @@ Explanation: Joe is the only employee who earns more than his manager.
 import pandas as pd
 
 def find_employees(employee: pd.DataFrame) -> pd.DataFrame:
-    merged_df = employee.merge(employee, left_on="managerId", right_on="id", suffixes=("_emp", "_mgn"))
-    filtered_df = merged_df[merged_df["salary_emp"] > merged_df["salary_mgn"]]
-    result_df = filtered_df[["name_emp"]]
-    result = result_df.rename(columns={"name_emp": "Employee"})
-    # result_df.columns = ['Employee']
-    # result = result_df[["name_emp"]].rename(columns={"name_emp": "Employee"})
-    return result
+    merged_df = employee.merge(employee, left_on="managerId", right_on="id", suffixes=("_x", "_y"))
+    where_df = merged_df[merged_df["salary_x"] > merged_df["salary_y"]]
+    return where_df[["name_x"]].rename(columns={"name_x": "Employee"})
 
 
 
@@ -85,13 +85,23 @@ def find_employees(employee: pd.DataFrame) -> pd.DataFrame:
 # 182. Duplicate Emails
 # https://leetcode.com/problems/duplicate-emails/description/
 """
+Table: Person
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| email       | varchar |
++-------------+---------+
+id is the primary key (column with unique values) for this table.
+Each row of this table contains an email. The emails will not contain uppercase letters.
+ 
+
 Write a solution to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL.
 
 Return the result table in any order.
 
 The result format is in the following example.
-
- 
 
 Example 1:
 
@@ -114,12 +124,29 @@ Explanation: a@b.com is repeated two times.
 """
 
 
+type_table = """
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| email       | varchar |
++-------------+---------+
+"""
+
+data_table = """
++----+---------+
+| id | email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+"""
+
+
 import pandas as pd
 
-per = pd.DataFrame({
-    "id": [1, 2, 3], 
-    "email": ["a@b.com", "b@c.com", "a@b.com"]
-})
+object_table = pd.DataFrame({'id': [1, 2, 3], 'email': ['a@b.com', 'c@d.com', 'a@b.com']})
 
 def duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
     # # return person.groupby('email').filter(lambda x: len(x) > 1)[['email']].drop_duplicates()
@@ -130,7 +157,7 @@ def duplicate_emails(person: pd.DataFrame) -> pd.DataFrame:
     grouped = person.groupby("email")
     filtered = grouped.filter(lambda x: x["email"].count() > 1)
     return filtered[["email"]].drop_duplicates()
-duplicate_emails(per)
+duplicate_emails(object_table)
 
 
 
@@ -177,8 +204,8 @@ Output:
 import pandas as pd
 
 def find_customers(customers: pd.DataFrame, orders: pd.DataFrame) -> pd.DataFrame:
-    joined = customers.merge(orders, how="left", left_on="id", right_on="customerId", suffixes=("_c", "_o"))
-    filtered = joined[joined["customerId"].isna()]
+    merged = customers.merge(orders, how="left", left_on="id", right_on="customerId", suffixes=("_x", "_y"))
+    filtered = merged[merged["id_y"].isna()]
     return filtered[["name"]].rename(columns={"name": "Customers"})
 
 
@@ -225,8 +252,10 @@ Explanation: john@example.com is repeated two times. We keep the row with the sm
 import pandas as pd
 
 def delete_duplicate_emails(person: pd.DataFrame) -> None:
-    person.sort_values(by="id", inplace=True)
+    person.sort_index(inplace=True, ascending=True)
+    # person.sort_values(by="id", inplace=True, ascending=True)
     person.drop_duplicates(subset="email", keep="first", inplace=True)
+    return person
 
 
 
@@ -235,6 +264,20 @@ def delete_duplicate_emails(person: pd.DataFrame) -> None:
 # 197. Rising Temperature
 # https://leetcode.com/problems/rising-temperature/description/
 """
+Table: Weather
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the column with unique values for this table.
+There are no different rows with the same recordDate.
+This table contains information about the temperature on a certain day.
+ 
+
 Write a solution to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
 
 Return the result table in any order.
@@ -278,10 +321,12 @@ Weather = {
 import pandas as pd
 
 def rising_temperature(weather: pd.DataFrame) -> pd.DataFrame:
-    weather = pd.DataFrame(weather, index=weather["id"])
-    weather["Date2"] = weather["recordDate"]
-    return weather
-rising_temperature(Weather)
+    weather["nextDay"] = weather["recordDate"] + pd.Timedelta(days=1)
+    merged = weather.merge(weather, how="left", left_on="recordDate", right_on="nextDay")
+    where_temp_rising = merged[merged["temperature_x"] > merged["temperature_y"]]
+    # return where_temp_rising["index"].rename(columns={"id_x": "Id"})
+    return pd.DataFrame(where_temp_rising["recordDate_x"])
+rising_temperature(object_table)
 
 
 
@@ -303,34 +348,11 @@ def rising_temperature(weather: pd.DataFrame) -> pd.DataFrame:
     merged = weather.merge(weather, left_on="recordDate", right_on="Date2")
     where = merged[merged["temperature_x"] > merged["temperature_y"]]
     return pd.DataFrame(where["id_x"]).rename(columns={"id_x": "Id"})
-
-
 rising_temperature(Weather)
 
 
-def rising_temperature(weather: pd.DataFrame) -> pd.DataFrame:
-
-    # Create a new DataFrame shifted by one day
-    weather_df_shifted = weather.copy()
-    weather_df_shifted['recordDate'] += pd.Timedelta(days=1)
-    weather_df_shifted.rename(
-        columns={'temperature': 'next_day_temperature'}, inplace=True)
-
-    # Merge both DataFrames on recordDate
-    merged_df = pd.merge(weather, weather_df_shifted,
-                         how='inner', on='recordDate', suffixes=("_c", "_o"))
-
-    # Filter rows where temperature on next day is higher
-    filtered_df = merged_df[merged_df['next_day_temperature']
-                            < merged_df['temperature']]
-
-    # Select only the 'id' column from the original DataFrame
-    result = filtered_df
-    return filtered_df[["id_c"]].rename(columns={"id_c": "Id"})
 
 
 
 
-
--- 
 

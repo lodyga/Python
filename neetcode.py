@@ -1481,19 +1481,24 @@ Explanation: From the top-left corner, there are a total of 3 ways to reach the 
 """
 
 
-class Solution:
+# O(n * m) O(n)
+class Solution():
     def uniquePaths(self, m: int, n: int) -> int:
+
         bottom_row = [1] * n
 
-        for _ in range(m - 2, -1, -1):
+        for _ in range(m - 1):
             curr_row = [1] * n
-            for i in range(n - 2, -1, -1):
+        
+            for i in range(n - 1)[::-1]:
                 curr_row[i] = curr_row[i + 1] + bottom_row[i]
+
             bottom_row = curr_row
 
-        return curr_row[0]
+        return bottom_row[0]
 (Solution().uniquePaths(3, 7), 28)
 (Solution().uniquePaths(3, 2), 3)
+(Solution().uniquePaths(1, 2), 3)
 
 
 

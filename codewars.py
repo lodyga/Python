@@ -7141,3 +7141,143 @@ def print_array(arr):
 
 
 
+# Find the vowels
+# https://www.codewars.com/kata/5680781b6b7c2be860000036/train/python
+"""
+We want to know the index of the vowels in a given word, for example, there are two vowels in the word super (the second and fourth letters).
+
+So given a string "super", we should return a list of [2, 4].
+
+Some examples:
+Mmmm  => []
+Super => [2,4]
+Apple => [1,5]
+YoMama -> [1,2,4,6]
+"""
+
+
+def vowel_indices(word):
+    return [index + 1 for index, vowel in enumerate(word) if vowel.lower() in "aeoiu"]
+(vowel_indices("mmm"), [], "failed on the word 'mmm'")
+(vowel_indices("apple"), [1,5], "failed on the word 'apple'")
+(vowel_indices("123456"), [], "failed on the word '123456'")
+(vowel_indices("UNDISARMED"), [1,4,6,9], "failed on the word 'UNDISARMED'. Consider case")
+
+
+
+
+
+# Sort Numbers
+# https://www.codewars.com/kata/5174a4c0f2769dd8b1000003/train/python
+"""
+Finish the solution so that it sorts the passed in array of numbers. If the function passes in an empty array or null/nil value then it should return an empty array.
+
+For example:
+
+solution([1,2,3,10,5]) # should return [1,2,3,5,10]
+solution(None) # should return []
+"""
+
+
+def solution(nums):
+    if not nums:
+        return []
+    nums.sort()
+    return nums
+(solution([1,2,3,10,5]), [1,2,3,5,10])
+(solution(None), [])
+(solution([]), [])
+(solution([20,2,10]), [2,10,20])
+(solution([2,20,10]), [2,10,20])
+
+
+
+
+
+# A Rule of Divisibility by 13
+# https://www.codewars.com/kata/564057bc348c7200bd0000ff/train/python
+"""
+From Wikipedia:
+
+"A divisibility rule is a shorthand way of determining whether a given integer is divisible by a fixed divisor without performing the division, usually by examining its digits."
+
+When you divide the successive powers of 10 by 13 you get the following remainders of the integer divisions:
+
+1, 10, 9, 12, 3, 4 because:
+
+10 ^ 0 ->  1 (mod 13)
+10 ^ 1 -> 10 (mod 13)
+10 ^ 2 ->  9 (mod 13)
+10 ^ 3 -> 12 (mod 13)
+10 ^ 4 ->  3 (mod 13)
+10 ^ 5 ->  4 (mod 13)
+(For "mod" you can see: https://en.wikipedia.org/wiki/Modulo_operation)
+
+Then the whole pattern repeats. Hence the following method:
+
+Multiply
+
+the right most digit of the number with the left most number in the sequence shown above,
+the second right most digit with the second left most digit of the number in the sequence.
+The cycle goes on and you sum all these products. Repeat this process until the sequence of sums is stationary.
+
+Example:
+What is the remainder when 1234567 is divided by 13?
+
+7      6     5      4     3     2     1  (digits of 1234567 from the right)
+×      ×     ×      ×     ×     ×     ×  (multiplication)
+1     10     9     12     3     4     1  (the repeating sequence)
+Therefore following the method we get:
+
+ 7×1 + 6×10 + 5×9 + 4×12 + 3×3 + 2×4 + 1×1 = 178
+
+We repeat the process with the number 178:
+
+8x1 + 7x10 + 1x9 = 87
+
+and again with 87:
+
+7x1 + 8x10 = 87
+
+From now on the sequence is stationary (we always get 87) and the remainder of 1234567 by 13 is the same as the remainder of 87 by 13 ( i.e 9).
+
+Task:
+Call thirt the function which processes this sequence of operations on an integer n (>=0). thirt will return the stationary number.
+
+thirt(1234567) calculates 178, then 87, then 87 and returns 87.
+
+thirt(321) calculates 48, 48 and returns 48
+"""
+
+
+def thirt(n):
+    dividers = (1, 10, 9, 12, 3, 4)
+
+    while True:
+        m = n
+        n = str(n)[::-1]
+        n = sum(int(i) * dividers[ind%6] for ind, i in enumerate(n))
+        if n == m:
+            return n
+(thirt(1234567), 78)
+(thirt(8529), 79)
+(thirt(85299258), 31)
+(thirt(5634), 57)
+(thirt(1111111111), 71)
+(thirt(987654321), 30)
+
+
+def thirt(n):
+    dividers = (1, 10, 9, 12, 3, 4)
+
+    m = str(n)[::-1]
+    m = sum(int(i) * dividers[ind%6] for ind, i in enumerate(m))
+    if n == m:
+        return n
+    return thirt(m)
+    
+
+
+
+# 
+
