@@ -1,35 +1,49 @@
 https://neetcode.io/practice
 
-# 217
+# 217. Contains Duplicate
 # https://leetcode.com/problems/contains-duplicate/
-"""Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+"""
+Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
 
-Input: nums = [1,2,3,1]
+Example 1:
+
+Input: nums = [1, 2, 3, 1]
+Output: true
+
+Example 2:
+
+Input: nums = [1, 2, 3, 4]
+Output: false
+
+Example 3:
+
+Input: nums = [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]
 Output: true
 """
 
+# O(n), O(n)
 class Solution:
     def containsDuplicate(self, nums: list[int]) -> bool:
+        seen = set()
     
-        nums_set = set()
-        for number in nums:
-            if number in nums_set:
+        for num in nums:
+            if num in seen:
                 return True
             else:
-                nums_set.add(number)
+                seen.add(num)
         return False
         
         # alt solution 
-        # return not (len(set(nums)) == len(nums))  # O(n), O(n)
+        # return not (len(set(nums)) == len(nums))
 
         # alt solution
         # import numpy as np
         # return len(np.unique(nums)) == len(nums)
 
 
-Solution().containsDuplicate([1, 2, 3])
-Solution().containsDuplicate([1, 2, 3, 4])
-Solution().containsDuplicate([1, 1, 1, 3, 3, 4, 3, 2, 4, 2])
+(Solution().containsDuplicate([1, 2, 3]), False)
+(Solution().containsDuplicate([1, 2, 3, 4]), False)
+(Solution().containsDuplicate([1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
 
 sol = Solution()
 sol.containsDuplicate([1, 2, 3])
@@ -38,32 +52,36 @@ sol.containsDuplicate([1, 2, 3])
 
 
 
-# 242
+# Valid Anagram
 # https://leetcode.com/problems/valid-anagram/
-"""Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+"""
+Given two strings s and t, return true if t is an anagram of s, and false otherwise.
 
 An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
 
 Example 1:
 
 Input: s = "anagram", t = "nagaram"
-Output: true"""
+Output: true
+Example 2:
+
+Input: s = "rat", t = "car"
+Output: false
+"""
 
 
+# O(n), O(n)
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
-        return {i: s.count(i) for i in set(s)} == {i: t.count(i) for i in set(t)}  # 47, 17; O(n), O(n)
+        return {letter: s.count(letter) for letter in set(s)} == {letter: t.count(letter) for letter in set(t)}
 
         # alt solution
         # from collections import Counter
-        # return Counter(s) == Counter(t)  # 35, 17
+        # return Counter(s) == Counter(t)
     
-        # alt solution
-        # return sorted(s) == sorted(t)  # 53, 18
 
-
-Solution().isAnagram("anagram", "nagaram")
-Solution().isAnagram("rat", "car")
+(Solution().isAnagram("anagram", "nagaram"), True)
+(Solution().isAnagram("rat", "car"), False)
 
 
 
@@ -91,16 +109,18 @@ Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
 # O(n), O(n)
 class Solution:
     def twoSum(self, nums: list[int], target: int) -> list[int]:
-        nums_dict = {}
+        seen = {}
+
         for ind, num in enumerate(nums):
             diff = target - num
-            if diff in nums_dict:
-                return [nums_dict[diff], ind]
-            nums_dict[num] = ind
+            if diff in seen:
+                return [seen[diff], ind]
+            seen[num] = ind
+        
         return None
-Solution().twoSum([2, 7, 11, 15], 9)
-Solution().twoSum([3, 2, 4], 6)
-Solution().twoSum([3, 3], 6)
+(Solution().twoSum([2, 7, 11, 15], 9), [0, 1])
+(Solution().twoSum([3, 2, 4], 6), [1, 2])
+(Solution().twoSum([3, 3], 6), [0, 1])
 
     # alt solution
     #     for i in range(len(nums) - 1):  # 1600, 17; O(n2), O(1)
@@ -112,54 +132,57 @@ Solution().twoSum([3, 3], 6)
 
 
 
-# 49. Group Anagrams
+# Group Anagrams
 # https://leetcode.com/problems/group-anagrams/description/
-"""Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+"""
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
 
 An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
-
- 
 
 Example 1:
 
 Input: strs = ["eat","tea","tan","ate","nat","bat"]
-Output: [["bat"],["nat","tan"],["ate","eat","tea"]]"""
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+"""
 
 
-
+# O(m*n), O(m*n)
 class Solution:
     def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
-
-        grouped_anagrams = dict() # O(m*n)
+        grouped_anagrams = dict()
         # from collections import defaultdict
         # grouped_anagrams = defaultdict(list)
-        
-        strs.reverse()
+
         for word in strs:
             key = [0] * 26
+
             for letter in word:
                 key[ord(letter) - ord("a")] += 1
+
             key = tuple(key)
-            
             if not key in grouped_anagrams:
                 grouped_anagrams[key] = []
             grouped_anagrams[key].append(word)
-        
             # grouped_anagrams[key].append(word)
-        
-        return grouped_anagrams.values()
-Solution().groupAnagrams(["eat","tea","tan","ate","nat","bat"])
 
-        # alt solutions
-        # strs.reverse()  # 83, 19 O(m*n*logn) m - list cout, n - avg word len
-        # result = {}
-        # for word in strs:
-        #     key = "".join(sorted(word))
-        #     if key in result:
-        #         result[key].append(word)
-        #     else:
-        #         result[key] = [word]
-        # return list(result.values())
+        return grouped_anagrams.values()
+(Solution().groupAnagrams(["eat","tea","tan","ate","nat","bat"]), [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']])
+(Solution().groupAnagrams([""]), [[""]])
+(Solution().groupAnagrams(["a"]), [["a"]])
+(Solution().groupAnagrams(["tin","ram","zip","cry","pus","jon","zip","pyx"]), [['tin'], ['ram'], ['zip', 'zip'], ['cry'], ['pus'], ['jon'], ['pyx']])
+
+# alt solutions # 83, 19 O(m*n*logn) m - list cout, n - avg word len
+class Solution:
+    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
+        grouped_anagrams = {}
+        
+        for word in strs:
+            key = "".join(sorted(word))
+            if key in grouped_anagrams:
+                grouped_anagrams[key].append(word)
+            else:
+                grouped_anagrams[key] = [word]
+        return list(grouped_anagrams.values())
 
 
         # alt solutions
@@ -181,22 +204,57 @@ Solution().groupAnagrams(["eat","tea","tan","ate","nat","bat"])
 
 
 
-# 347. Top K Frequent Elements
+# Top K Frequent Elements
 # https://leetcode.com/problems/top-k-frequent-elements/description/
-"""Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+"""
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
 
 Example 1:
 
 Input: nums = [1,1,1,2,2,3], k = 2
-Output: [1,2]"""
+Output: [1,2]
+Example 2:
+
+Input: nums = [1], k = 1
+Output: [1]
+"""
 
 
 from collections import Counter
 
+# O(n), O(n)
 class Solution:
     def topKFrequent(self, nums: list[int], k: int) -> list[int]:
+        return [key for key, _ in Counter(nums).most_common(k)]
+(Solution().topKFrequent([1, 1, 1, 2, 2, 3], 2), [1, 2])
+(Solution().topKFrequent([1], 1), [1])
 
-        return [elem[0] for elem in Counter(nums).most_common(k)]
+# O(n), O(n)
+class Solution:
+    def topKFrequent(self, nums: list[int], k: int) -> list[int]:
+        # count = {num: nums.count(num) for num in set(nums)} # {1: 3, 2: 2, 3: 1}  # O(n2)
+        count = {}
+        freq_group = [[] for _ in  range(len(nums) + 1)]
+
+        for num in nums:
+            count[num] = count.get(num, 0) + 1
+
+        for key, val in count.items():
+            freq_group[val].append(key)
+        # [[], [3], [2], [1], [], [], []] # bucket
+
+        sol = []
+        for freq_list in freq_group[::-1]:
+            if freq_list:
+                for freq_elem in freq_list:
+                    sol.append(freq_elem)
+                    if len(sol) == k:
+                        return sol
+
+        return None
+
+
+
 
         # alt solutions
         # freq_dict = {digit: nums.count(digit) for digit in set(nums)}
@@ -233,7 +291,6 @@ class Solution:
         #         if len(res) == k:
         #             return res
 
-Solution().topKFrequent([1, 1, 1, 2, 2, 3], 2)
 # Solution().topKFrequent([1, 2], 2)
 
 
@@ -305,9 +362,10 @@ Solution().decode(Solution().encode(["neet","code","love","youuuuuuuuuuuuuuuu"])
 
 
 
-# 128. Longest Consecutive Sequence
+# Longest Consecutive Sequence
 # https://leetcode.com/problems/longest-consecutive-sequence/description/
-"""Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+"""
+Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
 
 You must write an algorithm that runs in O(n) time.
 
@@ -315,24 +373,31 @@ Example 1:
 
 Input: nums = [100,4,200,1,3,2]
 Output: 4
-Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4."""
+Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+Example 2:
+
+Input: nums = [0,3,7,2,5,8,4,6,0,1]
+Output: 9
+"""
 
 
+# O(n), O(n)
 class Solution:
     def longestConsecutive(self, nums: list[int]) -> int:
-        
-        n_set = set(nums)
-        longest = 0
-        for num in n_set:    
-            if not (num - 1) in n_set:
+        nums_set = set(nums)
+        longest_concec = 0
+
+        for num in nums_set:
+            if not num - 1 in nums_set:
                 curr_len = 1
-                while (num + curr_len) in n_set:
+                
+                while num + curr_len in nums_set:
                     curr_len += 1
-                longest = max(longest, curr_len)
-        
-        return longest
-    
-Solution().longestConsecutive([100, 4, 200, 1, 3, 2])
+                longest_concec = max(longest_concec, curr_len)
+
+        return longest_concec
+(Solution().longestConsecutive([100, 4, 200, 1, 3, 2]), 4)
+(Solution().longestConsecutive([0, 3, 7, 2, 5, 8, 4, 6, 0, 1]), 9)
 
 
 
@@ -375,7 +440,7 @@ class Solution:
             r -= 1
         
         return True
-Solution().isPalindrome("A man, a plan, a canal: Panama")
+(Solution().isPalindrome("A man, a plan, a canal: Panama"), True)
 
 
 # replace
@@ -435,19 +500,30 @@ Example 1:
 Input: numbers = [2,7,11,15], target = 9
 Output: [1,2]
 Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+Example 2:
+
+Input: numbers = [2,3,4], target = 6
+Output: [1,3]
+Explanation: The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].
+Example 3:
+
+Input: numbers = [-1,0], target = -1
+Output: [1,2]
+Explanation: The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We return [1, 2].
 """
 
 
+# O(n), O(1)
 class Solution:
     def twoSum(self, numbers: list[int], target: int) -> list[int]:
-        
-        l, r = 0, len(numbers) - 1
+        l = 0
+        r = len(numbers) - 1
 
         while l < r:
-            two = numbers[l] + numbers[r]
-            if two > target:
+            edge_sum = numbers[l] + numbers[r]
+            if edge_sum > target:
                 r -= 1
-            elif two < target:
+            elif edge_sum < target:
                 l += 1
             else:
                 return [l + 1, r + 1]
@@ -455,21 +531,20 @@ class Solution:
         return None
 
 
-Solution().twoSum([2, 7, 11, 15], 9)
-Solution().twoSum([2, 3, 4], 6)
+(Solution().twoSum([2, 7, 11, 15], 9), [1, 2])
+(Solution().twoSum([2, 3, 4], 6), [1, 3])
+(Solution().twoSum([-1, 0], -1), [1, 2])
 
 
 
 
 
-# 15. 3Sum
+# 3Sum
 # https://leetcode.com/problems/3sum/
 """
 Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
 
 Notice that the solution set must not contain duplicate triplets.
-
- 
 
 Example 1:
 
@@ -481,16 +556,19 @@ nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.
 nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.
 The distinct triplets are [-1,0,1] and [-1,-1,2].
 Notice that the order of the output and the order of the triplets does not matter.
+
 Example 2:
 
 Input: nums = [0,1,1]
 Output: []
 Explanation: The only possible triplet does not sum up to 0.
+
 Example 3:
 
 Input: nums = [0,0,0]
 Output: [[0,0,0]]
-Explanation: The only possible triplet sums up to 0."""
+Explanation: The only possible triplet sums up to 0.
+"""
 
 
 class Solution:
@@ -499,7 +577,12 @@ class Solution:
         nums.sort()
 
         for ind, num in enumerate(nums[:-2]):
-            if ind > 0 and num == nums[ind-1]:
+            # Skip positive nums
+            if num > 0:
+                break
+            
+            # Skip same values
+            if ind and num == nums[ind-1]:
                 continue
 
             l = ind + 1
@@ -507,10 +590,8 @@ class Solution:
 
             while l < r:
                 triplet = num + nums[l] + nums[r]
-                # if triplet > 0 or nums[r] == nums[r-1]:  # breaks on [0, 0, 0]
                 if triplet > 0:
                     r -= 1
-                # elif triplet < 0 or nums[l] == nums[l+1]:
                 elif triplet < 0:
                     l += 1
                 else:
@@ -520,9 +601,9 @@ class Solution:
                     while nums[l] == nums[l-1] and l < r:
                         l += 1                
         return seen
-Solution().threeSum([-1, 0, 1, 2, -1, -4])
-Solution().threeSum([-1, 1, 1])
-Solution().threeSum([0, 0, 0])
+(Solution().threeSum([-1, 0, 1, 2, -1, -4]), [[-1, -1, 2], [-1, 0, 1]])
+(Solution().threeSum([-1, 1, 1]), [])
+(Solution().threeSum([0, 0, 0]), [[0, 0, 0]])
 
 
 # 0(n3)
@@ -542,20 +623,34 @@ class Solution:
 
 
 
-# 11. Container With Most Water
+# Container With Most Water
 # https://leetcode.com/problems/container-with-most-water/description/
-"""You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+"""
+You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
 
 Find two lines that together with the x-axis form a container, such that the container contains the most water.
 
 Return the maximum amount of water a container can store.
 
-Notice that you may not slant the container."""
+Notice that you may not slant the container.
+
+Example 1:
+
+Input: height = [1,8,6,2,5,4,8,3,7]
+Output: 49
+Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+Example 2:
+
+Input: height = [1,1]
+Output: 1
+"""
 
 
+# O(n), O(1)
 class Solution:
     def maxArea(self, height: list[int]) -> int:
-        l, r = 0, len(height) - 1
+        l = 0
+        r = len(height) - 1
         max_pool_size = 0
 
         while l < r:
@@ -569,9 +664,8 @@ class Solution:
                 r -= 1
 
         return max_pool_size
-
-Solution().maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7])
-Solution().maxArea([1, 1])
+(Solution().maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]), 49)
+(Solution().maxArea([1, 1]), 1)
 
 
 # O(n2)
@@ -591,15 +685,14 @@ class Solution:
 
 
 
-# 121. Best Time to Buy and Sell Stock
+# Best Time to Buy and Sell Stock
 # https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
-"""You are given an array prices where prices[i] is the price of a given stock on the ith day.
+"""
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
 You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
 
 Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
-
- 
 
 Example 1:
 
@@ -617,31 +710,36 @@ Explanation: In this case, no transactions are done and the max profit = 0.
 
 class Solution:
     def maxProfit(self, prices: list[int]):
-        l, r = 0, 1
-        deal = 0
+        l = 0
+        r = 1
+        profit = 0
+
         while r < len(prices):
+            
             # if price is lower - buy
             if prices[r] < prices[l]:
                 l = r
+            
             # if price is higher - calculate revenue
             else:
-                deal = max(deal, prices[r] - prices[l])
+                profit = max(profit, prices[r] - prices[l])
             r += 1
-        return deal
-
-Solution().maxProfit([2, 4, 1])
-Solution().maxProfit([7, 1, 5, 3, 6, 4])
-Solution().maxProfit([7, 6, 4, 3, 1])
-Solution().maxProfit([2, 1, 2, 1, 0, 1, 2])
-Solution().maxProfit([1, 2])
-
-
+        
+        return profit
+(Solution().maxProfit([7, 1, 5, 3, 6, 4]), 5)
+(Solution().maxProfit([7, 6, 4, 3, 1]),)
+(Solution().maxProfit([2, 4, 1]), 2)
+(Solution().maxProfit([2, 1, 2, 1, 0, 1, 2]), 2)
+(Solution().maxProfit([1, 2]), 1)
 
 
 
-# 3. Longest Substring Without Repeating Characters
-# https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
-"""Given a string s, find the length of the longest 
+
+
+# Longest Substring Without Repeating Characters
+# https://leetcode.com/problems/longest-substring-without-repeating-characters/
+"""
+Given a string s, find the length of the longest 
 substring without repeating characters.
 
 Example 1:
@@ -657,16 +755,39 @@ Explanation: The answer is "b", with the length of 1.
 Example 3:
 
 Input: s = "pwwkew"
-Output: 3"""
+Output: 3
+"""
+
+
+# O(n), O(n)
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        slider = ""
+        max_len = 0
+
+        for letter in s:
+            if letter in slider:
+                duplicate_ind = slider.index(letter)
+                slider = slider[duplicate_ind + 1:]
+            
+            slider += letter
+            max_len = max(max_len, len(slider))
+
+        return max_len
+(Solution().lengthOfLongestSubstring("abcabcbb"), 3)
+(Solution().lengthOfLongestSubstring("bbbbb"), 1)
+(Solution().lengthOfLongestSubstring("pwwkew"), 3)
+(Solution().lengthOfLongestSubstring("aabaab!bb"), 3)
+(Solution().lengthOfLongestSubstring("aab"), 2)
 
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
         unique_elements = set()
-        l = 0
+        l = 0 # start slider
         max_len = 0
 
-        for r in range(len(s)):
+        for r in range(len(s)): # end slider
             while s[r] in unique_elements:
                 unique_elements.discard(s[l])
                 l += 1
@@ -676,25 +797,21 @@ class Solution:
 
         return max_len
 
-Solution().lengthOfLongestSubstring("aabaab!bb")
-Solution().lengthOfLongestSubstring("aab")
-Solution().lengthOfLongestSubstring("abcabcbb")
-Solution().lengthOfLongestSubstring("bbbbb")
-Solution().lengthOfLongestSubstring("pwwkew")
 
+# no need for seen and slider duplicates
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-
         seen = []
         slider = ""
         max_len = 0
-        for char in s:
-            if char in seen:
-                slider = slider[slider.index(char) + 1:]
-                while char in seen:
+
+        for letter in s:
+            if letter in seen:
+                slider = slider[slider.index(letter) + 1:]
+                while letter in seen:
                     seen.pop(0)
-            seen.append(char)
-            slider += char
+            seen.append(letter)
+            slider += letter
             max_len = max(max_len, len(slider))
         return max_len
 
@@ -705,11 +822,10 @@ class Solution:
 
 # 424. Longest Repeating Character Replacement
 # https://leetcode.com/problems/longest-repeating-character-replacement/description/
-"""You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times.
+"""You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character.
+You can perform this operation at most k times.
 
 Return the length of the longest substring containing the same letter you can get after performing the above operations.
-
- 
 
 Example 1:
 
@@ -728,11 +844,11 @@ There may exists other ways to achieve this answer too."""
 # in progress
 class Solution:
     def characterReplacement(self, s: str, k: int) -> int:
-        
         seen = []
         seen_dict = {}
         slider = ""
         max_len = 0
+    
         for char in s:
             if char in seen:
                 slider = slider[slider.index(char) + 1:]
@@ -801,9 +917,10 @@ class Solution:
 
 
 
-# 153. Find Minimum in Rotated Sorted Array
-# https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/
-"""Suppose an array of length n sorted in ascending order is rotated between 1 and n times. For example, the array nums = [0,1,2,4,5,6,7] might become:
+# Find Minimum in Rotated Sorted Array
+# https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/
+"""
+Suppose an array of length n sorted in ascending order is rotated between 1 and n times. For example, the array nums = [0,1,2,4,5,6,7] might become:
 
 [4,5,6,7,0,1,2] if it was rotated 4 times.
 [0,1,2,4,5,6,7] if it was rotated 7 times.
@@ -835,11 +952,43 @@ Explanation: The original array was [11,13,15,17] and it was rotated 4 times.
 
 class Solution:
     def findMin(self, nums: list[int]) -> int:
+        l = 0
+        r = len(nums) - 1
+        
+        while True:
+            if r - l < 2:
+                return min(nums[l], nums[r])
+
+            mid = (l + r)//2
+            
+            if nums[mid] < nums[r]:
+                r = mid
+            else:
+                l = mid
+
+        return None
+(Solution().findMin([1, 2, 3, 4]), 1)
+(Solution().findMin([4, 1, 2, 3]), 1)
+(Solution().findMin([2, 3, 4, 1]), 1)
+(Solution().findMin([3, 4, 1, 2]), 1)
+(Solution().findMin([4, 5, 1, 2, 3]), 1)
+(Solution().findMin([5, 1, 2, 3, 4]), 1)
+(Solution().findMin([1, 2, 3, 4, 5]), 1)
+(Solution().findMin([2, 3, 4, 5, 1]), 1)
+(Solution().findMin([3, 4, 5, 1, 2]), 1)
+(Solution().findMin([4, 5, 6, 7, 0, 1, 2]), 0)
+(Solution().findMin([11, 13, 15, 17]), 11)
+(Solution().findMin([1]), 1)
+(Solution().findMin([3, 1, 2]), 1)
+
+
+class Solution:
+    def findMin(self, nums: list[int]) -> int:
         start, stop = 0, len(nums) - 1
         min_num = float("inf")
 
         while start <= stop:
-            mid = (start + stop) // 2 # start + (stop - start) // 2
+            mid = (start + stop) // 2
             min_num = min(min_num, nums[mid])
 
             if min_num > nums[stop]:
@@ -848,12 +997,6 @@ class Solution:
                 stop = mid - 1
 
         return min_num
-
-(Solution().findMin([3, 4, 5, 1, 2]), 1)
-Solution().findMin([2, 3, 4, 5, 1])
-Solution().findMin([1, 2, 3, 4, 5])
-(Solution().findMin([4, 5, 6, 7, 0, 1, 2]), 0)
-(Solution().findMin([11, 13, 15, 17]), 11)
 
 
 
@@ -881,6 +1024,45 @@ Input: nums = [4,5,6,7,0,1,2], target = 3
 Output: -1
 Example 3:
 """
+
+
+# in progress
+class Solution:
+    def search(self, nums: list[int], target: int) -> int:
+        l = 0
+        r = len(nums) - 1
+
+        while True:
+            if r - l < 2:
+                if nums[l] == target:
+                    return l
+                elif nums[r] == target:
+                    return r
+                else:
+                    return -1
+
+            mid = (l + r)//2
+
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < nums[r]:
+                if target < nums[mid]:
+                    r = mid
+                else:
+                    l = mid
+            elif nums[mid] > nums[r]:
+                if target < nums[r]:
+                    l = mid
+                else:
+                    r = mid
+
+        return None
+
+
+(Solution().search([3, 5, 1], 1), 2)
+(Solution().search([4, 5, 6, 7, 0, 1, 2], 0), 4)
+(Solution().search([4, 5, 6, 7, 0, 1, 2], 3), -1)
+(Solution().search([1], 0), -1)
 
 
 
@@ -2139,9 +2321,6 @@ class Solution:
 
 
  
-# 
-
-
 
 
 

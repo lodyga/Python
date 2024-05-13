@@ -1011,7 +1011,11 @@ from collections import Counter
 
 # Counter without importing
 def count(s):
-    return {i: s.count(i) for i in set(s)}  # random order
+    count_dict = {}
+    for i in s:
+        count_dict[i] = count_dict.get(i, 0) + 1
+    return count_dict # O(n)
+    # return {i: s.count(i) for i in set(s)}  # random order O(n2)
     # return {i: s.count(i) for i in s}
 count(word)
 
