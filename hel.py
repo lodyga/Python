@@ -3176,3 +3176,42 @@ print(float(number1) + float(number2))
 
 
 
+
+# exec, eval
+code = """
+class Solution:
+    def twoSum(self, nums: list[int], target: int) -> list[int]:
+        seen = {}
+
+        for ind, num in enumerate(nums):
+            diff = target - num
+            if diff in seen:
+                return [seen[diff], ind]
+            seen[num] = ind
+        
+        return None
+
+output = (Solution().twoSum([2, 7, 11, 15], 9), [0, 1])
+"""
+
+
+def execute_with_capture(code):
+    output = None
+    local_vars = {'output': output}  # Pre-populate local_vars
+
+    try:
+        exec(code, globals(), local_vars)
+        output = local_vars['output']  # Capture output from local variable
+    except Exception as e:
+        output = f"Error: {str(e)}"
+
+    return output
+
+# Example usage
+code = "def fun(x):\n  return x * 2\nresult = fun(5)\noutput = result"
+result = execute_with_capture(code)
+print(result)  # Output: 10 (assuming successful execution)
+
+
+
+

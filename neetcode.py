@@ -648,6 +648,7 @@ Output: 1
 
 # O(n), O(1)
 class Solution:
+    a = 5
     def maxArea(self, height: list[int]) -> int:
         l = 0
         r = len(height) - 1
@@ -727,7 +728,7 @@ class Solution:
         
         return profit
 (Solution().maxProfit([7, 1, 5, 3, 6, 4]), 5)
-(Solution().maxProfit([7, 6, 4, 3, 1]),)
+(Solution().maxProfit([7, 6, 4, 3, 1]), 0)
 (Solution().maxProfit([2, 4, 1]), 2)
 (Solution().maxProfit([2, 1, 2, 1, 0, 1, 2]), 2)
 (Solution().maxProfit([1, 2]), 1)
@@ -966,7 +967,7 @@ class Solution:
             else:
                 l = mid
 
-        return None
+
 (Solution().findMin([1, 2, 3, 4]), 1)
 (Solution().findMin([4, 1, 2, 3]), 1)
 (Solution().findMin([2, 3, 4, 1]), 1)
@@ -1045,13 +1046,13 @@ class Solution:
 
             if nums[mid] == target:
                 return mid
-            elif nums[mid] < nums[r]:
-                if target < nums[mid]:
+            elif target < nums[mid]:
+                if nums[l] <= target:
                     r = mid
                 else:
                     l = mid
-            elif nums[mid] > nums[r]:
-                if target < nums[r]:
+            else:
+                if target <= nums[r]:
                     l = mid
                 else:
                     r = mid
@@ -1059,6 +1060,32 @@ class Solution:
         return None
 
 
+class Solution:
+    def search(self, nums: list[int], target: int) -> int:
+        l = 0
+        r = len(nums) - 1
+
+        while l <= r:
+            mid = (l + r) // 2
+
+            if nums[mid] == target:
+                return mid
+            elif nums[l] <= nums[mid]:
+                if nums[l] <= target < nums[mid]:
+                    r = mid - 1
+                else:
+                    l = mid + 1
+            else:
+                if nums[mid] < target <= nums[r]:
+                    l = mid + 1
+                else:
+                    r = mid - 1
+
+        return -1
+
+
+(Solution().search([4, 5, 6, 7, 8, 1, 2, 3], 8), 4)
+(Solution().search([1, 3, 5], 5), 2)
 (Solution().search([3, 5, 1], 1), 2)
 (Solution().search([4, 5, 6, 7, 0, 1, 2], 0), 4)
 (Solution().search([4, 5, 6, 7, 0, 1, 2], 3), -1)
@@ -1110,13 +1137,12 @@ Solution().combinationSum([2,3,6,7])
 
 
 
-# 70. Climbing Stairs
-# https://leetcode.com/problems/climbing-stairs/description/
-"""You are climbing a staircase. It takes n steps to reach the top.
+# Climbing Stairs
+# https://leetcode.com/problems/climbing-stairs/
+"""
+You are climbing a staircase. It takes n steps to reach the top.
 
 Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
-
- 
 
 Example 1:
 
@@ -1132,15 +1158,20 @@ Output: 3
 Explanation: There are three ways to climb to the top.
 1. 1 step + 1 step + 1 step
 2. 1 step + 2 steps
-3. 2 steps + 1 step"""
+3. 2 steps + 1 step
+"""
 
 
 # Fibonnacci problem
 class Solution:
     def climbStairs(self, n: int) -> int:
-        a, b = 1, 1
+        a = 1
+        b = 1
+
         for _ in range(n):
             a, b = b, a + b
+            # print(a, b)
+
         return a
 Solution().climbStairs(2)
 Solution().climbStairs(3)
@@ -1148,10 +1179,13 @@ Solution().climbStairs(4)
 
 
 def Fib_gen(n):
-    a, b = 1, 1
+    a = 1
+    b = 1
+
     for _ in range(n):
         yield a
         a, b = b, a + b
+
 fib5 = Fib_gen(5)
 
 for i in fib5:
@@ -1164,7 +1198,8 @@ next(fib5)
 
 # 198. House Robber
 # https://leetcode.com/problems/house-robber/description/
-"""You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+"""
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
 
 Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
 
@@ -1185,19 +1220,34 @@ Total amount you can rob = 2 + 9 + 1 = 12.
 """
 
 
+# O(n), O(1)
 class Solution:
-    def rob(self, nums: list[int]) -> int:
-        rob1, rob2 = 0, 0
+    def rob(self, nums: list[int]):
+        house_1 = 0
+        house_2 = 0
 
-        for num in nums:
-            # [rob1, rob2, rob1 + num]
-            tmp = max(rob1 + num, rob2)
-            rob1 = rob2
-            rob2 = tmp
+        for house_3 in nums:
+            temp = max(house_1 + house_3, house_2)
+            house_1 = house_2
+            house_2 = temp
 
-        return rob2
+        return house_2
 (Solution().rob([1, 2, 3, 1]), 4)
 (Solution().rob([2, 7, 9, 3, 1]), 12)
+(Solution().rob([2, 100, 9, 3, 100]), 200)
+
+
+# O(n), O(n)
+class Solution:
+    def rob(self, nums: list[int]):
+        dp = [0] * len(nums)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+
+        for ind in range(2, len(nums)):
+            dp[ind] = max(dp[ind - 2] + nums[ind], dp[ind - 1])
+
+        return dp[-1]
 
 
 

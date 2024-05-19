@@ -507,4 +507,61 @@ class Solution:
 
 
 
+# Trapping Rain Water
+# https://leetcode.com/problems/trapping-rain-water/
+"""
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+
+Example 1:
+
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
+Example 2:
+
+Input: height = [4,2,0,3,2,5]
+Output: 9
+
+# ____
+#   |    _____
+#   |____|   |
+# ____________|
+# (3, 1, 2)
+"""
+
+
+class Solution:
+    def trap(self, land: list[int]) -> int:
+        l = 0
+        r = len(land) - 1
+        flood_depth = 0
+        flood_sum = 0
+        max_land_l = 0
+        max_land_r = 0
+
+        while l < r:
+            if land[l] < land[r]:
+                max_land_l = max(max_land_l, land[l])
+                # flood_depth = max(flood_depth, max_land_l - land[l])
+                flood_depth = max_land_l - land[l]
+                flood_sum += flood_depth
+                l += 1
+            else:
+                max_land_r = max(max_land_r, land[r])
+                # flood_depth = max(flood_depth, max_land_r - land[r])
+                flood_depth = max_land_r - land[r]
+                flood_sum += flood_depth
+                r -= 1
+
+        return flood_sum
+(Solution().trap([1, 3, 2, 1, 2, 1, 5, 3, 3, 4, 2]), 8)
+(Solution().trap([5, 8]), 0)
+(Solution().trap([3, 1, 2]), 1)
+(Solution().trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]), 6)
+(Solution().trap([4, 2, 0, 3, 2, 5]), 9)
+
+
+
+
+
 # 
