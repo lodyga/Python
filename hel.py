@@ -984,6 +984,7 @@ isinstance(51, int)  # True
 type(5.0)  # <class 'float'>
 type(5)  # <class 'int'>
 type(5) == int  # True
+isinstance(5, int)  # True
 isinstance(5.0, int)  # False # it's int, but object is float
 isinstance(5.0, float) # True
 (5.0).is_integer()  # True # checks if float is an int
@@ -2097,6 +2098,7 @@ with open(dire+'writeData.csv', mode='w') as file:
 
 import os
 os.getcwd()
+os.listdir()
 
 # reading a file
 
@@ -2624,7 +2626,7 @@ dict_obj = json.loads(person_data)
 # check type of dict_obj
 type(dict_obj)
 # get human object details
-dict_obj.get('person')
+e
 dict_obj['person']['name']
 
 # read str -> dict
@@ -3215,3 +3217,44 @@ print(result)  # Output: 10 (assuming successful execution)
 
 
 
+
+
+
+
+# top-down with memoization
+fib_cache = {0: 0, 1: 1}
+def fib_rec(n):
+    # if n == 0:
+    #     return 0
+    # if n == 1:
+    #     return 1
+    
+    global fib_cache
+
+    if n in fib_cache:
+        curr_fib = fib_cache[n]
+    else:
+        curr_fib = fib_rec(n - 1) + fib_rec(n - 2)
+        fib_cache[n] = curr_fib
+
+    return curr_fib
+
+# bottom-up, dp, O(n), O(1)
+def fib_dp(n):
+    fib_pair = [0, 1]
+
+    for _ in range(n):
+        fib_pair.append(sum(fib_pair))
+        fib_pair.pop(0)
+    
+    return fib_pair[0]
+
+# bottom-up, dp, O(n), O(n)
+def fib_dp2(n):
+    partial_answers = [0, 1]
+    while len(partial_answers) <= n:
+        partial_answers.append(partial_answers[-1] + partial_answers[-2])
+    return partial_answers[-1]
+
+print(fib_rec(10), fib_dp(10), fib_dp2(10))
+print(fib_cache)

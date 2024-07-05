@@ -89,7 +89,6 @@ class Solution:
 
 # 1. Two Sum
 # https://leetcode.com/problems/two-sum/description/
-# ["Array", "Hash Table"]
 """
 Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
 
@@ -113,14 +112,16 @@ class Solution:
 
         for ind, num in enumerate(nums):
             diff = target - num
-            if diff in seen:
-                return [seen[diff], ind]
-            seen[num] = ind
+        
+            if diff in seen: # seen.get(diff, False)
+                return [seen[diff], ind] # [seen.get(diff), ind]
+            seen[num] = ind # seen.update({num: ind})
         
         return None
 (Solution().twoSum([2, 7, 11, 15], 9), [0, 1])
 (Solution().twoSum([3, 2, 4], 6), [1, 2])
 (Solution().twoSum([3, 3], 6), [0, 1])
+(Solution().twoSum([3, 3], 7), None)
 
     # alt solution
     #     for i in range(len(nums) - 1):  # 1600, 17; O(n2), O(1)
@@ -415,6 +416,17 @@ Example 1:
 Input: s = "A man, a plan, a canal: Panama"
 Output: true
 Explanation: "amanaplanacanalpanama" is a palindrome.
+Example 2:
+
+Input: s = "race a car"
+Output: false
+Explanation: "raceacar" is not a palindrome.
+Example 3:
+
+Input: s = " "
+Output: true
+Explanation: s is an empty string "" after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.
 """
 
 
@@ -913,6 +925,9 @@ class Solution:
 (Solution().isValid("({})"), True)
 (Solution().isValid("(})"), False)
 (Solution().isValid("([)"), False)
+(Solution().isValid("(]"), False)
+(Solution().isValid(""), True)
+(Solution().isValid("["), False)
 
 
 
@@ -1173,9 +1188,9 @@ class Solution:
             # print(a, b)
 
         return a
-Solution().climbStairs(2)
-Solution().climbStairs(3)
-Solution().climbStairs(4)
+(Solution().climbStairs(2), 2)
+(Solution().climbStairs(3), 3)
+(Solution().climbStairs(4), 5)
 
 
 def Fib_gen(n):
@@ -1196,14 +1211,12 @@ next(fib5)
 
 
 
-# 198. House Robber
-# https://leetcode.com/problems/house-robber/description/
+# House Robber
+# https://leetcode.com/problems/house-robber/
 """
 You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
 
 Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
-
- 
 
 Example 1:
 
@@ -1253,13 +1266,12 @@ class Solution:
 
 
 
-# 213. House Robber II
-# https://leetcode.com/problems/house-robber-ii/description/
-"""You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
+# House Robber II
+# https://leetcode.com/problems/house-robber-ii/
+"""
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
 
 Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
-
- 
 
 Example 1:
 
@@ -1280,30 +1292,32 @@ Output: 3
 
 
 class Solution:
-    def rob_list(self, nums: list[int]) -> int:
-        rob1, rob2 = 0, 0
+    def rob(self, nums: list[int]):
+        house_1 = 0
+        house_2 = 0
 
-        for num in nums:
-            tmp = max(rob1 + num, rob2)
-            rob1 = rob2
-            rob2 = tmp
+        for house_3 in nums:
+            temp = max(house_1 + house_3, house_2)
+            house_1 = house_2
+            house_2 = temp
 
-        return rob2
+        return house_2
     
-    def rob(self, nums: list[int]) -> int:
-        return max(nums[0], self.rob_list(nums[1:]), self.rob_list(nums[:-1]))
-(Solution().rob([2, 3, 2]), 3)
-(Solution().rob([1, 2, 3, 1]), 4)
-(Solution().rob([1, 2, 3]), 3)
-(Solution().rob([1]), 1)
+    def rob_list(self, nums: list[int]) -> int:
+        return max(self.rob(nums[:-1]), self.rob(nums[1:]), nums[0])(Solution().rob([2, 3, 2]), 3)
+(Solution().rob_list([2, 3, 2]), 3)
+(Solution().rob_list([1, 2, 3, 1]), 4)
+(Solution().rob_list([1, 2, 3]), 3)
+(Solution().rob_list([1]), 1)
 
 
 
 
 
-# 5. Longest Palindromic Substring
-# https://leetcode.com/problems/longest-palindromic-substring/description/
-"""Given a string s, return the longest 
+# Longest Palindromic Substring
+# https://leetcode.com/problems/longest-palindromic-substring/
+"""
+Given a string s, return the longest 
 palindromic 
 substring
  in s.
@@ -1318,6 +1332,41 @@ Example 2:
 Input: s = "cbbd"
 Output: "bb"
 """
+
+
+# O(n2) # No words so it could be "bbbbb"
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        if not s:
+            return ""
+        
+        longest = s[0]
+
+        # odd length
+        for i in range(len(s)):
+            edge = 1
+            while (i - edge) >= 0 and (i + edge) < len(s) and (s[i - edge] == s[i + edge]):
+                if  2*edge + 1 > len(longest):
+                    longest = s[i - edge:i + edge + 1]
+                edge += 1
+
+        # even length
+        for i in range(len(s) - 1):
+            edge = 0
+            while (i - edge) >= 0 and (i + 1 + edge) < len(s) and (s[i - edge] == s[i + 1 + edge]):
+                if  2*edge + 2 > len(longest):
+                    longest = s[i - edge:i + 1 + edge + 1]
+                edge += 1
+
+        return longest
+(Solution().longestPalindrome("babad"), "bab")
+(Solution().longestPalindrome("cbbd"), "bb")
+(Solution().longestPalindrome("a"), "a")
+(Solution().longestPalindrome(""), "")
+(Solution().longestPalindrome("bb"), "bb")
+(Solution().longestPalindrome("ab"), "a")
+(Solution().longestPalindrome("aacabdkacaa"), "aca")
+(Solution().longestPalindrome("abdka"), "a")
 
 
 # O(n2)
@@ -1338,14 +1387,6 @@ class Solution:
             self.longest_pal(i, i + 1, s)
         return self.longest
 
-(Solution().longestPalindrome("babad"), "bab")
-(Solution().longestPalindrome("cbbd"), "bb")
-(Solution().longestPalindrome("a"), "a")
-(Solution().longestPalindrome(""), "")
-(Solution().longestPalindrome("bb"), "bb")
-(Solution().longestPalindrome("ab"), "a")
-(Solution().longestPalindrome("aacabdkacaa"), "aca")
-(Solution().longestPalindrome("abdka"), "a")
 
 class Solution:
     def longest_pal(self, left: int, right: int, s: str, longest: str) -> str:
@@ -1383,15 +1424,14 @@ class Solution:
 
 
 
-# 647. Palindromic Substrings
+# Palindromic Substrings
 # https://leetcode.com/problems/palindromic-substrings/
-"""Given a string s, return the number of palindromic substrings in it.
+"""
+Given a string s, return the number of palindromic substrings in it.
 
 A string is a palindrome when it reads the same backward as forward.
 
 A substring is a contiguous sequence of characters within the string.
-
- 
 
 Example 1:
 
@@ -1409,6 +1449,32 @@ Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
 class Solution:
     def __init__(self) -> None:
         self.substrings_count = 0
+    
+    def countSubstrings(self, s):
+        len_s = len(s)
+
+        # odd length palindroms
+        for ind in range(len_s):
+            edge = 0
+            while ind - edge >=0 and ind + edge < len_s and s[ind - edge] == s[ind + edge]:
+                self.substrings_count += 1
+                edge += 1
+
+        # even length palindroms
+        for ind in range(len_s - 1):
+            edge = 0
+            while ind - edge >=0 and ind + edge + 1 < len_s and s[ind - edge] == s[ind + edge + 1]:
+                self.substrings_count += 1
+                edge += 1
+
+        return self.substrings_count
+(Solution().countSubstrings("abc"), 3)
+(Solution().countSubstrings("aaa"), 6)
+
+
+class Solution:
+    def __init__(self) -> None:
+        self.substrings_count = 0
 
     def count_pal(self, left: int, right: int, s: str) -> None:
         while left >= 0 and right < len(s) and s[left] == s[right]:
@@ -1421,22 +1487,19 @@ class Solution:
             self.count_pal(i, i, s)
             self.count_pal(i, i + 1, s)
         return self.substrings_count
-(Solution().countSubstrings("abc"), 3)
-(Solution().countSubstrings("aaa"), 6)
 
 
 
 
 
-# 322. Coin Change
-# https://leetcode.com/problems/coin-change/description/
-"""You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+# Coin Change
+# https://leetcode.com/problems/coin-change/
+"""
+You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
 
 Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.
 
 You may assume that you have an infinite number of each kind of coin.
-
- 
 
 Example 1:
 
@@ -1453,27 +1516,36 @@ Input: coins = [1], amount = 0
 Output: 0
 """
 
-# bottom up dynamic programming
 
+# bottom up dynamic programming
 class Solution:
     def coinChange(self, coins: list[int], amount: int) -> int:
-        coin_count = [amount + 1] * (amount + 1)
-        coin_count[0] = 0
+        # Initialize min_coins array with amount + 1 which is an impossibly high number
+        # Index is ammount, value is the min number of coions to sum to that value
+        min_coins = [amount + 1] * (amount + 1)
+        # Base case: 0 amount requires 0 coins
+        min_coins[0] = 0
 
-        for amount_iter in range(1, amount + 1):
+        for curr_ammount in range(1, amount + 1):
             for coin in coins:
-                if amount_iter - coin >= 0:
-                    coin_count[amount_iter] = min(coin_count[amount_iter], 1 + coin_count[amount_iter - coin])
-
-        return coin_count[amount] if coin_count[amount] != amount + 1 else -1
-
+                # If the current coin can be used (i.e., doesn't make the amount negative)
+                if curr_ammount - coin >= 0:
+                    # Update the minimum coins needed for the current amount
+                    min_coins[curr_ammount] = min(min_coins[curr_ammount], 1 + min_coins[curr_ammount - coin])
+        
+        # If the last element is unchanged there is no single money combination to sum up.
+        if min_coins[amount] == amount + 1:
+            return -1
+        else:
+            return min_coins[amount]
+        # return min_coins[amount] if min_coins[amount] != amount + 1 else -1
 (Solution().coinChange([1, 2, 5], 11), 3)
 (Solution().coinChange([2], 3), -1)
 (Solution().coinChange([1], 0), 0)
 (Solution().coinChange([2, 5, 10, 1], 27), 4)
 (Solution().coinChange([186, 419, 83, 408], 6249), 20)
 
-# greedy
+# greedy no good for (Solution().coinChange([186, 419, 83, 408], 6249), 20)
 class Solution:
     def coinChange(self, coins: list[int], amount: int) -> int:
         count = 0
@@ -1495,16 +1567,12 @@ class Solution:
 
 
 
-# 152. Maximum Product Subarray
-# https://leetcode.com/problems/maximum-product-subarray/description/
+# Maximum Product Subarray
+# https://leetcode.com/problems/maximum-product-subarray/
 """
-Given an integer array nums, find a 
-subarray
- that has the largest product, and return the product.
+Given an integer array nums, find a subarray that has the largest product, and return the product.
 
 The test cases are generated so that the answer will fit in a 32-bit integer.
-
- 
 
 Example 1:
 
@@ -1519,19 +1587,16 @@ Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
 """
 
 
-# {Time: O(n), Memory: O(1)}
 class Solution:
     def maxProduct(self, nums: list[int]) -> int:
+        curMin = 1
+        curMax = 1
         res = nums[0]
-        curMin, curMax = 1, 1
 
         for n in nums:
-            # if n == 0:
-            #     curMin, curMax = 1, 1
-            #     continue
-            # curMin, _, curMax = sorted((n * curMax, n * curMin, n))
-            # curMin, curMax = min(n * curMax, n * curMin), max(n * curMax, n * curMin)
             curMin, curMax = min(n * curMax, n * curMin, n), max(n * curMax, n * curMin, n)
+            
+            # curMin, _, curMax = sorted((n * curMax, n * curMin, n))
             # tmp = curMax * n
             # curMax = max(n * curMax, n * curMin)
             # curMin = min(tmp, n * curMin)
@@ -1541,6 +1606,12 @@ class Solution:
 (Solution().maxProduct([0, 2]), 2)
 (Solution().maxProduct([-2]), -2)
 (Solution().maxProduct([-4, -3]), 12)
+(Solution().maxProduct([-2, 0, -1]), 0)
+(Solution().maxProduct([-2, -3, 7]), 42)
+(Solution().maxProduct([2, -5, -2, -4, 3]), 24)
+
+
+
 
 
 # O(n2)
@@ -1549,9 +1620,11 @@ import numpy as np
 
 class Solution:
     def maxProduct(self, nums: list[int]) -> int:
-        max_prod = -float("inf")
+        max_prod = nums[0]
+
         for i in range(len(nums)):
             for j in range(i, len(nums)):
+                print(i, j)
                 max_prod = max(max_prod, np.prod(nums[i:j + 1]))
                 # print(nums[i:j + 1])
         return max_prod
@@ -1560,55 +1633,12 @@ class Solution:
 
 
 
-# 152. Maximum Product Subarray
-# https://leetcode.com/problems/maximum-product-subarray/description/
-"""
-Given an integer array nums, find a 
-subarray
- that has the largest product, and return the product.
-
-The test cases are generated so that the answer will fit in a 32-bit integer.
-
-Example 1:
-
-Input: nums = [2,3,-2,4]
-Output: 6
-Explanation: [2,3] has the largest product 6.
-Example 2:
-
-Input: nums = [-2,0,-1]
-Output: 0
-Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
-"""
-
-
-class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        max_prod = nums[0]
-        min_num, max_num = 1, 1
-
-        for num in nums:
-            min_temp = min_num
-            min_num = min(min_num*num, max_num*num, num)
-            max_num = max(min_temp*num, max_num*num, num)
-
-            max_prod = max(max_prod, max_num)
-        return max_prod
-(Solution().maxProduct([2, 3, -2, 4]), 6)
-(Solution().maxProduct([-2, 0, -1]), 0)
-
-
-
-
-
-# 139. Word Break
-# https://leetcode.com/problems/word-break/description/
+# Word Break
+# https://leetcode.com/problems/word-break/
 """
 Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
 
 Note that the same word in the dictionary may be reused multiple times in the segmentation.
-
- 
 
 Example 1:
 
@@ -1627,20 +1657,21 @@ Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
 Output: false
 """
 
+
 class Solution:
     def wordBreak(self, s: str, wordDict: list[str]) -> bool:
-        dp = [False] * len(s)
-        dp.append(True)
+        can_segment = [False] * len(s)
+        can_segment.append(True)
+        wordSet = set(wordDict)
 
-        for ind in range(len(s) - 1, -1, -1):
-            for word in wordDict:
+        for ind in range(len(s))[::-1]:
+            for word in wordSet:
                 if word == s[ind: ind + len(word)]:
-                    if dp[ind + len(word)]:
-                        dp[ind] = True
+                    if can_segment[ind + len(word)]:
+                        can_segment[ind] = True
                         break
 
-        return dp[0]
-
+        return can_segment[0]
 (Solution().wordBreak("leetcode", ["leet", "code"]), True)
 (Solution().wordBreak("cars", ["car", "ca", "rs"]), True)
 
@@ -1648,8 +1679,8 @@ class Solution:
 
 
 
-# 300. Longest Increasing Subsequence
-# https://leetcode.com/problems/longest-increasing-subsequence/description/
+# Longest Increasing Subsequence
+# https://leetcode.com/problems/longest-increasing-subsequence/
 """
 Given an integer array nums, return the length of the longest strictly increasing 
 subsequence
@@ -1672,33 +1703,93 @@ Output: 1
 
 class Solution:
     def lengthOfLIS(self, nums: list[int]) -> int:
-        dp = [1] * len(nums)
+        lis_lengths = [1] * len(nums)
+        
+        for i in range(len(nums)):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    lis_lengths[i] = max(lis_lengths[i], lis_lengths[j] + 1)
 
-        for i in range(len(nums) - 1, -1, -1):
-            for j in range(i + 1, len(nums)):
-                if nums[i] < nums[j]:
-                    dp[i] = max(dp[i], dp[j] + 1)
-
-        return max(dp)
+        return max(lis_lengths)
 (Solution().lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]), 4)
 (Solution().lengthOfLIS([0, 1, 0, 3, 2, 3]), 4)
 (Solution().lengthOfLIS([7, 7, 7, 7, 7, 7, 7]), 1)
 
 
+# Filling dp list from the end
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        dp = [1] * len(nums)
+
+        for i in reversed(range(len(nums))):
+            for j in range(i + 1, len(nums)):
+                if nums[i] < nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)
 
 
 
-# 62. Unique Paths
-# https://leetcode.com/problems/unique-paths/description/
+
+
+# Partition Equal Subset Sum
+# https://leetcode.com/problems/partition-equal-subset-sum
+"""
+Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
+
+Example 1:
+
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+Example 2:
+
+Input: nums = [1,2,3,5]
+Output: false
+Explanation: The array cannot be partitioned into equal sum subsets.
+"""
+
+
+class Solution:
+    def canPartition(self, nums: list[int]) -> bool:
+        if sum(nums) % 2:
+            return False
+        
+        target = sum(nums) // 2
+        possible_sums = {0}
+
+        for num in nums:
+            if target in possible_sums:
+                return True
+            
+            seen_chunk = set()
+            for s in possible_sums:
+                seen_chunk.add(s + num)
+            possible_sums.update(seen_chunk)
+            
+            # update possible_sums in one line
+            # possible_sums.update({s + num for s in possible_sums})
+            
+        return False
+(Solution().canPartition([1, 5, 11, 5]), True)
+(Solution().canPartition([3, 3, 3, 4, 5]), True)
+(Solution().canPartition([1, 2, 5]), False)
+(Solution().canPartition([1, 2, 3, 5]), False)
+(Solution().canPartition([1]), False)
+
+
+
+
+
+# Unique Paths
+# https://leetcode.com/problems/unique-paths/
 """
 There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
 
 Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
 
-The test cases are generated so that the answer will be less than or equal to 2 * 109.
-
 Example 1:
-
 
 Input: m = 3, n = 7
 Output: 28
@@ -1716,7 +1807,6 @@ Explanation: From the top-left corner, there are a total of 3 ways to reach the 
 # O(n * m) O(n)
 class Solution():
     def uniquePaths(self, m: int, n: int) -> int:
-
         bottom_row = [1] * n
 
         for _ in range(m - 1):
@@ -1730,15 +1820,15 @@ class Solution():
         return bottom_row[0]
 (Solution().uniquePaths(3, 7), 28)
 (Solution().uniquePaths(3, 2), 3)
-(Solution().uniquePaths(1, 2), 3)
+(Solution().uniquePaths(1, 2), 1)
 
 
 
 
 
 
-# 1143. Longest Common Subsequence
-# https://leetcode.com/problems/longest-common-subsequence/description/
+# Longest Common Subsequence
+# https://leetcode.com/problems/longest-common-subsequence/
 """
 Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.
 
@@ -1765,13 +1855,15 @@ Explanation: There is no such common subsequence, so the result is 0.
 """
 
 
+# O(n2), O(n2), dp
 class Solution:
     def longestCommonSubsequence(self, text1: str, text2: str) -> int:
-        dp = [[0 for i in range(len(text2) + 1)] for j in range(len(text1) + 1)]
-        
-        for i in range(len(text1) - 1, -1, -1):
-            for j in range(len(text2) -1, -1, -1):
-                if text1[i] == text2[j]:
+        # dp = [[0] * (len(text1) + 1)] * (len(text2) + 1)  creates a list of lists where each sublist is a reference to the same list. This means that updating one element in any sublist will affect all sublists.
+        dp = [[0] * (len(text1) + 1) for _ in range(len(text2) + 1)]
+
+        for i in range(len(text2))[::-1]:
+            for j in range(len(text1))[::-1]:
+                if text2[i] == text1[j]:
                     dp[i][j] = dp[i + 1][j + 1] + 1
                 else:
                     dp[i][j] = max(dp[i + 1][j], dp[i][j + 1])
@@ -1780,13 +1872,86 @@ class Solution:
 (Solution().longestCommonSubsequence("abcde", "ace"), 3)
 (Solution().longestCommonSubsequence("abc", "abc"), 3)
 (Solution().longestCommonSubsequence("abc", "dew"), 0)
+(Solution().longestCommonSubsequence("bsbininm", "jmjkbkjkv"), 1)
+
+
+#  O(n2), O(n), dp
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        bottom_row = [0] * (len(text1) + 1) 
+
+        for i in range(len(text2))[::-1]:
+            curr_row = [0] * (len(text1) + 1) 
+            
+            for j in range(len(text1))[::-1]:
+                if text2[i] == text1[j]:
+                    curr_row[j] = bottom_row[j + 1] + 1
+                else:
+                    curr_row[j] = max(bottom_row[j], curr_row[j + 1])
+            
+            bottom_row = curr_row
+
+        return bottom_row[0]
+
+
+# Top-down with cache; O(n2), O(n2), recursion function inside longestCommonSubsequence, but much slower than dp
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        cache = {}
+
+        def rec(i, j):
+            if i == len(text2) or j == len(text1):
+                return 0
+ 
+            if (i, j) in cache:
+                return cache[(i, j)]
+
+            if text2[i] == text1[j]:
+                curr_longest = rec(i + 1, j + 1) + 1
+            else:
+                curr_longest = max(rec(i + 1, j), rec(i, j + 1))
+            
+            cache[(i, j)] = curr_longest
+            
+            return curr_longest
+
+        return rec(0, 0)
+
+
+# Top-down with cache; O(n2), O(n2), recursion function outside longestCommonSubsequence, but much slower than dp
+class Solution:
+    def __init__(self):
+        self.text1 = ''
+        self.text2 = ''
+        self.cache = {}
+
+    def rec(self, i, j):
+        if i == len(self.text2) or j == len(self.text1):
+            return 0
+        
+        if (i, j) in self.cache:
+            return self.cache[(i, j)]
+        
+        if self.text2[i] == self.text1[j]:
+            curr_longest = self.rec(i + 1, j + 1) + 1
+        else:
+            curr_longest = max(self.rec(i + 1, j), self.rec(i, j + 1))
+        
+        self.cache[(i, j)] = curr_longest
+        return curr_longest
+
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        self.text1 = text1
+        self.text2 = text2
+        lcs_length = self.rec(0, 0)
+        return lcs_length
 
 
 
 
 
-# 53. Maximum Subarray
-# https://leetcode.com/problems/maximum-subarray/description/
+# Maximum Subarray
+# https://leetcode.com/problems/maximum-subarray/
 """
 Given an integer array nums, find the subarray with the largest sum, and return its sum.
 
@@ -1810,6 +1975,22 @@ Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
 
 class Solution:
     def maxSubArray(self, nums: list[int]) -> int:
+        max_sum = nums[0]
+        curr_sum = nums[0]
+
+        for num in nums[1:]:
+            curr_sum = max(curr_sum + num, num)
+            max_sum = max(max_sum, curr_sum)
+    
+        return max_sum
+(Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
+(Solution().maxSubArray([1]), 1)
+(Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
+(Solution().maxSubArray([-4, -2, -1, -3]), -1)
+
+
+class Solution:
+    def maxSubArray(self, nums: list[int]) -> int:
         result = nums[0]
         current = 0
 
@@ -1819,9 +2000,6 @@ class Solution:
             current += num
             result = max(result, current)
         return result
-(Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
-(Solution().maxSubArray([1]), 1)
-(Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
 
 
 
