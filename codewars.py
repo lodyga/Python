@@ -24,6 +24,12 @@ Example: The binary representation of 1234 is 10011010010, so the function shoul
 
 (count_bits(1234), 5)
 """
+(count_bits(0), 0)
+(count_bits(4), 1)
+(count_bits(7), 3)
+(count_bits(9), 2)
+(count_bits(10), 2)
+(count_bits(1234), 5)
 
 
 def count_bits(n):
@@ -32,8 +38,24 @@ def count_bits(n):
     # return '{:b}'.format(n).count('1')
     # return sum(True if int(i) else False for i in bin(n)[2:])
     # return n.bit_count()
-(count_bits(1234), 5)
 
+
+def count_bits(n):
+    num = ""
+    counter = 0
+
+    while True:
+        mod = n % 2
+        n = n // 2
+        num = str(mod) + num
+
+        if mod:
+            counter += 1
+        
+        if not n:
+            break
+
+    return num
 
 
 
@@ -46,19 +68,21 @@ continue reducing in this way until a single-digit number is produced. The input
 
 (digital_root(169), 7)
 """
-
-from more_itertools import iterate
-import numpy as np
-
-def digital_root(n):
-    while n > 9:
-        n = sum(map(int, str(n)))
-    return n
 (digital_root(16), 7)
 (digital_root(169), 7)
 (digital_root(942), 6)
 (digital_root(132189), 6)
 (digital_root(493193), 2)
+
+def digital_root(number):
+    while len(str(number)) != 1:
+        number = sum(int(digit) for digit in str(number))
+    return number
+
+def digital_root(number):
+    while number > 9:
+        number = sum(map(int, str(number)))
+    return number
 
 def digital_root(n):
     return n if n < 10 else digital_root(sum(map(int, str(n))))
@@ -80,12 +104,27 @@ Given a string, detect whether or not it is a pangram. Return True if it is, Fal
 
 (is_pangram("The quick, brown fox jumps over the lazy dog!"), True)
 """
+(is_pangram("The quick, brown fox jumps over the lazy dog!"), True)
+(is_pangram("ABCD45EFGH,IJK,LMNOPQR56STUVW3XYZ"), True)
+
+
+def is_pangram(sentence):
+    letters = set()
+
+    for letter in sentence.lower():
+        if letter.isalpha():
+            letters.add(letter)
+
+    return len(letters) == 26
+
+def is_pangram(sentence):
+    return len({letter for letter in sentence.lower() if letter.isalpha()}) == 26
+
 
 import string
 
 def is_pangram(s):
     return set(string.ascii_lowercase) <= set(s.lower())
-(is_pangram("The quick, brown fox jumps over the lazy dog!"), True)
 
 
 def is_pangram(s):
@@ -117,10 +156,6 @@ Note: If the number is a multiple of both 3 and 5, only count it once.
 
 (solution(4), 3)
 """
-
-def solution(numbers):
-    return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
-    # return sum(digit for digit in range(3, numbers) if not (digit % 3 and digit % 5))
 (solution(4), 3)
 (solution(6), 8)
 (solution(16), 60)
@@ -132,6 +167,20 @@ def solution(numbers):
 (solution(10), 23)
 (solution(20), 78)
 (solution(200), 9168)
+
+
+def solution(nums):
+    div_sum = 0
+    
+    for num in range(nums):
+        if (not num % 3 or
+            not num % 5):
+            div_sum += num
+    
+    return div_sum
+
+def solution(numbers):
+    return sum(digit for digit in range(3, numbers) if not digit % 3 or not digit % 5)
 
 
 
@@ -152,41 +201,52 @@ Examples
 " Hello there thanks for trying my Kata"  =>  "#HelloThereThanksForTryingMyKata"
 "    Hello     World   "                  =>  "#HelloWorld"
 ""                                        =>  false"""
+(generate_hashtag(" Hello there thanks for trying my Kata"), "#HelloThereThanksForTryingMyKata")
+(generate_hashtag("    Hello     World   " ), "#HelloWorld")
+(generate_hashtag(''), False)  # 'Expected an empty string to return False'
+(generate_hashtag('Do We have A Hashtag')[0], '#')  # 'Expeted a Hashtag (#) at the beginning.'
+(generate_hashtag('Codewars'), '#Codewars')  # 'Should handle a single word.'
+(generate_hashtag('Codewars      '), '#Codewars')  # 'Should handle trailing whitespace.'
+(generate_hashtag('Codewars Is Nice'), '#CodewarsIsNice')  # 'Should remove spaces.'
+(generate_hashtag('codewars is nice'), '#CodewarsIsNice')  # 'Should capitalize first letters of words.'
+(generate_hashtag('CodeWars is nice'), '#CodewarsIsNice')  # 'Should capitalize all letters of words - all lower case but the first.'
+(generate_hashtag('c i n'), '#CIN')  # 'Should capitalize first letters of words even when single letters.'
+(generate_hashtag('codewars  is  nice'), '#CodewarsIsNice')  # 'Should deal with unnecessary middle spaces.'
+(generate_hashtag('Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Cat'), False)  # 'Should return False if the final word is longer than 140 chars.'
+(generate_hashtag('    '), False)
+
+
+def generate_hashtag(sentence):
+    if not sentence.strip():
+        return False
+    
+    hashtag = "#"
+    for word in sentence.split():
+        hashtag += word.capitalize()
+        
+        if len(hashtag) > 140:
+            return False
+    
+    return hashtag
+
 
 def generate_hashtag(s):
-    if not s or len(s) > 140:
+    if not s.strip():
         return False
-    return "#" + "".join(word.capitalize() for word in s.strip().split())
+    
+    solution = "#" + "".join(word.capitalize() for word in s.strip().split())
+    return False if len(s) > 140 else solution
     # return "#" + s.title().replace(" ", "")
-generate_hashtag('CodeWars  is   nice')
-generate_hashtag('')
-generate_hashtag(" Hello there thanks for trying my Kata")
-(generate_hashtag(''), False, 'Expected an empty string to return False')
-(generate_hashtag('Do We have A Hashtag')[0], '#', 'Expeted a Hashtag (#) at the beginning.')
-(generate_hashtag('Codewars'), '#Codewars', 'Should handle a single word.')
-(generate_hashtag('Codewars      '), '#Codewars', 'Should handle trailing whitespace.')
-(generate_hashtag('Codewars Is Nice'), '#CodewarsIsNice', 'Should remove spaces.')
-(generate_hashtag('codewars is nice'), '#CodewarsIsNice', 'Should capitalize first letters of words.')
-(generate_hashtag('CodeWars is nice'), '#CodewarsIsNice', 'Should capitalize all letters of words - all lower case but the first.')
-(generate_hashtag('c i n'), '#CIN', 'Should capitalize first letters of words even when single letters.')
-(generate_hashtag('codewars  is  nice'), '#CodewarsIsNice', 'Should deal with unnecessary middle spaces.')
-(generate_hashtag('Looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong Cat'), False, 'Should return False if the final word is longer than 140 chars.')
 
 
 def generate_hashtag(s):
-    if (len(s) > 140 or
-            not s):
+    if not s.strip():
         return False
-    return '#' + ''.join(map(lambda x: x.strip().capitalize(), s.split()))
+    
+    solution = '#' + ''.join(map(lambda word: word.capitalize(), s.split()))
+    return False if len(s) > 140 else solution
 
-def generate_hashtag(s):
-    if len(s) > 140 or s == '':
-        formatedstring = False
-    else:
-        formatedstring = '#'
-        for string in s.split():
-            formatedstring += string.strip().capitalize()
-    return formatedstring
+
 
 
 
@@ -217,38 +277,23 @@ productFib(800) # should return (34, 55, false),
                 
 (fib_prod(4895), [55, 89, True])
 """
+(product_fib(714), (21, 34, True) )
+(product_fib(800), (34, 55, False))
+(product_fib(4895), (55, 89, True))
+(product_fib(5895), (89, 144, False))
+(product_fib(0), (0, 1, True))
 
 
-def fib_prod(n):
-    a, b = 0, 1
-    while True:
-        if n <= a * b:
-            return (a, b, a * b == n)
+def product_fib(num):
+    a = 0
+    b = 1
+
+    while a * b < num:
         a, b = b, a + b
+        # b = a + b
+        # a = b - a
 
-def fib_prod(n):
-    a, b = 0, 1
-    while n > a * b:
-        a, b = b, a + b
-    return (a, b, a * b == n)
-
-fib_prod(714) # should return (21, 34, true) 
-fib_prod(800) # should return (34, 55, false)
-(fib_prod(4895), [55, 89, True])
-(fib_prod(5895), [89, 144, False])
-fib_prod(0)
-
-def productFib(prod):
-    a, b = 0, 1
-    while a * b < prod:
-        a, b = b, a + b
-    return [a, b, a * b == prod]
-
-def productFib(prod):
-    a, b = 0, 1
-    while a * b < prod:
-        a, b = b, a + b
-    return [a, b, a * b == prod]
+    return (a, b, a * b == num)
 
 
 # fib_prod(0) should be True
@@ -289,36 +334,27 @@ NOTE: All numbers will be whole numbers greater than 0.
 
 (expanded_form(42), '40 + 2');
 """
-
-
-def expanded_form(num):
-    concat = ""
-    for index, digit in enumerate(str(num), 1):
-        if int(digit):
-            concat += str(int(digit) * 10**(len(str(num)) - index))
-            concat += " + "
-    return concat[:-2]
 (expanded_form(12), '10 + 2')
 (expanded_form(42), '40 + 2')
 (expanded_form(70304), '70000 + 300 + 4')
 
 
 def expanded_form(num):
-    divided_number = []
+    expanded = []
+    num_lenght = len(str(num))
+
     for index, digit in enumerate(str(num), 1):
-        if int(digit):
-            divided_number.append(str(int(digit) * 10**(len(str(num)) - index)))
-    return " + ".join(divided_number)
+        digit = int(digit)
+        power = num_lenght - index
+
+        if digit:
+            expanded.append(str(digit * 10 ** power))
+    
+    return " + ".join(expanded)
+
 
 def expanded_form(num):
     return " + ".join(str(int(digit) * 10**(len(str(num)) - index)) for index, digit in enumerate(str(num), 1) if int(digit))
-
-def expanded_form(num):
-    return ' + '.join(str(int(j) * 10**(len(str(num)) - i)) for i, j in enumerate(str(num), 1) if j != '0')
-
-def expanded_form(num):
-    filter_with_None = map(lambda i, j: str(int(j) * 10**(len(str(num)) - i)) if j != '0' else None, range(1, len(str(num)) + 1), iter(str(num)))
-    return ' + '.join(filter(bool, filter_with_None))
 
 
 
@@ -3495,19 +3531,18 @@ if you want to translate, please ask before translating.
 """
 
 
-def dir_reduc(arr):
-    opos = {"NORTH": "SOUTH", "SOUTH": "NORTH", "EAST": "WEST", "WEST": "EAST"}
+def dir_reduc(directions):
     seen = []
-    
-    for direction in arr:
-        if seen and direction == opos[seen[-1]]:
-            seen.pop() #seen = seen[:-1]
+    oppos_direction = {"NORTH": "SOUTH", "SOUTH": "NORTH", "EAST": "WEST", "WEST": "EAST"}
+
+    for direction in directions:
+        if seen and oppos_direction[direction] == seen[-1]:
+            seen.pop()
         else:
-            seen.append(direction) # seen += directions
+            seen.append(direction)  # seen += directions
+
     return seen
-
-
-(dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]), "WEST")
+(dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]), ["WEST"])
 (dir_reduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"]), ["WEST", "WEST"])
 (dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"]), ["NORTH", "WEST", "SOUTH", "EAST"])
 (dir_reduc([]), [])

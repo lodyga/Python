@@ -90,9 +90,9 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from string
 import string
 string.capwords("abc't def")  # 'Abc't Def'
 
-'  1 2  '.strip()  # '1 2' # removes leading and trailing whitespaces
-'  1 2  '.rstrip()  # '  1 2' # removes trailing whitespaces
-'* 1 2 *'.rstrip('*')  # '* 1 2 ' # removes trailing asterisk
+'  1 2  '.strip()  # '1 2' # removes leading and trailing whitespaces  // .trim()
+'  1 2  '.rstrip()  # '  1 2' # removes trailing whitespaces  // .trimEnd()
+'* 1 2 *'.rstrip('*')  # '* 1 2 ' # removes trailing asterisk  // .trimStart()
 'abc'.strip('a c')  # 'b'
 
 ('abc' * 2).center(10)  # '  abcabc  '
@@ -841,6 +841,7 @@ some_dict = tree()
 some_dict['colours']['favorite'] = 'yellow'
 
 import json
+# json.loads(json_file)
 print(json.dumps(some_dict))
 
 
@@ -2765,14 +2766,18 @@ class Cal(object):
     def area(self):
         return self.pi * self.radius**2
 
-a = Cal(32)
+a = Cal(1)
 a.area()
 a.pi
-Cal(32).area()
+Cal(1).area()
 
+# Changing only the 'a' instance variable 'pi', 'b' is not affected
 a.pi = 5
 
-b = Cal(44)
+# Changing the class variable 'pi' for all instances
+Cal.pi = 5
+
+b = Cal(2)
 b.area()
 b.pi
 
@@ -3221,6 +3226,7 @@ print(result)  # Output: 10 (assuming successful execution)
 
 
 
+# fibonacci
 # top-down with memoization
 fib_cache = {0: 0, 1: 1}
 def fib_rec(n):
@@ -3239,6 +3245,45 @@ def fib_rec(n):
 
     return curr_fib
 
+fib_rec(10)
+
+
+# top-down with memoization in class
+class Solution:
+    # Class variables are for data shared between different instances of a class
+    fib_cache = {0: 0, 1: 1}
+    
+    def fib_rec(self, n):
+        if n in self.fib_cache:
+            curr_fib = self.fib_cache[n]
+        else:
+            curr_fib = self.fib_rec(n - 1) + self.fib_rec(n - 2)
+            self.fib_cache[n] = curr_fib
+
+        return curr_fib
+
+Solution().fib_rec(10)
+
+
+# top-down with memoization in class
+class Solution:
+    # Instance variables are for data which is unique to every object
+    def __init__(self) -> None:
+        self.fib_cache = {0: 0, 1: 1}
+    
+    def fib_rec(self, n):
+        if n in self.fib_cache:
+            curr_fib = self.fib_cache[n]
+        else:
+            curr_fib = self.fib_rec(n - 1) + self.fib_rec(n - 2)
+            self.fib_cache[n] = curr_fib
+
+        return curr_fib
+
+Solution().fib_rec(10)
+
+
+
 # bottom-up, dp, O(n), O(1)
 def fib_dp(n):
     fib_pair = [0, 1]
@@ -3256,5 +3301,15 @@ def fib_dp2(n):
         partial_answers.append(partial_answers[-1] + partial_answers[-2])
     return partial_answers[-1]
 
-print(fib_rec(10), fib_dp(10), fib_dp2(10))
+# bottom-up, dp, O(n), O(1) in class
+class Solution:
+    def climbStairs(self, stairs):
+        a = 0
+        b = 1
+
+        for _ in range(stairs):
+            a, b = b, a + b
+        return a
+
+print(fib_rec(10), fib_dp(10), fib_dp2(10), Solution().climbStairs(10))
 print(fib_cache)
