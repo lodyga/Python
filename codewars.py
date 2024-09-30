@@ -375,29 +375,34 @@ rgb(148, 0, 211) # returns 9400D3
 
 (rgb(-20,275,125), "00FF7D", "testing out of range values")
 """
+(rgb(0, 0, 0), "000000"),  # "testing zero values"
+(rgb(1, 2, 3), "010203"),  # "testing near zero values"
+(rgb(255, 255, 255), "FFFFFF"),  # "testing max values"
+(rgb(254, 253, 252), "FEFDFC"),  # "testing near max values"
+(rgb(-20, 275, 125), "00FF7D"),  # "testing out of range values"
 
-
-def clean_color(color):
-    color = min(255, max(0, color))
-    color = hex(color)[2:].upper()
-    if len(color) == 1:
-        color = "0" + color
-    return color
-clean_color(-1)
 
 def rgb(r, g, b):
-    return "".join(clean_color(color) for color in (r, g, b))
-(rgb(0,0,0),"000000", "testing zero values")
-(rgb(1,2,3),"010203", "testing near zero values")
-(rgb(255,255,255), "FFFFFF", "testing max values")
-(rgb(254,253,252), "FEFDFC", "testing near max values")
-(rgb(-20,275,125), "00FF7D", "testing out of range values")
+    def digit_to_hex(color):
+        color = max(min(color, 255), 0)
+        color = hex(color)
+        # _, color = color.split("x")
+        color = color[2:]
+        color = color.upper()
+        if len(color) == 1:
+            color = "0" + color
+    
+        return color
+    
+    # return digit_to_hex(r) + digit_to_hex(g) + digit_to_hex(b)
+    return "".join(digit_to_hex(color) for color in (r, g, b))
 
 
 def rgb(r, g, b):
     rgb_round = lambda x: min(255, max(0, x))
     return ('{:02X}'*3).format(rgb_round(r), rgb_round(g), rgb_round(b))
     # return ('{:02X}'*3).format(*map(lambda x: rgb_round(x), (r, g, b)))
+
 
 def rgb(r, g, b):
     r, g, b = min(255, max(r, 0)), min(255, max(g, 0)), min(255, max(b, 0))
@@ -407,6 +412,7 @@ def rgb(r, g, b):
     blue = "{:X}".format(b) if b > 15 else "0{:X}".format(b)
     # return "{:X}{:X}{:X}".format(r, g, b)
     return red+green+blue
+
 
 def rgb(r, g, b):
     # r, g, b = list(map(lambda x: 0 if x < 0 else 255 if x > 255 else x, (r, g, b)))
@@ -440,9 +446,74 @@ He also mentioned, he knows this kind of locks. You can enter an unlimited amoun
 
 Can you help us to find all those variations? It would be nice to have a function, that returns an array (or a list in Java/Kotlin and C#) of all variations for an observed PIN with a length of 1 to 8 digits. We could name the function getPINs (get_pins in python, GetPINs in C#). But please note that all PINs, the observed one and also the results, must be strings, because of potentially leading '0's. We already prepared some test cases for you.
 
-Detective, we are counting on you!"""
+Detective, we are counting on you!
+"""
+(get_pins('8'), ['5', '7', '8', '9', '0'])
+(get_pins('11'), ["11", "22", "44", "12", "21", "14", "41", "24", "42"])
 
 
+# passing index to dfs, combination as a shared variable (list)
+def get_pins(observed):
+    pin = []
+    pins = []
+    adjacent = {"0": "08",
+                "1": "124",
+                "2": "1235",
+                "3": "326",
+                "4": "1457",
+                "5": "45682",
+                "6": "6593",
+                "7": "748",
+                "8": "57890",
+                "9": "986"
+                }
+
+    def dfs(index):
+        if index == len(observed):
+            pins.append("".join(pin))
+            return
+
+        for number in adjacent[observed[index]]:
+            pin.append(number)
+            dfs(index + 1)
+            pin.pop()  # backtrack
+
+    dfs(0)
+
+    return pins
+
+
+# pin as an argument (string) to the dfs function, slower than the list approach
+def get_pins(observed):
+    pins = []
+    adjacent = {"0": "08",
+                "1": "124",
+                "2": "1235",
+                "3": "326",
+                "4": "1457",
+                "5": "45682",
+                "6": "6593",
+                "7": "748",
+                "8": "57890",
+                "9": "986"
+                }
+
+    def dfs(index, pin):
+        if index == len(observed):
+            pins.append(pin)
+            return
+
+        for number in adjacent[observed[index]]:
+            pin += number
+            dfs(index + 1, pin)
+            pin = pin[:-1]
+
+    dfs(0, "")
+
+    return pins
+
+
+# oldies
 around = {'1': ['1', '2', '4'],
           '2': ['2', '1', '3', '5'],
           '3': ['2', '6', '3'],
@@ -505,11 +576,6 @@ list(product(['1', '2', '4'], ['8', '5', '7', '9', '0'], ['0', '1']))
 list(product(*('124', '85790', '01')))
 list(product('124', '85790', '01'))
 
-test.describe('example tests')
-expectations = [('8', ['5','7','8','9','0']),
-                ('11',["11", "22", "44", "12", "21", "14", "41", "24", "42"]),
-                ('369', ["339","366","399","658","636","258","268","669","668","266","369","398","256","296","259","368","638","396","238","356","659","639","666","359","336","299","338","696","269","358","656","698","699","298","236","239"])]
-
 
 
 
@@ -525,6 +591,12 @@ Easy case is when the list is made up of only positive numbers and the maximum s
 If the list is made up of only negative numbers, return 0 instead.
 
 Empty list is considered to have zero greatest sum. Note that the empty list or array is also a valid sublist/subarray."""
+(max_sequence([-2, 1, -3, 4, -1, 2]))
+(max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)  # sum([4, -1, 2, 1]) = 6
+(max_sequence([-2]), 0)
+(max_sequence([]), 0)
+(max_sequence([-2, 1]), 1)
+(max_sequence([7, 4, 11, -11, 39, 36, 10, -6, 37, -10, -32, 44, -26, -34, 43, 43]), 155)
 
 
 def max_sequence(arr):
@@ -535,11 +607,7 @@ def max_sequence(arr):
         current += number
         result = max(result, current)
     return result
-max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]) # sum([4, -1, 2, 1]) = 6
-max_sequence([-2]) # 0
-max_sequence([]) #
-max_sequence([-2, 1])
-(max_sequence([7, 4, 11, -11, 39, 36, 10, -6, 37, -10, -32, 44, -26, -34, 43, 43]), 155)
+
 
 def max_sequence(arr):
     result, current = 0, 0
@@ -584,15 +652,28 @@ When two numbers have the same "weight", let us class them as if they were strin
 180 is before 90 since, having the same "weight" (9), it comes before as a string.
 
 All numbers in the list are positive numbers and the list can be empty."""
-
-
-sorting_fun = lambda x: (sum(int(digit) for digit in x), x)
-
-def order_weight(strng):
-    return " ".join(sorted(strng.split(), key=sorting_fun))
 (order_weight("103 123 4444 99 2000"), "2000 103 123 4444 99")
 (order_weight("2000 10003 1234000 44444444 9999 11 11 22 123"), "11 11 2000 10003 22 123 1234000 44444444 9999")
 (order_weight(""), "")
+
+
+# sorting key as a lambda function
+sorting_key = lambda number: (sum(int(digit) for digit in number), number)
+
+def order_weight(nums):
+    nums = nums.split()
+    nums.sort(key=lambda number: sorting_key(number))
+    return " ".join(nums)
+
+
+# sum of digits as a function
+def sum_digits(number):
+    return sum(int(digit) for digit in number)
+
+def order_weight(nums):
+    nums = nums.split()
+    nums.sort(key=lambda number: (sum_digits(number), number))
+    return " ".join(nums)
 
 
 
@@ -605,22 +686,51 @@ Complete the solution so that it strips all text that follows any of a set of co
 solution("apples, pears # and bananas\ngrapes\nbananas !apples", ["#", "!"])
 # result should == "apples, pears\ngrapes\nbananas"
 """
-
-
-def strip_comments(string, markers):
-    if not markers:
-        return string
-    for i in markers:
-        string = string.replace(i, markers[0])
-    return '\n'.join(i.split(markers[0])[0].rstrip() for i in string.split('\n'))
-strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
-strip_comments(' a #b\nc\nd $e f g', ['#', '$'])
-strip_comments("' = lemons\napples pears\n. avocados\n= ! bananas strawberries avocados !\n= oranges", ['!', '^', '#', '@', '='])
 (strip_comments('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!']), 'apples, pears\ngrapes\nbananas')
-(strip_comments('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
 (strip_comments(' a #b\nc\nd $e f g', ['#', '$']), ' a\nc\nd')
+(strip_comments('a #b\nc\nd $e f g', ['#', '$']), 'a\nc\nd')
+(strip_comments("' = lemons\napples pears\n. avocados\n= ! bananas strawberries avocados !\n= oranges", ['!', '^', '#', '@', '=']), "'\napples pears\n. avocados\n\n")
+(strip_comments('aa bb cc', []), 'aa bb cc')
+(strip_comments('aa bb\n#cc dd', ['#']), 'aa bb\n')
 
-# doesn't word for not escaped punctuations
+def strip_comments(paragraph, markers):
+    sentences = paragraph.split("\n")
+    
+    for marker in markers:
+        clean_sentences = []
+        
+        for sentence in sentences:
+            if marker in sentence:
+                sentence, *_ =sentence.split(marker)
+            sentence = sentence.rstrip()
+            clean_sentences.append(sentence)
+        
+        sentences = clean_sentences
+
+    return "\n".join(sentences)
+
+
+# check for all markers in one pass, slightly faster 
+def strip_comments(paragraph, markers):
+    clean_sentences = []
+    
+    for sentence in paragraph.split("\n"):
+        no_mark = True
+        
+        for index, marker in enumerate(sentence):
+            if marker in markers:
+                clean_sentences.append(sentence[: index].rstrip())
+                no_mark = False
+                break
+
+        if no_mark:
+            clean_sentences.append(sentence)
+
+    return "\n".join(clean_sentences)
+
+
+# oldie
+import re
 def strip_comments(string, markers):
     for marker in markers:
         string = re.sub(r' *?{}.*$'.format(marker), '', string, flags=re.M)
@@ -659,39 +769,8 @@ Different components have different unit of times. So there is not repeated unit
 
 A component will not appear at all if its value happens to be zero. Hence, 1 minute and 0 seconds is not valid, but it should be just 1 minute.
 
-A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time."""
-
-
-times = [
-    ("year", 60*60*24*365),
-    ("day", 60*60*24),
-    ("hour", 60*60),
-    ("minute", 60),
-    ("second", 1),
-]
-
-def format_duration(seconds):
-    if not seconds:
-        return "now"
-    
-    date = []
-    for time in times:
-        d, m = seconds // time[1], seconds % time[1]
-        if d:
-            sol = f"{d} {time[0]}"
-            if d != 1:
-                sol += "s"
-            date.append(sol)
-        
-        seconds = m
-
-    # # appending " and " and ", " to string
-    if len(date) == 1:
-        return date[0]
-    else:
-        return ", ".join(d for d in date[:-1]) + " and " + date[-1]
-
-
+A unit of time must be used "as much as possible". It means that the function should not return 61 seconds, but 1 minute and 1 second instead. Formally, the duration specified by of a component must not be greater than any valid more significant unit of time.
+"""
 (format_duration(0), "now")
 (format_duration(1), "1 second")
 (format_duration(2), "2 seconds")
@@ -699,6 +778,42 @@ def format_duration(seconds):
 (format_duration(120), "2 minutes")
 (format_duration(3600), "1 hour")
 (format_duration(3662), "1 hour, 1 minute and 2 seconds")
+(format_duration(8237710), "95 days, 8 hours, 15 minutes and 10 seconds")
+
+
+def format_duration(num):
+    if not num:
+        return "now"
+
+    how_many_seconds = (
+        ("year", 60 * 60 * 24 * 365),
+        ("day", 60 * 60 * 24),
+        ("hour", 60 * 60),
+        ("minute", 60),
+        ("second", 1)
+    )
+
+    duration_nums = []  # how many years, days, hours, minutes, seconds int list
+    for seconds in how_many_seconds:
+        duration_nums.append(num // seconds[1])
+        num = num % seconds[1]
+    
+    duration_strs = []  # formated to string date chunks
+    for index, dur_num in enumerate(duration_nums):
+        duration = ""
+        
+        if dur_num:  # if chunk is not 0
+            duration += f"{dur_num} {how_many_seconds[index][0]}"
+            if dur_num > 1:  # if plural
+                duration += "s"
+
+            duration_strs.append(duration)
+
+    if len(duration_strs) == 1:  # in only one chunk
+        return duration_strs[0]
+    else:
+        # join chunks all exept the last one with ", " and the last one with " and "
+        return ", ".join(duration_strs[:-1]) + " and " + duration_strs[-1]
 
 
 
@@ -714,22 +829,38 @@ For example (Input --> Output):
 999 --> 4 (because 9*9*9 = 729, 7*2*9 = 126, 1*2*6 = 12, and finally 1*2 = 2)
 4 --> 0 (because 4 is already a one-digit number)
 """
-
-
-def persistence(n):
-    count = 0
-    while n > 9:
-        prod = 1
-        for digit in str(n):
-            prod *= int(digit)
-        n = prod
-        # n = np.prod([int(digit) for digit in str(n)])
-        count += 1
-    return count
 (persistence(39), 3)
 (persistence(4), 0)
 (persistence(25), 2)
 (persistence(999), 4)
+
+
+def persistence(num):
+    counter = 0
+
+    while num > 9:
+        counter += 1
+        current_prod = 1
+        
+        for digit in str(num):
+            current_prod *= int(digit)
+
+        num = current_prod
+
+    return counter
+
+
+import numpy as np
+
+def persistence(num):
+    counter = 0
+
+    while num > 9:
+        counter += 1
+        num = np.prod([int(digit) for digit in str(num)])
+    
+    return counter
+
 
 
 
@@ -748,28 +879,40 @@ Take a look on the test cases.
 Please keep in mind that the test cases ensure that the number of people in the bus is always >= 0. So the return integer can't be negative.
 
 The second value in the first integer array is 0, since the bus is empty in the first bus stop."""
-
-
-def number(bus_stops):
-    return sum(enter - exit for enter, exit in bus_stops)
 (number([[10, 0], [3, 5], [5, 8]]), 5)
 (number([[3, 0], [9, 1], [4, 10], [12, 2], [6, 1], [7, 10]]), 17)
 (number([[3, 0], [9, 1], [4, 8], [12, 2], [6, 1], [7, 8]]), 21)
 
+
 def number(bus_stops):
-    return sum(map(lambda x: x[0] - x[1], bus_stops))
-number([[10, 0], [3, 5], [5, 8]])
+    number_of_people = 0
+
+    for enter_people, exit_people in bus_stops:
+        number_of_people += enter_people - exit_people
+
+        if number_of_people < 0:
+            return False
+
+    return number_of_people
+
+
+def number(bus_stops):
+    return sum(enter - exit for enter, exit in bus_stops)
+
+
+def number(bus_stops):
+    return sum(map(lambda bus_stop: bus_stop[0] - bus_stop[1], bus_stops))
+
 
 import numpy as np
 def number(bus_stops):
     bus_stops = np.array(bus_stops)
     return np.sum(bus_stops[:, 0]) - np.sum(bus_stops[:, 1])
-number([[10, 0], [3, 5], [5, 8]])
+
 
 import numpy as np
 def number(bus_stops):
     return np.subtract.reduce(np.sum((bus_stops), axis=0))
-number([[10, 0], [3, 5], [5, 8]])
 
 
 
@@ -785,24 +928,36 @@ If the input is an empty array or is null, return an empty array.
 
 Example
 For input [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15], you should return [10, -65]."""
+(count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15]), [10, -65])
+(count_positives_sum_negatives([0, 2, 3, 0, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14]), [8, -50])
+(count_positives_sum_negatives([1]), [1, 0])
+(count_positives_sum_negatives([-1]), [0, -1])
+(count_positives_sum_negatives([0, 0, 0, 0, 0, 0, 0, 0, 0]), [0, 0])
+(count_positives_sum_negatives([]), [])
 
 
-def count_positives_sum_negatives(arr):
-    if not arr:
+def count_positives_sum_negatives(numbers: list) -> list[int]:
+    if not numbers:
         return []
-    pos, neg = 0, 0
-    for i in arr:
-        if i > 0:
-            pos += 1
-        else:
-            neg += i # can add 0 to negatives
-    return [pos, neg]
+    
+    positive_counter = 0
+    negative_sum = 0
+
+    for number in numbers:
+        if number > 0:
+            positive_counter += 1
+        if number < 0:
+            negative_sum += number
+    
+    return [positive_counter, negative_sum]
+
 
 def count_positives_sum_negatives(arr):
     if not arr:
         return [] 
     return [len(list(filter(lambda x: x > 0, arr))), sum(filter(lambda x: x < 0, arr))] if arr else []
 count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15])
+
 
 def count_positives_sum_negatives(arr):
     if not arr:
@@ -842,13 +997,27 @@ Examples
  3  =>  false
  4  =>  true
 25  =>  true
-26  =>  false"""
+26  =>  false
+"""
+(is_square(-1), False,) #  "-1: Negative numbers cannot be square numbers"
+(is_square( 0), True,) #  "0 is a square number (0 * 0)"
+(is_square( 3), False,) #  "3 is not a square number"
+(is_square( 4), True,) #  "4 is a square number (2 * 2)"
+(is_square(25), True,) #  "25 is a square number (5 * 5)"
+(is_square(26), False,) #  "26 is not a square number"
+
+
+def is_square(number):
+    return (
+        number >= 0 and 
+        not(number ** 0.5 % 1))
 
 
 import numpy as np
 def is_square(n): 
     return np.sqrt(n).is_integer()
 is_square(25)
+
 
 import numpy as np
 def is_square(n):
@@ -857,23 +1026,13 @@ def is_square(n):
     return np.sqrt(n).is_integer()
     # return np.power(n, .5).is_integer()
 
+
 def is_square(n):
     return (n ** 0.5) % 1 == 0
 
+
 def is_square(n):
     return (n ** 0.5) ** 2 == n
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(is_square(-1), False, "-1: Negative numbers cannot be square numbers")
-        test.assert_equals(is_square( 0), True, "0 is a square number (0 * 0)")
-        test.assert_equals(is_square( 3), False, "3 is not a square number")
-        test.assert_equals(is_square( 4), True, "4 is a square number (2 * 2)")
-        test.assert_equals(is_square(25), True, "25 is a square number (5 * 5)")
-        test.assert_equals(is_square(26), False, "26 is not a square number")
 
 
 
@@ -889,24 +1048,24 @@ The parameter of the function findNb (find_nb, find-nb, findNb, ...) will be an 
 
 Examples:
 find_nb(1071225) --> 45
-
-find_nb(91716553919377) --> -1"""
-
-
-def find_nb(m):
-    cubed, ind = 1, 1
-    while cubed < m:
-        ind += 1
-        cubed += ind ** 3
-    return ind if cubed == m else -1
-find_nb(1071225)
+find_nb(91716553919377) --> -1
+"""
+(find_nb(4183059834009), 2022)
+(find_nb(24723578342962), -1)
+(find_nb(135440716410000), 4824)
+(find_nb(40539911473216), 3568)
+(find_nb(26825883955641), 3218)
 
 
-test.assert_equals(find_nb(4183059834009), 2022)
-test.assert_equals(find_nb(24723578342962), -1)
-test.assert_equals(find_nb(135440716410000), 4824)
-test.assert_equals(find_nb(40539911473216), 3568)
-test.assert_equals(find_nb(26825883955641), 3218)
+def find_nb(number):
+    cumuliative_sum = 0  # cumulative sum
+    index = 0
+
+    while cumuliative_sum < number:  # while cumulative sum is lower than target number
+        index += 1
+        cumuliative_sum += index ** 3  # cumulative sum at ith position
+    
+    return index if cumuliative_sum == number else -1  # if there is match reutrn number of cubes
 
 
 
@@ -928,33 +1087,26 @@ Input constraints:
 
 0 <= h <= 23
 0 <= m <= 59
-0 <= s <= 59"""
+0 <= s <= 59
+"""
+
+
+(past(0,1,1), 61000)
+(past(1,1,1), 3661000)
+(past(0,0,0), 0)
+(past(1,0,1), 3601000)
+(past(1,0,0), 3600000)
 
 
 def past(h, m, s):
     return ((((h * 60) + m) * 60) + s) * 1000
-past(0, 1, 1)
-
-def past(h, m, s):
-    return (s + 60*m + 3600*h) * 1000
-
-
-@test.describe("Fixed Tests")
-def basic_tests():
-    @test.it('Basic Test Cases')
-    def basic_test_cases():
-        test.assert_equals(past(0,1,1),61000)
-        test.assert_equals(past(1,1,1),3661000)
-        test.assert_equals(past(0,0,0),0)
-        test.assert_equals(past(1,0,1),3601000)
-        test.assert_equals(past(1,0,0),3600000)
 
 
 
 
 
 # Find the next perfect square!
-# https://www.codewars.com/kata/56269eb78ad2e4ced1000013/solutions/python        
+# https://www.codewars.com/kata/56269eb78ad2e4ced1000013/solutions/python
 """You might know some pretty large perfect squares. But what about the NEXT one?
 
 Complete the findNextSquare method that finds the next integral perfect square after the one passed as a parameter. Recall that an integral perfect square is an integer n such that sqrt(n) is also an integer.
@@ -965,9 +1117,23 @@ Examples:(Input --> Output)
 
 121 --> 144
 625 --> 676
-114 --> -1 since 114 is not a perfect square"""
+114 --> -1 since 114 is not a perfect square
+"""
+(find_next_square(121), 144)
+(find_next_square(625), 676)
+(find_next_square(319225), 320356)
+(find_next_square(15241383936), 15241630849)
+(find_next_square(155), -1)
+(find_next_square(342786627), -1)
 
 
+def find_next_square(number):
+    result = number ** .5 % 1
+    return -1 if result else int((number ** .5 + 1) ** 2)
+find_next_square(121)
+
+
+# oldies
 def find_next_square(sq):
     return int(np.square(np.sqrt(sq) + 1)) if np.sqrt(sq).is_integer() else -1
 find_next_square(121)
@@ -975,21 +1141,6 @@ find_next_square(121)
 def find_next_square(sq):
     root_test = (sq ** .5) % 1 == 0
     return ((sq ** .5) + 1) ** 2 if root_test else -1
-
-
-@test.describe("Fixed Tests")
-def fixed_tests():
-    @test.it("should return the next square for perfect squares")
-    def basic_test_cases():
-        test.assert_equals(find_next_square(121), 144, "Wrong output for 121")
-        test.assert_equals(find_next_square(625), 676, "Wrong output for 625")
-        test.assert_equals(find_next_square(319225), 320356, "Wrong output for 319225")
-        test.assert_equals(find_next_square(15241383936), 15241630849, "Wrong output for 15241383936")
-
-    @test.it("should return -1 for numbers which aren't perfect squares")
-    def _():
-        test.assert_equals(find_next_square(155), -1, "Wrong output for 155")
-        test.assert_equals(find_next_square(342786627), -1, "Wrong output for 342786627")
 
 
 
@@ -1003,16 +1154,26 @@ find_uniq([1, 1, 1, 2, 1, 1]) == 2
 find_uniq([0, 0, 0.55, 0, 0]) == 0.55
 It's guaranteed that array contains at least 3 numbers.
 
-The tests contain some very huge arrays, so think about performance."""
-
-
-def find_uniq(arr):
-    a, b = set(arr)
-    return a if arr.count(a) == 1 else b
+The tests contain some very huge arrays, so think about performance.
+"""
 (find_uniq([1, 1, 1, 2, 1, 1]), 2)
 (find_uniq([0, 0, 0.55, 0, 0]), 0.55)
 (find_uniq([3, 10, 3, 3, 3]), 10)
 
+
+def find_uniq(nums):
+    if nums[0] == nums[1]:
+        for num in nums[2:]:
+            if not num == nums[0]:
+                return num
+    else:
+        return nums[1] if nums[0] == nums[2] else nums[0]
+
+
+# oldies
+def find_uniq(arr):
+    a, b = set(arr)
+    return a if arr.count(a) == 1 else b
 
 def find_uniq(arr):
     return min(set(arr), key=arr.count)  # with 'set' computes much faster
@@ -1045,14 +1206,15 @@ def find_uniq(arr):
 Examples:
 Input: 42145 Output: 54421
 Input: 145263 Output: 654321
-Input: 123456789 Output: 987654321"""
-
-
-def descending_order(num):
-    return int(''.join(sorted(str(num), reverse=True)))
-(descending_order(0), 0)
+Input: 123456789 Output: 987654321
+"""
 (descending_order(15), 51)
 (descending_order(123456789), 987654321)
+(descending_order(0), 0)
+
+
+def descending_order(number):
+    return int("".join(sorted(str(number), reverse=True)))
 
 
 
@@ -1066,20 +1228,41 @@ Examples
 "din"      =>  "((("
 "recede"   =>  "()()()"
 "Success"  =>  ")())())"
-"(( @"     =>  "))((" """
+"(( @"     =>  "))((" 
+"""
+(duplicate_encode("din"),"(((")
+(duplicate_encode("recede"),"()()()")
+(duplicate_encode("Success"),")())())")
+(duplicate_encode("(( @"),"))((")
 
 
 def duplicate_encode(word):
+    counter = {}
+    
+    for letter in word.lower():
+        counter[letter] = counter.get(letter, 0) + 1
+
+    parentheses = ""
+
+    for letter in word.lower():
+        if counter[letter] == 1:
+            parentheses += "("
+        else:
+            parentheses += ")"
+    
+    return parentheses
+
+
+# oldies
+def duplicate_encode(word):
     word = word.lower()
     return "".join("(" if word.count(char) == 1 else ")" for char in word)
-(duplicate_encode("din"),"(((")
-(duplicate_encode("recede"),"()()()")
-(duplicate_encode("Success"),")())())","should ignore case")
-(duplicate_encode("(( @"),"))((")
+
 
 def duplicate_encode(word):
     return ''.join(map(lambda x: '(' if Counter(word.lower())[x] == 1 else ')', word.lower()))
 duplicate_encode("din")
+
 
 def duplicate_encode(word):
     multiple_appear = {letter: (word.lower().count(letter) > 1) for letter in set(word.lower())}
@@ -1107,20 +1290,24 @@ For example,
   False, False, True,  True]
 The correct answer would be 17.
 
-Hint: Don't forget to check for bad values like null/undefined"""
+Hint: Don't forget to check for bad values like null/undefined
+"""
+(count_sheeps([None,  True,  True,  False]), 2)
+(count_sheeps([]), 0)
 
-
-import numpy as np
-# changed first two True's to something more instructive
-array1 = [None,  np.NaN,  True,  False,
-          True,  True,  True,  True ,
-          True,  False, True,  False,
-          True,  False, False, True ,
-          True,  True,  True,  True ,
-          False, False, True,  True ]
 
 def count_sheeps(sheep):
-    return sum(filter(lambda x: x == True, sheep))
+    return sum(filter(bool, sheep))
+
+
+# oldies
+import numpy as np
+# changed first two True's to something more instructive
+array1 = [None,  np.NaN,  True,  False]
+
+def count_sheeps(sheep):
+    return sum(filter(lambda x: x, sheep))
+    # return sum(filter(lambda x: x == True, sheep))
     # return sheep.count(True)
     # return sum(i == True for i in sheep)
     # return len([i for i in sheep if i == True])
@@ -1139,9 +1326,6 @@ def count_sheeps(sheep):
     return np.nansum(list(filter(bool, sheep)))
     return np.nansum(list(filter(None, sheep)))
 
-              
-test.assert_equals(result := count_sheeps(array1), 17, "There are 17 sheeps in total, not %s" % result)
-
 
 
 
@@ -1158,24 +1342,38 @@ Notes
 All numbers are valid Int32, no need to validate them.
 There will always be at least one number in the input string.
 Output string must be two numbers separated by a single space, and highest number is first."""
-
-
-def high_and_low(numbers):
-    return max(numbers.split(), key=int) + " " + min(numbers.split(), key=int)
 (high_and_low("8 3 -5 42 -1 0 0 -9 4 7 4 -4"), "42 -9")
 (high_and_low("1 2 3"), "3 1")
 
-def high_and_low(numbers):
-    num_list = [int(number) for number in numbers.split(' ')]
-    return f"{max(num_list)} {min(num_list)}"
+
+def high_and_low(squence):
+    highest = float("-inf")
+    lowest = float("inf")
+
+    for element in squence.split():
+        number = int(element)
+        
+        if number > highest:
+            highest = number
+
+        if number < lowest:
+            lowest = number
+    
+    return f"{highest} {lowest}"
+
 
 def high_and_low(numbers):
-    list_of_digits = [int(digit) for digit in numbers.strip().split()]
-    return str(max(list_of_digits)) + " " + str(min(list_of_digits))
+    num_list = [int(number) for number in numbers.split()]
+    return f"{max(num_list)} {min(num_list)}"
+
+
+# oldies
+def high_and_low(numbers):
+    return max(numbers.split(), key=int) + " " + min(numbers.split(), key=int)
+
 
 sorted(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
 max(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
-
 
 
 

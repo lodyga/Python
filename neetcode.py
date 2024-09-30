@@ -917,14 +917,46 @@ class Solution:
         left = 0  # the left pointer
         right = 1  # the right pointer
 
-        while right < len(prices):  # bound the right pointer
+        for right in range(len(prices)):  # bound the right pointer
             if prices[left] > prices[right]:  # if price is lower buy
                 left = right
             else:  # if price is higher calculate revenue
                 current_profit = prices[right] - prices[left]
                 max_profit = max(max_profit, current_profit)
 
-            right += 1
+        return max_profit
+
+
+# treat as dp with O(n) cache
+# O(n), O(n)
+class Solution:
+    def maxProfit(self, nums):
+        profit = [0 for _ in range(len(nums))]
+        min_price = nums[0]
+
+        for index, num in enumerate(nums):
+            if num < min_price:
+                min_price = num
+
+            profit[index] = num - min_price
+
+        return max(profit)
+
+
+# treat as dp with O(1) cache
+# O(n), O(1)
+class Solution:
+    def maxProfit(self, nums):
+        profit = 0
+        max_profit = 0
+        min_price = nums[0]
+
+        for num in nums:
+            if num < min_price:
+                min_price = num
+
+            profit = num - min_price
+            max_profit = max(max_profit, profit)
 
         return max_profit
 
@@ -1308,30 +1340,110 @@ Explanation: There are three ways to climb to the top.
 2. 1 step + 2 steps
 3. 2 steps + 1 step
 """
-
-
-# Fibonnacci problem
-class Solution:
-    def climbStairs(self, n: int) -> int:
-        a = 1
-        b = 1
-
-        for _ in range(n):
-            a, b = b, a + b
-            # print(a, b)
-
-        return a
+(Solution().climbStairs(0), 0)
+(Solution().climbStairs(1), 1)
 (Solution().climbStairs(2), 2)
 (Solution().climbStairs(3), 3)
 (Solution().climbStairs(4), 5)
+(Solution().climbStairs(5), 8)
 
 
+# Fibonnacci problem
+# dp, bottom-up with no auxiliary memory space
+# O(n), O(1)
+class Solution:
+    def climbStairs(self, num: int) -> int:
+        if num < 4:
+            return num
+
+        a = 0
+        b = 1
+
+        for _ in range(num):
+            a, b = b, a + b
+
+        return b
+
+
+# dp, bottom-up
+# O(n), O(n)
+class Solution:
+    def climbStairs(self, num: int) -> int:
+        if num < 4:
+            return num
+        
+        dp = [0 for _ in range(num + 2)]
+        dp[1] = 1
+
+        for index in range(2, num + 2):
+            dp[index] = dp[index - 1] + dp[index - 2]
+
+        return dp[-1]
+
+
+# dp, top-down with memoization
+# O(n), O(n)
+class Solution:
+    def __init__(self) -> None:
+        self.memo = {}
+
+    def climbStairs(self, num: int) -> int:
+        if num < 4:
+            return num
+        
+        if num in self.memo:
+            return self.memo[num]
+        else:
+            self.memo[num] = self.climbStairs(num - 1) + self.climbStairs(num - 2)
+            return self.memo[num]
+
+
+# dfs, unefficient
+# O(2^n), O(n)
+# counter as shared variable (list)
+class Solution:
+    def climbStairs(self, num: int, index = 0) -> int:
+        counter = []
+
+        def dfs(index):
+            if index > num:
+                return
+            
+            if index == num:
+                counter.append(1)
+                return
+
+            dfs(index + 1)
+            dfs(index + 2)
+            
+        dfs(index)
+        return len(counter)
+
+
+# dfs, unefficient
+# O(2^n), O(n)
+# "counter" as a return statement from dfs
+class Solution:
+    def climbStairs(self, num: int, index = 0) -> int:
+        def dfs(num, index):
+            if index > num:
+                return 0
+            
+            if index == num:
+                return 1
+
+            return dfs(num, index + 1) + dfs(num, index + 2)
+            
+        return dfs(num, index)
+
+
+# generator
 def Fib_gen(n):
     a = 1
     b = 1
 
     for _ in range(n):
-        yield a
+        yield b
         a, b = b, a + b
 
 fib5 = Fib_gen(5)
@@ -1364,36 +1476,110 @@ Output: 12
 Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
 Total amount you can rob = 2 + 9 + 1 = 12.
 """
-
-
-# O(n), O(1)
-class Solution:
-    def rob(self, nums: list[int]):
-        house_1 = 0
-        house_2 = 0
-
-        for house_3 in nums:
-            temp = max(house_1 + house_3, house_2)
-            house_1 = house_2
-            house_2 = temp
-
-        return house_2
+(Solution().rob([2, 100, 9, 3, 100]), 200)
+(Solution().rob([100, 9, 3, 100, 2]), 200)
 (Solution().rob([1, 2, 3, 1]), 4)
 (Solution().rob([2, 7, 9, 3, 1]), 12)
-(Solution().rob([2, 100, 9, 3, 100]), 200)
+(Solution().rob([0]), 0)
+(Solution().rob([2, 1]), 2)
+
+# draft
+# [2, 100, 9, 3, 100] data
+# [2, 100, 100, 100, 200] dp solution
+# [(2), (2, 100), (100, 100) ....]
+
+# [100, 9, 3, 100, 2] data
+# [100, 100, 100, 200, 200] dp solution
 
 
-# O(n), O(n)
+# dp, bottom-up
+# O(n), O(1), cache only two last elements
 class Solution:
     def rob(self, nums: list[int]):
-        dp = [0] * len(nums)
+        if len(nums) == 1:
+            return nums[0]
+        
+        house_1 = nums[0]
+        house_2 = max(nums[0], nums[1])
+
+        for index in range(2, len(nums)):
+            house_1, house_2 = house_2, max(nums[index] + house_1, house_2)
+        
+        return house_2
+
+
+# dp, bottom-up
+# O(n), O(n), cache every robbery
+class Solution:
+    def rob(self, nums: list[int]):
+        if len(nums) == 1:
+            return nums[0]
+        
+        dp = [0 for _ in range(len(nums))]
         dp[0] = nums[0]
         dp[1] = max(nums[0], nums[1])
 
-        for ind in range(2, len(nums)):
-            dp[ind] = max(dp[ind - 2] + nums[ind], dp[ind - 1])
-
+        for index in range(2, len(nums)):
+            dp[index] = max(nums[index] + dp[index - 2], dp[index - 1])
+        
         return dp[-1]
+
+
+# dp, top-down, with memoization
+# memo in init
+# O(n), O(n)
+class Solution:
+    def __init__(self):
+        self.memo = {}  # memoization cache
+
+    def rob(self, nums: list[int], index=1):
+        if len(nums) == 1:  # if one element in nums
+            return nums[0]
+
+        if len(nums) - index == 1:  # if index is 1
+            return max(nums[0], nums[1])
+
+        if len(nums) - index == 0:  # if index is 0
+            return nums[0]
+
+        if not index + 1 in self.memo:  # if "index + 1" is not in the memo
+            self.memo[index + 1] = self.rob(nums, index + 1)  # calculate it
+        prev = self.memo[index + 1]  # take it
+
+        if not index + 2 in self.memo:
+            self.memo[index + 2] = self.rob(nums, index + 2)
+        prev_prev = self.memo[index + 2]
+
+        return max(nums[len(nums) - index] + prev_prev, prev)
+
+
+# dp, top-down, with memoization
+# memo as and argumen with default value
+# In Python, default arguments are evaluated once when the function is defined, not each time the function is called. So, when you use a mutable object (like a dictionary) as a default argument, it persists between function calls, causing unexpected behavior if the function is called multiple times.
+# O(n), O(n)
+class Solution:
+    def rob(self, nums: list[int], index=1, memo=None):
+        if not memo:
+            memo = {}
+
+        if len(nums) == 1:  # if one element in nums
+            return nums[0]
+
+        if len(nums) - index == 1:  # if index is 1
+            return max(nums[0], nums[1])
+
+        if len(nums) - index == 0:  # if index is 0
+            return nums[0]
+
+        if not index + 1 in memo:  # if "index + 1" is not in the memo
+            memo[index + 1] = self.rob(nums, index + 1, memo)  # calculate it
+        prev = memo[index + 1]  # take it
+
+        if not index + 2 in memo:
+            memo[index + 2] = self.rob(nums, index + 2, memo)
+        prev_prev = memo[index + 2]
+
+        return max(nums[len(nums) - index] + prev_prev, prev)
 
 
 
@@ -1422,26 +1608,54 @@ Example 3:
 Input: nums = [1,2,3]
 Output: 3
 """
+(Solution().rob([2, 3, 2]), 3)
+(Solution().rob([1, 2, 3, 1]), 4)
+(Solution().rob([1, 2, 3]), 3)
+(Solution().rob([1]), 1)
+(Solution().rob([0, 0]), 0)
+(Solution().rob([1, 3, 1, 3, 100]), 103)
 
 
+# O(n), 0(1)
+# function in function
 class Solution:
-    def rob(self, nums: list[int]):
-        house_1 = 0
-        house_2 = 0
+    def rob(self, nums: list[int]) -> int:  # rob in circle
+        if len(nums) < 3:
+            return max(nums)
+        
+        def rob_straight(nums):  # rob in stight line
+            house1 = nums[0]
+            house2 = max(nums[0], nums[1])
 
-        for house_3 in nums:
-            temp = max(house_1 + house_3, house_2)
-            house_1 = house_2
-            house_2 = temp
+            for num in nums[2:]:
+                house1, house2 = house2, max(num + house1, house2)
 
-        return house_2
-    
-    def rob_list(self, nums: list[int]) -> int:
-        return max(self.rob(nums[:-1]), self.rob(nums[1:]), nums[0])(Solution().rob([2, 3, 2]), 3)
-(Solution().rob_list([2, 3, 2]), 3)
-(Solution().rob_list([1, 2, 3, 1]), 4)
-(Solution().rob_list([1, 2, 3]), 3)
-(Solution().rob_list([1]), 1)
+            return house2
+
+        return max(
+            rob_straight(nums[:-1]), 
+            rob_straight(nums[1:]))
+
+
+# O(n), 0(1)
+# both functions directly under class
+class Solution:
+    def rob_straight(self, nums: list[int]) -> int:  # rob in stight line
+        house1 = nums[0]
+        house2 = max(nums[0], nums[1])
+
+        for num in nums[2:]:
+            house1, house2 = house2, max(num + house1, house2)
+
+        return house2
+
+    def rob(self, nums):  # rob in circle
+        if len(nums) < 3:
+            return max(nums)
+
+        return max(
+            self.rob_straight(nums[:-1]), 
+            self.rob_straight(nums[1:]))
 
 
 
@@ -1465,33 +1679,6 @@ Example 2:
 Input: s = "cbbd"
 Output: "bb"
 """
-
-
-# O(n2) # No words so it could be "bbbbb"
-class Solution:
-    def longestPalindrome(self, s: str) -> str:
-        if not s:
-            return ""
-        
-        longest = s[0]
-
-        # odd length
-        for i in range(len(s)):
-            edge = 1
-            while (i - edge) >= 0 and (i + edge) < len(s) and (s[i - edge] == s[i + edge]):
-                if  2*edge + 1 > len(longest):
-                    longest = s[i - edge:i + edge + 1]
-                edge += 1
-
-        # even length
-        for i in range(len(s) - 1):
-            edge = 0
-            while (i - edge) >= 0 and (i + 1 + edge) < len(s) and (s[i - edge] == s[i + 1 + edge]):
-                if  2*edge + 2 > len(longest):
-                    longest = s[i - edge:i + 1 + edge + 1]
-                edge += 1
-
-        return longest
 (Solution().longestPalindrome("babad"), "bab")
 (Solution().longestPalindrome("cbbd"), "bb")
 (Solution().longestPalindrome("a"), "a")
@@ -1500,8 +1687,45 @@ class Solution:
 (Solution().longestPalindrome("ab"), "a")
 (Solution().longestPalindrome("aacabdkacaa"), "aca")
 (Solution().longestPalindrome("abdka"), "a")
+(Solution().longestPalindrome("aaaa"), "aaaa")
 
 
+# O(n2), O(n)
+class Solution:
+    def longestPalindrome(self, word):
+        longest_palindrome = ""
+        max_word_len = 0
+
+        for index in range(len(word)):
+            # odd length palindrome
+            edge = 1
+
+            while (index - edge >= 0 and  # check if not out of bounds left
+                   index + edge < len(word) and  # check if not out of bounds right
+                   word[index - edge] == word[index + edge]):  # if letter match
+                edge += 1  # 1 -> 3, 2i + 1 increase palindrome length
+
+            if 2 * edge - 1 > max_word_len:  # if longer palindrome found
+                max_word_len = 2 * edge - 1
+                longest_palindrome = word[index - edge + 1: index + edge]
+
+            # even lenght palindrome
+            edge = 0
+
+            while (index - edge >= 0 and  # check if not out of bounds left
+                   index + edge + 1 < len(word) and  # check if not out of bounds right
+                   word[index - edge] == word[index + 1 + edge]):  # if letter match
+                edge += 1  # 2 -> 4, 2i increase palindrome length
+
+            if 2 * edge > max_word_len:  # if longer palindrome found
+                max_word_len = 2 * edge
+                longest_palindrome = word[index - edge + 1: index + edge + 1]
+
+        return longest_palindrome
+
+
+
+# oldies
 # O(n2)
 class Solution:
     def __init__(self) -> None:
@@ -1577,32 +1801,40 @@ Input: s = "aaa"
 Output: 6
 Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
 """
-
-
-class Solution:
-    def __init__(self) -> None:
-        self.substrings_count = 0
-    
-    def countSubstrings(self, s):
-        len_s = len(s)
-
-        # odd length palindroms
-        for ind in range(len_s):
-            edge = 0
-            while ind - edge >=0 and ind + edge < len_s and s[ind - edge] == s[ind + edge]:
-                self.substrings_count += 1
-                edge += 1
-
-        # even length palindroms
-        for ind in range(len_s - 1):
-            edge = 0
-            while ind - edge >=0 and ind + edge + 1 < len_s and s[ind - edge] == s[ind + edge + 1]:
-                self.substrings_count += 1
-                edge += 1
-
-        return self.substrings_count
 (Solution().countSubstrings("abc"), 3)
 (Solution().countSubstrings("aaa"), 6)
+
+
+# draft
+# "aaa"
+# a aa a aa aaa a 
+
+class Solution:
+    def countSubstrings(self, word):
+        counter_sum = 0
+        
+        for index in range(len(word)):
+            # odd length palindrome
+            counter = 1
+
+            while (index - counter >=0 and  # check if not out of bounds left
+                   index + counter < len(word) and  # check if not out of bounds right
+                   word[index - counter] == word[index + counter]):  # if letter match
+                counter += 1
+
+            counter_sum += counter  # update counter_sum
+    
+            # even length palindrome
+            counter = 0
+
+            while (index - counter >=0 and
+                   index + 1 + counter < len(word) and
+                   word[index - counter] == word[index + 1 + counter]):
+                counter += 1
+
+            counter_sum += counter
+
+        return counter_sum
 
 
 class Solution:
@@ -1648,53 +1880,106 @@ Example 3:
 Input: coins = [1], amount = 0
 Output: 0
 """
-
-
-# bottom up dynamic programming
-class Solution:
-    def coinChange(self, coins: list[int], amount: int) -> int:
-        # Initialize min_coins array with amount + 1 which is an impossibly high number
-        # Index is ammount, value is the min number of coions to sum to that value
-        min_coins = [amount + 1] * (amount + 1)
-        # Base case: 0 amount requires 0 coins
-        min_coins[0] = 0
-
-        for curr_ammount in range(1, amount + 1):
-            for coin in coins:
-                # If the current coin can be used (i.e., doesn't make the amount negative)
-                if curr_ammount - coin >= 0:
-                    # Update the minimum coins needed for the current amount
-                    min_coins[curr_ammount] = min(min_coins[curr_ammount], 1 + min_coins[curr_ammount - coin])
-        
-        # If the last element is unchanged there is no single money combination to sum up.
-        if min_coins[amount] == amount + 1:
-            return -1
-        else:
-            return min_coins[amount]
-        # return min_coins[amount] if min_coins[amount] != amount + 1 else -1
 (Solution().coinChange([1, 2, 5], 11), 3)
-(Solution().coinChange([2], 3), -1)
-(Solution().coinChange([1], 0), 0)
 (Solution().coinChange([2, 5, 10, 1], 27), 4)
 (Solution().coinChange([186, 419, 83, 408], 6249), 20)
+(Solution().coinChange([2], 3), -1)
+(Solution().coinChange([2], 1), -1)
+(Solution().coinChange([1], 0), 0)
 
-# greedy no good for (Solution().coinChange([186, 419, 83, 408], 6249), 20)
+
+# dp, bottom-up, iteration, tabulation (with list)
 class Solution:
-    def coinChange(self, coins: list[int], amount: int) -> int:
-        count = 0
-        test = []
+    def coinChange(self, coins, amount):
+        # min number of coins needed to get target amount (equal to the index)
+        # "anmount + 1" an imposbile value stays when the last element of min_coins was not modified
+        min_coins = [amount + 1 for _ in range(amount + 1)]
+        min_coins[0] = 0  # no coins needed to get 0
 
-        for coin in sorted(coins, reverse=True):
-            div = amount // coin
-            mod = amount % coin
+        for index in range(1, amount + 1):  # check each 'min_coins' index
+            for coin in coins:  # check every coin
+                # choose current amount of coins or get ammount without current coin and add 1
+                if index - coin >= 0:
+                    min_coins[index] = min(min_coins[index], min_coins[index - coin] + 1)
+        
+        if min_coins[amount] == amount + 1:  # if the last value was not modified so there is no valid combination
+            return -1
+        else:
+            return min_coins[amount]  # valid combination
+        # return -1 if tabulation[amount] == amount + 1 else tabulation[amount]
 
-            count += div
-            amount = mod
 
-            test.append(div)
+# dp, bottom-up, iteration, tabulation (with dict)
+# cache as dict and is slower than cache as list
+class Solution:
+    def coinChange(self, coins, amount):
+        # min number of coins needed to get target amount (equal to the index)
+        # "anmount + 1" an imposbile value stays when the last element of min_coins was not modified
+        min_coins = {k: amount + 1 for k in range(amount + 1)}
+        min_coins[0] = 0  # no coins needed to get 0
 
-        return count if not amount else -1
-        # return amount
+        for coin in coins:  # check every coin
+            for index in range(coin, amount + 1):  # check each 'min_coins' index
+                # choose current amount of coins or get ammount without current coin and add 1
+                min_coins[index] = min(min_coins[index], min_coins[index - coin] + 1)
+        
+        if (amount in min_coins and  # if amount exists and
+            min_coins[amount] < amount + 1):  # the value is less than impossible value
+            return min_coins[amount]  # valid combination
+        else:
+            return -1
+
+
+# dp, dfs, top-down, recursion, memoization (with dict)
+class Solution:
+    def coinChange(self, coins, amount):
+        # Create a memoization dictionary
+        memo = {}
+        memo[0] = 0  # Base case: 0 coins needed to make amount 0
+
+        def dfs(index):
+            if index < 0:  # If the remainder is negative
+                return amount + 1  # return an impossible value
+            elif index in memo:  # Already computed this value
+                return memo[index]
+
+            memo[index] = amount + 1
+
+            # Calculate the minimum number of coins needed for this amount
+            for coin in coins:
+                memo[index] = min(memo[index], dfs(index - coin) + 1)
+
+            return memo[index]
+        
+        solution = dfs(amount)
+
+        return -1 if solution == amount + 1 else solution
+
+
+# dp, dfs, top-down, recursion, memoization (with dict)
+# list is not working for
+# (Solution().coinChange([186, 419, 83, 408], 6249), 20)
+class Solution:
+    def coinChange(self, coins, amount):
+        # Create a memoization array with initial high values
+        memo = [amount + 1] * (amount + 1)
+        memo[0] = 0  # Base case: 0 coins needed to make amount 0
+
+        def dfs(index):
+            if index < 0:  # If the remainder is negative
+                return amount + 1  # return an impossible value
+            elif memo[index] != amount + 1:  # Already computed this value
+                return memo[index]
+
+            # Calculate the minimum number of coins needed for this amount
+            for coin in coins:
+                memo[index] = min(memo[index], dfs(index - coin) + 1)
+
+            return memo[index]
+        
+        solution = dfs(amount)
+
+        return -1 if solution == amount + 1 else solution
 
 
 
@@ -1718,35 +2003,84 @@ Input: nums = [-2,0,-1]
 Output: 0
 Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
 """
-
-
-class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        curMin = 1
-        curMax = 1
-        res = nums[0]
-
-        for n in nums:
-            curMin, curMax = min(n * curMax, n * curMin, n), max(n * curMax, n * curMin, n)
-            
-            # curMin, _, curMax = sorted((n * curMax, n * curMin, n))
-            # tmp = curMax * n
-            # curMax = max(n * curMax, n * curMin)
-            # curMin = min(tmp, n * curMin)
-            res = max(res, curMax)
-        return res
+(Solution().maxProduct([-4, -3]), 12)
 (Solution().maxProduct([2, 3, -2, 4]), 6)
-(Solution().maxProduct([0, 2]), 2)
 (Solution().maxProduct([-2]), -2)
 (Solution().maxProduct([-4, -3]), 12)
 (Solution().maxProduct([-2, 0, -1]), 0)
 (Solution().maxProduct([-2, -3, 7]), 42)
 (Solution().maxProduct([2, -5, -2, -4, 3]), 24)
+(Solution().maxProduct([-2]), -2)
+(Solution().maxProduct([0]), 0)
+(Solution().maxProduct([-2, 0]), 0)
+(Solution().maxProduct([0, 2]), 2)
+
+# [2, 3, -2, 4]
+# 2, 2*3 3 = 6, 6*-2 -2=-2
+
+# dp, bottom-up
+# O(n), O(1)
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        dp_0 = (nums[0], nums[0])  # O(1) cache
+        max_product = nums[0]  # track max product with default value
+
+        for index in range(1, len(nums)):  # check all nums indexes
+            # multiply prefix values with current value to get min, max or
+            # current value only when prefix is (0, 0)
+            triplet = (dp_0[0] * nums[index], 
+                       dp_0[1] * nums[index], 
+                       nums[index])
+        
+            dp_0 = (max(triplet), min(triplet))  # append min, max pair
+            max_product = max(max_product, max(triplet))  # update max product
+
+        return max_product
 
 
+# dp, bottom-up
+# O(n), O(n)
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        dp = [0 for _ in range(len(nums))]  # min, max pair list for tabulation
+        dp[0] = (nums[0], nums[0])  # insert the first element
+        max_product = nums[0]  # track max product with default value
+
+        for index in range(1, len(nums)):  # check all nums indexes
+            # multiply prefix values with current value to get min, max or
+            # current value only when prefix is (0, 0)
+            triplet = (dp[index - 1][0] * nums[index],
+                       dp[index - 1][1] * nums[index], 
+                       nums[index])
+        
+            dp[index] = (max(triplet), min(triplet))  # append min, max pair
+            max_product = max(max_product, max(triplet))  # update max product
+
+        return max_product
 
 
+# dp, bottom-up
+# reversed search
+# O(n), O(n)
+class Solution:
+    def maxProduct(self, nums: list[int]) -> int:
+        dp = [(1, 1) for _ in range(len(nums) + 1)]  # min, max pair list for tabulation
+        max_product = nums[0]  # track max product with default value
 
+        for index in range(len(nums))[::-1]:  # check all nums indexes
+            # multiply prefix values with current value to get min, max or
+            # current value only when prefix is (0, 0)
+            triplet = (dp[index + 1][0] * nums[index],
+                       dp[index + 1][1] * nums[index], 
+                       nums[index])
+        
+            dp[index] = (max(triplet), min(triplet))  # append min, max pair
+            max_product = max(max_product, max(triplet))  # update max product
+
+        return max_product
+
+
+# oldies
 # O(n2)
 import numpy as np
 
@@ -1789,24 +2123,27 @@ Example 3:
 Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
 Output: false
 """
-
-
-class Solution:
-    def wordBreak(self, s: str, wordDict: list[str]) -> bool:
-        can_segment = [False] * len(s)
-        can_segment.append(True)
-        wordSet = set(wordDict)
-
-        for ind in range(len(s))[::-1]:
-            for word in wordSet:
-                if word == s[ind: ind + len(word)]:
-                    if can_segment[ind + len(word)]:
-                        can_segment[ind] = True
-                        break
-
-        return can_segment[0]
 (Solution().wordBreak("leetcode", ["leet", "code"]), True)
+(Solution().wordBreak("applepenapple", ["apple","pen"]), True)
+(Solution().wordBreak("catsandog", ["cats","dog","sand","and","cat"]), False)
 (Solution().wordBreak("cars", ["car", "ca", "rs"]), True)
+
+
+# dp, bottom-up
+# O(n2), O(n)
+class Solution:
+    def wordBreak(self, sentence: str, word_list: list[str]) -> bool:
+        # cache where each elemet tells if sentece can be fold from this index to the right
+        can_fold = [False for _ in range(len(sentence) + 1)]
+        can_fold[-1] = True  # dummy element tells that everything after "sentence can be folded"
+        word_set = set(word_list)
+
+        for index in range(len(sentence))[::-1]:  # go through every index reversed
+            for word in word_set:  # go through every word
+                if sentence[index : index + len(word)] == word:  # if found the word
+                    can_fold[index] = can_fold[index] or can_fold[index + len(word)]  # update can fold
+
+        return can_fold[0]
 
 
 
@@ -1832,34 +2169,43 @@ Example 3:
 Input: nums = [7,7,7,7,7,7,7]
 Output: 1
 """
-
-
-class Solution:
-    def lengthOfLIS(self, nums: list[int]) -> int:
-        lis_lengths = [1] * len(nums)
-        
-        for i in range(len(nums)):
-            for j in range(i):
-                if nums[j] < nums[i]:
-                    lis_lengths[i] = max(lis_lengths[i], lis_lengths[j] + 1)
-
-        return max(lis_lengths)
 (Solution().lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]), 4)
 (Solution().lengthOfLIS([0, 1, 0, 3, 2, 3]), 4)
 (Solution().lengthOfLIS([7, 7, 7, 7, 7, 7, 7]), 1)
 
 
-# Filling dp list from the end
+# draft
+# [10, 9, 2, 5, 3, 7, 101, 18]
+# [1, 1, 1, 2, 2, max(2,2)+1=3, 4, 1]
+
+# dp, bottom-up, tabulation with list
+# O(n2), O(n)
 class Solution:
     def lengthOfLIS(self, nums: list[int]) -> int:
-        dp = [1] * len(nums)
+        dp = [1 for _ in range(len(nums))]  # LIS lengths
 
-        for i in reversed(range(len(nums))):
-            for j in range(i + 1, len(nums)):
-                if nums[i] < nums[j]:
-                    dp[i] = max(dp[i], dp[j] + 1)
+        for right in range(len(nums)):  # check every right (index)
+            for left in range(right):  # check every left (index) lower than right
+                if nums[left] < nums[right]:  # if right num is greater
+                    dp[right] = max(dp[right], dp[left] + 1)  # update LIS lengths 
 
         return max(dp)
+
+
+# dp, bottom-up, tabulation with dict
+# O(n2), O(n)
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        dp = {}  # LIS lengths
+
+        for right in range(len(nums)):  # check every right (index)
+            dp[nums[right]] = 1  # add current element to dp
+            
+            for left in dp.keys():  # check every left (index) of dp
+                if left < nums[right]:  # if right num is greater
+                    dp[nums[right]] = max(dp[nums[right]], dp[left] + 1)  # update LIS lengths 
+
+        return max(dp.values())
 
 
 
@@ -1882,34 +2228,36 @@ Input: nums = [1,2,3,5]
 Output: false
 Explanation: The array cannot be partitioned into equal sum subsets.
 """
+(Solution().canPartition([14, 9, 8, 4, 3, 2]), True)
+(Solution().canPartition([1, 2, 5]), False)
+(Solution().canPartition([1, 5, 11, 5]), True)
+(Solution().canPartition([3, 3, 3, 4, 5]), True)
+(Solution().canPartition([1, 2, 3, 5]), False)
+(Solution().canPartition([1]), False)
+(Solution().canPartition([2, 2, 1, 1]), True)
 
 
 class Solution:
-    def canPartition(self, nums: list[int]) -> bool:
-        if sum(nums) % 2:
+    def canPartition(self, nums: list[int]):
+        if sum(nums) % 2:  # if odd sum (cannot be split in half)
             return False
-        
-        target = sum(nums) // 2
-        possible_sums = {0}
 
-        for num in nums:
-            if target in possible_sums:
+        half = sum(nums) // 2  # half of the sum
+        seen_numbers = set()  # numbers seen in previous loop
+
+        for num in nums:  # for every number
+            new_numbers = seen_numbers.copy()  # copy of seen numbers
+            new_numbers = {new_number + num for new_number in new_numbers}  # new numbers in current loop
+            seen_numbers.update(new_numbers)  # seen_numbers |= new_numbers  update seen numbers
+            seen_numbers.add(num)  # add current num
+
+            # update seen_numbers in one line, has to initiate seen_numbers = {0} to have seen_numbers.add(num)
+            # seen_numbers.update({new_number + num for new_number in seen_numbers})
+
+            if half in seen_numbers:  # check if half is in seen numbers
                 return True
-            
-            seen_chunk = set()
-            for s in possible_sums:
-                seen_chunk.add(s + num)
-            possible_sums.update(seen_chunk)
-            
-            # update possible_sums in one line
-            # possible_sums.update({s + num for s in possible_sums})
-            
+
         return False
-(Solution().canPartition([1, 5, 11, 5]), True)
-(Solution().canPartition([3, 3, 3, 4, 5]), True)
-(Solution().canPartition([1, 2, 5]), False)
-(Solution().canPartition([1, 2, 3, 5]), False)
-(Solution().canPartition([1]), False)
 
 
 
@@ -2104,35 +2452,51 @@ Input: nums = [5,4,-1,7,8]
 Output: 23
 Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
 """
-
-
-class Solution:
-    def maxSubArray(self, nums: list[int]) -> int:
-        max_sum = nums[0]
-        curr_sum = nums[0]
-
-        for num in nums[1:]:
-            curr_sum = max(curr_sum + num, num)
-            max_sum = max(max_sum, curr_sum)
-    
-        return max_sum
 (Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
 (Solution().maxSubArray([1]), 1)
 (Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
 (Solution().maxSubArray([-4, -2, -1, -3]), -1)
 
+# for [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+# cummulative sum [-2, 1, -2, 4, 3, 5, 6, 1, 4]
 
+# dp, bottom-up, dp list => 2 variables: cumulative, maxSum
+# O(n), O(1)
 class Solution:
     def maxSubArray(self, nums: list[int]) -> int:
-        result = nums[0]
-        current = 0
+        nums_len = len(nums)
+        cumulative = nums[0]  # in case of all negative values cannot take "0" as a base
+        max_value = nums[0]  # in case of all negative values cannot take "0" as a base
 
-        for num in nums:
-            if current < 0:
-                current = 0
-            current += num
-            result = max(result, current)
-        return result
+        for index in range(1, nums_len):
+            cumulative = max(cumulative, 0) + nums[index]  # keep track of the cumulative sum or start a new one if below zero
+            max_value = max(cumulative, max_value)  # keep track of the highest value
+
+        return max_value
+
+
+# dp, bottom-up, use nums as dp
+# O(n), O(n)
+class Solution:
+    def maxSubArray(self, nums: list[int]) -> int:
+        for index in range(1, len(nums)):
+            nums[index] += max(nums[index - 1], 0)  # add another element to sum or start a new one
+
+        return max(nums)
+
+
+# dp, bottom-up
+# O(n), O(n)
+class Solution:
+    def maxSubArray(self, nums: list[int]) -> int:
+        nums_len = len(nums)
+        dp = [0 for _ in range(nums_len)]  # for cumulative sum
+        dp[0] = nums[0]  # in case of all negative values cannot take "0" as a base
+
+        for index in range(1, nums_len):
+            dp[index] = max(dp[index - 1], 0) + nums[index]  # add another element to sum or start a new one
+        
+        return max(dp)
 
 
 
@@ -2758,19 +3122,19 @@ Output: false
 class Solution:
     def searchMatrix(self, matrix, target):
         top = 0  # boundries
-        bottom = len(matrix) - 1
+        bottom-= len(matrix) - 1
         left = 0
         right = len(matrix[0]) - 1
 
-        while top <= bottom:  # two poionters to find the right row
+        while top <= bottom-  # two poionters to find the right row
             mid_row = (top + bottom) // 2  # find middle row index
 
             if (target >= matrix[mid_row][left] and
                     target <= matrix[mid_row][right]):  # if target row found
                 break
             elif target < matrix[mid_row][left]:  # if target is less than the most left, choose top chunk
-                bottom = mid_row - 1
-            else:  # if target is grater than the most right, choose bottom chunk
+                bottom-= mid_row - 1
+            else:  # if target is grater than the most right, choose bottom-chunk
                 top = mid_row + 1
 
         while left <= right:  # two poionters to find the right column
@@ -3789,7 +4153,7 @@ Output: [[],[0]]
 # "dfs" method inside "subsets" method
 class Solution:
     def subsets(self, nums):
-        subset = []  # current subcet
+        subset = []  # current subset
         subset_list = []  # solution
 
         def dfs(level):
@@ -3797,10 +4161,10 @@ class Solution:
                 subset_list.append(subset.copy())  # push subset to subset_list
                 return
 
-            subset.append(nums[level])
-            dfs(level + 1)  # (left) decision to append current num
-            subset.pop()
-            dfs(level + 1)  # (right) decision to not append current num
+            subset.append(nums[level])  # Include the current element in the subset
+            dfs(level + 1)  # Explore the path with the current element
+            subset.pop()  # Backtrack by removing the current element from the subset
+            dfs(level + 1)  # Explore the path without including the current element
 
         dfs(0)  # start dfs with level = 0
     
@@ -3815,7 +4179,9 @@ class Solution:
 
     def subsets(self, nums: list[int]) -> list[list[int]]:
         self.nums = nums
-        return self.dfs(0)
+        self.dfs(0)
+        
+        return self.subset_list
 
     def dfs(self, level):
         if level == len(self.nums):
@@ -3827,8 +4193,6 @@ class Solution:
         self.subset.pop()
         self.dfs(level + 1)
         
-        return self.subset_list
-
 
 
 
@@ -3867,16 +4231,17 @@ class Solution:
                 subset_list.append(subset.copy())  # push subset to subset_list
                 return
 
-            subset.append(nums[index])
-            dfs(index + 1)  # (left) decision to append current num
-            subset.pop()
+            subset.append(nums[index])  # Include the current element in the subset
+            dfs(index + 1)  # Explore the path with the current element
+            subset.pop()  # Backtrack by removing the current element from the subset
 
             # If num at the current index (that was poped previously) is the same as
             # the num at next index skip it.
-            while index + 1 < len(nums) and nums[index + 1] == nums[index]:
+            while (index + 1 < len(nums) and
+                    nums[index] == nums[index + 1]):
                 index += 1
 
-            dfs(index + 1)  # (right) decision to not append current num
+            dfs(index + 1)  # Explore the path without including the current element
 
         dfs(0)  # start dfs with level = 0
 
@@ -3981,6 +4346,31 @@ Output: []
 
 class Solution:
     def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
+        combination = []
+        combination_list = []
+
+        def dfs(index):
+            combination_sum = sum(combination)
+
+            if combination_sum == target:  # target sum reached
+                combination_list.append(combination.copy())  # push combination to combination list
+                return
+            elif (combination_sum > target or # if value is too large or
+                  index == len(candidates)):  # index out of bounds
+                return
+                        
+            combination.append(candidates[index])  # Include the current element in the combinatioin
+            dfs(index)  # Explore the path with the current element
+            combination.pop()  # Backtrack by removing the current element from the subset
+            dfs(index + 1)  # Explore the path without including the current element
+
+        dfs(0)
+
+        return combination_list
+
+
+class Solution:
+    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
         # sort candidates to ensure that candidate with index + 1 is greater than previous to not reapat solution
         candidates.sort()
         combination = []  # current combination
@@ -4001,33 +4391,6 @@ class Solution:
                 combination.pop()
                
         dfs(0, 0)
-
-        return combination_list
-
-
-class Solution:
-    def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
-        combination_list = []  # solution
-        # sort candidates to ensure that candidate with index + 1 is greater than previous to not reapat combination_list
-        candidates = list(sorted(set(candidates)))
-
-        def dfs(index, subset):
-            if sum(subset) == target:  # target sum reached
-                combination_list.append(subset.copy())  # push subset to subset_list
-                return
-            
-            # index out of obunds or sum too large
-            if index == len(candidates) or sum(subset) > target:
-                return
-            
-            subset.append(candidates[index])  # (left) decision to append current candidate
-            dfs(index, subset)
-
-            # (right) decision to not append current candidate
-            subset.pop()
-            dfs(index + 1, subset)
-
-        dfs(0, [])
 
         return combination_list
 
@@ -4064,6 +4427,40 @@ Output:
 [5]
 ]
 """
+(Solution().combinationSum2([10, 1, 2, 7, 6, 1, 5], 8), [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]])
+(Solution().combinationSum2([2, 5, 2, 1, 2], 5), [[1, 2, 2], [5]])
+(Solution().combinationSum2([6], 6), [[6]])
+
+
+class Solution:
+    def combinationSum2(self, candidates: list[int], target: int) -> list[list[int]]:
+        candidates.sort()  # sort needed to skip same values
+        combination = []
+        combination_list = []
+
+        def dfs(index):
+            combination_sum = sum(combination)
+
+            if sum(combination) == target:  # if sum is achieved
+                combination_list.append(combination.copy())
+                return
+            elif (combination_sum > target or  # index boundry and sum boundry
+                    index == len(candidates)):
+                return
+
+            combination.append(candidates[index])  # (left node) append candidate
+            dfs(index + 1)
+
+            while (index + 1 < len(candidates) and  # skip same values
+                   candidates[index] == candidates[index + 1]):
+                index += 1
+
+            combination.pop()  # (right node) skip candidate
+            dfs(index + 1)
+
+        dfs(0)
+
+        return combination_list
 
 
 class Solution:
@@ -4083,7 +4480,8 @@ class Solution:
             dfs(index + 1, value + nums[index])
             combination.pop()
             
-            while index + 1 < len(nums) and nums[index + 1] == nums[index]:
+            while (index + 1 < len(nums) and 
+                   nums[index + 1] == nums[index]):
                 index += 1
             
             dfs(index + 1, value)
@@ -4091,44 +4489,6 @@ class Solution:
         dfs(0, 0)
 
         return combination_list
-(Solution().combinationSum2([10, 1, 2, 7, 6, 1, 5], 8), [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]])
-(Solution().combinationSum2([2, 5, 2, 1, 2], 5), [[1, 2, 2], [5]])
-(Solution().combinationSum2([6], 6), [])
-
-
-
-class Solution:
-    def combinationSum2(self, candidates: list[int], target: int) -> list[list[int]]:
-        solution = []
-        # sort needed to skip same values
-        candidates.sort()
-
-        def dfs(index, subset):
-            # if sum is achieved
-            if sum(subset) == target:
-                solution.append(subset.copy())
-                return
-
-            # index boundry and sum boundry            
-            if index == len(candidates) or sum(subset) > target:
-                return
-
-            # (left node) append candidate
-            subset.append(candidates[index])
-            dfs(index + 1, subset)
-
-            # (right node) skip candidate
-            subset.pop()
-            # skip same values
-            while index + 1 < len(candidates) and candidates[index] == candidates[index + 1]:
-                index += 1
-            dfs(index + 1, subset)
-
-        dfs(0, [])
-
-        return solution
-(Solution().combinationSum2([10, 1, 2, 7, 6, 1, 5], 8), [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]])
-(Solution().combinationSum2([2, 5, 2, 1, 2], 5), [[1, 2, 2], [5]])
 
 
 
@@ -4154,54 +4514,27 @@ Example 3:
 Input: nums = [1]
 Output: [[1]]
 """
-
-
-class Solution:
-    def permute(self, nums):
-        per_list = []
-
-        def dfs(prefix, postfix):
-            if len(prefix) == len(nums):
-                per_list.append(prefix)
-                return
-
-            for index in range(len(postfix)):
-                dfs(prefix + [postfix[index]], postfix[:index] + postfix[index + 1:])
-        
-        dfs([], nums)
-
-        return per_list
 (Solution().permute([1, 2, 3]), [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
 (Solution().permute([0, 1]), [[0, 1], [1, 0]])
 (Solution().permute([1]), [[1]])
-
 
 
 class Solution:
     def permute(self, nums: list[int]) -> list[list[int]]:
-        # edge case with one item list
-        # if len(nums) == 1:
-        #     return [nums]
-        
-        solution = []
+        pernutation_list = []
 
-        def dfs(prefix, sublist):
-            # when only one (two) element(s) there is 1 (are 2) permutation(s)
-            if len(sublist) == 1:
-                solution.append(prefix + sublist)
-                # solution.append(prefix + sublist[::-1])
-                return 
+        def dfs(permutatioin, nums):
+            if not nums:  # in no nums left
+                pernutation_list.append(permutatioin)
+                return
+            
+            for index in range(len(nums)):  # for every number in numbers
+                # include this number to 'permutations' and exclude it from numbers
+                dfs(permutatioin + [nums[index]], 
+                    nums[:index] + nums[index + 1 :])
 
-            # for every element in list pop it as prefix and sublist all other elements and run dfs
-            for ind in range(len(sublist)):
-                dfs(prefix + [sublist[ind]], sublist[:ind] + sublist[ind + 1 :])
-        
         dfs([], nums)
-
-        return solution
-(Solution().permute([1, 2, 3]), [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-(Solution().permute([0, 1]), [[0, 1], [1, 0]])
-(Solution().permute([1]), [[1]])
+        return pernutation_list
 
 
 
@@ -4229,67 +4562,69 @@ Example 3:
 Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
 Output: false
 """
-
-
-class Solution:
-    def __init__(self) -> None:
-        self.end = False
-
-    def exist(self, board: list[list[str]], word: str) -> bool:
-        rows = len(board)
-        cols = len(board[0])
-        index = 0
-
-        def dfs(snake, index):
-            # if 'word' it empty all letters matched
-            if index == len(word):
-                self.end = True
-                return
-            
-            # make 'self.end' True if there's a match
-            # if self.end:
-            #     return
-            
-            # current row and coll index
-            row, col = snake[-1]
-
-            # check up, down, left, right for neighbouns
-            # check if out of bounds and for down match
-            # restrict snake from taking the same path (letter) twice
-            if (row + 1 < rows and board[row + 1][col] == word[index]
-                and (len(snake) == 1 or not (row + 1, col) in snake)):
-                dfs(snake + [(row + 1, col)], index + 1)
-            
-            # check if out of bounds and for up match
-            if (row - 1 > -1 and board[row - 1][col] == word[index]
-                and (len(snake) == 1 or not (row - 1, col) in snake)):
-                dfs(snake + [(row - 1, col)], index + 1)
-            
-            # check if out of bounds and for right match
-            if (col + 1 < cols and board[row][col + 1] == word[index]
-                and (len(snake) == 1 or not (row, col + 1) in snake)):
-                    dfs(snake + [(row, col + 1)], index + 1)
-            
-            # check if out of bounds and for left match
-            if (col - 1 > -1 and board[row][col - 1] == word[index] 
-                and (len(snake) == 1 or not (row, col - 1) in snake)):
-                dfs(snake + [(row, col - 1)], index + 1)
-        
-        for row in range(rows):
-            for col in range(cols):
-                # if the matching word is found algorithm stops
-                if self.end:
-                    return True
-                # check for the first word letter in all board letters
-                if word[index] == board[row][col]:
-                    # if so provde 'snake' patch and the word without matched letter
-                    dfs([(row, col)], index + 1)
-
-        return self.end
+(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AAB"), True)
+(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AACA"), True)
+(Solution().exist([["A", "A"]], "AAA"), False)
+(Solution().exist([["A", "B", "C", "E"], ["S", "F", "E", "S"], ["A", "D", "E", "E"]], "ABCEFSADEESE"), True)
+(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AB"), True)
+(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AZ"), False)
+(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABFS"), True)
 (Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCCED"), True)
 (Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "SEE"), True)
 (Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCB"), False)
 
+# ["A", "B", "C", "E"], 
+# ["S", "F", "E", "S"], 
+# ["A", "D", "E", "E"]
+
+
+class Solution:
+    def exist(self, board, word):
+        rows = len(board)
+        cols = len(board[0])
+        tabu = set()  # set of visited (forbidden) cells
+        
+        def dfs(row, col, index):
+            if index == len(word):
+                return True
+            
+            tabu.add((row, col))  # add cell pair to tabu set
+
+            # check up, down, left, right for neighbouns
+            if (col + 1 < cols and  # check if out of bounds and
+                not (row, col + 1) in tabu and  # if cell is not in tabo set
+                word[index] == board[row][col + 1] and  # Check if the current position matches the word's character
+                dfs(row, col + 1, index + 1)):  # Switch to that letter and check its neighbors
+                return True
+
+            if (row + 1 < rows and
+                not (row + 1, col) in tabu and
+                word[index] == board[row + 1][col] and
+                dfs(row + 1, col, index + 1)):
+                return True
+        
+            if (col - 1 >= 0 and
+                not (row, col - 1) in tabu and
+                word[index] == board[row][col - 1] and
+                dfs(row, col - 1, index + 1)):
+                return True
+
+            if (row - 1 >= 0 and
+                not (row - 1, col) in tabu and
+                word[index] == board[row - 1][col] and
+                dfs(row - 1, col, index + 1)):
+                return True
+            
+            # Backtrack: remove from tabu
+            tabu.remove((row, col))
+            
+        for row in range(rows):
+            for col in range(cols):
+                if word[0] == board[row][col]:  # if first letter matches
+                    if dfs(row, col, 1):  # check its heighbors
+                        return True
+
+        return False  # if word was not found return False
 
 
 
@@ -4313,58 +4648,81 @@ Example 2:
 Input: s = "a"
 Output: [["a"]]
 """
-
-
-# prefix is passed as an agrument in dfs
-class Solution:
-    def partition(self, word: str) -> list[list[str]]:
-        solution = []
-
-        def dfs(prefix, word):
-            # if word is empty that means all letters folded into palindrom
-            if not word:
-                solution.append(prefix)
-                return
-
-            # index starts from '1' instead of '0' because word[:i + 1]
-            for index in range(1, len(word) + 1):
-                # if prefix is a palindrme
-                if word[: index] == word[: index][::-1]:
-                    # recurent dfs with
-                    # previous prefix + current prefix + rest
-                    dfs(prefix + [word[:index]], word[index:])
-                        
-        dfs([], word)
-        return solution
-
-(Solution().partition("aab"), [["a", "a", "b"], ["aa", "b"]])
 (Solution().partition("a"), [["a"]])
+(Solution().partition("aa"), [['a', 'a'], ['aa']])
+(Solution().partition("ab"), [["a", "b"]])
+(Solution().partition("aaa"), [['a', 'a', 'a'], ['a', 'aa'], ['aa', 'a'], ['aaa']])
+(Solution().partition("aab"), [["a", "a", "b"], ["aa", "b"]])
+(Solution().partition("aba"), [["a", "b", "a"], ["aba"]])
 
 
-# one global prefix
+# passing "word" in dfs(), "palindrome" as a side effect
 class Solution:
-    def partition(self, word: str) -> list[list[str]]:
-        solution = []
-        prefix = []
+    def partition(self, word):
+        palindrome = []  # This will track the current partition
+        palindrome_list = []  # This will store all valid palindrome partitions
 
         def dfs(word):
-            # if word is empty that means all letters folded into palindrom
-            if not word:
-                solution.append(prefix.copy())
-                return 
+            if not word:  # if word is empty that means all letters folded into palindrom
+                palindrome_list.append(palindrome.copy())
+                return
 
-            # index starts from '1' instead of '0' because word[:i + 1]
-            for index in range(1, len(word) + 1):
-                # if prefix is a palindrme
-                if word[: index] == word[: index][::-1]:
-                    # recurent dfs with
-                    # previous prefix + current prefix + rest
-                    prefix.append(word[:index])
-                    dfs(word[index:])
-                    prefix.pop()
-                        
-        dfs(word)
-        return solution
+            for index in range(len(word)):  # for every index in "word"
+                substring = word[ : index + 1] # Current substring to check
+
+                if substring == substring[::-1]:  # if substring is a palindrme
+                    palindrome.append(substring)  # Add it to the current partition
+                    dfs(word[index + 1 :])  # Explore the path with the current palindrome and look for the palindrome in the next part of the "word"
+                    palindrome.pop()  # Backtrack by removing the last added palindrome
+
+        dfs(word)  # Start DFS with "word"
+        return palindrome_list
+
+
+# passing current partition and "word" in dfs()
+class Solution:
+    def partition(self, word):
+        palindrome_list = []
+
+        def dfs(palindrome, word):
+            if not word:
+                palindrome_list.append(palindrome.copy())
+                return
+            
+            for index in range(len(word)):
+                substring = word[: index + 1]
+
+                if substring == substring[::-1]:
+                    dfs(palindrome + [substring], word[index + 1 :])
+
+        dfs([], word)
+        
+        return palindrome_list
+
+
+# passing indexes (instead of the "word") in dfs()
+class Solution:
+    def partition(self, word):
+        palindrome = []  # This will track the current partition
+        palindrome_list = []  # This will store all valid palindrome partitions
+
+        def dfs(start):
+            if start == len(word):  # If we reach the end of the word
+                palindrome_list.append(palindrome.copy())  # Add the current partition to the list
+                return
+
+            for end in range(start + 1, len(word) + 1):
+                substring = word[start:end]  # Current substring to check
+                
+                if substring == substring[::-1]:  # Check if the substring is a palindrome
+                    palindrome.append(substring)  # Add it to the current partition
+                    dfs(end)  # Recur for the next part of the word
+                    palindrome.pop()  # Backtrack by removing the last added palindrome
+
+        dfs(0)  # Start DFS from index 0
+        return palindrome_list
+
+
 
 
 
@@ -4390,73 +4748,75 @@ Example 3:
 Input: digits = "2"
 Output: ["a","b","c"]
 """
-
-
-# passing index to dfs
-class Solution:
-    def letterCombinations(self, digits: str) -> list[str]:
-        if not digits:
-            return []
-            
-        to_letters = {"2": "abc", 
-                      "3": "def", 
-                      "4": "ghi", 
-                      "5": "jkl", 
-                      "6": "mno",
-                      "7": "pqrs",
-                      "8": "tuv",
-                      "9": "wxyz"}
-        solution = []
-        part = []
-
-        def dfs(index):
-            if index == len(digits):
-                solution.append("".join(part))
-                return
-
-            for letter in to_letters[digits[index]]:
-                part.append(letter)
-                dfs(index + 1)
-                part.pop()
-
-        dfs(0)
-
-        return solution
 (Solution().letterCombinations("2"), ["a", "b", "c"])
 (Solution().letterCombinations("23"), ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"])
 (Solution().letterCombinations(""), [])
 
 
-# passing digits to dfs
+# passing index to dfs, combination as a shared variable (side effect)
 class Solution:
     def letterCombinations(self, digits: str) -> list[str]:
         if not digits:
             return []
-            
-        to_letters = {"2": "abc", 
-                      "3": "def", 
-                      "4": "ghi", 
-                      "5": "jkl", 
-                      "6": "mno",
-                      "7": "pqrs",
-                      "8": "tuv",
-                      "9": "wxyz"}
-        solution = []
-        part = []
+        
+        combination = []
+        combination_list = []
+        digit_to_letter = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
 
-        def dfs(digits):
-            if not digits:
-                solution.append("".join(part))
+        def dfs(index):
+            if index == len(digits):
+                combination_list.append("".join(combination))
                 return
 
-            for letter in to_letters[digits[0]]:
-                part.append(letter)
-                dfs(digits[1:])
-                part.pop()
+            for letter in digit_to_letter[digits[index]]:
+                combination.append(letter)
+                dfs(index + 1)
+                combination.pop()
 
-        dfs(digits)
+        dfs(0)
 
-        return solution
+        return combination_list
+
+
+
+# passing index and combination to dfs
+class Solution:
+    def letterCombinations(self, digits):
+        if not digits:
+            return []
+
+        combination_list = []
+        digit_to_letter = {
+            "2": "abc",
+            "3": "def",
+            "4": "ghi",
+            "5": "jkl",
+            "6": "mno",
+            "7": "pqrs",
+            "8": "tuv",
+            "9": "wxyz"
+        }
+
+        def dfs(index, combination):
+            if index == len(digits):
+                combination_list.append(combination)
+                return
+
+            for letter in digit_to_letter[digits[index]]:
+                dfs(index + 1, combination + letter)
+
+        dfs(0, "")
+
+        return combination_list
 
 
 
@@ -4482,29 +4842,40 @@ Example 2:
 Input: n = 1
 Output: [["Q"]]
 """
+# elements with the same num are on the same diagonal
+#       0   1   2
+#   0   0   1   2
+#   1   -1  0   1
+#   2   -2  -1  0
+
+# elements with the same num are on the same anti-diagonal
+#       0   1   2
+#   0   0   1   2
+#   1   1   2   3
+#   2   2   3   4
+(Solution().solveNQueens(4), [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]])
+(Solution().solveNQueens(1), [["Q"]])
 
 
 class Solution:
     def solveNQueens(self, n: int) -> list[list[str]]:
-        solution = []
-        # initiate board
-        board = [["."]*n for _ in range(n)]
+        board_list = []
+        board = [["." for _ in range(n)] for _ in range(n)]  # initiate a board
         tabu_col = set()
-        # for each diagonal (col_ind - row_ind) = const
-        tabu_diag = set()
-        # for each aiti-diagonal (con_ind + row_ind) = const
-        tabu_adiag = set()
+        tabu_diag = set()  # for each diagonal (col_ind - row_ind) = const
+        tabu_adiag = set()  # for each aiti-diagonal (con_ind + row_ind) = const
 
         def dfs(row):
-            # when all row are filled with Queens
-            if row == n:
-                joined_board = ["".join(row) for row in board]
-                solution.append(joined_board)
+            if row == n:  # if all rows are filled with Queens
+                joined_board = ["".join(row) for row in board]  # ['.', 'Q', '.', '.'] => ['.Q..']
+                board_list.append(joined_board)
                 return
 
             for col in range(n):
                 # if there is another Queen in the same diagonal or the same col
-                if (row - col) in tabu_diag or (row + col) in tabu_adiag or col in tabu_col:
+                if ((row - col) in tabu_diag or 
+                    (row + col) in tabu_adiag or 
+                    col in tabu_col):
                     continue
                 
                 # update tabu and board
@@ -4516,16 +4887,14 @@ class Solution:
                 # check another row
                 dfs(row + 1)
 
-                # discard update
+                # backtrack
                 tabu_col.remove(col)
                 tabu_diag.remove(row - col)
                 tabu_adiag.remove(row + col)
                 board[row][col] = "."
 
         dfs(0)
-        return solution
-(Solution().solveNQueens(4), [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]])
-(Solution().solveNQueens(1), [["Q"]])
+        return board_list
 
 
 
@@ -4635,4 +5004,2652 @@ timeMap.get("foo", 5)
 
 
 
-# 
+# Generate Parentheses
+# https://leetcode.com/problems/generate-parentheses/description/
+"""
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+"""
+(Solution().generateParenthesis(1), ["()"])
+(Solution().generateParenthesis(2), ["(())", "()()"])
+(Solution().generateParenthesis(3), ["((()))", "(()())", "(())()", "()(())", "()()()"])
+
+
+class Solution:
+    def generateParenthesis(self, num: int) -> list[str]:
+        parenthesis = []  # current parenthesis sequence
+        parenthesis_list = []  # list of parenthesis sequences
+
+        def dfs(open, close):
+            if open + close == 2 * num:  # if all opening and closing parenthesis are used
+                parenthesis_list.append("".join(parenthesis))  # append current sequence
+                return
+
+            if open < num:  # not all "(" have been used
+                parenthesis.append("(")
+                dfs(open + 1, close)  # check this branch
+                parenthesis.pop()  # backtrack
+
+            if close < open:  # the number of ")" must not be greater than "("
+                parenthesis.append(")")
+                dfs(open, close + 1)  # check this branch
+                parenthesis.pop()  # backtrack
+
+        dfs(0, 0)  # start with no parenthesis
+
+        return parenthesis_list
+
+
+
+
+
+# Min Cost Climbing Stairs
+# https://leetcode.com/problems/min-cost-climbing-stairs/
+"""
+You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
+
+You can either start from the step with index 0, or the step with index 1.
+
+Return the minimum cost to reach the top of the floor.
+
+Example 1:
+
+Input: cost = [10,15,20]
+Output: 15
+Explanation: You will start at index 1.
+- Pay 15 and climb two steps to reach the top.
+The total cost is 15.
+
+Example 2:
+
+Input: cost = [1,100,1,1,1,100,1,1,100,1]
+Output: 6
+Explanation: You will start at index 0.
+- Pay 1 and climb two steps to reach index 2.
+- Pay 1 and climb two steps to reach index 4.
+- Pay 1 and climb two steps to reach index 6.
+- Pay 1 and climb one step to reach index 7.
+- Pay 1 and climb two steps to reach index 9.
+- Pay 1 and climb one step to reach the top.
+The total cost is 6.
+"""
+(Solution().minCostClimbingStairs([10, 15, 20]), 15)
+(Solution().minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]), 6)
+
+
+# draft
+# 1, 100, 1+1=2, 2+1=3, 2+1=3, 103, 3+1=4, 4+1=5, 104, 6
+
+# dp, bottom-up
+# O(n), O(n)
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        for index in range(2, len(cost)):
+            cost[index] = min(cost[index - 1], cost[index - 2]) + cost[index]  # min
+
+        return min(cost[-2:])
+
+
+# dp, bottom-up
+# O(n), O(1)
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        a = cost[0]
+        b = cost[1]
+
+        for index in range(2, len(cost)):
+            a, b = b, min(a, b) + cost[index]
+
+        return min(a, b)
+
+
+
+
+
+# Decode Ways
+# https://leetcode.com/problems/decode-ways/description/
+"""
+You have intercepted a secret message encoded as a string of numbers. The message is decoded via the following mapping:
+
+"1" -> 'A'
+
+"2" -> 'B'
+
+...
+
+"25" -> 'Y'
+
+"26" -> 'Z'
+
+However, while decoding the message, you realize that there are many different ways you can decode the message because some codes are contained in other codes ("2" and "5" vs "25").
+
+For example, "11106" can be decoded into:
+
+"AAJF" with the grouping (1, 1, 10, 6)
+"KJF" with the grouping (11, 10, 6)
+The grouping (1, 11, 06) is invalid because "06" is not a valid code (only "6" is valid).
+Note: there may be strings that are impossible to decode.
+
+Given a string s containing only digits, return the number of ways to decode it. If the entire string cannot be decoded in any valid way, return 0.
+
+Example 1:
+
+Input: s = "12"
+
+Output: 2
+
+Explanation:
+
+"12" could be decoded as "AB" (1 2) or "L" (12).
+
+
+Example 2:
+
+Input: s = "226"
+
+Output: 3
+
+Explanation:
+
+"226" could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+
+
+Example 3:
+
+Input: s = "06"
+
+Output: 0
+
+Explanation:
+
+"06" cannot be mapped to "F" because of the leading zero ("6" is different from "06"). In this case, the string is not a valid encoding, so return 0.
+"""
+(Solution().numDecodings("226"), 3)
+(Solution().numDecodings("12"), 2)
+(Solution().numDecodings("06"), 0)
+(Solution().numDecodings("0"), 0)
+(Solution().numDecodings(""), 0)
+(Solution().numDecodings("2101"), 1)
+(Solution().numDecodings("111111111111111111111111111111111111111111111"), 1836311903)
+
+
+# draft
+# "226"
+# 2 2 6, 22 6, 2, 26
+
+# 2101
+# 2 10 1
+
+# Bottom-up
+# O(n), O(n)
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        if not code:  # ifcode is empty
+            return 0
+
+        dp = {len(code): 1}  # assume "code" is a prefix and everything after would be foleded into "1" possible path
+
+        for index in range(len(code))[::-1]:  # check every number in reversed order
+            if int(code[index]):  # check if number is not statring with 0
+                # one digit number case
+                dp[index] = dp.get(index, 0) + dp.get(index + 1, 0)  # continue legit one digit number path
+
+                # two digits number case
+                if (index + 1 < len(code) and  # if index in bounds
+                    int(code[index : index + 2]) <= 26):  # if two digit number between <10, 27)
+                    dp[index] = dp.get(index, 0) + dp.get(index + 2, 0)  # continue legit two digit number path
+
+        return dp.get(0, 0)  # get first value from the dictionary or if code is not legit return 0
+
+
+# Top-down with memoization
+# O(n), O(n)
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        if not code:  # if "code" is empty
+            return 0
+        
+        dp = {len(code): 1}  # assume "code" is a prefix and everything after would be foleded into "1" possible path
+
+        def dfs(index):
+            if index in dp:  # if memoized
+                return dp[index]  # Return memoized result if already computed.
+            
+            if code[index] == "0":  # check if number is statring with 0
+                return 0  # inwalid number
+            
+            # one digit number case
+            dp[index] = dp.get(index, 0) + dfs(index + 1)  # Proceed to decode the next number.
+        
+            # two digits number case
+            if (index + 1 < len(code) and  # check if second digit within bounds
+                int(code[index : index + 2]) <= 26):  # if two digit number between <10, 27)
+                dp[index] = dp.get(index, 0) + dfs(index + 2)  # Add the result of two-digit decoding.
+
+            return dp[index]  # Return the result for this index.
+
+        return dfs(0)  # Start decoding from the first index.
+
+
+# DFS, slow, not for numDecodings("111111111111111111111111111111111111111111111")
+# O(2^n) O(n2)
+class Solution:
+    def numDecodings(self, word: str) -> int:
+        if not word or not int(word[0]):
+            return 0
+
+        decoded = []
+        decoded_list = []
+
+        def dfs(index):
+            if index == len(word):
+                decoded_list.append(decoded.copy())
+                return
+
+            if (index + 1 < len(word)
+                and int(word[index + 1])
+                    or index == len(word) - 1):
+
+                if int(word[index]) != 0:
+                    decoded.append(int(word[index]))
+                    dfs(index + 1)
+                    decoded.pop()
+
+            if (index + 2 < len(word)
+                and int(word[index + 2])
+                    or index == len(word) - 2):
+
+                if (index + 1 < len(word) and
+                        int(word[index: index + 2]) <= 26):
+                    decoded.append(int(word[index: index + 2]))
+                    dfs(index + 2)
+                    decoded.pop()
+
+        dfs(0)
+
+        return len(decoded_list)
+
+
+
+
+
+# Invert Binary Tree
+# https://leetcode.com/problems/invert-binary-tree/description/
+"""
+Given the root of a binary tree, invert the tree, and return its root.
+
+Example 1:
+
+Input: root = [4,2,7,1,3,6,9]
+    __4__
+   /     \
+  2       7
+ / \     / \
+1   3   6   9
+
+Output: [4,7,2,9,6,3,1]
+    __4__
+   /     \
+  7       2
+ / \     / \
+9   6   3   1
+
+Example 2:
+
+Input: root = [2,1,3]
+  2
+ / \
+1   3
+
+Output: [2,3,1]
+  2
+ / \
+3   1
+
+Example 3:
+
+Input: root = []
+Output: []
+"""
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+from collections import deque
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+from binarytree import Node
+
+tree_from_list = build_tree_from_list([4, 2, 7, 1, 3, 6, 9], TreeNode)  # use TreeNode or Node
+print(tree_from_list)
+#     __4__
+#    /     \
+#   2       7
+#  / \     / \
+# 1   3   6   9
+
+
+tree_from_list2 = build_tree_from_list([3, 9, 20, None, None, 15, 7], Node)
+print(tree_from_list2)
+#   3___
+#  /    \
+# 9     _20
+#      /   \
+#     15    7
+
+
+from collections import deque
+
+# Function create a list from a binary tree in level-order (breadth-first traversal)
+# def level_order_traversal(root: TreeNode | Node | None):
+def level_order_traversal(root):
+    if not root:
+        return
+    
+    node_list = []
+    queue = deque([root])  # Initialize the queue with the root node
+
+    while queue:
+        node = queue.popleft()  # Pop the current node
+        node_list.append(node.val)  # add its value to node list
+        
+        if node.left:  # Add left child to the queue if it exists
+            queue.append(node.left)
+
+        if node.right:  # Add right child to the queue if it exists
+            queue.append(node.right)
+
+    return node_list
+
+
+level_order_traversal(tree_from_list)
+# [4, 2, 7, 1, 3, 6, 9]
+
+level_order_traversal(tree_from_list2)
+# [3, 9, 20, 15, 7]
+
+
+
+
+from binarytree import Node  # or use TreeNode
+
+(level_order_traversal(
+    Solution().invertTree(
+        build_tree_from_list(
+            [4, 2, 7, 1, 3, 6, 9], TreeNode))), [4, 7, 2, 9, 6, 3, 1])
+# don't mix Node or TreeNode in one Solution
+
+(Solution().invertTree([4, 2, 7, 1, 3, 6, 9]), [4, 7, 2, 9, 6, 3, 1])
+(Solution().invertTree([2, 1, 3]), [2, 3, 1])
+(Solution().invertTree([]), [])
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
+        if not root:
+            return
+
+        root.left, root.right = root.right, root.left
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        
+        return root
+
+
+class Solution:
+    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
+        if root:
+            root.left, root.right = root.right, root.left
+
+            self.invertTree(root.left) 
+            self.invertTree(root.right)
+        
+        return root
+
+
+
+
+
+
+# Maximum Depth of Binary Tree
+# https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
+"""
+Given the root of a binary tree, return its maximum depth.
+
+A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+Output: 3
+
+Example 2:
+
+Input: root = [1,null,2]
+Output: 2
+"""
+(Solution().maxDepth(build_tree_from_list([3, 9, 20, None, None, 15, 7], Node)), 3)
+(Solution().maxDepth(build_tree_from_list([1, None, 2], Node)), 2)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+tree_from_list = build_tree_from_list(
+    [3, 9, 20, None, None, 15, 7], Node)  # use TreeNode or Node
+print(tree_from_list)
+
+ 
+# dp, dfs, recursion
+# O(n), O(n)
+class Solution:
+    def maxDepth(self, root: TreeNode | None) -> int:
+        if not root:
+            return 0
+        
+        return max(
+            self.maxDepth(root.left),  # left branch depth
+            self.maxDepth(root.right)  # right branch depth
+            ) + 1
+
+
+# dp, dfs, recursion, explict dfs function
+# O(n), O(n)
+class Solution:
+    def maxDepth(self, root: TreeNode | None) -> int:
+        def dfs(node):
+            if not node:
+                return 0
+        
+            left = dfs(node.left)  # left branch depth
+            right = dfs(node.right)  # right branch depth
+            
+            return max(left, right) + 1
+
+        return dfs(root)
+
+
+# dp, bfs, iteration, dequeue, level order traversal
+# O(n), O(n)
+from collections import deque
+
+class Solution:
+    def maxDepth(self, root: TreeNode | None) -> int:
+        if not root:
+            return 0
+        
+        depth = 0
+        queue = deque([root])
+
+        while queue:
+            depth += 1
+            current_queue_len = len(queue)
+
+            for _ in range(current_queue_len):
+                node = queue.popleft()
+
+                if node.left:
+                    queue.append(node.left)
+                
+                if node.right:
+                    queue.append(node.right)
+        
+        return depth
+
+
+# dp, dfs, iteration, stack, pre-order traversal
+# O(n), O(n)
+class Solution:
+    def maxDepth(self, root: TreeNode | None) -> int:
+        if not root:
+            return 0
+
+        stack = []
+        stack.append((root, 1))
+        max_depth = 1
+
+        while stack:
+            node, depth = stack.pop()
+
+            if node.left:
+                stack.append((node.left, depth + 1))
+                max_depth = max(max_depth, depth + 1)
+            
+            if node.right:
+                stack.append((node.right, depth + 1))
+                max_depth = max(max_depth, depth + 1)
+
+        return max_depth
+
+print(Solution().maxDepth(
+    build_tree_from_list(
+        [3, 9, 20, None, None, 15, 7], Node)), 3)
+
+
+
+
+
+# Diameter of Binary Tree
+# https://leetcode.com/problems/diameter-of-binary-tree/description/
+"""
+Given the root of a binary tree, return the length of the diameter of the tree.
+
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+
+The length of a path between two nodes is represented by the number of edges between them.
+
+Example 1:
+
+Input: root = [1,2,3,4,5]
+
+    __1
+   /   \
+  2     3
+ / \
+4   5
+
+Output: 3
+Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+
+Example 2:
+
+Input: root = [1,2]
+Output: 1
+"""
+(Solution().diameterOfBinaryTree(build_tree_from_list([1, 2, 3, 4, 5], Node)), 3)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+build_tree_from_list([1, 2, 3, 4, 5], Node)
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion
+# O(n), O(n)
+class Solution:
+    def __init__(self) -> None:
+        self.longest_diameter = 0
+
+    def diameterOfBinaryTree(self, root: TreeNode | None) -> int:
+        def dfs(node):
+            if not node:
+                return 0
+        
+            left = dfs(node.left)  # left branch depth
+            right = dfs(node.right)  # right branch depth
+
+            self.longest_diameter = max(self.longest_diameter, left + right)  # left + rigth = path between two nodes
+            
+            return max(left, right) + 1  # current node max depth
+
+        dfs(root)
+
+        return self.longest_diameter
+
+
+
+
+
+# Balanced Binary Tree
+# https://leetcode.com/problems/balanced-binary-tree/description/
+"""
+Given a binary tree, determine if it is 
+height-balanced
+
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+
+  3___
+ /    \
+9     _20
+     /   \
+    15    7
+
+Output: true
+
+Example 2:
+
+Input: root = [1,2,2,3,3,null,null,4,4]
+
+        __1
+       /   \
+    __2     2
+   /   \
+  3     3
+ / \
+4   4
+
+Output: false
+
+Example 3:
+
+Input: root = []
+Output: true
+"""
+(Solution().isBalanced(build_tree_from_list([3, 9, 20, None, None, 15, 7], Node)), True)
+(Solution().isBalanced(build_tree_from_list([1, 2, 2, 3, 3, None, None, 4, 4], Node)), False)
+(Solution().isBalanced(build_tree_from_list([1, 2, 2, 3, None, None, 3, 4, None, None, 4], Node)), False)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursive
+# O(n), O(n)
+class Solution:
+    def __init__(self) -> None:
+        self.is_balanced = True  # default valuef for balanced tree
+
+    def isBalanced(self, root: TreeNode | None) -> bool:
+        def dfs(node):
+            if not node:
+                return 0
+
+            left = dfs(node.left)  # left branch depth
+            right = dfs(node.right)  # right branch depth
+
+            if abs(left - right) > 1:  # if deep of the two subtrees differs more than by 1
+                self.is_balanced = False  # then tree in not balanced
+                return -1  # early return
+
+            return max(left, right) + 1  # the depth of the current node
+
+        dfs(root)  # run dfs
+
+        return self.is_balanced
+
+
+
+
+
+# Same Tree
+# https://leetcode.com/problems/same-tree/description/
+"""
+Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+
+Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+
+Example 1:
+
+Input: p = [1,2,3], q = [1,2,3]
+Output: true
+
+Example 2:
+
+Input: p = [1,2], q = [1,null,2]
+Output: false
+Example 3:
+
+Input: p = [1,2,1], q = [1,1,2]
+Output: false
+"""
+(Solution().isSameTree(build_tree_from_list([1, 2, 3], TreeNode), 
+                       build_tree_from_list([1, 2, 3], TreeNode)), True)
+(Solution().isSameTree(build_tree_from_list([1, 2], TreeNode), 
+                       build_tree_from_list([1, None, 2], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([1, 2, 1], TreeNode), 
+                       build_tree_from_list([1, 1, 2], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([10, 5, 15], TreeNode), 
+                       build_tree_from_list([10, 5, None, None, 15], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([1, None, 2, 3], TreeNode), 
+                       build_tree_from_list([1, None, 2, None, 3], TreeNode)), False)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursive
+# O(n), O(n)
+class Solution:
+    def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
+        if not p and not q:
+            return True
+        
+        if (p and q and p.val == q.val):  # if both nodes exist and have equal values
+            return (self.isSameTree(p.left, q.left) and  # left subtree is the same
+                    self.isSameTree(p.right, q.right))  # right subtree is the same
+        else:
+            return False
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, bfs, iteration, queue
+# O(n), O(n)
+class Solution:
+    def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
+        if not p and not q:  # p and q are empyt
+            return True
+        
+        if not p or not q:  # p or q is empyt
+            return False
+
+        p_queue = deque([p])  # initiate dequeues
+        q_queue = deque([q])
+
+        while p_queue and q_queue:  # if both queues not empty
+            for _ in range(max(len(p_queue), len(q_queue))):  # for every node in queue
+                p_node = p_queue.popleft()  # take a node
+                q_node = q_queue.popleft()
+                
+                if p_node.val != q_node.val:  # compare p and q values
+                    return False
+                
+                if (not p_node.left and not q_node.left):  # if p and q are None
+                    pass
+                elif (p_node.left and q_node.left and  # if p and q exist
+                        p_node.left.val == q_node.left.val):  # if p and q left value is the same
+                    p_queue.append(p_node.left)  # append p left value to queue
+                    q_queue.append(q_node.left)  # append q left value to queue
+                else:  # in any other case
+                    return False
+
+                if (not p_node.right and not q_node.right):
+                    pass
+                elif (p_node.right and q_node.right and
+                        p_node.right.val == q_node.right.val):
+                    p_queue.append(p_node.right)
+                    q_queue.append(q_node.right)
+                else:
+                    return False
+
+        return True
+
+
+
+
+
+# Subtree of Another Tree
+# https://leetcode.com/problems/subtree-of-another-tree/description/
+"""
+Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+
+A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+
+Example 1:
+
+Input: root = [3,4,5,1,2], 
+
+    __3
+   /   \
+  4     5
+ / \
+1   2
+
+subRoot = [4,1,2]
+  4
+ / \
+1   2
+
+Output: true
+
+Example 2:
+
+Input: root = [3,4,5,1,2,null,null,null,null,0],
+
+    ____3
+   /     \
+  4__     5
+ /   \
+1     2
+     /
+    0
+
+subRoot = [4,1,2]
+
+  4
+ / \
+1   2
+
+Output: false
+"""
+(Solution().isSameTree(build_tree_from_list([4, 1, 2]),
+                       (build_tree_from_list([4, 1, 2]))), True)
+(Solution().isSameTree(build_tree_from_list([3, 4, 5, 1, 2]),
+                       build_tree_from_list([4, 1, 2])), False)
+(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2]),
+                      build_tree_from_list([4, 1, 2])), True)
+(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2, None, None, None, None, 0]),
+                      build_tree_from_list([4, 1, 2])), False)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursive
+# O(n2), O(n)
+class Solution:
+    def isSubtree(self, root: TreeNode | None, subRoot: TreeNode | None) -> bool:
+        if not subRoot:  # if no subRoot then always True
+            return True
+        elif not root:  # if no root then no match found
+            return False
+        elif self.isSameTree(root, subRoot):  # if tres are equal
+            return True
+        else:            
+            return (
+                self.isSubtree(root.left, subRoot) or  # check if subtree if in left tree branch
+                self.isSubtree(root.right, subRoot))  # check if subtree if in right tree branch
+
+
+    def isSameTree(self, root: TreeNode | None, subRoot: TreeNode | None) -> bool:
+        if not root and not subRoot:  # if both nodes are None
+            return True
+
+        if (root and subRoot and  # if both nodes exist
+            root.val == subRoot.val):  #  and have equal values
+            return (self.isSameTree(root.left, subRoot.left) and  # left subtree is the same
+                    self.isSameTree(root.right, subRoot.right))  # right subtree is the same
+        # else:  # None is treated like False
+        #     return False
+
+
+
+
+
+# Lowest Common Ancestor of a Binary Search Tree
+# https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+"""
+Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+
+Example 1:
+
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+
+    ______6__
+   /         \
+  2__         8
+ /   \       / \
+0     4     7   9
+     / \
+    3   5
+
+Output: 6
+Explanation: The LCA of nodes 2 and 8 is 6.
+
+Example 2:
+
+Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+
+    ______6__
+   /         \
+  2__         8
+ /   \       / \
+0     4     7   9
+     / \
+    3   5
+
+Output: 2
+Explanation: The LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
+
+Example 3:
+
+Input: root = [2,1], p = 2, q = 1
+
+  2
+ /
+1
+
+Output: 2
+"""
+((Solution().
+  lowestCommonAncestor(
+    build_tree_from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]),
+    build_tree_from_list(2),
+    build_tree_from_list(8))).val,
+ 6)
+((Solution().
+  lowestCommonAncestor(
+    build_tree_from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]),
+    build_tree_from_list(2),
+    build_tree_from_list(4))).val,
+ 2)
+((Solution().
+  lowestCommonAncestor(
+    build_tree_from_list([2, 1]),
+    build_tree_from_list(2),
+    build_tree_from_list(1))).val,
+ 2)
+((Solution().
+  lowestCommonAncestor(
+    build_tree_from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]),
+    build_tree_from_list(3),
+    build_tree_from_list(5))).val,
+ 4)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+# dp, dfs, iteration
+# O(logn), O(1)
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        while True:
+            if (  # if p and q are lower than the current value
+                p.val < root.val and
+                q.val < root.val
+            ):
+                root = root.left  # lower common ancestor node is in the left branch
+            elif (  # if p and q are highter than the current value
+                p.val > root.val and
+                q.val > root.val
+            ):
+                root = root.right  # lower common ancestor node is in the right branch
+            else:  # if one is lower and the other one is higher, THIS is the LCA
+                return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+# dp, dfs, recursive
+# O(logn), O(h) # O(h) for recursion stack height
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if (  # if p and q are lower than the current value
+            p.val < root.val and
+            q.val < root.val
+        ):
+            return self.lowestCommonAncestor(root.left, p, q)  # lower common ancestor node is in the left branch
+        elif (  # if p and q are highter than the current value
+            p.val > root.val and
+            q.val > root.val
+        ):
+            return self.lowestCommonAncestor(root.right, p, q)  # lower common ancestor node is in the right branch
+        else:
+            return root
+
+
+
+
+
+# Binary Tree Level Order Traversal
+# https://leetcode.com/problems/binary-tree-level-order-traversal/description/
+"""
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+
+Example 1:
+
+Input: root = [3,9,20,null,null,15,7]
+
+  3___
+ /    \
+9     _20
+     /   \
+    15    7
+
+Output: [[3],[9,20],[15,7]]
+Example 2:
+
+Input: root = [1]
+Output: [[1]]
+Example 3:
+
+Input: root = []
+Output: []
+"""
+(Solution().levelOrder(build_tree_from_list([3, 9, 20, None, None, 15, 7])), [[3], [9, 20], [15, 7]])
+(Solution().levelOrder(build_tree_from_list([1])), [[1]])
+(Solution().levelOrder(build_tree_from_list([])), [])
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, bfs, iteration, dequeue, level order traversal
+# O(n), O(n)
+class Solution:
+    def levelOrder(self, root: TreeNode | None) -> list[list[int]]:
+        if not root:
+            return []
+        
+        queue = deque([root])  # Create the root node
+        level_order_list = [[root.val]]  # solution
+
+        while queue:  # while queue is not empty
+            current_level_list = []  # current level soultion
+            
+            for _ in range(len(queue)):  # for every node
+                node = queue.popleft()  # take that node
+
+                if node.left != None:  # if left subnode is not empty
+                    queue.append(node.left)  # append it to queue
+                    current_level_list.append(node.left.val)  # append its value to current level solution
+                
+                if node.right != None:  # if right subnode is not empty
+                    queue.append(node.right)  # append it to queue
+                    current_level_list.append(node.right.val)  # append its value to current level solution
+            
+            if current_level_list:  # if current level list has any elements
+                level_order_list.append(current_level_list)  # add them to the solution
+
+        return level_order_list
+
+
+
+
+
+# Binary Tree Right Side View
+# https://leetcode.com/problems/binary-tree-right-side-view/description/
+"""
+Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom-
+
+Example 1:
+
+Input: root = [1,2,3,null,5,null,4]
+
+  __1
+ /   \
+2     3
+ \     \
+  5     4
+
+Output: [1,3,4]
+
+Example 2:
+
+Input: root = [1,null,3]
+
+1
+ \
+  3
+
+Output: [1,3]
+
+Example 3:
+
+Input: root = []
+Output: []
+"""
+(Solution().rightSideView(build_tree_from_list([1, 2, 3, None, 5, None, 4])), [1, 3, 4])
+(Solution().rightSideView(build_tree_from_list([1, None, 3])), [1, 3])
+(Solution().rightSideView(build_tree_from_list([])), [])
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, bfs, iteration, dequeue, level order traversal
+# O(n), O(n)
+class Solution:
+    def rightSideView(self, root: TreeNode | None) -> list[int]:
+        if not root:
+            return []
+        
+        queue = deque([root])  # Create the root node
+        right_side_list = [root.val]  # solution
+
+        while queue:  # while queue is not empty
+            for _ in range(len(queue)):  # for every node
+                node = queue.popleft()  # take that node
+
+                if node.left:  # if left subnode is not empty
+                    queue.append(node.left)  # append it to queue
+
+                if node.right:  # if right subnode is not empty
+                    queue.append(node.right)  # append it to queue
+
+            if queue:  # if queue is not empty
+                right_side_list.append(queue[-1].val)  # append the most right value
+
+        return right_side_list
+
+
+
+
+
+# Count Good Nodes in Binary Tree
+# https://leetcode.com/problems/count-good-nodes-in-binary-tree/description/
+"""
+Given a binary tree root, a node X in the tree is named good if in the path from root to X there are no nodes with a value greater than X.
+
+Return the number of good nodes in the binary tree.
+
+Example 1:
+
+Input: root = [3,1,4,3,null,1,5]
+
+    3__
+   /   \
+  1     4
+ /     / \
+3     1   5
+
+Output: 4
+Explanation: Nodes in blue are good.
+Root Node (3) is always a good node.
+Node 4 -> (3,4) is the maximum value in the path starting from the root.
+Node 5 -> (3,4,5) is the maximum value in the path
+Node 3 -> (3,1,3) is the maximum value in the path.
+
+Example 2:
+
+Input: root = [3,3,null,4,2]
+
+    __3
+   /
+  3
+ / \
+4   2
+
+Output: 3
+Explanation: Node 2 -> (3, 3, 2) is not good, because "3" is higher than it.
+
+Example 3:
+
+Input: root = [1]
+Output: 1
+Explanation: Root is considered as good.
+"""
+(Solution().goodNodes(build_tree_from_list([3, 1, 4, 3, None, 1, 5])), 4)
+(Solution().goodNodes(build_tree_from_list([3, 3, None, 4, 2])), 3)
+(Solution().goodNodes(build_tree_from_list([1])), 1)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, bfs, iteration, queue
+# O(n), O(n)
+class Solution:
+    def goodNodes(self, root: TreeNode) -> int:
+        if not root:
+            return None
+
+        queue = deque([(root, root.val)])  # Create the root node
+        good_nodes_counter = 1  # solution
+
+        while queue:  # while queue is not empty
+            for _ in range(len(queue)):  # for every node
+                node, max_value = queue.popleft()  # take that node
+
+                if node.left:  # if left subnode is not empty
+                    queue.append((node.left, max(max_value, node.left.val)))  # append it to queue
+                    if max_value <= node.left.val:  # if max value from root to current node is less or equal to current node left value
+                        good_nodes_counter += 1  # increase counter
+
+                if node.right:  # if right subnode is not empty
+                    queue.append((node.right, max(max_value, node.right.val)))  # append it to queue
+                    if max_value <= node.right.val:  # if max value from root to current node is less or equal to current node right value
+                        good_nodes_counter += 1  # increase counter
+
+        return good_nodes_counter
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, iteration, stack, pre-order traversal
+# O(n), O(n)
+class Solution:
+    def goodNodes(self, root: TreeNode) -> int:
+        if not root:
+            return None
+
+        stack = [(root, root.val)]  # create the stack with root node
+        good_nodes_counter = 1  # solution
+
+        while stack:  # while stack is not empty
+            node, max_value = stack.pop()  # take that node
+
+            if node.left:  # if left subnode is not empty
+                stack.append((node.left, max(max_value, node.left.val)))  # append it to stack
+                if max_value <= node.left.val:  # if max value from root to current node is less or equal to current node left value
+                    good_nodes_counter += 1  # increase counter
+            
+            if node.right:  # if right subnode is not empty
+                stack.append((node.right, max(max_value, node.right.val)))  # append it to stack
+                if max_value <= node.right.val:  # if max value from root to current node is less or equal to current node right value
+                    good_nodes_counter += 1  # increase counter
+
+        return good_nodes_counter
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion, in-order traversal
+# purely recursive (functional recursion)
+# Functional recursion: Accumulates and passes results back through return values. This is a common approach in functional programming, where you avoid side effects and handle all state within the function's return values.
+# O(n), O(n)
+class Solution:
+    def goodNodes(self, root: TreeNode) -> int:
+        
+        def dfs(node, max_till_root):
+            if not node:  # if None node (nothing to add)
+                return 0
+            
+            node_val = 1 if max_till_root <= node.val else 0  # if there are no nodes with a value greater than max till root value.
+            node_val += dfs(node.left, max(max_till_root, node.val))  # calculate left subnode
+            node_val += dfs(node.right, max(max_till_root, node.val))  # calculate right subnode
+
+            return node_val  # return current level sum
+        
+        return dfs(root, root.val)
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion, in-order traversal
+# stateful recursion (side-effect recursion")
+# Stateful recursion: Uses external state (such as class variables) to track information as a side effect. This is more common in imperative or object-oriented programming, where functions may modify shared state.
+# O(n), O(n)
+class Solution:
+    def __init__(self):
+        self.good_nodes_counter = 0
+
+    def goodNodes(self, root: TreeNode) -> int:        
+        def dfs(node, max_till_root):
+            if not node:  # if None node (nothing to add)
+                return
+            
+            self.good_nodes_counter += 1 if max_till_root <= node.val else 0  # if there are no nodes with a value greater than max till root value.
+            dfs(node.left, max(max_till_root, node.val))  # calculate left subnode
+            dfs(node.right, max(max_till_root, node.val))  # calculate right subnode
+
+        dfs(root, root.val)
+
+        return self.good_nodes_counter
+
+
+# Functional recursion
+def goodNodes(root: TreeNode) -> int:        
+    def dfs(node, max_till_root, good_nodes_counter):
+        if not node:  # if None node (nothing to add)
+            return 0
+        
+        good_nodes_counter = 1 if max_till_root <= node.val else 0  # if there are no nodes with a value greater than max till root value.
+        good_nodes_counter += dfs(node.left, max(max_till_root, node.val), good_nodes_counter)  # calculate left subnode
+        good_nodes_counter += dfs(node.right, max(max_till_root, node.val), good_nodes_counter)  # calculate right subnode
+
+        return good_nodes_counter
+
+    return dfs(root, root.val, 0)
+
+(goodNodes(build_tree_from_list([3, 1, 4, 3, None, 1, 5])), 4)
+
+
+# Stateful recursion
+def goodNodes(root: TreeNode, good_nodes_counter=0) -> int:
+    # good_nodes_counter = 0
+
+    def dfs(node, max_till_root):
+        # nonlocal good_nodes_counter
+
+        if not node:  # if None node (nothing to add)
+            return 0
+            
+        good_nodes_counter += 1 if max_till_root <= node.val else 0  # if there are no nodes with a value greater than max till root value.
+        dfs(node.left, max(max_till_root, node.val))  # calculate left subnode
+        dfs(node.right, max(max_till_root, node.val))  # calculate right subnode
+
+    dfs(root, root.val)
+
+    return good_nodes_counter
+
+(goodNodes(build_tree_from_list([3, 1, 4, 3, None, 1, 5])), 4)
+
+
+
+
+
+# Validate Binary Search Tree
+# https://leetcode.com/problems/validate-binary-search-tree/description/
+"""
+Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+
+A valid BST is defined as follows:
+
+The left 
+subtree
+ of a node contains only nodes with keys less than the node's key.
+The right subtree of a node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+ 
+
+Example 1:
+
+Input: root = [2,1,3]
+
+  2
+ / \
+1   3
+
+Output: true
+
+Example 2:
+
+Input: root = [5,1,4,null,null,3,6]
+
+  5__
+ /   \
+1     4
+     / \
+    3   6
+
+Output: false
+Explanation: The root node's value is 5 but its right child's value is 4.
+"""
+(Solution().isValidBST(build_tree_from_list([2, 1, 3])), True)
+(Solution().isValidBST(build_tree_from_list([5, 1, 4, None, None, 3, 6])), False)
+(Solution().isValidBST(build_tree_from_list([2, 2, 2])), False)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion, in-order traversal
+# O(n), O(n)
+class Solution:
+    def isValidBST(self, root: TreeNode | None) -> bool:
+        def dfs(node, left_min,  right_max):
+            if not node:  # if node is None then the current branch i legit
+                return True  
+            
+            if not left_min < node.val < right_max:  # if value not in bounds
+                return False
+            
+            return (
+                dfs(node.left, left_min, node.val) and  # branch left 
+                dfs(node.right, node.val, right_max)  # branch right
+                )
+
+        return dfs(root, float("-inf"), float("inf"))
+        
+
+from collections import deque
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, bfs, iteration, level order traversal
+# O(n), O(n)
+class Solution:
+    def isValidBST(self, root: TreeNode | None) -> bool:
+        if not root:
+            return None
+        
+        queue = deque([(root, float("-Inf"), float("Inf"))])  # Create the root node
+
+        while queue:  # while queue is not empty
+            for _ in range(len(queue)):
+                node, min_val, max_val = queue.pop()  # for every node
+
+                if not min_val < node.val < max_val:  # if node value not in bounds return with False
+                    return False
+                
+                if node.left:  # if left subnode is not empty
+                    queue.append((node.left, min_val, min(max_val, node.val)))  # append it to queue
+                
+                if node.right:  # if right subnode is not empty
+                    queue.append((node.right, max(min_val, node.val), max_val))  # append it to queue
+
+        return True  # every node is legit, so return True
+
+
+
+
+
+# Kth Smallest Element in a BST
+# https://leetcode.com/problems/kth-smallest-element-in-a-bst/description/
+"""
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+Example 1:
+
+Input: root = [3,1,4,null,2], k = 1
+
+  __3
+ /   \
+1     4
+ \
+  2
+
+Output: 1
+
+Example 2:
+
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+
+      __5
+     /   \
+    3     6
+   / \
+  2   4
+ /
+1
+
+Output: 3
+"""
+(Solution().kthSmallest(build_tree_from_list([5, 3, 7, 2, 4, None, 8]), 3), 4)
+(Solution().kthSmallest(build_tree_from_list([3, 1, 4, None, 2]), 1), 1)
+(Solution().kthSmallest(build_tree_from_list([5, 3, 6, 2, 4, None, None, 1]), 3), 3)
+(Solution().kthSmallest(build_tree_from_list([41,37,44,24,39,42,48,1,35,38,40,None,43,46,49,0,2,30,36,None,None,None,None,None,None,45,47,None,None,None,None,None,4,29,32,None,None,None,None,None,None,3,9,26,None,31,34,None,None,7,11,25,27,None,None,33,None,6,8,10,16,None,None,None,28,None,None,5,None,None,None,None,None,15,19,None,None,None,None,12,None,18,20,None,13,17,None,None,22,None,14,None,None,21,23]), 25), 24)
+
+
+from binarytree import Node
+from collections import deque
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type=TreeNode):
+    if not node_list:
+        return
+
+    if type(node_list) == int:  # case when the node list is a single value
+        node_list = [node_list]
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index] != None:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion, in-order traversal
+# O(n), O(n)
+class Solution:
+    def kthSmallest(self, root: TreeNode | None, k: int) -> int:
+        value_list = []
+
+        def dfs(node):
+            if node == None:  # if no Node
+                return
+
+            dfs(node.left)  # traverse left
+
+            if len(value_list) == k:  # early exit
+                return
+
+            value_list.append(node.val)  # append curren node value
+            dfs(node.right)  # traverse right
+
+        dfs(root)
+
+        return value_list[-1]  # return kth element
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, iteration, in-order traversal
+# O(n), O(n)
+class Solution:
+    def kthSmallest(self, root: TreeNode | None, k: int) -> int:
+        stack = []
+        node = root
+        # value_list = []
+
+        while stack or node:  # while stack and node are not empty
+            while node:  # while node is not empty
+                stack.append(node)  # append node to stack
+                node = node.left  # branch left
+
+            node = stack.pop()  # take a node
+            # value_list.append(node.val)  # append node.val to value list
+            k -= 1  #  decrement counter
+
+            if not k:  # if counter = 0
+                return node.val  # current node value is kth element
+
+            node = node.right  # branch right
+
+        return False
+
+
+
+
+# Construct Binary Tree from Preorder and Inorder Traversal
+# https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/description/
+"""
+Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+
+Example 1:
+
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+
+  3___
+ /    \
+9     _20
+     /   \
+    15    7
+
+Example 2:
+
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+"""
+(level_order_traversal(Solution().buildTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7])), [3, 9, 20, None, None, 15, 7])
+(level_order_traversal(Solution().buildTree([-1], [-1])), [-1])
+
+
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+from binarytree import Node
+from collections import deque
+
+# Function create a list from a binary tree in level-order (breadth-first traversal)
+def level_order_traversal(root):
+    if not root:
+        return []
+    
+    node_list = []
+    queue = deque([root])  # Initialize the queue with the root node
+
+    while queue:
+        node = queue.popleft()  # Pop the current node
+
+        if node:
+            node_list.append(node.val)  # Add the value if node is not None
+            queue.append(node.left)  # Append left child (could be None)
+            queue.append(node.right)  # Append right child (could be None)
+        else:
+            node_list.append(None)  # Append None when the node is absent
+    
+    # Remove trailing None values
+    while node_list and node_list[-1] is None:
+        node_list.pop()
+
+    return node_list
+
+
+level_order_traversal(Solution().buildTree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]))
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# dp, dfs, recursion, in-order traversal, pre-order traversal
+# O(n), O(n)
+class Solution:
+    def buildTree(self, preorder: list[int], inorder: list[int]) -> TreeNode | None:
+        if not preorder or not inorder:
+            return
+        
+        node = Node(preorder[0])
+        split_index = inorder.index(preorder[0])  # 
+        node.left = self.buildTree(preorder[1 : split_index + 1], inorder[: split_index])
+        node.right = self.buildTree(preorder[split_index + 1 : ], inorder[split_index + 1 :])
+        return node
+
+
+(level_order_traversal(Solution().buildTree([3, 9, 1, 20, 15, 7], [1, 9, 3, 15, 20, 7])))
+
+
+
+
+
+# Combination Sum III
+# https://leetcode.com/problems/combination-sum-iii/description/
+"""
+Find all valid combinations of k numbers that sum up to n such that the following conditions are true:
+
+Only numbers 1 through 9 are used.
+Each number is used at most once.
+Return a list of all possible valid combinations. The list must not contain the same combination twice, and the combinations may be returned in any order.
+
+Example 1:
+
+Input: k = 3, n = 7
+Output: [[1,2,4]]
+Explanation:
+1 + 2 + 4 = 7
+There are no other valid combinations.
+Example 2:
+
+Input: k = 3, n = 9
+Output: [[1,2,6],[1,3,5],[2,3,4]]
+Explanation:
+1 + 2 + 6 = 9
+1 + 3 + 5 = 9
+2 + 3 + 4 = 9
+There are no other valid combinations.
+Example 3:
+
+Input: k = 4, n = 1
+Output: []
+Explanation: There are no valid combinations.
+Using 4 different numbers in the range [1,9], the smallest sum we can get is 1+2+3+4 = 10 and since 10 > 1, there are no valid combination.
+"""
+(Solution().combinationSum3(3, 7), [1, 2, 4])
+(Solution().combinationSum3(3, 9), [[1, 2, 6], [1, 3, 5], [2, 3, 4]])
+(Solution().combinationSum3(4, 1), [])
+
+
+class Solution:
+    def combinationSum3(self, k: int, n: int) -> list[list[int]]:
+        combination = []
+        combination_list = []
+
+        def dfs(index):
+            if (sum(combination) == n and  # if target sum reached and
+                len(combination) == k):  # target length reached
+                combination_list.append(combination.copy())  # add current solution
+                return
+            elif (index == 10 or  # if digit out of bounds
+                  sum(combination) > n):  # and target sum exceeded
+                return
+            
+            combination.append(index)  # include digit in solution
+            dfs(index + 1)  # explore path with current digit
+            combination.pop()  # exclude digit from soultion
+            dfs(index + 1)  # explore path withou curren digit
+
+        dfs(1)
+
+        return combination_list
+
+
+
+
+
+# Combination Sum IV
+# https://leetcode.com/problems/combination-sum-iv/description/
+"""
+Given an array of distinct integers nums and a target integer target, return the number of possible combinations that add up to target.
+
+The test cases are generated so that the answer can fit in a 32-bit integer.
+
+Example 1:
+
+Input: nums = [1,2,3], target = 4
+Output: 7
+Explanation:
+The possible combination ways are:
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+Note that different sequences are counted as different combinations.
+
+Example 2:
+
+Input: nums = [9], target = 3
+Output: 0
+"""
+(Solution().combinationSum4([1, 2, 3], 4), 7)
+(Solution().combinationSum4([9], 3), 0)
+(Solution().combinationSum4([4, 2, 1], 32), 39882198)
+(Solution().combinationSum4([2, 3], 7), 3)
+
+
+# dp, bottom-up, iteration, tabulation (with List)
+class Solution:
+    def combinationSum4(self, nums: list[int], target: int) -> int:
+        # Initialize a list of zeros for tabulation, where tab[i] is the number of ways to make sum i
+        tab = [0 for _ in range(target + 1)]
+        # Base case: 1 way to make target 0 (empty combination)
+        tab[0] = 1
+
+        # Iterate through all indices from 1 to target
+        for index in range(1, target + 1):
+            # For each number in nums, check if it can contribute to the current target (index)
+            for num in nums:
+                # If num can be subtracted from index, add the number of ways to make (index - num)
+                if index - num >= 0:
+                    tab[index] += tab[index - num]
+        
+        # Return the result for the target, which is stored in the last element of the list
+        return tab[-1]
+
+
+# dp, bottom-up, iteration, tabulation (with Dictionary)
+class Solution:
+    def combinationSum4(self, nums: list[int], target: int) -> int:
+        # Tabulation dictionary, storing base case: 1 way to make target 0 (empty combination)
+        tab = {0: 1}
+
+        # Iterate through every index from 1 to target
+        for index in range(1, target + 1):
+            # For each number in nums, check if it can be part of the combination
+            for num in nums:
+                # If the number can be used (valid combination), update the tabulation table
+                if index - num >= 0:
+                    tab[index] = tab.get(index, 0) + tab.get(index - num, 0)
+        
+        # Return the result for the target value, default to 0 if no combinations
+        return tab.get(target, 0)
+
+
+# dp, dfs, top-down, recursion, memoization (with Dictionary)
+class Solution:
+    def combinationSum4(self, nums: list[int], target: int) -> int:
+        # Memoization dictionary, storing base case: 1 way to make target 0 (empty combination)
+        memo = {0: 1}
+
+        # Helper function that performs depth-first search (DFS)
+        def dfs(index):
+            # If the index is negative, no valid combination can be made, return 0
+            if index < 0:
+                return 0
+            # If the value has already been computed, return it (memoization check)
+            elif index in memo:
+                return memo[index]
+
+            # Iterate over each number in the list
+            for num in nums:
+                # Recursively compute number of combinations by reducing the target (index - num)
+                memo[index] = memo.get(index, 0) + dfs(index - num)
+
+            # Return the computed value for the current target (index)
+            return memo[index]
+
+        # Start the recursion with the target value
+        return dfs(target)
+
+
+# dp,  dfs, top-down, recursion, memoization (with List)
+class Solution:
+    def combinationSum4(self, nums: list[int], target: int) -> int:
+        # Memoization dictionary, storing base case: 1 way to make target 0 (empty combination)
+        memo = [-1 for _ in range(target + 1)]
+        memo[0] = 1
+
+        # Helper function that performs depth-first search (DFS)
+        def dfs(index):
+            # If the index is negative, no valid combination can be made, return 0
+            if index < 0:
+                return 0
+            # If the value has already been computed, return it (memoization check)
+            elif memo[index] != -1:
+                return memo[index]
+
+            # Initialize the number of ways to make the current index
+            memo[index] = 0
+
+            # Iterate over each number in the list
+            for num in nums:
+                # Recursively compute number of combinations by reducing the target (index - num)
+                memo[index] += dfs(index - num)
+
+            # Return the computed value for the current target (index)
+            return memo[index]
+
+        # Start the recursion with the target value
+        return dfs(target)
+
+
+
+
+
+# returns all possible permutations, not only the number of them
+class Solution:
+    def combinationSum4(self, nums: list[int], target: int) -> int:
+        combination = []
+        combination_list = []
+
+        def dfs():
+            combination_sum = sum(combination)
+
+            if combination_sum == target:
+                combination_list.append(combination.copy())
+                # combination_list.append(True)
+                return
+            elif (combination_sum > target):
+                return
+
+            for num in nums:
+                combination.append(num)
+                dfs()
+                combination.pop()
+
+        dfs()
+
+        return combination_list
+
+
+
+
+
+# Number of Islands
+# https://leetcode.com/problems/number-of-islands/description/
+"""
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+Example 2:
+
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+"""
+(Solution().numIslands([["1", "1", "1", "1", "0"], ["1", "1", "0", "1", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "0", "0", "0"]]), 1)
+(Solution().numIslands([["1", "1", "0", "0", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "1", "0", "0"], ["0", "0", "0", "1", "1"]]), 3)
+
+
+# dfs, recursion
+# Boundary checks: It ensures that neighbors are within grid bounds and haven't been visited before exploring them.
+class Solution:
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)  # Number of rows in the grid.
+        cols = len(grid[0])  # Number of columns in the grid.
+        visited_land = set()  # Set to keep track of visited land cells.
+        island_counter = 0  # Counter for the number of islands found.
+
+        def dfs(row, col):
+            visited_land.add((row, col))  # Mark the current cell as visited.
+
+            # Iterate over the possible directions (right, left, down, up).
+            for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                i = row + di
+                j = col + dj
+                
+                # If the neighbor is within bounds, not visited, and is land, explore it.
+                if (0 <= i < rows and
+                    0 <= j < cols and
+                    not (i, j) in visited_land and
+                    grid[i][j] == "1"):
+                    dfs(i, j)
+
+        # Check each cell in the grid.
+        for row in range(rows):
+            for col in range(cols):
+                # Start a new DFS for every unvisited land cell, indicating a new island.
+                if (grid[row][col] == "1" and
+                    not (row, col) in visited_land):
+                    island_counter += 1  # Increment the island counter.
+                    dfs(row, col)  # Perform DFS to mark the entire island.
+
+        return island_counter  # Return the total number of islands found.
+
+
+# dfs, recursion
+# Boundary checks: It includes all the boundary and visited checks directly in the base case of the recursion.
+class Solution:
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)  # Number of rows in the grid.
+        cols = len(grid[0])  # Number of columns in the grid.
+        visited_land = set()  # Set to keep track of visited land cells.
+        island_counter = 0  # Counter for the number of islands found.
+
+        def dfs(row, col):
+            # If the cell is out of bounds, water, or already visited, stop exploring.
+            if (row < 0 or
+                col < 0 or
+                row == rows or
+                col == cols or
+                (row, col) in visited_land or
+                grid[row][col] == "0"):
+                return
+            
+            visited_land.add((row, col))  # Mark the current cell as visited.
+
+            # Explore all four possible directions: right, left, down, up.
+            for i, j in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                dfs(row + i, col + j)  # Recursively visit neighboring cells.
+
+        # Iterate over each cell in the grid.
+        for row in range(rows):
+            for col in range(cols):
+                # Start a new DFS when an unvisited land cell ("1") is found.
+                if (grid[row][col] == "1" and
+                    (row, col) not in visited_land):
+                    island_counter += 1  # Increment the island counter.
+                    dfs(row, col)  # Perform DFS to mark the entire island.
+
+        return island_counter  # Return the total number of islands found.
+
+
+from collections import deque
+
+# bfs, iterative
+class Solution:
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)  # Number of rows in the grid.
+        cols = len(grid[0])  # Number of columns in the grid.
+        visited_land = set()  # Set to keep track of visited land cells.
+        island_counter = 0  # Counter for the number of islands found.
+
+        # BFS function to explore the island starting from the given cell.
+        def bfs(row, col):
+            visited_land.add((row, col))  # Mark the current cell as visited.
+            queue = deque()  # Initialize a queue for BFS.
+            queue.append((row, col))  # Start with the current land cell.
+
+            while queue:
+                row, col = queue.popleft()  # Dequeue the next cell to explore.
+
+                # Iterate over the possible directions (right, left, down, up).
+                for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                    i = row + di
+                    j = col + dj
+
+                    # Check if the neighbor is within bounds, unvisited, and land.
+                    if (0 <= i < rows and
+                        0 <= j < cols and
+                        (i, j) not in visited_land and
+                        grid[i][j] == "1"):
+                        queue.append((i, j))  # Add the land cell to the queue.
+                        visited_land.add((i, j))  # Mark it as visited.
+
+        # Iterate over each cell in the grid.
+        for row in range(rows):
+            for col in range(cols):
+                # If the cell is land and hasn't been visited, start a new BFS.
+                if grid[row][col] == "1" and (row, col) not in visited_land:
+                    island_counter += 1  # Increment the island counter.
+                    bfs(row, col)  # Perform BFS to mark the entire island.
+
+        return island_counter  # Return the total number of islands found.
+
+
+from collections import deque
+
+# dfs, iterative
+class Solution:
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)  # Number of rows in the grid.
+        cols = len(grid[0])  # Number of columns in the grid.
+        visited_land = set()  # Set to keep track of visited land cells.
+        island_counter = 0  # Counter for the number of islands found.
+
+        # BFS function to explore the island starting from the given cell.
+        def bfs(row, col):
+            visited_land.add((row, col))  # Mark the current cell as visited.
+            queue = deque()  # Initialize a queue for BFS.
+            queue.append((row, col))  # Start with the current land cell.
+
+            while queue:
+                row, col = queue.pop()  # Dequeue the next cell to explore.
+
+                # Iterate over the possible directions (right, left, down, up).
+                for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                    i = row + di
+                    j = col + dj
+
+                    # Check if the neighbor is within bounds, unvisited, and land.
+                    if (0 <= i < rows and
+                        0 <= j < cols and
+                        (i, j) not in visited_land and
+                        grid[i][j] == "1"
+                    ):
+                        queue.append((i, j))  # Add the land cell to the queue.
+                        visited_land.add((i, j))  # Mark it as visited.
+
+        # Iterate over each cell in the grid.
+        for row in range(rows):
+            for col in range(cols):
+                # If the cell is land and hasn't been visited, start a new BFS.
+                if grid[row][col] == "1" and (row, col) not in visited_land:
+                    island_counter += 1  # Increment the island counter.
+                    bfs(row, col)  # Perform BFS to mark the entire island.
+
+        return island_counter  # Return the total number of islands found.
+    
+
+
+
+
+# Max Area of Island
+# https://leetcode.com/problems/max-area-of-island/description/
+"""
+You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+
+The area of an island is the number of cells with a value 1 in the island.
+
+Return the maximum area of an island in grid. If there is no island, return 0.
+
+Example 1:
+
+Input: grid = [[0,0,1,0,0,0,0,1,0,0,0,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,1,1,0,1,0,0,0,0,0,0,0,0],[0,1,0,0,1,1,0,0,1,0,1,0,0],[0,1,0,0,1,1,0,0,1,1,1,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,1,0,0,0],[0,0,0,0,0,0,0,1,1,0,0,0,0]]
+Output: 6
+Explanation: The answer is not 11, because the island must be connected 4-directionally.
+Example 2:
+
+Input: grid = [[0,0,0,0,0,0,0,0]]
+Output: 0
+"""
+(Solution().maxAreaOfIsland([[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]), 6)
+(Solution().maxAreaOfIsland([[0, 0, 0, 0, 0, 0, 0, 0]]), 0)
+
+
+# dfs, recursion, check boundary first
+class Solution:
+    def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
+        rows = len(grid)  # Get the number of rows and columns in the grid
+        cols = len(grid[0])
+        visited_land = set()  # Set to keep track of the visited land cells
+        max_island_area = 0  # Variable to store the maximum area of an island found so far
+        
+        def dfs(row, col):  # Depth-First Search (DFS) function to explore an island
+            visited_land.add((row, col))  # Mark the current cell as visited
+            adjecent_area = 0  # Variable to track the area of the current island's adjacent cells
+            directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]  # Possible directions to move: right, down, up, and left
+            
+            for di, dj in directions:  # Explore the neighboring cells
+                i = row + di  # Row in the new direction
+                j = col + dj  # Column in the new direction
+                
+                if (0 <= i < rows and  # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
+                    0 <= j < cols and
+                    not (i, j) in visited_land and
+                    grid[i][j] == 1
+                ):
+                    adjecent_area += dfs(i, j)  # Recursively explore the neighboring land cell and add its area
+            
+            return adjecent_area + 1  # Return the area of the current cell (1) plus the adjacent area found
+                
+        for row in range(rows):  # Iterate through each cell in the grid
+            for col in range(cols):
+                if (grid[row][col] == 1 and  # If the current cell is land and hasn't been visited yet
+                    not (row, col) in visited_land
+                ):
+                    max_island_area = max(max_island_area, dfs(row, col))  # Perform DFS from this cell and update the maximum island area
+        
+        return max_island_area  # Return the largest island area found
+
+
+# # dfs, recursion, check boundary in recursion
+class Solution:
+    def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
+        # Get the number of rows and columns in the grid
+        rows = len(grid)
+        cols = len(grid[0])
+        visited_land = set()  # Set to keep track of the visited land cells
+        max_island_area = 0  # Variable to store the maximum area of an island found so far
+        
+        def dfs(row, col):  # Depth-First Search (DFS) function to explore an island
+            if (not 0 <= row < rows or  # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
+                not 0 <= col < cols or
+                (row, col) in visited_land or
+                grid[row][col] == 0
+            ):
+                return 0
+                     
+            visited_land.add((row, col))  # Mark the current cell as visited
+            adjecent_area = 0  # Variable to track the area of the current island's adjacent cells
+            directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]  # Possible directions to move: right, down, up, and left
+            
+            for di, dj in directions:  # Explore the neighboring cells
+                i = row + di  # Row in the new direction
+                j = col + dj  # Column in the new direction
+                adjecent_area += dfs(i, j)  # Recursively explore the neighboring land cell and add its area
+            
+            return adjecent_area + 1  # Return the area of the current cell (1) plus the adjacent area found
+                
+        for row in range(rows):  # Iterate through each cell in the grid
+            for col in range(cols):
+                max_island_area = max(max_island_area, dfs(row, col))  # Perform DFS from this cell and update the maximum island area
+        
+        return max_island_area  # Return the largest island area found
+

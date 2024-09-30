@@ -399,6 +399,7 @@ a.pop()  # removes the last element
 a.append(5)  # 
 a += [5]  # 
 a.insert(0, 1)  # insters an element at i-th position # prepend
+a.extend([5, 6])  # extend list with another list
 
 a.reverse()
 a2 = a  # another name to the same list instance
@@ -447,7 +448,15 @@ x[0]  # 1
 for (i, j, k) in [(1, 2, 3), (4, 5, 6)]:
     print(i, j, k)
 
-# make one element tuple
+# make one element tuple# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        
 a = (2)
 type(a)  # <class 'int'>
 a = tuple([2])
@@ -963,8 +972,14 @@ html.unescape('&pound;682m')
 
 # Chr
 
-chr(97)
-ord('a')
+chr(97)  # "a"
+ord('a')  # 97
+ord("z") - ord("a")  # 25
+ord("a") % 32  # 1
+ord("b") % 32  # 2
+ord("z") % 32  # 26
+
+
 
 def abc(c_start, c_stop):
     for i in range(ord(c_start), ord(c_stop)):
@@ -3313,3 +3328,117 @@ class Solution:
 
 print(fib_rec(10), fib_dp(10), fib_dp2(10), Solution().climbStairs(10))
 print(fib_cache)
+
+
+
+
+
+
+
+# Trees
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=1, left=None, right=None):
+        self.val = val  # node1.val = val
+        self.left = left
+        self.right = right
+
+# create simple tree
+# nodes
+node1 = TreeNode(1)
+node2 = TreeNode(2)
+node3 = TreeNode(3)
+# relations
+node1.left = node2
+node1.right = node3
+# get values
+node1.val
+node1.left.val
+
+
+
+# create tree with binarytree
+from binarytree import Node
+
+bnode1 = Node(1)
+bnode2 = Node(2)
+bnode3 = Node(3)
+bnode1.left = bnode2
+bnode1.right = bnode3
+print(bnode1)
+#   1
+#  / \
+# 2   3
+
+
+
+
+from collections import deque
+
+# Function to create a binary tree from a list (level-order traversal)
+def build_tree_from_list(node_list, node_type):
+    if not node_list:
+        return
+
+    root = node_type(node_list[0])  # Create the root node
+    queue = deque([root])
+    index = 1
+
+    # Process the list and construct the tree
+    while index < len(node_list):
+        node = queue.popleft()
+
+        # Assign the left child if available
+        if index < len(node_list) and node_list[index]:
+            node.left = node_type(node_list[index])
+            queue.append(node.left)
+        index += 1
+
+        # Assign the right child if available
+        if index < len(node_list) and node_list[index]:
+            node.right = node_type(node_list[index])
+            queue.append(node.right)
+        index += 1
+
+    return root
+
+print(build_tree_from_list([4, 2, 7, 1, 3, 6, 9], Node))
+#     __4__
+#    /     \
+#   2       7
+#  / \     / \
+# 1   3   6   9
+
+
+from collections import deque
+
+# Function create a list from a binary tree in level-order (breadth-first traversal)
+def level_order_traversal(root: TreeNode):
+    if not root:
+        return
+    
+    node_list = []
+    queue = deque([root])  # Initialize the queue with the root node
+
+    while queue:
+        node = queue.popleft()  # Pop the current node
+        node_list.append(node.val)  # add its value to node list
+
+        if node.left:  # Add left child to the queue if it exists
+            queue.append(node.left)
+
+        if node.right:# Add right child to the queue if it exists
+            queue.append(node.right)
+
+    return node_list
+
+
+
+from binarytree import Node
+
+(level_order_traversal(
+    Solution().invertTree(
+        build_tree_from_list(
+            [4, 2, 7, 1, 3, 6, 9], Node))), [4, 7, 2, 9, 6, 3, 1])
+
