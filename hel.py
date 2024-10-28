@@ -514,7 +514,8 @@ A <= {0, 1, 2, 3, 4}
 {0, 1, 2, 3, 4}.issuperset(A)
 {0, 1, 2, 3, 4} >= A
 
-A in {0, 1, 2, 3, 4}  # in doesn't work with sets
+0 in {0, 1, 2, 3, 4}  # True
+{0, 1} in {0, 1, 2, 3, 4}  # in doesn't work with sets
 'A' in 'ABC'  # True
 
 
@@ -1017,6 +1018,105 @@ class MyClass:
 class1 = MyClass()
 isinstance(class1, MyClass)
 
+
+
+
+
+
+# equal, compare, same, is
+from copy import deepcopy, copy as shallowcopy
+# int
+
+a = 1
+hex(id(a))  # 0x756fbd6b40f0
+b = 1
+hex(id(b))  # 0x756fbd6b40f0
+c = a.copy()  # AttributeError: 'int' object has no attribute 'copy'
+c = deepcopy(a)
+hex(id(c))  # 0x756fbd6b40f0
+a == b  # compare: True
+a == c  # compare: True
+
+
+
+# str
+a = "a"
+hex(id(a))  # 0x756fbd35ccb0
+b = "a"
+hex(id(b))  # 0x756fbd35ccb0
+c = a.copy()  # AttributeError: 'str' object has no attribute 'copy'
+c = deepcopy(a)
+hex(id(c))  # 0x756fbd35ccb0
+a == b  # compare: True
+a == c  # compare: True
+
+
+# list
+a = [1, 2]
+hex(id(a))  # id of an object 0x756fbd2a5b40
+b = [1, 2]
+hex(id(b))  # id of an object 0x756fbcf2e7c0
+c = a.copy()  # shallow copy
+hex(id(c))  # id of an object 0x756fbd2a6980
+d = deepcopy(a)  # deep copy
+hex(id(d))  # id of an object 0x756fbd2a6800
+e = shallowcopy(a)  # shallow copy
+hex(id(e))  # id of an object 0x756fbd2a6a80
+f = a
+hex(id(f))  # id of an object 0x756fbd2a5b40
+
+
+a == b  # compare: True
+a == c  # compare: True
+a == d  # compare: True
+a == f  # compare: True
+a is b  # is same: False
+a is c  # is same: False
+a is d  # is same: False
+a is f  # is same: True
+
+
+
+import copy
+li1 = [1, 2, [3,5], 4]
+li2 = copy.deepcopy(li1)
+print ("The original elements before shallow copying")
+for i in range(0,len(li1)):
+    print (li1[i],end=" ")
+
+print("\r")
+li2[2][0] = 7
+li2[0] = 8
+print ("The modded elements after shallow copying")
+for i in range(0,len( li2)):
+    print (li2[i],end=" ")
+print("\r")
+print ("The original elements after shallow copying")
+for i in range(0,len( li1)):
+    print (li1[i],end=" ")
+
+print(hex(id(li1[0])))  # 0x756fbd6b40f0 with copy.copy # 0x756fbd6b40f0 with deepcopy 
+print(hex(id(li2[0])))  # 0x756fbd6b41d0 with copy.copy # 0x756fbd6b41d0 with deepcopy
+print(hex(id(li1[2])))  # 0x756fbcf3c180 with copy.copy # 0x756fbcf3c700 with deepcopy
+print(hex(id(li2[2])))  # 0x756fbcf3c180 with copy.copy # 0x756fbcf2e7c0 with deepcopy
+
+"""
+The original elements before shallow copying
+1 2 [3, 5] 4 
+The modded elements after shallow copying
+8 2 [7, 5] 4 
+The original elements after shallow copying
+1 2 [7, 5] 4 
+"""
+
+"""
+The original elements before shallow copying
+1 2 [3, 5] 4 
+The modded elements after shallow copying
+8 2 [7, 5] 4 
+The original elements after shallow copying
+1 2 [3, 5] 4 
+"""
 
 
 
@@ -2722,37 +2822,39 @@ a(b, print, 'Hello')
 
 
 # *args; are tuples
-
-def args_fun(*arg):
+def add(*args):
     # return type(arg) 
-    return arg
-args_fun(1, 2)
+    return sum(args)
 
-def args_fun2(arg1, arg2):
-    print('arg1:', arg1)
-    print('arg2: '+ str(arg2))
-args = ('one', 2)
-args_fun2(*args)
+
+print(add(1, 2, 5))
+
 
 # **kwargs; are dict's
 
-def kwargs_fun(**kwargs):
+def post_address(**kwargs):
     # return type(kwargs)
-    return kwargs
-kwargs_fun(name='no_name', sth='no')
+    return ", ".join(f"{key}: {value}" for key, value in kwargs.items())
 
-def args_fun2(arg1, arg2):
-    print('arg1:', arg1)
-    print('arg2: '+ str(arg2))
-    print(type(arg2))
-kwargs = {'arg2': 2, 'arg1': 'one'}
-args_fun2(**kwargs)
 
-def args_fun3(**kwarg):
-    # print(type(kwarg))
-    print(kwarg)
-kwargs = {'arg2': 2, 'arg1': 'one'}
-args_fun3(**kwargs)
+print(post_address(street="Fun Street",
+                   num="40/50",
+                   Postal="11-111"))
+
+
+
+def shipping_label(*args, **kwargs):
+    name = " ".join(arg for arg in args)
+    address = ", ".join(f"{key}: {val}" for key, val in kwargs.items())
+    return f"name:{name}\naddress: {address}"
+
+
+print(shipping_label("Dr", "inż.", "Chuck", "Furry",
+                     street="Fun Street",
+                     num="40/50",
+                     Postal="11-111"
+                     )
+      )
 
 
 
@@ -3442,3 +3544,88 @@ from binarytree import Node
         build_tree_from_list(
             [4, 2, 7, 1, 3, 6, 9], Node))), [4, 7, 2, 9, 6, 3, 1])
 
+
+
+
+
+# setter, getter
+class Rectangle:
+    def __init__(self, height, width):
+        self._height = height
+        self._width = width
+
+    @property
+    def height(self):
+        return f"{self._height:.2f} cm"
+
+    @property
+    def width(self):
+        return f"{self._width:.2f} cm"
+
+    @height.setter
+    def height(self, new_height):
+        if new_height > 0:
+            self._height = new_height
+        else:
+            print("Height must be greater than 0")
+
+    @width.setter
+    def width(self, new_width):
+        if new_width > 0:
+            self._width = new_width
+        else:
+            print("Height must be greater than 0")
+
+    @height.deleter
+    def height(self):
+        del self._height
+        print("Height deleted.")
+
+    @width.deleter
+    def width(self):
+        del self._width
+        print("Width deleted.")
+
+
+rectangle1 = Rectangle(2, 5)
+rectangle1.height = 3
+rectangle1.width = 6
+
+# del rectangle1.height
+# del rectangle1.width
+
+print(rectangle1.height)
+print(rectangle1.width)
+
+
+
+
+
+# decorator, wrapper
+def icing(func):
+    def wrap(*args, **kwargs):
+        return (
+            "Sprinkles added\n" +
+            func(*args, **kwargs)
+        )
+    return wrap
+
+
+def fudge(func):
+    def wrap(*args, **kwargs):
+        return (
+            "Fudge added \n" +
+            func(*args, **kwargs)
+        )
+
+    return wrap
+
+
+@icing
+@fudge
+def get_ice_cream(flavor="Normal"):
+    return flavor + " ice"
+
+
+print(get_ice_cream("Vanilla"))
+print(get_ice_cream())

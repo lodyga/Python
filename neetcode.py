@@ -7653,3 +7653,311 @@ class Solution:
         
         return max_island_area  # Return the largest island area found
 
+
+
+
+
+# Clone Graph
+# https://leetcode.com/problems/clone-graph/description/
+"""
+Given a reference of a node in a connected undirected graph.
+
+Return a deep copy (clone) of the graph.
+
+Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
+
+class Node {
+    public int val;
+    public List<Node> neighbors;
+}
+
+Test case format:
+
+For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
+
+An adjacency list is a collection of unordered lists used to represent a finite graph. Each list describes the set of neighbors of a node in the graph.
+
+The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
+
+Example 1:
+
+Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
+Output: [[2,4],[1,3],[2,4],[1,3]]
+Explanation: There are 4 nodes in the graph.
+1st node (val = 1)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+2nd node (val = 2)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+3rd node (val = 3)'s neighbors are 2nd node (val = 2) and 4th node (val = 4).
+4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
+Example 2:
+
+
+Input: adjList = [[]]
+Output: [[]]
+Explanation: Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
+Example 3:
+
+Input: adjList = []
+Output: []
+Explanation: This an empty graph, it does not have any nodes.
+"""
+
+
+# Definition for a Node.
+class Node:
+    def __init__(self, val=0, neighbors=[]):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+
+# from typing import Optional
+# def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
+class Solution:
+    def cloneGraph(self, node: Node | None) -> Node | None:
+        org_to_copy = {}  # Dictionary to map original nodes to their clones
+
+        def clone(node):
+            if node in org_to_copy:  # If the node is already cloned, return the clone
+                return org_to_copy[node]
+
+            new_node = Node(node.val)  # Create a new node with the same value
+            org_to_copy[node] = new_node  # Map the original node to the new clone
+
+            for neighbor in node.neighbors:  # Iterate through all neighbors
+                new_node.neighbors.append(clone(neighbor))  # Recursively clone neighbors and add to the clone's neighbor list
+            
+            return new_node  # Return the cloned node
+
+        return clone(node) if node else None  # Return cloned graph or None if input node is None
+
+
+# [[2, 4], [1, 3], [2, 4], [1, 3]]
+
+node1 = Node(1)
+node2 = Node(2)
+node3 = Node(3)
+node4 = Node(4)
+
+node1.neighbors = [node2, node4]
+node2.neighbors = [node1, node3]
+node3.neighbors = [node2, node4]
+node4.neighbors = [node1, node3]
+node4.neighbors
+node4.neighbors[0].val
+
+new_node = Solution().cloneGraph(node1)
+new_node.val
+
+
+
+
+
+# Islands and Treasure (Walls and Gates)
+# https://neetcode.io/problems/islands-and-treasure
+"""
+You are given a m×n m×n 2D grid initialized with these three possible values:
+-1 - A water cell that can not be traversed.
+0 - A treasure chest.
+INF - A land cell that can be traversed. We use the integer 2^31 - 1 = 2147483647 to represent INF.
+Fill each land cell with the distance to its nearest treasure chest. If a land cell cannot reach a treasure chest than the value should remain INF.
+
+Assume the grid can only be traversed up, down, left, or right.
+
+Example 1:
+
+Input: [
+  [2147483647,-1,0,2147483647],
+  [2147483647,2147483647,2147483647,-1],
+  [2147483647,-1,2147483647,-1],
+  [0,-1,2147483647,2147483647]
+]
+
+Output: [
+  [3,-1,0,1],
+  [2,2,1,-1],
+  [1,-1,2,-1],
+  [0,-1,3,4]
+]
+Example 2:
+
+Input: [
+  [0,-1],
+  [2147483647,2147483647]
+]
+
+Output: [
+  [0,-1],
+  [1,2]
+]
+"""
+(Solution().islandsAndTreasure([[0, -1], [2147483647, 2147483647]]), [[0, -1], [1, 2]])
+(Solution().islandsAndTreasure([[2147483647, 2147483647, 2147483647], [2147483647, -1, 2147483647], [0, 2147483647, 2147483647]]), [[2, 3, 4], [1, -1, 3], [0, 1, 2]])
+(Solution().islandsAndTreasure([[2147483647, -1, 0, 2147483647], [2147483647, 2147483647, 2147483647, -1], [2147483647, -1, 2147483647, -1], [0, -1, 2147483647, 2147483647]]), [[3, -1, 0, 1], [2, 2, 1, -1], [1, -1, 2, -1], [0, -1, 3, 4]])
+
+# dfs, recursion
+# O(n4), O(n2)  - O(n4) = O(n2)2 - may vistit the same land more than once
+class Solution:
+    def islandsAndTreasure(self, grid: list[list[int]]) -> None:
+        rows = len(grid)  # Get the number of rows
+        cols = len(grid[0])  # Get the number of columns
+
+        def dfs(row, col, distance):
+            grid[row][col] = distance  # Mark the current cell with the distance
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Possible 4 directions
+
+            for di, dj in directions:
+                i = row + di  # Calculate the next row
+                j = col + dj  # Calculate the next column
+
+                if (0 <= i < rows and  # Check if row is within bounds
+                    0 <= j < cols and  # Check if column is within bounds
+                    not grid[i][j] in (0, 1) and  # Skip water and land cells
+                    grid[i][j] > distance + 1  # Check if the current distance is smaller
+                ):
+                    dfs(i, j, distance + 1)  # Perform DFS on the next cell
+
+        for row in range(rows):  # Iterate over each row
+            for col in range(cols):  # Iterate over each column
+                if grid[row][col] == 0:  # If the cell is water, start DFS
+                    dfs(row, col, 0)  # Start DFS with distance 0
+
+        return grid  # Return the modified grid
+
+# bfs, iteration, dequeue
+# O(n2), O(n2)
+from collections import deque  # Import deque for efficient queue operations
+
+class Solution:
+    def islandsAndTreasure(self, grid: list[list[int]]) -> None:
+        rows = len(grid)  # Get the number of rows
+        cols = len(grid[0])  # Get the number of columns
+        queue = deque()  # Initialize a queue for BFS
+        visited_land = set()  # Set to keep track of visited land
+
+        def bfs(row, col):
+            # Check if the cell is out of bounds, water (-1), or already visited
+            if (not 0 <= row < rows or
+                not 0 <= col < cols or
+                grid[row][col] == -1 or
+                (row, col) in visited_land
+            ):
+                return  # Stop if any condition is met
+            
+            queue.append((row, col))  # Add the cell to the queue
+            visited_land.add((row, col))  # Mark the cell as visited
+
+        for row in range(rows):  # Iterate over each row
+            for col in range(cols):  # Iterate over each column
+                if grid[row][col] == 0:  # If the cell is land (0)
+                    queue.append((row, col))  # Add the land cell to the queue
+                    visited_land.add((row, col))  # Mark it as visited
+
+        distance = 0  # Initialize distance from the treasure
+
+        while queue:  # While there are cells to process
+            for _ in range(len(queue)):  # Process each cell in the current layer
+                row, col = queue.popleft()  # Get the next cell from the queue
+                grid[row][col] = distance  # Set the current distance in the grid
+                bfs(row + 1, col)  # Explore the cell below
+                bfs(row, col + 1)  # Explore the cell to the right
+                bfs(row - 1, col)  # Explore the cell above
+                bfs(row, col - 1)  # Explore the cell to the left
+
+            distance += 1  # Increment distance for the next layer
+
+        return grid  # Return the modified grid
+
+
+
+
+
+# Rotting Oranges
+# https://leetcode.com/problems/rotting-oranges/description/
+"""
+You are given an m x n grid where each cell can have one of three values:
+
+0 representing an empty cell,
+1 representing a fresh orange, or
+2 representing a rotten orange.
+Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+
+Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+
+Example 1:
+
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+Example 2:
+
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation: The orange in the bottom left corner (row 2, column 0) is never rotten, because rotting only happens 4-directionally.
+Example 3:
+
+Input: grid = [[0,2]]
+Output: 0
+Explanation: Since there are already no fresh oranges at minute 0, the answer is just 0.
+"""
+(Solution().orangesRotting([[2, 1, 1], [1, 1, 0], [0, 1, 1]]), 4)
+(Solution().orangesRotting([[2, 1, 1], [0, 1, 1], [1, 0, 1]]), -1)
+(Solution().orangesRotting([[0, 2]]), 0)
+(Solution().orangesRotting([[0]]), 0)
+
+
+from collections import deque
+
+class Solution:
+    def orangesRotting(self, grid: list[list[int]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        queue = deque()
+        visited_cell = set()
+        fresh_orange = set()
+
+        def bfs(row, col):
+            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Define the four possible directions (right, down, left, up)
+            
+            for di, dj in directions:  # Explore each direction
+                i = row + di
+                j = col + dj
+
+                if (0 <= i < rows and  # Check if within row bounds
+                    0 <= j < cols and  # Check if within column bounds
+                    (i, j) not in visited_cell and  # Ensure the cell has not been visited
+                    grid[i][j] == 1  # Ensure it's a fresh orange
+                ):
+                    queue.append((i, j))  # Add fresh orange to the queue to rot
+                    visited_cell.add((i, j))  # Mark it as visited
+                    fresh_orange.discard((i, j))  # Remove it from the fresh oranges set
+
+        # Initialize BFS with all rotting oranges and record fresh oranges
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == 2:  # Rotting orange
+                    queue.append((row, col))  # Add to the queue
+                    visited_cell.add((row, col))  # Mark it as visited
+                elif grid[row][col] == 1:  # Fresh orange
+                    fresh_orange.add((row, col))  # Add to the fresh orange set
+    
+        if not fresh_orange:
+            return 0
+
+        counter = -1  # Initialize counter for time
+
+        # BFS to rot all fresh oranges
+        while queue:
+            counter += 1  # Increment time for each level/layer of BFS (each minute)
+
+            for _ in range(len(queue)):
+                row, col = queue.popleft()  # Process the current rotten orange
+                bfs(row, col)  # Try to rot neighboring fresh oranges
+
+        # If there are still fresh oranges left, return -1, otherwise return the time taken
+        return -1 if fresh_orange else counter
+
+
+
+
+
+
+(Solution().pacificAtlantic([[1]]), [[0, 0]])
+(sorted((Solution().pacificAtlantic([[1, 2, 2, 3, 5], [3, 2, 3, 4, 4], [2, 4, 5, 3, 1], [6, 7, 1, 4, 5], [5, 1, 1, 2, 4]]))), sorted([[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]]))

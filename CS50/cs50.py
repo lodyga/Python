@@ -336,18 +336,23 @@ Class methods have @classmethod
 import numpy as np
 
 class Hat:
-    # def __init__(self):
-    #     self.houses = ["G", "H", "R", "S"]
     houses = ["G", "H", "R", "S"]
+    
+    def __init__(self):
+        self.houses = ["Q"]  # overrides class attribute
 
     @classmethod
-    def sort(cls, name):
+    def sort(cls, name):  # class method 
         print(f"{name} is in house {np.random.choice(cls.houses)}")
+        print(f"{cls}")
+    
+    def sort2(self, name):  # instance method
+        print(f"{name} is in house {np.random.choice(self.houses)}")
+        print(f"{self}")
 
-# hat = Hat()
-# hat.sort("Harry")
-Hat.sort("Harry")
-
+hat = Hat()
+hat.sort("Harry")
+hat.sort2("Merry")
 
 
 # get students name within class not function

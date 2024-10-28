@@ -18,7 +18,8 @@
 
 # Bit Counting
 # https://www.codewars.com/kata/526571aae218b8ee490006f4
-"""Write a function that takes an integer as input, and returns the number of bits that are equal
+"""
+Write a function that takes an integer as input, and returns the number of bits that are equal
 to one in the binary representation of that number. You can guarantee that input is non-negative.
 Example: The binary representation of 1234 is 10011010010, so the function should return 5 in this case
 
@@ -62,7 +63,8 @@ def count_bits(n):
 
 # Sum of Digits / Digital Root
 # https://www.codewars.com/kata/541c8630095125aba6000c00/train/python
-"""Digital root is the recursive sum of all the digits in a number.
+"""
+Digital root is the recursive sum of all the digits in a number.
 Given n, take the sum of the digits of n. If that value has more than one digit, 
 continue reducing in this way until a single-digit number is produced. The input will be a non-negative integer.
 
@@ -98,7 +100,8 @@ def digital_root(n):
 
 # Detect Pangram
 # https://www.codewars.com/kata/545cedaa9943f7fe7b000048/train/
-"""A pangram is a sentence that contains every single letter of the alphabet at least once.
+"""
+A pangram is a sentence that contains every single letter of the alphabet at least once.
 For example, the sentence "The quick brown fox jumps over the lazy dog" is a pangram, because it uses the letters A-Z at least once (case is irrelevant).
 Given a string, detect whether or not it is a pangram. Return True if it is, False if not. Ignore numbers and punctuation.
 
@@ -148,7 +151,8 @@ def is_pangram(s):
 
 # Multiples of 3 or 5
 # https://www.codewars.com/kata/514b92a657cdc65150000006/train/python
-"""If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9.
+"""
+If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9.
 The sum of these multiples is 23.
 Finish the solution so that it returns the sum of all the multiples of 3 or 5 below the number passed in.
 Additionally, if the number is negative, return 0 (for languages that do have them).
@@ -188,7 +192,8 @@ def solution(numbers):
 
 # The Hashtag Generator
 # https://www.codewars.com/kata/52449b062fb80683ec000024
-"""The marketing team is spending way too much time typing in hashtags.
+"""
+The marketing team is spending way too much time typing in hashtags.
 Let's help them with our own Hashtag Generator!
 
 Here's the deal:
@@ -256,7 +261,8 @@ def generate_hashtag(s):
 
 # Product of consecutive Fib numbers
 # https://www.codewars.com/kata/5541f58a944b85ce6d00006a
-"""The Fibonacci numbers are the numbers in the following integer sequence (Fn):
+"""
+The Fibonacci numbers are the numbers in the following integer sequence (Fn):
 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, ...
 such as
 F(n) = F(n-1) + F(n-2) with F(0) = 0 and F(1) = 1.
@@ -324,7 +330,8 @@ def fib_prod(prod):
 
 # Write Number in Expanded Form
 # https://www.codewars.com/kata/5842df8ccbd22792a4000245
-"""Write Number in Expanded Form
+"""
+Write Number in Expanded Form
 You will be given a number and you will need to return it as a string in Expanded Form. For example:
 
 expanded_form(12) # Should return '10 + 2'
@@ -362,7 +369,8 @@ def expanded_form(num):
 
 # RGB To Hex Conversion
 # https://www.codewars.com/kata/513e08acc600c94f01000001
-"""The rgb function is incomplete. Complete it so that passing in RGB decimal values will result in a hexadecimal representation being returned. Valid decimal values for RGB are 0 - 255. Any values that fall out of that range must be rounded to the closest valid value.
+"""
+The rgb function is incomplete. Complete it so that passing in RGB decimal values will result in a hexadecimal representation being returned. Valid decimal values for RGB are 0 - 255. Any values that fall out of that range must be rounded to the closest valid value.
 
 Note: Your answer should always be 6 characters long, the shorthand with 3 will not work here.
 
@@ -425,7 +433,8 @@ def rgb(r, g, b):
 
 # The observed PIN
 # https://www.codewars.com/kata/5263c6999e0f40dee200059d
-"""Alright, detective, one of our colleagues successfully observed our target person, Robby the robber. We followed him to a secret warehouse, where we assume to find all the stolen stuff. The door to this warehouse is secured by an electronic combination lock. Unfortunately our spy isn't sure about the PIN he saw, when Robby entered it.
+"""
+Alright, detective, one of our colleagues successfully observed our target person, Robby the robber. We followed him to a secret warehouse, where we assume to find all the stolen stuff. The door to this warehouse is secured by an electronic combination lock. Unfortunately our spy isn't sure about the PIN he saw, when Robby entered it.
 
 The keypad has the following layout:
 
@@ -582,16 +591,17 @@ list(product('124', '85790', '01'))
 
 # Maximum subarray sum
 # https://www.codewars.com/kata/54521e9ec8e60bc4de000d6c
-# too slow
-"""The maximum sum subarray problem consists in finding the maximum sum of a contiguous subsequence in an array or list of integers:
+"""
+The maximum sum subarray problem consists in finding the maximum sum of a contiguous subsequence in an array or list of integers:
 
 max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
 # should be 6: [4, -1, 2, 1]
 Easy case is when the list is made up of only positive numbers and the maximum sum is the sum of the whole array. 
 If the list is made up of only negative numbers, return 0 instead.
 
-Empty list is considered to have zero greatest sum. Note that the empty list or array is also a valid sublist/subarray."""
-(max_sequence([-2, 1, -3, 4, -1, 2]))
+Empty list is considered to have zero greatest sum. Note that the empty list or array is also a valid sublist/subarray.
+"""
+(max_sequence([-2, 1, -3, 4, -1, 2]), 5)
 (max_sequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)  # sum([4, -1, 2, 1]) = 6
 (max_sequence([-2]), 0)
 (max_sequence([]), 0)
@@ -599,6 +609,40 @@ Empty list is considered to have zero greatest sum. Note that the empty list or 
 (max_sequence([7, 4, 11, -11, 39, 36, 10, -6, 37, -10, -32, 44, -26, -34, 43, 43]), 155)
 
 
+# dp, tabulation
+# O(n), O(n)
+def max_sequence(nums):  
+    if not nums:  
+        return 0  # Return 0 if the input list is empty
+
+    tabul = [0] * len(nums)  # Initialize the array
+    tabul[0] = max(nums[0], 0)  # Initialize the first element (either nums[0] or 0)
+
+    for index, num in enumerate(nums[1:], 1):  
+        tabul[index] = max(tabul[index - 1] + num, 0)  # Update current element with max of (previous sum + current num) or 0
+
+    return max(tabul)  # Return the maximum value from the tabul list
+
+
+# dp, tabulation
+# O(n), O(1)
+def max_sequence(nums):  
+    if not nums:  
+        return 0  # Return 0 if the input list is empty
+    
+    max_sum = 0  # Initialize max_sum to track the maximum sum encountered
+    current = max(nums[0], 0)  # Initialize current with either nums[0] or 0
+    
+    for num in nums[1:]:  
+        next = max(current + num, 0)  # Calculate the next potential sum (current + num or 0)
+        max_sum = max(max_sum, next)  # Update max_sum if next is greater
+        current = next  # Move to the next number by updating current
+    
+    return max_sum  # Return the largest sum found
+
+
+
+# oldies
 def max_sequence(arr):
     result, current = 0, 0
     for number in arr:
@@ -635,7 +679,8 @@ def max_sequence(arr):
 
 # Weight for weight
 # https://www.codewars.com/kata/55c6126177c9441a570000cc/train/python
-"""My friend John and I are members of the "Fat to Fit Club (FFC)". John is worried because each month a list with the weights of members is published and each month he is the last on the list which means he is the heaviest.
+"""
+My friend John and I are members of the "Fat to Fit Club (FFC)". John is worried because each month a list with the weights of members is published and each month he is the last on the list which means he is the heaviest.
 
 I am the one who establishes the list so I told him: "Don't worry any more, I will modify the order of the list". It was decided to attribute a "weight" to numbers. The weight of a number will be from now on the sum of its digits.
 
@@ -744,7 +789,8 @@ def strip_comments(string, markers):
 
 # Human readable duration format
 # https://www.codewars.com/kata/52742f58faf5485cae000b9a/train/python
-"""Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
+"""
+Your task in order to complete this Kata is to write a function which formats a duration, given as a number of seconds, in a human-friendly way.
 
 The function must accept a non-negative integer. If it is zero, it just returns "now". Otherwise, the duration is expressed as a combination of years, days, hours, minutes and seconds.
 
@@ -821,7 +867,8 @@ def format_duration(num):
 
 # Persistent Bugger.
 # https://www.codewars.com/kata/55bf01e5a717a0d57e0000ec
-"""Write a function, persistence, that takes in a positive parameter num and returns its multiplicative persistence, which is the number of times you must multiply the digits in num until you reach a single digit.
+"""
+Write a function, persistence, that takes in a positive parameter num and returns its multiplicative persistence, which is the number of times you must multiply the digits in num until you reach a single digit.
 
 For example (Input --> Output):
 
@@ -868,7 +915,8 @@ def persistence(num):
 
 # Number of People in the Bus
 # https://www.codewars.com/kata/5648b12ce68d9daa6b000099
-"""There is a bus moving in the city, and it takes and drop some people in each bus stop.
+"""
+There is a bus moving in the city, and it takes and drop some people in each bus stop.
 
 You are provided with a list (or array) of integer pairs. Elements of each pair represent number of people get into bus (The first item) and number of people get off the bus (The second item) in a bus stop.
 
@@ -920,7 +968,8 @@ def number(bus_stops):
 
 # Count of positives / sum of negatives
 # https://www.codewars.com/kata/576bb71bbbcf0951d5000044/train/python
-"""Given an array of integers.
+"""
+Given an array of integers.
 
 Return an array, where the first element is the count of positives numbers and the second element is sum of negative numbers. 0 is neither positive nor negative.
 
@@ -966,20 +1015,13 @@ def count_positives_sum_negatives(arr):
     return [sum(i > 0 for i in arr), sum(i for i in arr if i < 0)]
 
 
-(count_positives_sum_negatives([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14, -15]),[10,-65])
-(count_positives_sum_negatives([0, 2, 3, 0, 5, 6, 7, 8, 9, 10, -11, -12, -13, -14]),[8,-50])
-(count_positives_sum_negatives([1]),[1,0])
-(count_positives_sum_negatives([-1]),[0,-1])
-(count_positives_sum_negatives([0,0,0,0,0,0,0,0,0]),[0,0])
-(count_positives_sum_negatives([]),[])
-
-
 
 
 
 # String repeat
 # https://www.codewars.com/kata/54c27a33fb7da0db0100040e/solutions/python
-"""A square of squares
+"""
+A square of squares
 You like building blocks. You especially like building blocks that are squares. And what you even like more, is to arrange them into a square of square building blocks!
 
 However, sometimes, you can't arrange them into a square. Instead, you end up with an ordinary rectangle! Those blasted things! If you just had a way to know, whether you're currently working in vain… Wait! That's it! You just have to check if your number of building blocks is a perfect square.
@@ -1040,7 +1082,8 @@ def is_square(n):
 
 # Build a pile of Cubes
 # https://www.codewars.com/kata/5592e3bd57b64d00f3000047/train/python
-"""Your task is to construct a building which will be a pile of n cubes. The cube at the bottom will have a volume of n^3, the cube above will have volume of (n-1)^3 and so on until the top which will have a volume of 1^3.
+"""
+Your task is to construct a building which will be a pile of n cubes. The cube at the bottom will have a volume of n^3, the cube above will have volume of (n-1)^3 and so on until the top which will have a volume of 1^3.
 
 You are given the total volume m of the building. Being given m can you find the number n of cubes you will have to build?
 
@@ -1073,7 +1116,8 @@ def find_nb(number):
 
 # Beginner Series #2 Clock
 # https://www.codewars.com/kata/55f9bca8ecaa9eac7100004a/train/python
-"""Clock shows h hours, m minutes and s seconds after midnight.
+"""
+Clock shows h hours, m minutes and s seconds after midnight.
 
 Your task is to write a function which returns the time since midnight in milliseconds.
 
@@ -1107,7 +1151,8 @@ def past(h, m, s):
 
 # Find the next perfect square!
 # https://www.codewars.com/kata/56269eb78ad2e4ced1000013/solutions/python
-"""You might know some pretty large perfect squares. But what about the NEXT one?
+"""
+You might know some pretty large perfect squares. But what about the NEXT one?
 
 Complete the findNextSquare method that finds the next integral perfect square after the one passed as a parameter. Recall that an integral perfect square is an integer n such that sqrt(n) is also an integer.
 
@@ -1148,7 +1193,8 @@ def find_next_square(sq):
 
 # Find the unique number
 # https://www.codewars.com/kata/585d7d5adb20cf33cb000235/train/python
-"""There is an array with some numbers. All numbers are equal except for one. Try to find it!
+"""
+There is an array with some numbers. All numbers are equal except for one. Try to find it!
 
 find_uniq([1, 1, 1, 2, 1, 1]) == 2
 find_uniq([0, 0, 0.55, 0, 0]) == 0.55
@@ -1201,7 +1247,8 @@ def find_uniq(arr):
 
 # Descending Order
 # https://www.codewars.com/kata/5467e4d82edf8bbf40000155/train/python
-"""Your task is to make a function that can take any non-negative integer as an argument and return it with its digits in descending order. Essentially, rearrange the digits to create the highest possible number.
+"""
+Your task is to make a function that can take any non-negative integer as an argument and return it with its digits in descending order. Essentially, rearrange the digits to create the highest possible number.
 
 Examples:
 Input: 42145 Output: 54421
@@ -1222,7 +1269,8 @@ def descending_order(number):
 
 # Duplicate Encoder
 # https://www.codewars.com/kata/54b42f9314d9229fd6000d9c/train/python
-"""The goal of this exercise is to convert a string to a new string where each character in the new string is "(" if that character appears only once in the original string, or ")" if that character appears more than once in the original string. Ignore capitalization when determining if a character is a duplicate.
+"""
+The goal of this exercise is to convert a string to a new string where each character in the new string is "(" if that character appears only once in the original string, or ")" if that character appears more than once in the original string. Ignore capitalization when determining if a character is a duplicate.
 
 Examples
 "din"      =>  "((("
@@ -1278,7 +1326,8 @@ def duplicate_encode(word):
 
 # Counting sheep...
 # https://www.codewars.com/kata/54edbc7200b811e956000556/train/python
-"""Consider an array/list of sheep where some sheep may be missing from their place. We need a function that counts the number of sheep present in the array (true means present).
+"""
+Consider an array/list of sheep where some sheep may be missing from their place. We need a function that counts the number of sheep present in the array (true means present).
 
 For example,
 
@@ -1332,7 +1381,8 @@ def count_sheeps(sheep):
 
 # Highest and Lowest
 # https://www.codewars.com/kata/554b4ac871d6813a03000035
-"""In this little assignment you are given a string of space separated numbers, and have to return the highest and lowest number.
+"""
+In this little assignment you are given a string of space separated numbers, and have to return the highest and lowest number.
 
 Examples
 high_and_low("1 2 3 4 5")  # return "5 1"
@@ -1381,7 +1431,8 @@ max(('8 3 -5 42 -1 0 0 -9 4 7 4 -4').split(), key=int)
 
 # Your order, please
 # https://www.codewars.com/kata/55c45be3b2079eccff00010f/solutions/python
-"""Your task is to sort a given string. Each word in the string will contain a single number. This number is the position the word should have in the result.
+"""
+Your task is to sort a given string. Each word in the string will contain a single number. This number is the position the word should have in the result.
 
 Note: Numbers can be from 1 to 9. So 1 will be the first word (not 0).
 
@@ -1390,12 +1441,26 @@ If the input string is empty, return an empty string. The words in the input Str
 Examples
 "is2 Thi1s T4est 3a"  -->  "Thi1s is2 3a T4est"
 "4of Fo1r pe6ople g3ood th5e the2"  -->  "Fo1r the2 g3ood 4of th5e pe6ople"
-""  -->  """""
+""  -->  ""
+"""
+(order("is2 Thi1s T4est 3a"), "Thi1s is2 3a T4est")
+(order("4of Fo1r pe6ople g3ood th5e the2"), "Fo1r the2 g3ood 4of th5e pe6ople")
+(order(""), "")
 
+
+def extract_digits(word):
+    return "".join(filter(str.isdigit, word))
+    # return "".join(char for char in word if char.isdigit())
 
 def order(sentence):
+    words = sentence.split()
+    words.sort(key=extract_digits)
+    return " ".join(words)
+
+
+# oldies
+def order(sentence):
     return " ".join(sorted(sentence.split(), key=min))
-order("is2 Thi1s T4est 3a")
 
 def order(sentence):
     return " ".join(sorted(sentence.split(), key=sorted))
@@ -1428,17 +1493,13 @@ def order(sentence):
     return ' '.join([sentence_dict[i] for i in range(1, len(sentence_dict) + 1)])
 
 
-test.assert_equals(order("is2 Thi1s T4est 3a"), "Thi1s is2 3a T4est")
-test.assert_equals(order("4of Fo1r pe6ople g3ood th5e the2"), "Fo1r the2 g3ood 4of th5e pe6ople")
-test.assert_equals(order(""), "")
-
-
 
 
 
 # Century From Year
 # https://www.codewars.com/kata/5a3fe3dde1ce0e8ed6000097/train/python
-"""Introduction
+"""
+Introduction
 The first century spans from the year 1 up to and including the year 100, the second century - from the year 101 up to and including the year 200, etc.
 
 Task
@@ -1448,18 +1509,24 @@ Examples
 1705 --> 18
 1900 --> 19
 1601 --> 17
-2000 --> 20"""
+2000 --> 20
+"""
+(century(1705), 18)  # 'Testing for year 1705'
+(century(1900), 19)  # 'Testing for year 1900'
+(century(1601), 17)  # 'Testing for year 1601'
+(century(2000), 20)  # 'Testing for year 2000'
+(century(356), 4)  # 'Testing for year 356'
+(century(89), 1)  # 'Testing for year 89'
 
 
 def century(year):
-    return (year - 1) // 100 + 1
-(century(1705), 18, 'Testing for year 1705')
-(century(1900), 19, 'Testing for year 1900')
-(century(1601), 17, 'Testing for year 1601')
-(century(2000), 20, 'Testing for year 2000')
-(century(356), 4, 'Testing for year 356')
-(century(89), 1, 'Testing for year 89')
+    return year // 100 + bool(year % 100)
 
+def century(year):
+    return ((year - 1) // 100) + 1
+
+
+# oldies
 import numpy as np
 def century(year):
     return int(np.ceil(year / 100))
@@ -1490,22 +1557,24 @@ def century(year):
 
 # Reversed Strings
 # https://www.codewars.com/kata/5168bb5dfe9a00b126000018/solutions/python
-"""Complete the solution so that it reverses the string passed into it.
+"""
+Complete the solution so that it reverses the string passed into it.
 
 'world'  =>  'dlrow'
-'word'   =>  'drow'"""
-
-
-def solution(string):
-    return string[::-1]
+'word'   =>  'drow'
+"""
 (solution('world'), 'dlrow')
 (solution('hello'), 'olleh')
 (solution(''), '')
 (solution('h'), 'h')
 
+
 def solution(string):
-    return ''.join(reversed(string))
-solution('world')
+    return string[::-1]
+
+def solution(string):
+    return "".join(reversed(string))
+
 
 
 
@@ -1513,7 +1582,8 @@ solution('world')
 # Calculating with Functions
 # https://www.codewars.com/kata/525f3eda17c7cd9f9e000b39/python
 # Fist fail, WTF
-"""This time we want to write calculations using functions and get the results. Let's have a look at some examples:
+"""
+This time we want to write calculations using functions and get the results. Let's have a look at some examples:
 
 seven(times(five())) # must return 35
 four(plus(nine())) # must return 13
@@ -1526,29 +1596,41 @@ There must be a function for each of the following mathematical operations: plus
 Each calculation consist of exactly one operation and two numbers
 The most outer function represents the left operand, the most inner function represents the right operand
 Division should be integer division. For example, this should return 2, not 2.666666...:
-eight(divided_by(three()))"""
+eight(divided_by(three()))
+"""
 
+(seven(times(five())), 35)
+(one(plus(seven(times(five())))), 36)
+(four(plus(nine())), 13)
+(eight(minus(three())), 5)
+(six(divided_by(two())), 3)
+
+
+nine(minus(four()))
+minus(four())(nine())
+minus(four())(9)
+minus(4)(9)
 
 def zero(f=None): 
-    return 0 if not f else f(0)
+    return f(0) if f else 0
 def one(f=None): 
-    return 1 if not f else f(1)
+    return f(1) if f else 1
 def two(f=None): 
-    return 2 if not f else f(2)
+    return f(2) if f else 2
 def three(f=None): 
-    return 3 if not f else f(3)
+    return f(3) if f else 3
 def four(f=None): 
-    return 4 if not f else f(4)
+    return f(4) if f else 4
 def five(f=None): 
-    return 5 if not f else f(5)
+    return f(5) if f else 5
 def six(f=None): 
-    return 6 if not f else f(6)
+    return f(6) if f else 6
 def seven(f=None): 
-    return 7 if not f else f(7)
+    return f(7) if f else 7
 def eight(f=None): 
-    return 8 if not f else f(8)
+    return f(8) if f else 8
 def nine(f=None): 
-    return 9 if not f else f(9)
+    return f(9) if f else 9
 
 
 def plus(y):
@@ -1558,10 +1640,15 @@ def minus(y):
 def times(y):
     return lambda x: x * y
 def divided_by(y):
-    return lambda x: x / y
+    return lambda x: x // y
 
-seven(times(five()))
-one(plus(seven(times(five()))))
+def minus(y):
+    def subtract(x):
+        return x - y
+    return subtract
+
+
+
 
 
 id_ = lambda x: x
@@ -1570,13 +1657,7 @@ zero, one, two, three, four, five, six, seven, eight, nine = map(number, range(1
 plus = lambda x: lambda y: y + x
 minus = lambda x: lambda y: y - x
 times = lambda x: lambda y: y * x
-divided_by = lambda x: lambda y: y / x
-
-
-(seven(times(five())), 35)
-(four(plus(nine())), 13)
-(eight(minus(three())), 5)
-(six(divided_by(two())), 3)
+divided_by = lambda x: lambda y: y // x
 
 
 
@@ -1584,35 +1665,25 @@ divided_by = lambda x: lambda y: y / x
 
 # You only need one - Beginner
 # https://www.codewars.com/kata/57cc975ed542d3148f00015b
-"""You will be given an array a and a value x. All you need to do is check whether the provided array contains the value.
+"""
+You will be given an array a and a value x. All you need to do is check whether the provided array contains the value.
 
 Array can contain numbers or strings. X can be either.
 
-Return true if the array contains the value, false if not."""
+Return true if the array contains the value, false if not.
+"""
+(check([66, 101], 66), True)
+(check([101, 45, 75, 105, 99, 107], 107), True)
+(check(['t', 'e', 's', 't'], 'e'), True)
+(check(['what', 'a', 'great', 'kata'], 'kat'), False)
 
 
-def check(seq, elem):
-    return elem in seq
-check([66, 101], 66)
-check(['t', 'e', 's', 't'], 'e')
+def check(sequence, element):
+    return element in sequence
 
 def check(seq, elem):
     # return any([i == elem for i in seq])
     return any([i for i in seq if i == elem])
-
-
-(True, ([66, 101], 66)),
-(False, ([78, 117, 110, 99, 104, 117, 107, 115], 8)),
-(True, ([101, 45, 75, 105, 99, 107], 107)),
-(True, ([80, 117, 115, 104, 45, 85, 112, 115], 45)),
-(True, (['t', 'e', 's', 't'], 'e')),
-(False, (["what", "a", "great", "kata"], "kat")),
-(True, ([66, "codewars", 11, "alex loves pushups"], "alex loves pushups")),
-(False, (["come", "on", 110, "2500", 10, '!', 7, 15], "Come")),
-(True, (["when's", "the", "next", "Katathon?", 9, 7], "Katathon?")),
-(False, ([8, 7, 5, "bored", "of", "writing", "tests", 115], 45)),
-(True, (["anyone", "want", "to", "hire", "me?"], "me?")),
-        
 
 
 
@@ -1620,7 +1691,8 @@ def check(seq, elem):
 
 # Count the smiley faces!
 # https://www.codewars.com/kata/583203e6eb35d7980400002a
-"""Given an array (arr) as an argument complete the function countSmileys that should return the total number of smiling faces.
+"""
+Given an array (arr) as an argument complete the function countSmileys that should return the total number of smiling faces.
 
 Rules for a smiling face:
 
@@ -1638,23 +1710,29 @@ count_smileys([';D', ':-(', ':-)', ';~)']);     // should return 3;
 count_smileys([';]', ':[', ';*', ':$', ';-D']); // should return 1;
 Note
 In case of an empty array return 0. You will not be tested with invalid input (input will always be an array). Order of the face (eyes, nose, mouth) elements will always be the same.
-
 """
+(count_smileys([':)', ';(', ';}', ':-D']), 2)
+(count_smileys([';D', ':-(', ':-)', ';~)']), 3)
+(count_smileys([';]', ':[', ';*', ':$', ';-D']), 1)
+(count_smileys([':D', ':~)', ';~D', ':)']), 4)
 
 
-import re
-def count_smileys(arr):
-    return sum(True for smiley in arr if re.match(r"[:;][-~]?[\)D]", smiley))
-    # return sum(True for smiley in arr if re.search(r'^[;:][~-]?[\)D]$', smiley))
-count_smileys([':)', ';(', ';}', ':-D'])
-count_smileys([';D', ':-(', ':-)', ';~)'])
-count_smileys([';]', ':[', ';*', ':$', ';-D'])
-count_smileys([':D',':~)',';~D',':)'])
+import regex as re
+def count_smileys(smiley_list):
+    pattern = r"[:;][-~]?[\)D]"
+    return sum(True for smiley in smiley_list if re.match(pattern, smiley))
+
+import regex as re
+def count_smileys(smiley_list):
+    pattern = r"^[:;][-~]?[\)D]$"
+    return sum(True for smiley in smiley_list if re.search(pattern, smiley))
 
 import re
 def count_smileys(arr):
     return len(re.findall(r'[;:][~-]?[\)D]', ' '.join(arr)))
 
+
+# oldies
 def count_smileys(arr):
     if not arr:
         return 0
@@ -1670,19 +1748,14 @@ def count_smileys(arr):
                     continue
     return count
 
-test.describe("Basic tests")
-test.assert_equals(count_smileys([]), 0)
-test.assert_equals(count_smileys([':D',':~)',';~D',':)']), 4)
-test.assert_equals(count_smileys([':)',':(',':D',':O',':;']), 2)
-test.assert_equals(count_smileys([';]', ':[', ';*', ':$', ';-D']), 1)
-
 
 
 
 
 # Consecutive strings
 # https://www.codewars.com/kata/56a5d994ac971f1ac500003e
-"""You are given an array(list) strarr of strings and an integer k. Your task is to return the first longest string consisting of k consecutive strings taken in the array.
+"""
+You are given an array(list) strarr of strings and an integer k. Your task is to return the first longest string consisting of k consecutive strings taken in the array.
 
 Examples:
 strarr = ["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"], k = 2
@@ -1701,7 +1774,8 @@ longest_consec(strarr, 2) should return "folingtrashy".
 
 In the same way:
 longest_consec(["zone", "abigail", "theta", "form", "libe", "zas", "theta", "abigail"], 2) --> "abigailtheta"
-n being the length of the string array, if n = 0 or k > n or k <= 0 return "" (return Nothing in Elm)."""
+n being the length of the string array, if n = 0 or k > n or k <= 0 return "" (return Nothing in Elm).
+"""
 
 
 def longest_consec(strarr, k):
@@ -1724,6 +1798,21 @@ def longest_consec(strarr, k):
 (longest_consec(["it","wkppv","ixoyx", "3452", "zzzzzzzzzzzz"], 0), "")
 
 
+def longest_consec(word_list, k):
+    if k < 1:
+        return ""
+    
+    longest_concat = ""
+
+    for index in range(len(word_list) - k + 1):
+        longest_concat = max(longest_concat, 
+                             "".join(word_list[index: index + k]), 
+                             key=len)
+    
+    return longest_concat
+
+
+# oldies
 def longest_consec(strarr, k):
     if (not strarr or
         k > len(strarr) or
@@ -1741,12 +1830,47 @@ def longest_consec(strarr, k):
     return next(filter(lambda x: len(x) == len(max(concat_list, key=len)), concat_list))
 
 
+# solufion for k top length words in order
+def find_k_longest_words(length_list, counter, k):
+    right_word_list = []
+
+    for key in length_list:
+        for word in counter[key]:
+            right_word_list.append(word)
+            k -= 1
+
+            if k == 0:
+                return right_word_list
+
+
+def longest_consec(word_list, k):
+    counter = {}
+    concat_word = ""
+
+    for word in word_list:
+        if not len(word) in counter:
+            counter[len(word)] = []
+
+        counter[len(word)].append(word)
+
+    length_list = sorted(counter.keys(), reverse=True)
+
+    right_word_list = find_k_longest_words(length_list, counter, k)
+
+    for word in word_list:
+        if word in right_word_list:
+            concat_word += word
+
+    return concat_word
+
+
 
 
 
 # Build Tower
 # https://www.codewars.com/kata/576757b1df89ecf5bd00073b/
-"""Build Tower
+"""
+Build Tower
 Build a pyramid-shaped tower given a positive integer number of floors. A tower block is represented with "*" character.
 
 For example, a tower with 3 floors looks like this:
@@ -1755,15 +1879,30 @@ For example, a tower with 3 floors looks like this:
   "  *  ",
   " *** ", 
   "*****"
-]"""
-
-
-def tower_builder(n):
-    return [("*" * (2*i + 1)).center(2*n - 1) for i in range(n)]
-(tower_builder(1), ['*', ])
+]
+"""
+(tower_builder(1), ['*'])
 (tower_builder(2), [' * ', '***'])
 (tower_builder(3), ['  *  ', ' *** ', '*****'])
+"\n".join(tower_builder(3))
 
+
+def tower_builder(floors):
+    tower = []
+
+    for floor in range(floors):  # 0, 1, 2 => 1, 3, 5; 2, 1, 0
+        blank_prefix = (" ") * (floors - floor - 1)
+        tower_floor = blank_prefix
+        tower_floor += ("*") * (2*floor + 1)
+        tower_floor += blank_prefix
+        tower.append(tower_floor)
+
+    return tower
+
+
+# oldies
+def tower_builder(n):
+    return [("*" * (2*i + 1)).center(2*n - 1) for i in range(n)]
 
 f"{'*':^5}"
 def tower_builder(n):
@@ -1781,7 +1920,8 @@ def tower_builder(n):
 
 # Sum without highest and lowest number
 # https://www.codewars.com/kata/576b93db1129fcf2200001e6
-"""Task
+"""
+Task
 Sum all the numbers of a given array ( cq. list ), except the highest and the lowest element ( by value, not by index! ).
 
 The highest or lowest element respectively is a single element at each edge, even if there are more than one with the same value.
@@ -1792,16 +1932,8 @@ Example
 { 6, 2, 1, 8, 10 } => 16
 { 1, 1, 11, 2, 3 } => 6
 Input validation
-If an empty value ( null, None, Nothing etc. ) is given instead of an array, or the given array is an empty list or a list with only 1 element, return 0."""
-
-
-def sum_array(arr):
-    if not arr or len(arr) <= 2:
-        return 0
-    arr.remove(max(arr))
-    arr.remove(min(arr))
-    return sum(arr)
-    # return sum(arr) - min(arr) - max(arr)
+If an empty value ( null, None, Nothing etc. ) is given instead of an array, or the given array is an empty list or a list with only 1 element, return 0.
+"""
 (sum_array(None), 0)
 (sum_array([]), 0)
 (sum_array([3]), 0)
@@ -1814,12 +1946,43 @@ def sum_array(arr):
 (sum_array([-6, 20, -1, 10, -12]), 3)
 
 
+def sum_array(nums):
+    if (not nums or
+        len(nums) < 3
+    ):
+        return 0
+
+    min_num = nums[0]
+    max_num = nums[0]
+    num_sum = 0
+
+    for num in nums:
+        num_sum += num
+        
+        if num < min_num:
+            min_num = num
+        elif num > max_num:
+            max_num = num
+
+    return num_sum - max_num - min_num
+
+
+def sum_array(arr):
+    if not arr or len(arr) <= 2:
+        return 0
+    arr.remove(max(arr))
+    arr.remove(min(arr))
+    return sum(arr)
+    # return sum(arr) - min(arr) - max(arr)
+
+
 
 
 
 # Are You Playing Banjo?
 # https://www.codewars.com/kata/53af2b8861023f1d88000832
-"""Create a function which answers the question "Are you playing banjo?".
+"""
+Create a function which answers the question "Are you playing banjo?".
 If your name starts with the letter "R" or lower case "r", you are playing banjo!
 
 The function takes a name as its only argument, and returns one of the following strings:
@@ -1827,7 +1990,17 @@ The function takes a name as its only argument, and returns one of the following
 name + " plays banjo" 
 name + " does not play banjo"
 """
+(are_you_playing_banjo("martin"), "martin does not play banjo")
+(are_you_playing_banjo("Rikke"), "Rikke plays banjo")
+(are_you_playing_banjo("bravo"), "bravo does not play banjo")
+(are_you_playing_banjo("rolf"), "rolf plays banjo")
 
+
+def are_you_playing_banjo(name):
+    if name[0].upper() == "R":
+        return f"{name} plays banjo"
+    else:
+        return f"{name} does not play banjo"
 
 def are_you_playing_banjo(name):
     return name + " plays banjo" if name[0].lower() == "r" else name + " does not play banjo"
@@ -1837,18 +2010,13 @@ def are_you_playing_banjo(name):
 are_you_playing_banjo('rartin')
 
 
-(are_you_playing_banjo("martin"), "martin does not play banjo");
-(are_you_playing_banjo("Rikke"), "Rikke plays banjo");
-(are_you_playing_banjo("bravo"), "bravo does not play banjo")
-(are_you_playing_banjo("rolf"), "rolf plays banjo")
-
-
 
 
 
 # Remove the minimum
 # https://www.codewars.com/kata/563cf89eb4747c5fb100001b
-"""Task
+"""
+Task
 Given an array of integers, remove the smallest value. Do not mutate the original array/list. If there are multiple elements with the same value, remove the one with a lower index. If you get an empty array/list, return an empty array/list.
 
 Don't change the order of the elements that are left.
@@ -1856,19 +2024,25 @@ Don't change the order of the elements that are left.
 Examples
 * Input: [1,2,3,4,5], output= [2,3,4,5]
 * Input: [5,3,2,1,4], output = [5,3,2,4]
-* Input: [2,2,1,2,1], output = [2,2,2,1]"""
+* Input: [2,2,1,2,1], output = [2,2,2,1]
+"""
+(remove_smallest([1, 2, 3, 4, 5]), [2, 3, 4, 5])
+(remove_smallest([5, 3, 2, 1, 4]), [5, 3, 2, 4])
+(remove_smallest([1, 2, 3, 1, 1]), [2, 3, 1, 1])
+(remove_smallest([]), [])
 
 
-def remove_smallest(numbers):
-    if not numbers:
+def remove_smallest(nums):
+    if (not nums or
+        len(nums) == 1
+    ):
         return []
-    num = numbers[:]
-    num.remove(min(numbers[:]))
-    return num
-(remove_smallest([1, 2, 3, 4, 5]), [2, 3, 4, 5], "Wrong result for [1, 2, 3, 4, 5]")
-(remove_smallest([5, 3, 2, 1, 4]), [5, 3, 2, 4], "Wrong result for [5, 3, 2, 1, 4]")
-(remove_smallest([1, 2, 3, 1, 1]), [2, 3, 1, 1], "Wrong result for [1, 2, 3, 1, 1]")
-(remove_smallest([]), [], "Wrong result for []")
+    
+    nums_copy = nums.copy()
+    min_num = min(nums)
+    nums_copy.remove(min_num)
+
+    return nums_copy
 
 
 
@@ -1876,7 +2050,8 @@ def remove_smallest(numbers):
 
 # Two to One
 # https://www.codewars.com/kata/5656b6906de340bd1b0000ac
-"""Take 2 strings s1 and s2 including only letters from ato z. Return a new sorted string, the longest possible, containing distinct letters - each taken only once - coming from s1 or s2.
+"""
+Take 2 strings s1 and s2 including only letters from ato z. Return a new sorted string, the longest possible, containing distinct letters - each taken only once - coming from s1 or s2.
 
 Examples:
 a = "xyaabbbccccdefww"
@@ -1884,14 +2059,15 @@ b = "xxxxyyyyabklmopq"
 longest(a, b) -> "abcdefklmopqwxy"
 
 a = "abcdefghijklmnopqrstuvwxyz"
-longest(a, a) -> "abcdefghijklmnopqrstuvwxyz""""
-
-
-def longest(a1, a2):
-    return ''.join(sorted(set(a1) | set(a2)))
+longest(a, a) -> "abcdefghijklmnopqrstuvwxyz"
+"""
 (longest("aretheyhere", "yestheyarehere"), "aehrsty")
 (longest("loopingisfunbutdangerous", "lessdangerousthancoding"), "abcdefghilnoprstu")
 (longest("inmanylanguages", "theresapairoffunctions"), "acefghilmnoprstuy")
+
+
+def longest(word1, word2):
+    return "".join(sorted(set(word1) | set(word2)))
 
 def longest(a1, a2):
     return ''.join(sorted(set(a1 + a2)))
@@ -1902,28 +2078,35 @@ def longest(a1, a2):
 
 # Unique In Order
 # https://www.codewars.com/kata/54e6533c92449cc251001667
-"""Implement the function unique_in_order which takes as argument a sequence and returns a list of items without any elements with the same value next to each other and preserving the original order of elements.
+"""
+Implement the function unique_in_order which takes as argument a sequence and returns a list of items without any elements with the same value next to each other and preserving the original order of elements.
 
 For example:
 
 unique_in_order('AAAABBBCCDAABBB') == ['A', 'B', 'C', 'D', 'A', 'B']
 unique_in_order('ABBCcAD')         == ['A', 'B', 'C', 'c', 'A', 'D']
-unique_in_order([1,2,2,3,3])       == [1,2,3]"""
+unique_in_order([1,2,2,3,3])       == [1,2,3]
+"""
+(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])
+(unique_in_order('ABBCcAD'), ['A', 'B', 'C', 'c', 'A', 'D'])
+(unique_in_order([1, 2, 2, 3, 3]), [1, 2, 3])
+(unique_in_order([]), [])
+
 
 def unique_in_order(iterable):
     if not iterable:
         return []
-    unique_lst = []
-    unique_lst.append(iterable[0])
-    for i in iterable[1:]:
-        if i != unique_lst[-1]:
-            unique_lst.append(i)
-    return unique_lst
-(unique_in_order('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])
-(unique_in_order('ABBCcAD'), ['A', 'B', 'C', 'c', 'A', 'D'])
-(unique_in_order([1, 2, 2, 3, 3]), [1, 2, 3])
+
+    unique_in_order_list = [iterable[0]]
+    
+    for element in iterable[1:]:
+        if element != unique_in_order_list[-1]:
+            unique_in_order_list.append(element)
+
+    return unique_in_order_list
 
 
+# oldies
 def unique_in_order(iterable):
     if not iterable:
         return []
@@ -1948,7 +2131,8 @@ def unique_in_order(iterable):
 
 # Bouncing Balls
 # https://www.codewars.com/kata/5544c7a5cb454edb3c000047
-"""A child is playing with a ball on the nth floor of a tall building. The height of this floor, h, is known.
+"""
+A child is playing with a ball on the nth floor of a tall building. The height of this floor, h, is known.
 
 He drops the ball out of the window. The ball bounces (for example), to two-thirds of its height (a bounce of 0.66).
 
@@ -1970,37 +2154,30 @@ Examples:
 
 - h = 3, bounce = 1, window = 1.5, result is -1 
 
-(Condition 2) not fulfilled)."""
-
-
-def bouncing_ball(h, bounce, window):
-    # if (h * bounce < window or
-    #     h <= 0 or
-    #     bounce <= 0 or
-    #     bounce >= 1 or
-    #     window >= h):
-    #         return -1
-    if not (h > 0 
-            and 0 < bounce < 1 
-            and window < h):
-        return -1
-    counter = 1
-    while h * bounce > window:
-        counter += 2
-        h *= bounce
-    return counter
+(Condition 2) not fulfilled).
+"""
 (bouncing_ball(2, 1, 1), -1)
 (bouncing_ball(2, 0.5, 1), 1)
 (bouncing_ball(3, 0.66, 1.5), 3)
 (bouncing_ball(30, 0.66, 1.5), 15)
 (bouncing_ball(30, 0.75, 1.5), 21)
 
-def bouncing_ball(h, bounce, window):
-    if not (h > 0 
-            and 0 < bounce < 1 
-            and window < h):
+
+def bouncing_ball(height, bounce, window):
+    if (height < 0 or
+        bounce <= 0 or
+        bounce >= 1 or
+        window >= height
+    ):
         return -1
-    return 2 + bouncing_ball(bounce * h, bounce, window)
+    
+    counter = 1
+
+    while height * bounce > window:
+        counter += 2
+        height *= bounce
+
+    return counter
 
 
 
@@ -2008,25 +2185,32 @@ def bouncing_ball(h, bounce, window):
 
 # Sum of positive
 # https://www.codewars.com/kata/5715eaedb436cf5606000381
-"""You get an array of numbers, return the sum of all of the positives ones.
+"""
+You get an array of numbers, return the sum of all of the positives ones.
 
 Example [1,-4,7,12] => 1 + 7 + 12 = 20
 
-Note: if there is nothing to sum, the sum is default to 0."""
-
-
-def positive_sum(arr):
-    return sum(filter(lambda x: x > 0, arr))
+Note: if there is nothing to sum, the sum is default to 0.
+"""
 (positive_sum([1, -4, 7, 12]), 20)
 (positive_sum([1, 2, 3, 4, 5]), 15)
 (positive_sum([1, -2, 3, 4, 5]), 13)
 (positive_sum([-1, 2, 3, 4, -5]), 9)
-
-def positive_sum(arr):
-    return sum(i for i in arr if i > 0)
+(positive_sum([]), 0)
 
 
-        
+def positive_sum(nums):
+    positive_nums = filter(lambda num: num > 0, nums)
+
+    return sum(positive_nums)
+
+
+def positive_sum(nums):
+    return sum(filter(lambda num: num > 0, nums))
+
+
+def positive_sum(nums):
+    return sum(num for num in nums if num > 0)
 
 
 
@@ -2034,25 +2218,27 @@ def positive_sum(arr):
 
 # Beginner - Lost Without a Map
 # https://www.codewars.com/kata/57f781872e3d8ca2a000007e
-"""Given an array of integers, return a new array with each value doubled.
+"""
+Given an array of integers, return a new array with each value doubled.
 
 For example:
 
-[1, 2, 3] --> [2, 4, 6]"""
-
-
-def maps(a):
-    return [number * 2 for number in a]
+[1, 2, 3] --> [2, 4, 6]
+"""
 (maps([1, 2, 3]), [2, 4, 6])
 (maps([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), [0, 2, 4, 6, 8, 10, 12, 14, 16, 18])
 (maps([]), [])
 
-def maps(a):
-    return list(map(lambda x: x * 2, a))
+
+def maps(nums):
+    return [num * 2 for num in nums]
+
+def maps(nums):
+    return list(map(lambda num: num * 2, nums))
 
 import numpy as np
-def maps(a):
-    return list(2 * np.array(a))
+def maps(nums):
+    return list(2 * np.array(nums))
 
 
 
@@ -2060,24 +2246,32 @@ def maps(a):
 
 # String ends with?
 # https://www.codewars.com/kata/51f2d1cafc9c0f745c00037d/
-"""Complete the solution so that it returns true if the first argument(string) passed in ends with the 2nd argument (also a string).
+"""
+Complete the solution so that it returns true if the first argument(string) passed in ends with the 2nd argument (also a string).
 
 Examples:
 
 solution('abc', 'bc') # returns true
-solution('abc', 'd') # returns false"""
-
-
-def solution(string, ending):
-    return string.endswith(ending)
+solution('abc', 'd') # returns false
+"""
 (solution('abcde', 'cde'), True)
 (solution('abcde', 'abc'), False)
 (solution('abcde', ''), True)
 
-def solution(string, ending):
+
+def solution(text, ending):
+    return text.endswith(ending)
+
+def solution(text, ending):
+    return (
+        not ending or
+        text[-len(ending):] == ending
+    )
+
+def solution(text, ending):
     if not ending:
         return True
-    return ending == string[-len(ending):]
+    return ending == text[-len(ending):]
 
 
 
@@ -2098,23 +2292,33 @@ Input -> Output
 1,2,3 -> false
 -5,1,3 -> false
 0,2,3 -> false
-1,2,9 -> false """
+1,2,9 -> false 
+"""
+(is_triangle(1, 2, 2), True)
+(is_triangle(7, 2, 2), False)
+(is_triangle(1, 2, 3), False)
+(is_triangle(1, 3, 2), False)
+(is_triangle(3, 1, 2), False)
+(is_triangle(5, 1, 2), False)
+(is_triangle(1, 2, 5), False)
+(is_triangle(2, 5, 1), False)
+(is_triangle(4, 2, 3), True)
+(is_triangle(5, 1, 5), True)
+(is_triangle(2, 2, 2), True)
 
 
 def is_triangle(a, b, c):
+    return (
+        a < b + c and
+        b < a + c and
+        c < a + b
+    )
+
+
+# oldies
+def is_triangle(a, b, c):
     a, b, c = sorted((a, b, c))
     return a + b > c
-is_triangle(1, 2, 2)
-is_triangle(7, 2, 2)
-is_triangle(1, 2, 3)
-is_triangle(1, 3, 2)
-is_triangle(3, 1, 2)
-is_triangle(5, 1, 2)
-is_triangle(1, 2, 5)
-is_triangle(2, 5, 1)
-is_triangle(4, 2, 3)
-is_triangle(5, 1, 5)
-is_triangle(2, 2, 2)
 
 def is_triangle(a, b, c):
     return 2 * max((a, b, c)) < sum((a, b, c))
@@ -2128,7 +2332,8 @@ def is_triangle(a, b, c):
 
 # Replace With Alphabet Position
 # https://www.codewars.com/kata/546f922b54af40e1e90001da/train/python
-"""In this kata you are required to, given a string, replace every letter with its position in the alphabet.
+"""
+In this kata you are required to, given a string, replace every letter with its position in the alphabet.
 
 If anything in the text isn't a letter, ignore it and don't return it.
 
@@ -2136,14 +2341,28 @@ If anything in the text isn't a letter, ignore it and don't return it.
 
 Example
 alphabet_position("The sunset sets at twelve o' clock.")
-Should return "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11" ( as a string )"""
+Should return "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11" ( as a string )
+"""
+(alphabet_position("The sunset sets at twelve o' clock."), "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
+(alphabet_position("The narwhal bacons at midnight."), "20 8 5 14 1 18 23 8 1 12 2 1 3 15 14 19 1 20 13 9 4 14 9 7 8 20")
+(alphabet_position(""), "")
+(alphabet_position(',6?->(?)'), "")
 
+
+def alphabet_position(text):
+    filtered_text = filter(lambda letter: letter.isalpha(), text)
+    position_list = [str(ord(letter.lower()) - ord("a") + 1) for letter in filtered_text]
+    return " ".join(position_list)
+
+
+# oldies
+def alphabet_position(text):
+    position_list = [ord(letter.lower()) - ord("a") + 1 for letter in text if letter.isalpha()]
+    return position_list
 
 def alphabet_position(text):
     # return ' '.join(str(ord(i) - 96) for i in text.lower() if i.isalpha())
     return ' '.join(str(ord(i) - ord("a") + 1) for i in text.lower() if i.isalpha())
-(alphabet_position("The sunset sets at twelve o' clock."), "20 8 5 19 21 14 19 5 20 19 5 20 19 1 20 20 23 5 12 22 5 15 3 12 15 3 11")
-(alphabet_position("The narwhal bacons at midnight."), "20 8 5 14 1 18 23 8 1 12 2 1 3 15 14 19 1 20 13 9 4 14 9 7 8 20")
 
 import string
 def alphabet_position(text):
@@ -2165,21 +2384,37 @@ def alphabet_position(text):
 
 # Mexican Wave
 # https://www.codewars.com/kata/58f5c63f1e26ecda7e000029
-"""Task
+"""
+Task
 In this simple Kata your task is to create a function that turns a string into a Mexican Wave. You will be passed a string and you must return that string in an array where an uppercase letter is a person standing up. 
 Rules
  1.  The input string will always be lower case but maybe empty.
  2.  If the character in the string is whitespace then pass over it as if it was an empty seat
 Example
-wave("hello") => ["Hello", "hEllo", "heLlo", "helLo", "hellO"]"""
+wave("hello") => ["Hello", "hEllo", "heLlo", "helLo", "hellO"]
+"""
+(wave('hello'), ["Hello", "hEllo", "heLlo", "helLo", "hellO"])
+(wave('codewars'), ["Codewars", "cOdewars", "coDewars", "codEwars", "codeWars", "codewArs", "codewaRs", "codewarS"])
+(wave(' gap'), [' Gap', ' gAp', ' gaP'])
 
 
+def wave(word):
+    mexican_wave = []
+
+    for index in range(len(word)):
+        if word[index].isalpha():
+            mexican_wave.append(
+                word[:index] + 
+                word[index].upper() + 
+                word[index + 1:]
+            )
+
+    return mexican_wave
+
+
+# oldies
 def wave(people):
     return [people[:i] + people[i].upper() + people[i+1:] for i in range(len(people)) if people[i].isalpha()]
-wave('hello')
-wave('')
-wave('codewars')
-result = ["Codewars", "cOdewars", "coDewars", "codEwars", "codeWars", "codewArs", "codewaRs", "codewarS"]
 
 
 
@@ -2200,11 +2435,6 @@ The array will always have at least 2 elements1 and all elements will be numbers
 """
 
 
-def first_non_consecutive(arr):
-    for ind, number in enumerate(arr[1:]):
-        if number != arr[ind] + 1:
-            return number
-    return None
 (first_non_consecutive([1, 2, 3, 4, 6, 7, 8]), 6)
 (first_non_consecutive([1, 2, 3, 4, 5, 6, 7, 8]), None)
 (first_non_consecutive([4, 6, 7, 8, 9, 11]), 6)
@@ -2214,34 +2444,39 @@ def first_non_consecutive(arr):
 (first_non_consecutive([-5, -4, -3, -1]), -1)
 
 
-def first_non_consecutive(arr):
-    for i in range(len(arr) - 1):
-        if arr[i+1] - arr[i] != 1:
-            return arr[i+1]
+def first_non_consecutive(nums):
+    for index in range(1, len(nums)):
+        if nums[index] != nums[index - 1] + 1:
+            return nums[index]
+
     return None
-
-def first_non_consecutive(arr):
-    for i, v in enumerate(arr, arr[0]):
-        if v != i:
-            return v
-
 
 
 
 
 # Jaden Casing Strings
 # https://www.codewars.com/kata/5390bac347d09b7da40006f6
-"""Your task is to convert strings to how they would be written by Jaden Smith. The strings are actual quotes from Jaden Smith, but they are not capitalized in the same way he originally typed them.
+"""
+Your task is to convert strings to how they would be written by Jaden Smith. The strings are actual quotes from Jaden Smith, but they are not capitalized in the same way he originally typed them.
 
 Example:
 
 Not Jaden-Cased: "How can mirrors be real if our eyes aren't real"
 Jaden-Cased:     "How Can Mirrors Be Real If Our Eyes Aren't Real"
 """
+(to_jaden_case("How can mirrors be real if our eyes aren't real"), "How Can Mirrors Be Real If Our Eyes Aren't Real")
 
+
+def to_jaden_case(sentence):
+    word_list = sentence.split()
+    cap_word_list = [word.capitalize() for word in word_list]
+        
+    return " ".join(cap_word_list)
+
+
+# oldies
 def to_jaden_case(string_text):
     return ' '.join(i.capitalize() for i in string_text.split())
-(to_jaden_case("How can mirrors be real if our eyes aren't real"), "How Can Mirrors Be Real If Our Eyes Aren't Real")
 
 def to_jaden_case(string_text):
     return ' '.join(map(str.capitalize, string_text.split()))
@@ -2258,7 +2493,8 @@ def to_jaden_case(string_text):
 
 # Find the odd int
 # https://www.codewars.com/kata/54da5a58ea159efa38000836
-"""Given an array of integers, find the one that appears an odd number of times.
+"""
+Given an array of integers, find the one that appears an odd number of times.
 
 There will always be only one integer that appears an odd number of times.
 
@@ -2267,11 +2503,8 @@ Examples
 [0] should return 0, because it occurs 1 time (which is odd).
 [1,1,2] should return 2, because it occurs 1 time (which is odd).
 [0,1,0,1,0] should return 0, because it occurs 3 times (which is odd).
-[1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd)."""
-
-
-def find_it(seq):
-    return [number for number in set(seq) if seq.count(number) % 2][0]
+[1,2,2,3,3,3,4,3,3,3,2,2,1] should return 4, because it appears 1 time (which is odd).
+"""
 (find_it([1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 2, 2, 1]), 4)
 (find_it([20, 1, -1, 2, -2, 3, 3, 5, 5, 1, 2, 4, 20, 4, -1, -2, 5]), 5)
 (find_it([1, 1, 2, -2, 5, 2, 4, 4, -1, -2, 5]), -1)
@@ -2280,6 +2513,25 @@ def find_it(seq):
 (find_it([10, 10, 10]), 10)
 (find_it([1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1]), 10)
 (find_it([5, 4, 3, 2, 1, 5, 4, 3, 2, 10, 10]), 1)
+
+
+def find_it(nums):
+    counter = {}
+
+    for num in nums:
+        counter[num] = counter.get(num, 0) + 1
+
+    for key in counter:
+        if counter[key] % 2:
+            return key
+    
+    return None
+
+
+# oldies
+def find_it(seq):
+    return [number for number in set(seq) if seq.count(number) % 2][0]
+
 
 def find_it(seq):
     for number in set(seq):
@@ -2304,7 +2556,8 @@ def find_it(seq):
 
 # Highest Scoring Word
 # https://www.codewars.com/kata/57eb8fcdf670e99d9b000272
-"""Given a string of words, you need to find the highest scoring word.
+"""
+Given a string of words, you need to find the highest scoring word.
 Each letter of a word scores points according to its position in the alphabet: a = 1, b = 2, c = 3 etc.
 You need to return the highest scoring word as a string.
 If two words score the same, return the word that appears earliest in the original string.
@@ -2312,17 +2565,6 @@ All letters will be lowercase and all inputs will be valid.
 
 (high('take me to semynak'), 'semynak')
 """
-
-
-def high(x):
-    longest_score = 0
-    longest_word = ""
-    for word in x.split():
-        word_score = sum(ord(letter) - 96 for letter in word)
-        if word_score > longest_score:
-            longest_score = word_score
-            longest_word = word
-    return longest_word
 (high('man i need a taxi up to ubud'), 'taxi')
 (high('what time are we climbing up the volcano'), 'volcano')
 (high('take me to semynak'), 'semynak')
@@ -2333,6 +2575,26 @@ def high(x):
 (high("aaa b"), "aaa")
 
 
+def count_word_score(word):
+    return sum(ord(letter) - ord("a") + 1 for letter in word)
+
+def high(text):
+    return max(text.split(), key=count_word_score)
+
+
+def high(text):
+    top_word = ""
+    top_word_score = 0
+
+    for word in text.split():
+        if count_word_score(word) > top_word_score:
+            top_word = word
+            top_word_score = count_word_score(word)
+
+    return top_word
+
+
+# oldies
 def high(x):
     word_list = [sum(ord(j) - 96 for j in i) for i in x.split()]
     return x.split()[word_list.index(max(word_list))]
@@ -2353,22 +2615,24 @@ def high(x):
 
 # Reverse words
 # https://www.codewars.com/kata/5259b20d6021e9e14c0010d4
-"""Complete the function that accepts a string parameter, and reverses each word in the string. All spaces in the string should be retained.
+"""
+Complete the function that accepts a string parameter, and reverses each word in the string. All spaces in the string should be retained.
 
 Examples
 "This is an example!" ==> "sihT si na !elpmaxe"
 "double  spaces"      ==> "elbuod  secaps"
 """
-
-
-# string.split(' ') works
-def reverse_words(text):
-    return " ".join(word[::-1] for word in text.split(" "))
 (reverse_words('The quick brown fox jumps over the lazy dog.'), 'ehT kciuq nworb xof spmuj revo eht yzal .god')
 (reverse_words('apple'), 'elppa')
 (reverse_words('a b c d'), 'a b c d')
 (reverse_words('double  spaced  words'), 'elbuod  decaps  sdrow')
 
+
+def reverse_words(text):
+    return " ".join(word[::-1] for word in text.split(" "))
+
+
+# oldies
 def reverse_words(text):
     return ' '.join(''.join(reversed(i)) for i in text.split(' '))
 
@@ -2390,60 +2654,59 @@ def reverse_words(text):
 
 # Vowel Count
 # https://www.codewars.com/kata/54ff3102c1bad923760001f3
-"""Return the number (count) of vowels in the given string.
+"""
+Return the number (count) of vowels in the given string.
 
 We will consider a, e, i, o, u as vowels for this Kata (but not y).
 
-The input string will only consist of lower case letters and/or spaces."""
+The input string will only consist of lower case letters and/or spaces.
+"""
+(get_count("abracadabra"), 5)
 
 
-def get_count(sentence):
-    return sum(letter in 'aeiou' for letter in sentence)
-    # return sum(True for letter in sentence if letter in 'aeiou')
-(get_count("abracadabra"), 5, f"Incorrect answer for \"abracadabra\"")
+def is_vowel(letter):
+    return letter in "aeoiu"
+
+def get_count(word):
+    return sum(map(is_vowel, word))
+    # return sum(True for letter in word if is_vowel(letter))
+    # return sum(is_vowel(letter) for letter in word)
+    # return len(list(filter(is_vowel, word)))
+    # return sum(map(lambda letter: is_vowel(letter), word))
 
 import re
-def get_count(sentence):
-    return len(re.findall(r"[aeiou]", sentence))
-
-def get_count(sentence):
-    return sum(map(lambda x: x in "aeoiu", sentence))
-    # return sum(map(lambda x: True if x in 'aeiou' else False, sentence))
+def get_count(word):
+    return len(re.findall(r"[aeiou]", word))
 
 
 
 
 
-# Can we divide it?
-# https://www.codewars.com/kata/5a2b703dc5e2845c0900005a
-"""Your task is to create the functionisDivideBy (or is_divide_by) to check if an integer number is divisible by both integers a and b.
+# Is n divisible by x and y?
+# https://www.codewars.com/kata/5545f109004975ea66000086/train
+"""
+Create a function that checks if a number n is divisible by two numbers x AND y. All inputs are positive, non-zero numbers.
 
-A few cases:
+Examples:
+1) n =   3, x = 1, y = 3 =>  true because   3 is divisible by 1 and 3
+2) n =  12, x = 2, y = 6 =>  true because  12 is divisible by 2 and 6
+3) n = 100, x = 5, y = 3 => false because 100 is not divisible by 3
+4) n =  12, x = 7, y = 5 => false because  12 is neither divisible by 7 nor 5
+"""
+(is_divisible(8, 2, 4), True)
+(is_divisible(12, -3, 4), True)
+(is_divisible(8, 3, 4), False)
+(is_divisible(48, 2, -5), False)
+(is_divisible(-100, -25, 10), True)
+(is_divisible(10000, 5, -3), False)
+(is_divisible(4, 4, 2), True)
+(is_divisible(5, 2, 3), False)
+(is_divisible(-96, 25, 17), False)
+(is_divisible(33, 1, 33), True)
 
-
-(-12, 2, -6)  ->  true
-(-12, 2, -5)  ->  false
-
-(45, 1, 6)    ->  false
-(45, 5, 15)   ->  true
-
-(4, 1, 4)     ->  true
-(15, -5, 3)   ->  true"""
-
-
-def is_divide_by(number, a, b):
-    return not number % a and not number % b
-    # return not (number % a or number % b)
-(is_divide_by(8, 2, 4), True)
-(is_divide_by(12, -3, 4), True)
-(is_divide_by(8, 3, 4), False)
-(is_divide_by(48, 2, -5), False)
-(is_divide_by(-100, -25, 10), True)
-(is_divide_by(10000, 5, -3), False)
-(is_divide_by(4, 4, 2), True)
-(is_divide_by(5, 2, 3), False)
-(is_divide_by(-96, 25, 17), False)
-(is_divide_by(33, 1, 33), True)
+def is_divisible(num, divider_1, divider_2):
+    return not num % divider_1 and not num % divider_2
+    # return not (num % divider_1 or num % divider_2)
 
 
 
@@ -2451,7 +2714,8 @@ def is_divide_by(number, a, b):
 
 # Poker cards encoder/decoder
 # https://www.codewars.com/kata/52ebe4608567ade7d700044a/
-"""Consider a deck of 52 cards, which are represented by a string containing their suit and face value.
+"""
+Consider a deck of 52 cards, which are represented by a string containing their suit and face value.
 
 Your task is to write two functions encode and decode that translate an array of cards to/from an array of integer codes.
 
@@ -2493,23 +2757,15 @@ spade         s            3
  9: T      22: T      35: T      48: T
 10: J      23: J      36: J      49: J
 11: Q      24: Q      37: Q      50: Q
-12: K      25: K      38: K      51: K"""
-
-
-def encode(cards):
-    figures = "A23456789TJQK"
-    symbols = "cdhs"
-    return sorted(figures.index(figure) + symbols.index(symbol) * 13 for figure, symbol in cards)
-(encode(['Ac', 'Ks', '5h', 'Td', '3c']), [0, 2 ,22, 30, 51])
+12: K      25: K      38: K      51: K
+"""
+(encode(['Ac', 'Ks', '5h', 'Td', '3c']), [0, 2, 22, 30, 51])
 (encode(["Td", "8c", "Ks"]), [7, 22, 51])
 (encode(["Qh", "5h", "Ad"]), [13, 30, 37])
 (encode(["8c", "Ks", "Td"]), [7, 22, 51])
 (encode(["Qh", "Ad", "5h"]), [13, 30, 37])
+(encode(["5h", "7c", "Qh", "Qs", "Ad"]), [6, 13, 30, 37, 50])
 
-def decode(cards):
-    figures = 'A23456789TJQK'
-    symbols = 'cdhs'
-    return [figures[card % 13] + symbols[card // 13] for card in sorted(cards)]
 (decode([0, 51, 30, 22, 2]), ['Ac', '3c', 'Td', '5h', 'Ks'])
 (decode([7, 22, 51]), ["8c", "Td", "Ks"])
 (decode([13, 30, 37]), ["Ad", "5h", "Qh"])
@@ -2517,34 +2773,70 @@ def decode(cards):
 (decode([13, 37, 30]), ["Ad", "5h", "Qh"])
 
 
-encoding_dict = {'Ac': 0, 'Ad': 13, 'Ah': 26, 'As': 39,
-                 '2c': 1, '2d': 14, '2h': 27, '2s': 40,
-                 '3c': 2, '3d': 15, '3h': 28, '3s': 41,
-                 '4c': 3, '4d': 16, '4h': 29, '4s': 42,
-                 '5c': 4, '5d': 17, '5h': 30, '5s': 43,
-                 '6c': 5, '6d': 18, '6h': 31, '6s': 44,
-                 '7c': 6, '7d': 19, '7h': 32, '7s': 45,
-                 '8c': 7, '8d': 20, '8h': 33, '8s': 46,
-                 '9c': 8, '9d': 21, '9h': 34, '9s': 47,
-                 'Tc': 9, 'Td': 22, 'Th': 35, 'Ts': 48,
-                'Jc': 10, 'Jd': 23, 'Jh': 36, 'Js': 49,
-                'Qc': 11, 'Qd': 24, 'Qh': 37, 'Qs': 50,
-                'Kc': 12, 'Kd': 25, 'Kh': 38, 'Ks': 51}
+suits = "cdhs"
+figures = "A23456789TJQK"
+
+def encode(cards):
+    nums = [suits.index(card[1]) * 13 + figures.index(card[0])
+            for card in cards]
+    nums.sort()
+
+    return nums
+
+def decode(cards):
+    cards.sort()
+
+    return [figures[card % 13] + suits[card // 13]
+            for card in cards]
+
+
+suits = "cdhs"
+figures = "A23456789TJQK"
+
+def encode(cards):
+    num_map =  map(lambda card: suits.index(card[1]) * 13 + figures.index(card[0]), cards)
+    num_list = list(num_map)
+    num_list.sort()
+    return num_list
+
+def decode(cards):
+    cards.sort()
+    return list(map(lambda card: figures[card % 13] + suits[card // 13], cards))
+
+
+# oldies
+encoding_dict = {
+    'Ac': 0, 'Ad': 13, 'Ah': 26, 'As': 39,
+    '2c': 1, '2d': 14, '2h': 27, '2s': 40,
+    '3c': 2, '3d': 15, '3h': 28, '3s': 41,
+    '4c': 3, '4d': 16, '4h': 29, '4s': 42,
+    '5c': 4, '5d': 17, '5h': 30, '5s': 43,
+    '6c': 5, '6d': 18, '6h': 31, '6s': 44,
+    '7c': 6, '7d': 19, '7h': 32, '7s': 45,
+    '8c': 7, '8d': 20, '8h': 33, '8s': 46,
+    '9c': 8, '9d': 21, '9h': 34, '9s': 47,
+    'Tc': 9, 'Td': 22, 'Th': 35, 'Ts': 48,
+    'Jc': 10, 'Jd': 23, 'Jh': 36, 'Js': 49,
+    'Qc': 11, 'Qd': 24, 'Qh': 37, 'Qs': 50,
+    'Kc': 12, 'Kd': 25, 'Kh': 38, 'Ks': 51
+}
 
 decoding_dict = {v: k for k, v in encoding_dict.items()}
-decoding_dict = {0: 'Ac', 13: 'Ad', 26: 'Ah', 39: 'As',
-                 1: '2c', 14: '2d', 27: '2h', 40: '2s',
-                 2: '3c', 15: '3d', 28: '3h', 41: '3s',
-                 3: '4c', 16: '4d', 29: '4h', 42: '4s',
-                 4: '5c', 17: '5d', 30: '5h', 43: '5s',
-                 5: '6c', 18: '6d', 31: '6h', 44: '6s',
-                 6: '7c', 19: '7d', 32: '7h', 45: '7s',
-                 7: '8c', 20: '8d', 33: '8h', 46: '8s',
-                 8: '9c', 21: '9d', 34: '9h', 47: '9s',
-                 9: 'Tc', 22: 'Td', 35: 'Th', 48: 'Ts',
-                10: 'Jc', 23: 'Jd', 36: 'Jh', 49: 'Js',
-                11: 'Qc', 24: 'Qd', 37: 'Qh', 50: 'Qs',
-                12: 'Kc', 25: 'Kd', 38: 'Kh', 51: 'Ks'}
+decoding_dict = {
+    0: 'Ac', 13: 'Ad', 26: 'Ah', 39: 'As',
+    1: '2c', 14: '2d', 27: '2h', 40: '2s',
+    2: '3c', 15: '3d', 28: '3h', 41: '3s',
+    3: '4c', 16: '4d', 29: '4h', 42: '4s',
+    4: '5c', 17: '5d', 30: '5h', 43: '5s',
+    5: '6c', 18: '6d', 31: '6h', 44: '6s',
+    6: '7c', 19: '7d', 32: '7h', 45: '7s',
+    7: '8c', 20: '8d', 33: '8h', 46: '8s',
+    8: '9c', 21: '9d', 34: '9h', 47: '9s',
+    9: 'Tc', 22: 'Td', 35: 'Th', 48: 'Ts',
+    10: 'Jc', 23: 'Jd', 36: 'Jh', 49: 'Js',
+    11: 'Qc', 24: 'Qd', 37: 'Qh', 50: 'Qs',
+    12: 'Kc', 25: 'Kd', 38: 'Kh', 51: 'Ks'
+}
 
 def encode(cards):
     return sorted(encoding_dict[i] for i in cards)
@@ -2560,7 +2852,8 @@ decode([7, 22, 51])
 
 # Simple Events !!!
 # https://www.codewars.com/kata/52d3b68215be7c2d5300022f/
-"""Your goal is to write an Event constructor function, which can be used to make event objects.
+"""
+Your goal is to write an Event constructor function, which can be used to make event objects.
 
 An event object should work like this:
 
@@ -2574,55 +2867,38 @@ you should not worry about the order of handlers' execution
 the handlers will not attempt to modify an event object (e.g. add or remove handlers)
 the context of handlers' execution is not important
 each handler will be subscribed at most once at any given moment of time. It can still be unsubscribed and then subscribed again
-Also see an example test fixture for suggested usage"""
+Also see an example test fixture for suggested usage
+"""
+event = Event()    
+event.subscribe(f)
+event.emit(1, 'foo', True)
+event.emit(2, 'bar', False)
+event.unsubscribe(f)
+event.emit(2)
 
 
 class Event():
     def __init__(self):
-        self.handler = set()
-    def subscribe(self, fun):
-        self.handler.add(fun)
-    def unsubscribe(self, fun):
-        self.handler.discard(fun)
-    def emit(self, *args):
-        for f in self.handler:
-            f(*args)
-    # def emit(self, *args):
-    #     map(lambda x: x(*args), self.handler)
-
-
-# Test
-event = Event()
+        self.handlers = set()
+        
+    def subscribe(self, func):
+        self.handlers.add(func)
     
-class Testf():
-    def __init__(self):
-        self.calls = 0
-        self.args = []
-    def __call__(self, *args):
-        self.calls += 1
-        self.args += args
+    def unsubscribe(self, func):
+        self.handlers.discard(func)
+        
+    def emit(self, *args, **kwargs):
+        for handler in self.handlers:
+            handler(*args, **kwargs)
 
-f = Testf()
 
-event.subscribe(f)
-event.emit(1, 'foo', True)
-event.emit(2, 'bar', False)
+
     
-test.assert_equals(f.calls, 1) #calls a handler
-test.assert_equals(f.args, [1, 'foo', True]) #passes arguments
-    
-event.unsubscribe(f)
-event.emit(2)
-    
-test.assert_equals(f.calls, 1) #no second call
-
-
-
-
 
 # Mongodb ObjectID
 # https://www.codewars.com/kata/52fefe6cb0091856db00030e/
-"""MongoDB is a noSQL database which uses the concept of a document, rather than a table as in SQL. Its popularity is growing.
+"""
+MongoDB is a noSQL database which uses the concept of a document, rather than a table as in SQL. Its popularity is growing.
 
 As in any database, you can create, read, update, and delete elements. But in constrast to SQL, when you create an element, a new field _id is created. This field is unique and contains some information about the time the element was created, id of the process that created it, and so on. More information can be found in the MongoDB documentation (which you have to read in order to implement this Kata).
 
@@ -2652,9 +2928,85 @@ Mongo.get_timestamp('507f1f77bcf86cz799439011')  # False
 Mongo.get_timestamp('507f1f77bcf86cd79943901')   # False
 Mongo.get_timestamp('111111111111111111111111')  # Sun Jan 28 1979 00:25:53 GMT-0800 (Pacific Standard Time)
 Mongo.get_timestamp(111111111111111111111111)    # False
-When you will implement this correctly, you will not only get some points, but also would be able to check creation time of all the kata here :-)"""
+When you will implement this correctly, you will not only get some points, but also would be able to check creation time of all the kata here :-)
+"""
+(is_valid('507f1f77bcf86cd799439011'), True)
+(is_valid('507f1f77bcf86cz799439011'), False)
+(is_valid('111111111111111111111111'), True)
+(is_valid(111111111111111111111111), False)
+(is_valid('507f1f77bcf86cD799439011'), False)
+(is_valid(False), False)
+(is_valid([]), False)
+(is_valid(1234), False)
+(is_valid('123476sd'), False)
+(is_valid('507f1f77bcf86cd79943901'), False)
+(is_valid('507f1f77bcf86cd799439016'), True)
 
 
+def is_valid(id):
+    return (
+        type(id) == str and
+        len(id) == 24 and
+        len(list(filter(lambda char: char in "0123456789abcdef", id))) == 24
+    )
+
+
+from datetime import datetime
+(get_timestamp('507f1f77bcf86cd799439011'), datetime(2012, 10, 17, 23, 13, 27))  # Wed Oct 17 2012 21:13:27 GMT-0700 (Pacific Daylight Time)
+(get_timestamp('507f1f77bcf86cz799439011'), False)
+(get_timestamp('507f1f77bcf86cd79943901'), False)
+(get_timestamp('111111111111111111111111'), datetime(1979, 1, 28, 1, 25, 53))  # Sun Jan 28 1979 00:25:53 GMT-0800 (Pacific Standard Time)
+(get_timestamp(111111111111111111111111), False)
+(get_timestamp(False), False)
+(get_timestamp([]), False)
+(get_timestamp(1234), False)
+(get_timestamp('123476sd'), False)
+(get_timestamp('507f1f77bcf86cd79943901'), False)
+(get_timestamp('507f1f77bcf86cd799439016'), datetime(2012, 10, 17, 21, 13, 27))
+
+
+def get_timestamp(id):
+    return (
+        is_valid(id) and 
+        datetime.fromtimestamp(int(id[:8], 16))
+    )
+
+
+from datetime import datetime
+
+class Mongo(object):
+    @classmethod
+    def is_valid(cls, id):
+        return (
+            type(id) == str and
+            len(id) == 24 and
+            len(list(filter(lambda char: char in "0123456789abcdef", id))) == 24
+        )
+    
+    @classmethod
+    def get_timestamp(cls, id):
+        return (
+            cls.is_valid(id) and
+            datetime.fromtimestamp(int(id[:8], 16))
+        )
+        
+        
+(Mongo.is_valid(False), False)
+(Mongo.is_valid([]), False)
+(Mongo.is_valid(1234), False)
+(Mongo.is_valid('123476sd'), False)
+(Mongo.is_valid('507f1f77bcf86cd79943901'), False)
+(Mongo.is_valid('507f1f77bcf86cd799439016'), True)
+
+(Mongo.get_timestamp(False), False)
+(Mongo.get_timestamp([]), False)
+(Mongo.get_timestamp(1234), False)
+(Mongo.get_timestamp('123476sd'), False)
+(Mongo.get_timestamp('507f1f77bcf86cd79943901'), False)
+(Mongo.get_timestamp('507f1f77bcf86cd799439016'), datetime(2012, 10, 17, 21, 13, 27))
+
+
+# oldies
 import string
 def is_valid(s):
     return all(i in string.hexdigits[:16] for i in s) and len(s) == 24
@@ -2673,30 +3025,6 @@ get_timestamp('111111111111111111111111')
 
 
 from datetime import datetime
-import string
-class Mongo(object):
-
-    @classmethod
-    def is_valid(cls, s):
-        """returns True if s is a valid MongoID; otherwise False"""
-        if isinstance(s, str):
-            return all(i in string.hexdigits[:16] for i in s) and len(s) == 24
-        else:
-            return False
-
-    @classmethod
-    def get_timestamp(cls, s):
-        """if s is a MongoID, returns a datetime object for the timestamp; otherwise False"""
-        if isinstance(s, str):
-            if all(i in string.hexdigits[:16] for i in s) and len(s) == 24:
-                return datetime.fromtimestamp(int(s[:8], 16))
-            else:
-                return False
-        else:
-            return False
-        
-
-from datetime import datetime
 import re
 class Mongo(object):
 
@@ -2712,37 +3040,13 @@ class Mongo(object):
         return cls.is_valid(s) and datetime.fromtimestamp(int(s[:8], 16))
 
 
-Mongo.is_valid('507f1f77bcf86cd799439016')
-Mongo.get_timestamp('507f1f77bcf86cd799439016')
-
-'{:d}'.format(0x507f1f77bcf86cd799439011)
-int("507f1f77bcf86cd799439011", 16)
-datetime.fromtimestamp(int("507F1f77bcf86cd799439011"[:8], 16))
-
-
-from datetime import datetime
-
-test.assert_equals(Mongo.is_valid(False), False)
-test.assert_equals(Mongo.is_valid([]), False)
-test.assert_equals(Mongo.is_valid(1234), False)
-test.assert_equals(Mongo.is_valid('123476sd'), False)
-test.assert_equals(Mongo.is_valid('507f1f77bcf86cd79943901'), False)
-test.assert_equals(Mongo.is_valid('507f1f77bcf86cd799439016'), True)
-
-test.assert_equals(Mongo.get_timestamp(False), False)
-test.assert_equals(Mongo.get_timestamp([]), False)
-test.assert_equals(Mongo.get_timestamp(1234), False)
-test.assert_equals(Mongo.get_timestamp('123476sd'), False)
-test.assert_equals(Mongo.get_timestamp('507f1f77bcf86cd79943901'), False)
-test.assert_equals(Mongo.get_timestamp('507f1f77bcf86cd799439016'), datetime(2012, 10, 17, 21, 13, 27))
-
-
 
 
 
 # Prime number decompositions
 # https://www.codewars.com/kata/53c93982689f84e321000d62
-"""You have to code a function getAllPrimeFactors, which takes an integer as parameter and returns an array containing its prime decomposition by ascending factors. If a factor appears multiple times in the decomposition, it should appear as many times in the array.
+"""
+You have to code a function getAllPrimeFactors, which takes an integer as parameter and returns an array containing its prime decomposition by ascending factors. If a factor appears multiple times in the decomposition, it should appear as many times in the array.
 
 exemple: getAllPrimeFactors(100) returns [2,2,5,5] in this order.
 
@@ -2768,50 +3072,53 @@ Edge cases:
 if n=0, the function should respectively return [], [[],[]] and [].
 if n=1, the function should respectively return [1], [[1],[1]], [1].
 if n=2, the function should respectively return [2], [[2],[1]], [2].
-The result for n=2 is normal. The result for n=1 is arbitrary and has been chosen to return a usefull result. The result for n=0 is also arbitrary but can not be chosen to be both usefull and intuitive. ([[0],[0]] would be meaningfull but wont work for general use of decomposition, [[0],[1]] would work but is not intuitive.)"""
+The result for n=2 is normal. The result for n=1 is arbitrary and has been chosen to return a usefull result. The result for n=0 is also arbitrary but can not be chosen to be both usefull and intuitive. ([[0],[0]] would be meaningfull but wont work for general use of decomposition, [[0],[1]] would work but is not intuitive.)
+"""
+(getAllPrimeFactors(100), [2, 2, 5, 5])
+(getUniquePrimeFactorsWithCount(100), [[2, 5], [2, 2]])
+(getUniquePrimeFactorsWithProducts(100), [4, 25])
 
 
-def getAllPrimeFactors(n):
-    if (not (type(n) == int) or
-        n < 1):
+def getAllPrimeFactors(num):
+    if (not (type(num) == int) or
+        num < 1):
         return []
-    if n == 1:
+    if num == 1:
         return [1]
     
-    sol = []
-    divider = 2
-    # while True:
-    while n >= divider:
-        if not n % divider:
-            sol.append(divider)
-            n //= divider
-            divider = 2
-        else:
-            divider += 1
-        # if n == 1:
-            # break
-    return sol
-(getAllPrimeFactors(100), [2, 2, 5, 5])
+    dividers = []
 
-def getAllPrimeFactors(n):
-    decomp = []
-    while n != 1:
-        for i in range(2, n + 1):
-            if not n % i:
-                # decomp.append(i)
-                decomp += [i]
-                n //= i
+    while num != 1:
+        for divider in range(2, num + 1):
+            if not num % divider:
+                dividers.append(divider)
+                num //= divider
                 break
-    return decomp
-getAllPrimeFactors(100)
+
+    return dividers
 
 
+def getUniquePrimeFactorsWithCount(nums):
+    all_prime_factors = getAllPrimeFactors(nums)
+    counter = {}
 
+    for prime in all_prime_factors:
+        counter[prime] = counter.get(prime, 0) + 1
+
+    return [list(counter.keys()), list(counter.values())]
+
+
+def getUniquePrimeFactorsWithProducts(nums):
+    unique_prime_factors = getUniquePrimeFactorsWithCount(nums)
+    
+    return [nums[0] ** nums[1] for nums in zip(*unique_prime_factors)]
+
+
+# oldies
 from collections import Counter
 def getUniquePrimeFactorsWithCount(n):
     factors = Counter(getAllPrimeFactors(n))
     return list(zip(*factors.items()))
-    # return [list(factors.keys()), list(factors.values())]
 (getUniquePrimeFactorsWithCount(100), [[2, 5], [2, 2]])
 getUniquePrimeFactorsWithCount(1)
 getUniquePrimeFactorsWithCount(0)
@@ -2854,7 +3161,8 @@ def getUniquePrimeFactorsWithProducts(n):
 
 # Strings Mix
 # https://www.codewars.com/kata/5629db57620258aa9d000014
-"""Given two strings s1 and s2, we want to visualize how different the two strings are. 
+"""
+Given two strings s1 and s2, we want to visualize how different the two strings are. 
 We will only take into account the lowercase letters (a to z). 
 First let us count the frequency of each lowercase letters in s1 and s2.
 
@@ -2892,13 +3200,57 @@ mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
 s1 = "mmmmm m nnnnn y&friend&Paul has heavy hats! &"
 s2 = "my frie n d Joh n has ma n y ma n y frie n ds n&"
 mix(s1, s2) --> "1:mmmmmm/=:nnnnnn/1:aaaa/1:hhh/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
-
+u
 s1="Are the kids at home? aaaaa fffff"
 s2="Yes they are here! aaaaa fffff"
 mix(s1, s2) --> "=:aaaaaa/2:eeeee/=:fffff/1:tt/2:rr/=:hh"
 """
+(mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &"), "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss")
+(mix("Are they here", "yes, they are here"), "2:eeeee/2:yy/=:hh/=:rr")
+(mix("Sadus:cpms>orqn3zecwGvnznSgacs", "MynwdKizfd$lvse+gnbaGydxyXzayp"), '2:yyyy/1:ccc/1:nnn/1:sss/2:ddd/=:aa/=:zz')
+(mix("looping is fun but dangerous", "less dangerous than coding"), "1:ooo/1:uuu/2:sss/=:nnn/1:ii/2:aa/2:dd/2:ee/=:gg")
+(mix(" In many languages", " there's a pair of functions"), "1:aaa/1:nnn/1:gg/2:ee/2:ff/2:ii/2:oo/2:rr/2:ss/2:tt")
+(mix("Lords of the Fallen", "gamekult"), "1:ee/1:ll/1:oo")
+(mix("codewars", "codewars"), "")
+(mix("A generation must confront the looming ", "codewarrs"), "1:nnnnn/1:ooooo/1:tttt/1:eee/1:gg/1:ii/1:mm/=:rr")
 
 
+def mix(s1, s2):
+    counter1 = {}
+    counter2 = {}
+    max_counter = {}
+    mix_list = []
+
+    for char in s1:
+        if char.islower():
+        # if re.match(r"[a-z]", char):
+            counter1[char] = counter1.get(char, 0) + 1
+
+    for char in s2:
+        if char.islower():
+            counter2[char] = counter2.get(char, 0) + 1
+
+    for key, val in counter1.items():
+        max_counter[key] = max(max_counter.get(key, 0), val)
+
+    for key, val in counter2.items():
+        max_counter[key] = max(max_counter.get(key, 0), val)
+
+    for key, val in max_counter.items():
+        if val > 1:
+            if counter1.get(key, 0) == counter2.get(key, 0):
+                mix_list.append(f"=:{key*val}") 
+            elif counter1.get(key, 0) > counter2.get(key, 0):
+                mix_list.append(f"1:{key*val}") 
+            else:
+                mix_list.append(f"2:{key*val}") 
+
+    mix_list.sort(key=lambda x: (-len(x), x[0], x[2]))
+
+    return "/".join(mix_list)
+
+
+# oldies
 import string
 from collections import Counter
 def mix(s1, s2):
@@ -2916,11 +3268,7 @@ def mix(s1, s2):
                ('=:' + k*v) for k, v in s3_dict.items())
     # return '/'.join(sorted(sorted(sorted(to_sort, key=lambda x: x[2]), key=lambda x: x), key=lambda x: -len(x)))
     return '/'.join(sorted(to_sort, key=lambda x: (-len(x), x, x[2])))
-mix(s1, s2)
-mix("Are they here", "yes, they are here")
-mix(s1, s2) --> "2:eeeee/2:yy/=:hh/=:rr"
-mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &")
-mix(s1, s2) --> "2:nnnnn/1:aaaa/1:hhh/2:mmm/2:yyy/2:dd/2:ff/2:ii/2:rr/=:ee/=:ss"
+
 
 from collections import Counter
 
@@ -2935,72 +3283,14 @@ def mix(s1, s2):
                          "=:" + letter * dict_sum[letter]]
     return "/".join(sorted(unsorted_sol, key=lambda x: (-len(x), x[0], x[2])))
 
-# from codewars
-def mix(s1, s2):
-    c1 = Counter(filter(str.islower, s1))
-    c2 = Counter(filter(str.islower, s2))
-    res = []
-    for c in set(c1.keys() + c2.keys()):
-        n1, n2 = c1.get(c, 0), c2.get(c, 0)
-        if n1 > 1 or n2 > 1:
-            res.append(('1', c, n1) if n1 > n2 else
-                ('2', c, n2) if n2 > n1 else ('=', c, n1))
-    res = ['{}:{}'.format(i, c * n) for i, c, n in res]
-    return '/'.join(sorted(res, key=lambda s: (-len(s), s)))
-
-# from codewars
-def mix(s1, s2):
-    hist = {}
-    for ch in string.ascii_lowercase:
-        val1, val2 = s1.count(ch), s2.count(ch)
-        if max(val1, val2) > 1:
-            which = "1" if val1 > val2 else "2" if val2 > val1 else "="
-            hist[ch] = (-max(val1, val2), which + ":" + ch * max(val1, val2))
-    return "/".join(hist[ch][1] for ch in sorted(hist, key=lambda x: hist[x]))
-
-# proble with: '2:eeeee/=:hh/=:rr/2:yy' should equal '2:eeeee/2:yy/=:hh/=:rr'
-import string
-from collections import Counter
-def mix(s1, s2):
-    dict1 = {letter: s1.count(letter) for letter in s1 if letter in string.ascii_lowercase and s1.count(letter) > 1}
-    dict2 = {letter: s2.count(letter) for letter in s2 if letter in string.ascii_lowercase and s2.count(letter) > 1}
-    dict3 =  Counter(dict1) | Counter(dict2)
-    sol = ""
-    for k, v in sorted(dict3.items(), key=lambda x: (-x[1], x[0])):
-        if v == dict1.get(k, -1) and v != dict2.get(k, -1):
-            sol += "1:" + k * v
-        elif v == dict2.get(k, -1) and v != dict1.get(k, -1):
-            sol += "2:" + k * v
-        else:
-            sol += "=:" + k * v
-        sol += "/"
-    return sol[:-1]
-mix("my&friend&Paul has heavy hats! &", "my friend John has many many friends &")
-
-
-# c1 {'y': 2, 'e': 2, 'a': 4, 'h': 3, 's': 2}
-# c2 {'m': 3, 'y': 3, 'f': 2, 'r': 2, 'i': 2, 'e': 2, 'n': 5, 'd': 2, 'h': 2, 'a': 3, 's': 2}
-Counter({'n': 5, 'a': 4, 'y': 3, 'h': 3, 'm': 3, 'e': 2, 's': 2, 'f': 2, 'r': 2, 'i': 2, 'd': 2})
-dict_items([('y', 3), ('e', 2), ('oa', 4), ('h', 3), ('s', 2), ('m', 3), ('f', 2), ('r', 2), ('i', 2), ('n', 5), ('d', 2)])
-
-
-test.describe("Mix")
-test.it("Basic Tests")
-test.assert_equals(mix("Are they here", "yes, they are here"), "2:eeeee/2:yy/=:hh/=:rr")
-test.assert_equals(mix("Sadus:cpms>orqn3zecwGvnznSgacs","MynwdKizfd$lvse+gnbaGydxyXzayp"), '2:yyyy/1:ccc/1:nnn/1:sss/2:ddd/=:aa/=:zz')
-test.assert_equals(mix("looping is fun but dangerous", "less dangerous than coding"), "1:ooo/1:uuu/2:sss/=:nnn/1:ii/2:aa/2:dd/2:ee/=:gg")
-test.assert_equals(mix(" In many languages", " there's a pair of functions"), "1:aaa/1:nnn/1:gg/2:ee/2:ff/2:ii/2:oo/2:rr/2:ss/2:tt")
-test.assert_equals(mix("Lords of the Fallen", "gamekult"), "1:ee/1:ll/1:oo")
-test.assert_equals(mix("codewars", "codewars"), "")
-test.assert_equals(mix("A generation must confront the looming ", "codewarrs"), "1:nnnnn/1:ooooo/1:tttt/1:eee/1:gg/1:ii/1:mm/=:rr")
-
 
 
 
 
 # Tribonacci Sequence
 # https://www.codewars.com/kata/556deca17c58da83c00002db
-"""Well met with Fibonacci bigger brother, AKA Tribonacci.
+"""
+Well met with Fibonacci bigger brother, AKA Tribonacci.
 
 As the name may already reveal, it works basically like a Fibonacci, but summing the last 3 (instead of 2) numbers of the sequence to generate the next. And, worse part of it, regrettably I won't get to hear non-native Italian speakers trying to pronounce it :(
 
@@ -3010,9 +3300,62 @@ So, if we are to start our Tribonacci sequence with [1, 1, 1] as a starting inpu
 But what if we started with [0, 0, 1] as a signature? As starting with [0, 1] instead of [1, 1] basically shifts the common Fibonacci sequence by once place, you may be tempted to think that we would get the same sequence shifted by 2 places, but that is not the case and we would get:
 
 [0, 0, 1, 1, 2, 4, 7, 13, 24, ...]
-Well, you may have guessed it by now, but to be clear: you need to create a fibonacci function that given a signature array/list, returns the first n elements - signature included of the so seeded sequence."""
+Well, you may have guessed it by now, but to be clear: you need to create a fibonacci function that given a signature array/list, returns the first n elements - signature included of the so seeded sequence.
+"""
+(tribonacci([1, 1, 1], 10), [1, 1, 1, 3, 5, 9, 17, 31, 57, 105])
+(tribonacci([0, 0, 1], 10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44])
+(tribonacci([0, 1, 1], 10), [0, 1, 1, 2, 4, 7, 13, 24, 44, 81])
+(tribonacci([1, 0, 0], 10), [1, 0, 0, 1, 1, 2, 4, 7, 13, 24])
+(tribonacci([0, 0, 0], 10), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+(tribonacci([1, 2, 3], 10), [1, 2, 3, 6, 11, 20, 37, 68, 125, 230])
+(tribonacci([3, 2, 1], 10), [3, 2, 1, 6, 9, 16, 31, 56, 103, 190])
+(tribonacci([1, 1, 1], 1), [1])
+(tribonacci([300, 200, 100], 0), [])
+(tribonacci([0.5, 0.5, 0.5], 30), [0.5, 0.5, 0.5, 1.5, 2.5, 4.5, 8.5, 15.5, 28.5, 52.5, 96.5, 177.5, 326.5, 600.5, 1104.5, 2031.5, 3736.5, 6872.5, 12640.5, 23249.5, 42762.5, 78652.5, 144664.5, 266079.5, 489396.5, 900140.5, 1655616.5, 3045153.5, 5600910.5, 10301680.5])
+(tribonacci([5], 1), [])
 
 
+# dp, bottom-up, tabulation
+def tribonacci(nums, counter):
+    if counter < 3:
+        return nums[:counter]
+    
+    tab = [0] * counter
+    tab[0], tab[1], tab[2] = nums
+
+    for index in range(3, counter):
+        tab[index] = tab[index - 1] + tab[index - 2] + tab[index - 3]
+    
+    return tab
+
+# dp, top-bottom, memoization
+def tribonacci(nums, counter):
+    if counter < 3:
+        return nums[:counter]
+    
+    memo = [0] * counter
+    memo[0], memo[1], memo[2] = nums
+
+    def dfs(counter):
+        if counter == 2:
+            return memo[2]
+        elif counter == 1:
+            return memo[1]
+        elif counter == 0:
+            return memo[0]
+        elif memo[counter]:
+            return memo[counter]
+
+        memo[counter] = dfs(counter - 1) + inner(counter -2) + inner(counter - 3)
+
+        return memo[counter]
+    
+    inner(counter - 1)
+
+    return memo
+
+
+# oldies
 def tribonacci(signature, n):
     a, b, c = signature
     """if not n:
@@ -3025,17 +3368,6 @@ def tribonacci(signature, n):
         trib_lst.append(a)
         a, b, c = b, c, a + b + c 
     return trib_lst
-(tribonacci([1, 1, 1], 10), [1, 1, 1, 3, 5, 9, 17, 31, 57, 105])
-(tribonacci([0, 0, 1], 10), [0, 0, 1, 1, 2, 4, 7, 13, 24, 44])
-(tribonacci([0, 1, 1], 10), [0, 1, 1, 2, 4, 7, 13, 24, 44, 81])
-(tribonacci([1, 0, 0], 10), [1, 0, 0, 1, 1, 2, 4, 7, 13, 24])
-(tribonacci([0, 0, 0], 10), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-(tribonacci([1, 2, 3], 10), [1, 2, 3, 6, 11, 20, 37, 68, 125, 230])
-(tribonacci([3, 2, 1], 10), [3, 2, 1, 6, 9, 16, 31, 56, 103, 190])
-(tribonacci([1, 1, 1], 1), [1])
-(tribonacci([300, 200, 100], 0), [])
-(tribonacci([0.5, 0.5, 0.5], 30), [0.5, 0.5, 0.5, 1.5, 2.5, 4.5, 8.5, 15.5, 28.5, 52.5, 96.5, 177.5, 326.5, 600.5, 1104.5, 2031.5, 3736.5, 6872.5, 12640.5, 23249.5, 42762.5, 78652.5, 144664.5, 266079.5, 489396.5, 900140.5, 1655616.5, 3045153.5, 5600910.5, 10301680.5])
-(tribonacci([5], 1), [])
 
 def gen_tri(signature):
     a, b, c = signature
@@ -3073,7 +3405,8 @@ def tribonacci(signature,n):
 
 # Simple Fun #166: Best Match
 # https://www.codewars.com/kata/58b38256e51f1c2af0000081
-""""AL-AHLY" and "Zamalek" are the best teams in Egypt, but "AL-AHLY" always wins the matches between them. "Zamalek" managers want to know what is the best match they've played so far.
+"""
+"AL-AHLY" and "Zamalek" are the best teams in Egypt, but "AL-AHLY" always wins the matches between them. "Zamalek" managers want to know what is the best match they've played so far.
 
 The best match is the match they lost with the minimum goal difference. If there is more than one match with the same difference, choose the one "Zamalek" scored more goals in.
 
@@ -3096,20 +3429,39 @@ The number of goals "AL-AHLY" scored in each match.
 The number of goals "Zamalek" scored in each match. It is guaranteed that zamalekGoals[i] < ALAHLYGoals[i] for each element.
 
 [output] an integer
-Index of the best match."""
-
-
-def best_match(goals1, goals2):
-    ran = range(len(goals1))
-    diff = [goals1[i] - goals2[i] for i in ran]
-    return min(zip(*(ran, diff, goals2)), key=lambda x: (x[1], -x[2]))[0]
-    # return max(zip(*(ran, diff, goals2)), key=lambda x: (-x[1], x[2]))[0]
+Index of the best match.
+"""
 (best_match([6, 4],[1, 2]), 1)
 (best_match([1],[0]), 0)
 (best_match([1, 2, 3, 4, 5],[0, 1, 2, 3, 4]), 4)
 (best_match([3, 4, 3],[1, 1, 2]), 2)
 (best_match([4, 3, 4],[1, 1, 1]), 1)
 
+
+def best_match_key(x):
+    return (x[0] - x[1], -x[1])
+
+def best_match(goals1, goals2):
+    match_index = range(len(goals1))
+
+    return min(zip(goals1, goals2, match_index), key=best_match_key)[2]
+
+
+def best_match_key(goals1, goals2):
+    return (goals1- goals2, -goals2)
+
+def best_match(goals1, goals2):
+    match_index = range(len(goals1))
+
+    return min(zip(goals1, goals2, match_index), key=lambda x: best_match_key(x[0], x[1]))[2]
+
+
+# oldies
+def best_match(goals1, goals2):
+    ran = range(len(goals1))
+    diff = [goals1[i] - goals2[i] for i in ran]
+    return min(zip(*(ran, diff, goals2)), key=lambda x: (x[1], -x[2]))[0]
+    # return max(zip(*(ran, diff, goals2)), key=lambda x: (-x[1], x[2]))[0]
 
 def best_match(goals1, goals2):
     to_sort = [(i, a - b, b) for i, (a, b) in enumerate(list(zip(goals1, goals2)))]
@@ -3135,17 +3487,15 @@ def best_match(goals1, goals2):
 
 
 
-
-
-
 # Roman Numerals Decoder
 # https://www.codewars.com/kata/51b6249c4612257ac0000005
-"""Create a function that takes a Roman numeral as its argument and returns its value as a numeric decimal integer. You don't need to validate the form of the Roman numeral.
+"""
+Create a function that takes a Roman numeral as its argument and returns its value as a numeric decimal integer. You don't need to validate the form of the Roman numeral.
 
 Modern Roman numerals are written by expressing each decimal digit of the number to be encoded separately, starting with the leftmost digit and skipping any 0s. So 1990 is rendered "MCMXC" (1000 = M, 900 = CM, 90 = XC) and 2008 is rendered "MMVIII" (2000 = MM, 8 = VIII). The Roman numeral for 1666, "MDCLXVI", uses each letter in descending order.
 
 Example:
-
+e
 solution('XXI'); // should return 21
 Help:
 
@@ -3156,13 +3506,43 @@ X          10
 L          50
 C          100
 D          500
-M          1,000"""
+M          1,000
+"""
+(solution('XXI'), 21)
+(solution('I'), 1)
+(solution('IV'), 4)
+(solution('MMVIII'), 2008)
+(solution('MDCLXVI'), 1666)
 
 
-# only check if number is legit
+to_roman = {
+    "I": 1,
+    "V": 5,
+    "X": 10,
+    "L": 50,
+    "C": 100,
+    "D": 500,
+    "M": 1000,
+}
+
+roman_subtract = {
+    "IV": -2,  # 6 => 4
+    "IX": -2,
+    "XL": -20,
+    "XC": -20,
+    "CD": -200,
+    "CM": -200
+}
+
 import re
-regex_pattern = r"^(?=[MDCLXVI])(M{0,3})(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$"
-print(str(bool(re.match(regex_pattern, input()))))
+
+def solution(roman):
+    raw_roman = sum(to_roman[letter] for letter in roman)
+    subtract = sum(roman_subtract[rs] for rs in roman_subtract if re.search(rf"{rs}", roman))
+    # subtract = sum(roman_subtract[rs] for rs in roman_subtract if roman.find(rs) != -1)
+
+    return raw_roman + subtract
+
 
 roman_dict = {'I': 1,
               'V': 5,
@@ -3293,12 +3673,17 @@ def solution(roman):
 
 
 
+# only check if number is legit
+import re
+regex_pattern = r"^(?=[MDCLXVI])(M{0,3})(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$"
+print(str(bool(re.match(regex_pattern, input()))))
 
 
 
 # Friend or Foe?
 # https://www.codewars.com/kata/55b42574ff091733d900002f
-"""Make a program that filters a list of strings and returns a list with only your friends name in it.
+"""
+Make a program that filters a list of strings and returns a list with only your friends name in it.
 
 If a name has exactly 4 letters in it, you can be sure that it has to be a friend of yours! Otherwise, you can be sure he's not...
 
@@ -3307,15 +3692,16 @@ Ex: Input = ["Ryan", "Kieran", "Jason", "Yous"], Output = ["Ryan", "Yous"]
 i.e.
 
 friend ["Ryan", "Kieran", "Mark"] `shouldBe` ["Ryan", "Mark"]
-Note: keep the original order of the names in the output."""
-
-
-def friend(x):
-    return [i for i in x if len(i) == 4]
-    # return list(filter(lambda y: len(y) == 4, x))
+Note: keep the original order of the names in the output.
+"""
 (friend(["Ryan", "Kieran", "Mark",]), ["Ryan", "Mark"])
 (friend(["Ryan", "Jimmy", "123", "4", "Cool Man"]), ["Ryan"])
 (friend(["Jimm", "Cari", "aret", "truehdnviegkwgvke", "sixtyiscooooool"]), ["Jimm", "Cari", "aret"])
+
+
+def friend(name_list):
+    return [name for name in name_list if len(name) == 4]
+    # return list(filter(lambda name: len(name) == 4, name_list))
 
 
 
@@ -3323,7 +3709,8 @@ def friend(x):
 
 # A Needle in the Haystack
 # https://www.codewars.com/kata/56676e8fabd2d1ff3000000c
-"""Can you find the needle in the haystack?
+"""
+Can you find the needle in the haystack?
 
 Write a function findNeedle() that takes an array full of junk but containing one "needle"
 
@@ -3332,24 +3719,29 @@ After your function finds the needle it should return a message (as a string) th
 "found the needle at position " plus the index it found the needle, so:
 
 find_needle(['hay', 'junk', 'hay', 'hay', 'moreJunk', 'needle', 'randomJunk'])
-should return "found the needle at position 5" (in COBOL "found the needle at position 6")"""
-
-
-def find_needle(haystack):
-    try: 
-        return f"found the needle at position {haystack.index('needle')}" 
-    except ValueError as err:
-        return f"Found a bug !!!: {err}"
+should return "found the needle at position 5" (in COBOL "found the needle at position 6")
+"""
 (find_needle(['3', '123124234', None, 'needle', 'world', 'hay', 2, '3', True, False]), 'found the needle at position 3')
 (find_needle(['283497238987234', 'a dog', 'a cat', 'some random junk', 'a piece of hay', 'needle', 'something somebody lost a while ago']), 'found the needle at position 5')
 (find_needle([1,2,3,4,5,6,7,8,8,7,5,4,3,4,5,6,67,5,5,3,3,4,2,34,234,23,4,234,324,324,'needle',1,2,3,4,5,5,6,5,4,32,3,45,54]), 'found the needle at position 30')
+(find_needle(['3', '123124234', True, False]), "'needle' is not in list")
 
 
 def find_needle(haystack):
-    return f'found the needle at position {haystack.index("needle")}'
-    return 'found the needle at position {}'.format(haystack.index('needle'))
-    return 'found the needle at position %d' % haystack.index('needle')
-    return "found the needle at position " + str(haystack.index("needle"))
+    try:
+        index = haystack.index("needle")
+        
+        return f"found the needle at position {index}"
+    except ValueError as err:  #  Exception
+        return f"{err}"
+
+
+# oldies
+def find_needle(haystack):
+    # return f'found the needle at position {haystack.index("needle")}'
+    # return 'found the needle at position {}'.format(haystack.index('needle'))
+    # return 'found the needle at position %d' % haystack.index('needle')
+    # return "found the needle at position " + str(haystack.index("needle"))
 
 
 
@@ -3357,13 +3749,15 @@ def find_needle(haystack):
 
 # Grasshopper - Personalized Message
 # https://www.codewars.com/kata/5772da22b89313a4d50012f7
-"""Create a function that gives a personalized greeting. This function takes two parameters: name and owner.
+"""
+Create a function that gives a personalized greeting. This function takes two parameters: name and owner.
 
 Use conditionals to return the proper message:
 
 case	return
 name equals owner	'Hello boss'
-otherwise	'Hello guest'"""
+otherwise	'Hello guest'
+"""
 
 
 def greet(name, owner):
@@ -3384,14 +3778,19 @@ Write a function feast that takes the animal's name and dish as arguments and re
 Assume that beast and dish are always lowercase strings, and that each has at least two letters. beast and dish may contain hyphens and spaces, but these will not appear at the beginning or end of the string. They will not contain numerals.
 
 """
-
-
-def feast(beast, dish):
-    return beast[0] == dish[0] and beast[-1] == dish[-1]
-#     return beast.startswith(dish[0]) and beast.endswith(dish[-1])
 (feast("great blue heron", "garlic naan"), True)
 (feast("chickadee", "chocolate cake"), True)
 (feast("brown bear", "bear claw"), False)
+
+
+def feast(beast, dish):
+    return (
+        beast[0] == dish[0] and
+        beast[-1] == dish[-1]
+    )
+
+def feast(beast, dish):
+    return beast.startswith(dish[0]) and beast.endswith(dish[-1])
 
 
 
@@ -3399,23 +3798,36 @@ def feast(beast, dish):
 
 # Break camelCase
 # https://www.codewars.com/kata/5208f99aee097e6552000148/
-"""Complete the solution so that the function will break up camel casing, using a space between words.
+"""
+Complete the solution so that the function will break up camel casing, using a space between words.
 
 Example
 "camelCasing"  =>  "camel Casing"
 "identifier"   =>  "identifier"
-""             =>  """""
-
-
-
-
-def solution(s):
-    return "".join([" " + letter if letter.isupper() else letter for letter in s])
-    # return re.sub(r"([A-Z])", r" \1", s)  # import re
-    # return "".join([" " + letter if letter in string.ascii_uppercase else letter for letter in s])  # import string
+""             =>  ""
+"""
 (solution("helloWorld"), "hello World")
 (solution("camelCase"), "camel Case")
 (solution("breakCamelCase"), "break Camel Case")
+
+
+def solution(text):
+    camel_case = ""
+
+    for letter in text:
+        if letter.isupper():
+            camel_case += " "
+
+        camel_case += letter
+
+    return camel_case
+
+
+# oldies
+def solution(s):
+    return re.sub(r"([A-Z])", r" \1", s)  # import re
+    # return "".join([" " + letter if letter.isupper() else letter for letter in s])
+    # return "".join([" " + letter if letter in string.ascii_uppercase else letter for letter in s])  # import string
 
 import string
 def solution(s):
@@ -3429,7 +3841,8 @@ def solution(s):
 
 # Printer Errors
 # https://www.codewars.com/kata/56541980fa08ab47a0000040
-"""In a factory a printer prints labels for boxes. For one kind of boxes the printer has to use colors which, for the sake of simplicity, are named with letters from a to m.
+"""
+In a factory a printer prints labels for boxes. For one kind of boxes the printer has to use colors which, for the sake of simplicity, are named with letters from a to m.
 
 The colors used by the printer are recorded in a control string. For example a "good" control string would be aaabbbbhaijjjm meaning that the printer used three times color a, four times color b, one time color h then one time color a...
 
@@ -3474,37 +3887,44 @@ def printer_error(s):
 
 # Rock Paper Scissors!
 # https://www.codewars.com/kata/5672a98bdbdd995fad00000f
-"""Rock Paper Scissors
+"""
+Rock Paper Scissors
 Let's play! You have to return which player won! In case of a draw return Draw!.
 
 Examples:
 
 rps('scissors','paper') // Player 1 won!
 rps('scissors','rock') // Player 2 won!
-rps('paper','paper') // Draw!"""
-
-
-def rps(p1, p2):
-    if p1 == p2:
-        return 'Draw!'
-    winner = {'rock': 'paper', 'scissors': 'rock', 'paper': 'scissors'}
-    if winner[p1] == p2:
-        return "Player 2 won!"
-    else:
-        return "Player 1 won!"
+rps('paper','paper') // Draw!
+"""
 (rps('rock', 'scissors'), "Player 1 won!")
 (rps('scissors', 'rock'), "Player 2 won!")
 (rps('rock', 'rock'), 'Draw!')
 
-def rps(p1, p2):
-    next_win = ("rock", "paper", "scissors")
-    if p1 == p2:
+def rps(player1, player2):
+    next_winner = {"rock": "paper",
+                   "paper": "scissors",
+                   "scissors": "rock"
+                   }
+    
+    if player1 == player2:
         return "Draw!"
-    if p2 == next_win[(next_win.index(p1) + 1) % 3]:
+    elif next_winner[player1] == player2:
         return "Player 2 won!"
     else:
         return "Player 1 won!"
 
+
+def rps(player1, player2):
+    next_winner = ("rock", "paper", "scissors")
+
+    if player1 == player2:
+        return "Draw!"
+    elif (next_winner.index(player1) + 1) % 3 == next_winner.index(player2):
+    # elif next_winner[(next_winner.index(player1) + 1) % 3] == player2:
+        return "Player 2 won!"
+    else:
+        return "Player 1 won!"
 
 
 
@@ -3512,7 +3932,8 @@ def rps(p1, p2):
 
 # Basic Mathematical Operations
 # https://www.codewars.com/kata/57356c55867b9b7a60000bd7/
-"""Your task is to create a function that does four basic mathematical operations.
+"""
+Your task is to create a function that does four basic mathematical operations.
 
 The function should take three arguments - operation(string/char), value1(number), value2(number).
 The function should return result of numbers after applying the chosen operation.
@@ -3521,7 +3942,8 @@ Examples(Operator, value1, value2) --> output
 ('+', 4, 7) --> 11
 ('-', 15, 18) --> -3
 ('*', 5, 5) --> 25
-('/', 49, 7) --> 7"""
+('/', 49, 7) --> 7
+"""
 
 
 def basic_op(operator, value1, value2):
