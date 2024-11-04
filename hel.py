@@ -81,6 +81,7 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from string
 
 'abc'.upper()  # 'ABC'
 'ABc'.lower()  # 'abc'
+'ABc'.swapcase()  # 'abC'
 'abc def'.capitalize()  # 'Abc def'
 'ABC DEF'.capitalize()  # 'Abc def'
 'abc def'.title()  # 'Abc Def'
@@ -291,7 +292,7 @@ Operator	Example	Meaning
 
 AND, intersection
 156 & 52  # 20
-0b10011100 & 0b110100  # 20
+0b10011100 & 0b00110100  # 20  # 0b10100
 bin(20)  # '10100'
 
 OR, disjunction
@@ -313,7 +314,7 @@ Need to use binary number representations
 
 Left Shift
 0b100111  # 39
-0b100111 << 1  # 78
+0b100111 << 1  # 78  # 78 * 2
 0b100111 << 2  # 156
 0b100111 << 3  # 312
 39 << 3  # 312
@@ -321,15 +322,15 @@ Fixed-length mask
 39 << 3 & 255  # 56
 int(bin(312)[3:], 2)  # 56
 
-Right shift
-0b10011101 >> 1  # 78
+# Right shift
+0b10011101 >> 1  # 78  # 157 // 2
 0b10011101 >> 2  # 39
 0b10011101 >> 3  # 19
 
-4 & 1  # 0
-100 & 1  # 0
-5 & 1  # 1
-101 & 1  # 1
+4 & 1  # 0  # False & True => False
+100 & 1  # 0  # False & True => False
+5 & 1  # 1  # True & True => True
+101 & 1  # 1  # True & True => True
 
 0b101 & 0b101  # 5
 0b100 | 0b101  # 5
@@ -1958,6 +1959,19 @@ re.sub(r"([A-Z])", r" \1", "helloWorlD")  # break up camel casing
                             # "hello Worl D"
 re.sub(r"([a-zA-Z]+)\s(\d+)", r"\2 of \1", "June 24, August 9, Dec 12")
                                             # "24 of June, 9 of August, 12 of Dec"
+
+# http
+def extract_domain(url):
+    match = re.search(r"(https?:\/\/)?(www\.)?([\w-]+)\..*", url)
+    return match.group(3) if match else None
+
+(extract_domain("Visit http://www.example.com for more information."), "example")
+
+
+def replace_domain_in_text(text):
+    return re.sub(r"(https?://)?(www\.)?([\w-]+)\S*", r"\3", text)
+(replace_domain_in_text("Visit http://www.example.com for more information."), "Visit example for more information.")
+
 
 
 

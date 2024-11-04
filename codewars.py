@@ -3947,7 +3947,18 @@ Examples(Operator, value1, value2) --> output
 
 
 def basic_op(operator, value1, value2):
-    return eval(f'{value1}{operator}{value2}')
+    if operator == "+":
+        return value1 + value2
+    elif operator == "-":
+        return value1 - value2
+    elif operator == "*":
+        return value1 * value2
+    elif operator == "/":
+        return value1 // value2
+
+
+def basic_op(operator, value1, value2):
+    return eval(f"{value1}{operator}{value2}")
     # return eval(str(value1) + operator + str(value2))
     # return eval("{}{}{}".format(value1, operator, value2))
     # return eval('value1' + operator + 'value2')
@@ -3963,7 +3974,8 @@ def basic_op(operator, value1, value2):
 
 # The Supermarket Queue
 # https://www.codewars.com/kata/57b06f90e298a7b53d000a86
-"""There is a queue for the self-checkout tills at the supermarket. Your task is write a function to calculate the total time required for all the customers to check out!
+"""
+There is a queue for the self-checkout tills at the supermarket. Your task is write a function to calculate the total time required for all the customers to check out!
 
 input
 customers: an array of positive integers representing the queue. Each integer represents a customer, and its value is the amount of time they require to check out.
@@ -3992,9 +4004,27 @@ The order of the queue NEVER changes, and
 The front person in the queue (i.e. the first element in the array/list) proceeds to a till as soon as it becomes free.
 N.B. You should assume that all the test input will be valid, as specified above.
 
-P.S. The situation in this kata can be likened to the more-computer-science-related idea of a thread pool, with relation to running multiple processes at the same time: https://en.wikipedia.org/wiki/Thread_pool"""
+P.S. The situation in this kata can be likened to the more-computer-science-related idea of a thread pool, with relation to running multiple processes at the same time: https://en.wikipedia.org/wiki/Thread_pool
+"""
+(queue_time([5], 1), 5)
+(queue_time([2], 5), 2)
+(queue_time([1, 2, 3, 4, 5], 1), 15)
+(queue_time([1, 2, 3, 4, 5], 100), 5)
+(queue_time([2, 2, 3, 3, 4, 4], 2), 9)
+(queue_time([], 1), 0)
 
 
+def queue_time(customer_list, cashiers):
+    cashier_list = [0] * cashiers
+
+    for customer in customer_list:
+        min_index = cashier_list.index(min(cashier_list))
+        cashier_list[min_index] += customer
+
+    return max(cashier_list)
+
+
+# oldies
 # from codewars
 def queue_time(customers, n):
     chechout = [0] * n
@@ -4002,12 +4032,6 @@ def queue_time(customers, n):
         min_ind = chechout.index(min(chechout))
         chechout[min_ind] += customer
     return max(chechout)
-(queue_time([], 1), 0, "wrong answer for case with an empty queue")
-(queue_time([5], 1), 5, "wrong answer for a single person in the queue")
-(queue_time([2], 5), 2, "wrong answer for a single person in the queue")
-(queue_time([1, 2, 3, 4, 5], 1), 15, "wrong answer for a single till")
-(queue_time([1, 2, 3, 4, 5], 100), 5, "wrong answer for a case with a large number of tills")
-(queue_time([2, 2, 3, 3, 4, 4], 2), 9, "wrong answer for a case with two tills")
 
 import numpy as np
 def queue_time(customers, n):
@@ -4061,7 +4085,8 @@ def queue_time(customers,n):
 
 # Are they the "same"?
 # https://www.codewars.com/kata/550498447451fbbd7600041c
-"""Given two arrays a and b write a function comp(a, b) (orcompSame(a, b)) that checks whether the two arrays have the "same" elements, with the same multiplicities (the multiplicity of a member is the number of times it appears). "Same" means, here, that the elements in b are the elements in a squared, regardless of the order.
+"""
+Given two arrays a and b write a function comp(a, b) (orcompSame(a, b)) that checks whether the two arrays have the "same" elements, with the same multiplicities (the multiplicity of a member is the number of times it appears). "Same" means, here, that the elements in b are the elements in a squared, regardless of the order.
 
 Examples
 Valid arrays
@@ -4088,21 +4113,20 @@ a or b might be nil or null or None or nothing (except in C++, COBOL, Crystal, D
 If a or b are nil (or null or None, depending on the language), the problem doesn't make sense so return false.
 
 Note for C
-The two arrays have the same size (> 0) given as parameter in function comp."""
+The two arrays have the same size (> 0) given as parameter in function comp.
+"""
+(comp([121, 144, 19, 161, 19, 144, 19, 11], [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]), True)
+(comp([121, 144, 19, 161, 19, 144, 19, 11], [11*21, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]), False)
+(comp([121, 144, 19, 161, 19, 144, 19, 11], [11*11, 121*121, 144*144, 190*190, 161*161, 19*19, 144*144, 19*19]), False)
+(comp(None, []), False)
 
 
-def comp(array1, array2):
-    # return set([number ** 2 for number in array1]) == set(array2)
-    return set(map(lambda x: x ** 2, array1)) == set(array2)
-a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-a2 = [11*11, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
-(comp(a1, a2), True)
-a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-a2 = [11*21, 121*121, 144*144, 19*19, 161*161, 19*19, 144*144, 19*19]
-(comp(a1, a2), False)
-a1 = [121, 144, 19, 161, 19, 144, 19, 11]
-a2 = [11*11, 121*121, 144*144, 190*190, 161*161, 19*19, 144*144, 19*19]
-(comp(a1, a2), False)
+def comp(nums1, nums2):
+    if (nums1 == None or nums2 == None):
+        return False
+    
+    return {num ** 2 for num in nums1} == set(nums2)
+    # return set(map(lambda num: num ** 2, nums1)) == set(nums2)
 
 
 
@@ -4149,40 +4173,27 @@ Notes
 Not all paths can be made simpler. The path ["NORTH", "WEST", "SOUTH", "EAST"] is not reducible. "NORTH" and "WEST", "WEST" and "SOUTH", "SOUTH" and "EAST" are not directly opposite of each other and can't become such. Hence the result path is itself : ["NORTH", "WEST", "SOUTH", "EAST"].
 if you want to translate, please ask before translating.
 """
-
-
-def dir_reduc(directions):
-    seen = []
-    oppos_direction = {"NORTH": "SOUTH", "SOUTH": "NORTH", "EAST": "WEST", "WEST": "EAST"}
-
-    for direction in directions:
-        if seen and oppos_direction[direction] == seen[-1]:
-            seen.pop()
-        else:
-            seen.append(direction)  # seen += directions
-
-    return seen
 (dir_reduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]), ["WEST"])
 (dir_reduc(["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"]), ["WEST", "WEST"])
 (dir_reduc(["NORTH", "WEST", "SOUTH", "EAST"]), ["NORTH", "WEST", "SOUTH", "EAST"])
 (dir_reduc([]), [])
 
+def dir_reduc(directions):
+    opposite_direction = {
+        "NORTH": "SOUTH",
+        "SOUTH": "NORTH",
+        "EAST": "WEST",
+        "WEST": "EAST"}
+    reduced = []
 
-# from codewars
-def dir_reduc(arr):
-    arr_mod = " ".join(arr).replace("NORTH SOUTH", "").replace("SOUTH NORTH", "").replace("EAST WEST", "").replace("WEST EAST", "")
-    arr_mod = arr_mod.split()
-    return arr_mod if len(arr) == len(arr_mod) else dir_reduc(arr_mod)
+    for direction in directions:
+        if (reduced and
+                direction == opposite_direction[reduced[-1]]):
+            reduced.pop()
+        else:
+            reduced.append(direction)
 
-import re
-def dir_reduc(arr):
-    arr2 = ' '.join(arr)
-    arr2 = re.sub(r'NORTH SOUTH\s?', '', arr2)
-    arr2 = re.sub(r'SOUTH NORTH\s?', '', arr2)
-    arr2 = re.sub(r'EAST WEST\s?', '', arr2)
-    arr2 = re.sub(r'WEST EAST\s?', '', arr2)
-    arr2 = arr2.split()
-    return arr2 if len(arr) == len(arr2) else dir_reduc(arr2)
+    return reduced
 
 
 
@@ -4190,7 +4201,8 @@ def dir_reduc(arr):
 
 # Exes and Ohs
 # https://www.codewars.com/kata/55908aad6620c066bc00002a
-"""Check to see if a string has the same amount of 'x's and 'o's. The method must return a boolean and be case insensitive. The string can contain any char.
+"""
+Check to see if a string has the same amount of 'x's and 'o's. The method must return a boolean and be case insensitive. The string can contain any char.
 
 Examples input/output:
 
@@ -4198,13 +4210,24 @@ XO("ooxx") => true
 XO("xooxx") => false
 XO("ooxXm") => true
 XO("zpzpzpp") => true // when no 'x' and 'o' is present should return true
-XO("zzoo") => false"""
+XO("zzoo") => false
+"""
+(xo("xo"), True)
+(xo("xo0"), True)
+(xo("ooxx"), True)
+(xo("xooxx"), False)
+(xo("ooxXm"), True)
+(xo("zpzpzpp"), True)
+(xo("zzoo"), False)
 
 
-def xo(s):
-    return s.lower().count('x') == s.lower().count('o')
-(xo('xo'), 'True expected')
-(xo('xo0'), 'True expected')
+def xo(text):
+    return (text.lower().count("o") == text.lower().count("x"))
+
+
+import re
+def xo(text):
+    return len(re.findall(r"[xX]", text)) == len(re.findall(r"[oO]", text))
 
 
 
@@ -4212,7 +4235,8 @@ def xo(s):
 
 # Take a Number And Sum Its Digits Raised To The Consecutive Powers And ....¡Eureka!!
 # https://www.codewars.com/kata/5626b561280a42ecc50000d1
-"""The number 89 is the first integer with more than one digit that fulfills the property partially introduced in the title of this kata. What's the use of saying "Eureka"? Because this sum gives the same number.
+"""
+The number 89 is the first integer with more than one digit that fulfills the property partially introduced in the title of this kata. What's the use of saying "Eureka"? Because this sum gives the same number.
 
 In effect: 89 = 8^1 + 9^2
 
@@ -4229,15 +4253,8 @@ is_power_sum(1, 10) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
 is_power_sum(1, 100) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 89]
 If there are no numbers of this kind in the range [a, b] the function should output an empty list.
 
-is_power_sum(90, 100) == []"""
-
-
-def sum_dig_pow(a, b):
-    sum_dig = []
-    for number in range(a, b + 1):
-        if number == sum(int(digit) ** index for index, digit in enumerate(str(number), 1)):
-            sum_dig.append(number)
-    return sum_dig
+is_power_sum(90, 100) == []
+"""
 (sum_dig_pow(1, 10), [1, 2, 3, 4, 5, 6, 7, 8, 9])
 (sum_dig_pow(1, 100), [1, 2, 3, 4, 5, 6, 7, 8, 9, 89])
 (sum_dig_pow(10, 89),  [89])
@@ -4246,15 +4263,29 @@ def sum_dig_pow(a, b):
 (sum_dig_pow(89, 135), [89, 135])
 
 
+def sum_dig_pow(a, b):
+    nums = []
+
+    for number in range(a, b + 1):
+        summed_num = sum(int(digit) ** index
+                         for index, digit in enumerate(str(number), 1))
+
+        if summed_num == number:
+            nums.append(number)
+
+    return nums
+
+
 # from codewars
-def is_power_sum(number):
-    return number == sum(int(digit) ** i for i, digit in enumerate(str(number), 1))
+def is_power_sum_equal(num):
+    return num == sum(int(digit) ** index
+                         for index, digit in enumerate(str(num), 1))
 
 def sum_dig_pow(a, b):
-    return list(filter(is_power_sum, range(a, b + 1)))
+    return [num for num in range(a, b + 1) if is_power_sum_equal(num)]
 
 def sum_dig_pow(a, b):
-    return [number for number in range(a, b + 1) if is_power_sum(number)]
+    return list(filter(is_power_sum_equal, range(a, b + 1)))
 
 
 
@@ -4262,7 +4293,8 @@ def sum_dig_pow(a, b):
 
 # Categorize New Member
 # https://www.codewars.com/kata/5502c9e7b3216ec63c0001aa
-"""The Western Suburbs Croquet Club has two categories of membership, Senior and Open. They would like your help with an application form that will tell prospective members which category they will be placed.
+"""
+The Western Suburbs Croquet Club has two categories of membership, Senior and Open. They would like your help with an application form that will tell prospective members which category they will be placed.
 
 To be a senior, a member must be at least 55 years old and have a handicap greater than 7. In this croquet club, handicaps range from -2 to +26; the better the player the lower the handicap.
 
@@ -4276,12 +4308,13 @@ Example
 input =  [[18, 20], [45, 2], [61, 12], [37, 6], [21, 21], [78, 9]]
 output = ["Open", "Open", "Senior", "Open", "Open", "Senior"]
 """
+(open_or_senior([(45, 12),(55,21),(19, -2),(104, 20)]),['Open', 'Senior', 'Open', 'Senior'])
+(open_or_senior([(16, 23),(73,1),(56, 20),(1, -1)]),['Open', 'Open', 'Senior', 'Open'])
 
 
 def open_or_senior(data):
-    return ['Senior' if age > 54 and handicap > 7 else 'Open' for age, handicap in data]
-(open_or_senior([(45, 12),(55,21),(19, -2),(104, 20)]),['Open', 'Senior', 'Open', 'Senior'])
-(open_or_senior([(16, 23),(73,1),(56, 20),(1, -1)]),['Open', 'Open', 'Senior', 'Open'])
+    return ['Senior' if age > 54 and handicap > 7 else 'Open'
+            for age, handicap in data]
 
 
 
@@ -4289,19 +4322,21 @@ def open_or_senior(data):
 
 # Opposites Attract
 # https://www.codewars.com/kata/555086d53eac039a2a000083
-"""Timmy & Sarah think they are in love, but around where they live, they will only know once they pick a flower each. If one of the flowers has an even number of petals uand the other has an odd number of petals it means they are in love.
+"""
+Timmy & Sarah think they are in love, but around where they live, they will only know once they pick a flower each. If one of the flowers has an even number of petals and the other has an odd number of petals it means they are in love.
 
 Write a function that will take the number of petals of each flower and return true if they are in love and false if they aren't.
 
 """
-
-
-def lovefunc(flower1, flower2):
-    return bool((flower1 + flower2) % 2)
 (lovefunc(1,4), True)
 (lovefunc(2,2), False)
 (lovefunc(0,1), True)
 (lovefunc(0,0), False)
+
+
+def lovefunc(flower1, flower2):
+    return bool((flower1 + flower2) % 2)
+
 
 def lovefunc(flower1, flower2):
     return bool(flower1 % 2 ^ flower2 % 2)
@@ -4312,7 +4347,8 @@ def lovefunc(flower1, flower2):
 
 # Playing with digits
 # https://www.codewars.com/kata/5552101f47fc5178b1000050
-"""Some numbers have funny properties. For example:
+"""
+Some numbers have funny properties. For example:
 
 89 --> 8¹ + 9² = 89 * 1
 
@@ -4334,17 +4370,26 @@ Note: n and p will always be given as strictly positive integers.
 dig_pow(89, 1) should return 1 since 8¹ + 9² = 89 = 89 * 1
 dig_pow(92, 1) should return -1 since there is no k such as 9¹ + 2² equals 92 * k
 dig_pow(695, 2) should return 2 since 6² + 9³ + 5⁴= 1390 = 695 * 2
-dig_pow(46288, 3) should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51"""
-
-
-def dig_pow(n, p):
-    sum_of_pow = sum(int(digit) ** index for index, digit in enumerate(str(n), p)) / n
-    # sum_of_pow = sum(pow(int(digit), ind) for ind, digit in enumerate(str(n), p)) / n
-    return sum_of_pow if not sum_of_pow % 1 else -1
+dig_pow(46288, 3) should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688 = 46288 * 51
+"""
 (dig_pow(695, 2), 2)
 (dig_pow(89, 1), 1)
 (dig_pow(92, 1), -1)
 (dig_pow(46288, 3), 51)
+
+
+def dig_pow(number, power):
+    total = sum(int(digit) ** power 
+               for power, digit in enumerate(str(number), power))
+    
+    return total // number if not total % number else -1
+
+
+# oldies
+def dig_pow(n, p):
+    sum_of_pow = sum(int(digit) ** index for index, digit in enumerate(str(n), p)) / n
+    # sum_of_pow = sum(pow(int(digit), ind) for ind, digit in enumerate(str(n), p)) / n
+    return sum_of_pow if not sum_of_pow % 1 else -1
 
 def dig_pow(n, p):
     sum_of_pow = sum(int(digit) ** ind for ind, digit in enumerate(str(n), p))
@@ -4366,22 +4411,24 @@ def dig_pow(n, p):
 
 # L1: Set Alarm
 # https://www.codewars.com/kata/568dcc3c7f12767a62000038
-"""Write a function named setAlarm which receives two parameters. The first parameter, employed, is true whenever you are employed and the second parameter, vacation is true whenever you are on vacation.
+"""
+Write a function named setAlarm which receives two parameters. The first parameter, employed, is true whenever you are employed and the second parameter, vacation is true whenever you are on vacation.
 
 The function should return true if you are employed and not on vacation (because these are the circumstances under which you need to set an alarm). It should return false otherwise. Examples:
 
 setAlarm(true, true) -> false
 setAlarm(false, true) -> false
 setAlarm(false, false) -> false
-setAlarm(true, false) -> true"""
-
-
-def set_alarm(employed, vacation):
-    return employed and not vacation
+setAlarm(true, false) -> true
+"""
 (set_alarm(True, True), False, "Fails when input is True, True")
 (set_alarm(False, True), False, "Fails when input is False, True")
 (set_alarm(False, False), False, "Fails when input is False, False")
 (set_alarm(True, False), True, "Fails when input is True, False")
+
+
+def set_alarm(employed, vacation):
+    return employed and not vacation
 
 
 
@@ -4389,7 +4436,8 @@ def set_alarm(employed, vacation):
 
 # Will there be enough space?
 # https://www.codewars.com/kata/5875b200d520904a04000003
-"""The Story:
+"""
+The Story:
 Bob is working as a bus driver. However, he has become extremely popular amongst the city's residents. With so many passengers wanting to get aboard his bus, he sometimes has to face the problem of not enough space left on the bus! He wants you to write a simple program telling him if he will be able to fit all the passengers.
 
 Task Overview:
@@ -4402,15 +4450,15 @@ If there is enough space, return 0, and if there isn't, return the number of pas
 
 Usage Examples:
 cap = 10, on = 5, wait = 5 --> 0 # He can fit all 5 passengers
-cap = 100, on = 60, wait = 50 --> 10 # He can't fit 10 of the 50 waiting"""
-
-
-def enough(cap, on, wait):
-    return -min(cap - on - wait, 0)
-    # return max(0, wait - cap + on)
+cap = 100, on = 60, wait = 50 --> 10 # He can't fit 10 of the 50 waiting
+"""
 (enough(10, 5, 5), 0)
 (enough(100, 60, 50), 10)
 (enough(20, 5, 5), 0)
+
+
+def enough(cap, wait, on):
+    return max(wait - (cap - on), 0)
 
 
 
@@ -4418,7 +4466,8 @@ def enough(cap, on, wait):
 
 # Sum of the first nth term of Series
 # https://www.codewars.com/kata/555eded1ad94b00403000071
-"""Task:
+"""
+Task:
 Your task is to write a function which returns the sum of following series upto nth term(parameter).
 
 Series: 1 + 1/4 + 1/7 + 1/10 + 1/13 + 1/16 +...
@@ -4434,17 +4483,18 @@ Examples:(Input --> Output)
 2 --> 1 + 1/4 --> "1.25"
 5 --> 1 + 1/4 + 1/7 + 1/10 + 1/13 --> "1.57"
 """
-
-
-def series_sum(n):
-    sequence_sum = sum(1/(3*i + 1) for i in range(n))
-    return f"{sequence_sum:.2f}"
-    return "{:.2f}".format(sequence_sum)
-    return "%.2f" % sequence_sum
 (series_sum(0), "0.00")
 (series_sum(1), "1.00")
 (series_sum(2), "1.25")
 (series_sum(3), "1.39")
+
+
+def series_sum(number):
+    sequence_sum =  sum([1 / ((index * 3 + 1)) for index in range(number)])
+    # sequence_sum = sum([1 / index for index in range(1, number * 3 + 1, 3)])
+    return f"{sequence_sum:.2f}"
+    return "{:.2f}".format(sequence_sum)
+    return "%.2f" % sequence_sum
 
 
 
@@ -4452,21 +4502,14 @@ def series_sum(n):
 
 # Convert number to reversed array of digits
 # https://www.codewars.com/kata/5583090cbe83f4fd8c000051
-"""Convert number to reversed array of digits
+"""
+Convert number to reversed array of digits
 Given a random non-negative number, you have to return the digits of this number within an array in reverse order.
 
 Example:
 348597 => [7,9,5,8,4,3]
 0 => [0]
 """
-
-
-def digitize(n):
-    return [int(digit) for digit in reversed(str(n))]
-    return list(reversed([int(digit) for digit in str(n)]))
-    return [int(digit) for digit in str(n)][::-1]
-    return list(map(int, str(n)[::-1]))
-    return list(map(int, str(n)))[::-1]
 (digitize(348597), [7, 9, 5, 8, 4, 3])
 (digitize(35231), [1, 3, 2, 5, 3])
 (digitize(0), [0])
@@ -4476,12 +4519,24 @@ def digitize(n):
 (digitize(548702838394), [4, 9, 3, 8, 3, 8, 2, 0, 7, 8, 4, 5])
 
 
+def digitize(number):
+    return [int(digit) for digit in str(number)[::-1]]
+    return list(map(int, str(n)[::-1]))
+
+# oldies
+def digitize(n):
+    return [int(digit) for digit in reversed(str(n))]
+    return list(reversed([int(digit) for digit in str(n)]))
+    return list(map(int, str(n)))[::-1]
+
+
 
 
 
 # Get the Middle Character
 # https://www.codewars.com/kata/56747fd5cb988479af000028
-"""est") should return "es"
+"""
+est") should return "es"
 
 Kata.getMiddle("testing") should return "t"
 
@@ -4494,20 +4549,23 @@ A word (string) of length 0 < str < 1000 (In javascript you may get slightly mor
 
 #Output
 
-The middle character(s) of the word represented as a string."""
-
-
-def get_middle(s):
-    len_s = len(s)
-    if len_s % 2:
-        return s[(len_s-1) // 2]
-    else:
-        return s[len_s//2 - 1 : len_s//2 + 1]
+The middle character(s) of the word represented as a string.
+"""
 (get_middle("test"), "es")
 (get_middle("testing"), "t")
 (get_middle("middle"), "dd")
 (get_middle("A"), "A")
 (get_middle("of"), "of")
+
+
+def get_middle(text):
+    text_length = len(text)
+    
+    if text_length % 2:
+        return text[text_length//2]
+    else:
+        return text[text_length//2 - 1: text_length//2 + 1]
+
 
 def get_middle(s):
     return s[(len(s)-1) // 2 : len(s)//2 + 1]
@@ -4520,7 +4578,8 @@ def get_middle(s):
 
 # Transportation on vacation
 # https://www.codewars.com/kata/568d0dd208ee69389d000016
-"""After a hard quarter in the office you decide to get some rest on a vacation. So you will book a flight for you and your girlfriend and try to leave all the mess behind you.
+"""
+After a hard quarter in the office you decide to get some rest on a vacation. So you will book a flight for you and your girlfriend and try to leave all the mess behind you.
 
 You will need a rental car in order for you to get around in your vacation. The manager of the car rental makes you some good offers.
 
@@ -4529,20 +4588,22 @@ Every day you rent the car costs $40. If you rent the car for 7 or more days, yo
 Write a code that gives out the total amount for different days(d).
 
 """
-
-
-def rental_car_cost(d):
-    if d >= 7:
-        return d * 40 - 50
-    if d >= 3:
-        return d * 40 - 20
-    else:
-        return d * 40
 (rental_car_cost(1), 40)
 (rental_car_cost(4), 140)
 (rental_car_cost(7), 230)
 (rental_car_cost(8), 270)
-    
+
+
+def rental_car_cost(days):
+    if days >= 7:
+        return days * 40 - 50
+    elif days >= 3:
+        return days * 40 - 20
+    else:
+        return days * 40
+
+
+# oldies
 def rental_car_cost(d):
     return 40*d if d < 3 else 40*d - 20 if d < 7 else 40*d - 50
 
@@ -4556,7 +4617,8 @@ def rental_car_cost(d):
 
 # Abbreviate a Two Word Name
 # https://www.codewars.com/kata/57eadb7ecd143f4c9c0000a3
-"""Write a function to convert a name into initials. This kata strictly takes two words with one space in between them.
+"""
+Write a function to convert a name into initials. This kata strictly takes two words with one space in between them.
 
 The output should be two capital letters with a dot separating them.
 
@@ -4564,13 +4626,8 @@ It should look like this:
 
 Sam Harris => S.H
 
-patrick feeney => P.F"""
-
-
-def abbrev_name(name):
-    return ".".join(i[0].upper() for i in name.split())
-    return '.'.join(i[0] for i in name.split()).upper()
-    return ".".join(map(lambda x: x[0].upper(), name.split()))
+patrick feeney => P.F
+"""
 (abbrev_name("Sam Harris"), "S.H")
 (abbrev_name("patrick feenan"), "P.F")
 (abbrev_name("Evan C"), "E.C")
@@ -4578,12 +4635,21 @@ def abbrev_name(name):
 (abbrev_name("David Mendieta"), "D.M")
 
 
+def abbrev_name(name):
+    return ".".join(word[0].upper() 
+                    for word in name.split())
+
+def abbrev_name(name):
+    return ".".join(map(lambda word: word[0].upper(), name.split()))
+
+
 
 
 
 # Count by X
 # https://www.codewars.com/kata/5513795bd3fafb56c200049e
-"""Create a function with two arguments that will return an array of the first (n) multiples of (x).
+"""
+Create a function with two arguments that will return an array of the first (n) multiples of (x).
 
 Assume both the given number and the number of times to count will be positive numbers greater than 0.
 
@@ -4592,18 +4658,23 @@ Return the results as an array (or list in Python, Haskell or Elixir).
 Examples:
 
 count_by(1,10) #should return [1,2,3,4,5,6,7,8,9,10]
-count_by(2,5) #should return [2,4,6,8,10]"""
-
-
-def count_by(x, n):
-    return list(range(x, n*x + 1, x))
-    return [x * i for i in range(1, n + 1)]
-    return list(map(lambda y: x*y, range(1, n+1)))
+count_by(2,5) #should return [2,4,6,8,10]
+"""
 (count_by(1, 5), [1, 2, 3, 4, 5])
 (count_by(2, 5), [2, 4, 6, 8, 10])
 (count_by(3, 5), [3, 6, 9, 12, 15])
 (count_by(50, 5), [50, 100, 150, 200, 250])
 (count_by(100, 5), [100, 200, 300, 400, 500])
+
+
+def count_by(number, times):
+    return list(range(number, number * times + 1, number))
+
+
+# oldies
+def count_by(x, n):
+    return [x * i for i in range(1, n + 1)]
+    return list(map(lambda y: x*y, range(1, n+1)))
 
 import numpy as np
 def count_by(x, n):
@@ -4615,23 +4686,25 @@ def count_by(x, n):
 
 # Beginner Series #1 School Paperwork
 # https://www.codewars.com/kata/55f9b48403f6b87a7c0000bd
-"""Your classmates asked you to copy some paperwork for them. You know that there are 'n' classmates and the paperwork has 'm' pages.
+"""
+Your classmates asked you to copy some paperwork for them. You know that there are 'n' classmates and the paperwork has 'm' pages.
 
 Your task is to calculate how many blank pages do you need. If n < 0 or m < 0 return 0.
 
 Example:
 n= 5, m=5: 25
-n=-5, m=5:  0"""
+n=-5, m=5:  0
+"""
+(paperwork(5, 5), 25)
+(paperwork(-5, 5), 0)
+(paperwork(5, -5), 0)
+(paperwork(-5, -5), 0)
+(paperwork(5, 0), 0)
 
 
-def paperwork(n, m):
-    return max(n, 0) * max(m, 0)
-    return n * m if n > 0 and m > 0 else 0
-(paperwork(5,5), 25, "Failed at Paperwork(5,5)")
-(paperwork(-5,5), 0, "Failed at Paperwork(-5,5)")
-(paperwork(5,-5), 0, "Failed at Paperwork(5,-5)")
-(paperwork(-5,-5), 0, "Failed at Paperwork(-5,-5)")
-(paperwork(5,0), 0, "Failed at Paperwork(5,0)")
+def paperwork(classmate, page):
+    return max(classmate, 0) * max(page, 0)
+    return classmate * page if classmate > 0 and page > 0 else 0
 
 
 
@@ -4639,7 +4712,8 @@ def paperwork(n, m):
 
 # Ones and Zeros
 # https://www.codewars.com/kata/578553c3a1b8d5c40300037c
-"""Given an array of ones and zeroes, convert the equivalent binary value to an integer.
+"""
+Given an array of ones and zeroes, convert the equivalent binary value to an integer.
 
 Eg: [0, 0, 0, 1] is treated as 0001 which is the binary representation of 1.
 
@@ -4653,33 +4727,42 @@ Testing: [0, 0, 1, 0] ==> 2
 Testing: [0, 1, 1, 0] ==> 6
 Testing: [1, 1, 1, 1] ==> 15
 Testing: [1, 0, 1, 1] ==> 11
-However, the arrays can have varying lengths, not just limited to 4."""
-
-
-def binary_array_to_number(arr):
-    return int(''.join(str(i) for i in arr), 2)
-    return int(''.join(map(str, arr)), 2)
+However, the arrays can have varying lengths, not just limited to 4.
+"""
 (binary_array_to_number([0, 0, 0, 1]), 1)
 (binary_array_to_number([0, 0, 1, 0]), 2)
 (binary_array_to_number([1, 1, 1, 1]), 15)
 (binary_array_to_number([0, 1, 1, 0]), 6)
 
 
+def binary_array_to_number(numbers):
+    binary_str = "".join(map(str, numbers))
+    
+    return int(binary_str, 2)
+
+def binary_array_to_number(numbers):
+    binary_str = "".join(str(digit) for digit in numbers)
+    
+    return int(binary_str, 2)
+
+
 
 
 
 # Shortest Word
-# https://www.codewars.com/kata/57cebe1dc6fdc20c57000ac9r
-"""Simple, given a string of words, return the length of the shortest word(s).
+# https://www.codewars.com/kata/57cebe1dc6fdc20c57000ac9
+"""
+Simple, given a string of words, return the length of the shortest word(s).
 
-String will never be empty and you do not need to account for different data types."""
+String will never be empty and you do not need to account for different data types.
+"""
 
 
-def find_short(s):
-    return len(min(s.split(), key=len))
-    # return len(min(s.split(), key=lambda x: len(x)))
-    # return min(map(len, s.split()))
-    # return min(len(i) for i in s.split())
+def find_short(text):
+    return len(min(text.split(), key=len))
+    # return len(min(text.split(), key=lambda word: len(word)))
+    # return min(map(len, text.split()))
+    # return min(len(word) for word in text.split())
 (find_short("bitcoin take over the world maybe who knows perhaps"), 3)
 (find_short("turns out random test cases are easier than writing out basic ones"), 3)
 (find_short("lets talk about javascript the best language"), 3)
@@ -4693,24 +4776,24 @@ def find_short(s):
 
 # Fake Binary
 # https://www.codewars.com/kata/57eae65a4321032ce000002d
-"""Given a string of digits, you should replace any digit below 5 with '0' and any digit 5 and above with '1'. Return the resulting string.
+"""
+Given a string of digits, you should replace any digit below 5 with '0' and any digit 5 and above with '1'. Return the resulting string.
 
-Note: input will never be an empty string"""
+Note: input will never be an empty string
+"""
+(fake_bin("45385593107843568"), "01011110001100111")
+(fake_bin("509321967506747"), "101000111101101")
+(fake_bin("366058562030849490134388085"), "011011110000101010000011011")
+(fake_bin("15889923"), "01111100")
+(fake_bin("800857237867"), "100111001111")
 
 
-def fake_bin(x):
-    # return "".join("1" if digit >= "5" else "0" for digit in str(x))
-    return "".join(map(lambda x: "1" if x >= "5" else "0", str(x)))
+def fake_bin(number):
+    return "".join("0" if digit < "5" else "1" 
+                   for digit in str(number))
 
-tests = [["01011110001100111", "45385593107843568"],
-         ["101000111101101", "509321967506747"],
-         ["011011110000101010000011011", "366058562030849490134388085"],
-         ["01111100", "15889923"],
-         ["100111001111", "800857237867"],
-         ]
-
-for exp, inp in tests:
-    (fake_bin(inp), exp)
+def fake_bin(number):
+    return "".join(map(lambda digit: "0" if digit < "5" else "1", str(number)))
 
 
 
@@ -4718,17 +4801,23 @@ for exp, inp in tests:
 
 # Take a Ten Minutes Walk
 # https://www.codewars.com/kata/54da539698b8a2ad76000228
-"""You live in the city of Cartesia where all roads are laid out in a perfect grid. You arrived ten minutes too early to an appointment, so you decided to take the opportunity to go for a short walk. The city provides its citizens with a Walk Generating App on their phones -- everytime you press the button it sends you an array of one-letter strings representing directions to walk (eg. ['n', 's', 'w', 'e']). You always walk only a single block for each letter (direction) and you know it takes you one minute to traverse one city block, so create a function that will return true if the walk the app gives you will take you exactly ten minutes (you don't want to be early or late!) and will, of course, return you to your starting point. Return false otherwise.
+"""
+You live in the city of Cartesia where all roads are laid out in a perfect grid. You arrived ten minutes too early to an appointment, so you decided to take the opportunity to go for a short walk. The city provides its citizens with a Walk Generating App on their phones -- everytime you press the button it sends you an array of one-letter strings representing directions to walk (eg. ['n', 's', 'w', 'e']). You always walk only a single block for each letter (direction) and you know it takes you one minute to traverse one city block, so create a function that will return true if the walk the app gives you will take you exactly ten minutes (you don't want to be early or late!) and will, of course, return you to your starting point. Return false otherwise.
 
-Note: you will always receive a valid array (string in COBOL) containing a random assortment of direction letters ('n', 's', 'e', or 'w' only). It will never give you an empty array (that's not a walk, that's standing still!)."""
+Note: you will always receive a valid array (string in COBOL) containing a random assortment of direction letters ('n', 's', 'e', or 'w' only). It will never give you an empty array (that's not a walk, that's standing still!).
+"""
+(is_valid_walk(['n','s','n','s','n','s','n','s','n','s']), True)
+(is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']), False)
+(is_valid_walk(['w']), False)
+(is_valid_walk(['n','n','n','s','n','s','n','s','n','s']), False)
 
 
-def is_valid_walk(walk):
-    return len(walk) == 10 and walk.count("n") == walk.count("s") and walk.count("e") == walk.count("w")
-(is_valid_walk(['n','s','n','s','n','s','n','s','n','s']), 'should return True');
-(not is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e']), 'should return False');
-(not is_valid_walk(['w']), 'should return False');
-(not is_valid_walk(['n','n','n','s','n','s','n','s','n','s']), 'should return False');
+def is_valid_walk(directions):
+    return (
+        len(directions) == 10 and
+        directions.count("n") == directions.count("s") and
+        directions.count("e") == directions.count("w")
+    )
 
 
 
@@ -4736,15 +4825,17 @@ def is_valid_walk(walk):
 
 # Calculate average
 # https://www.codewars.com/kata/57a2013acf1fa5bfc4000921
-"""Write a function which calculates the average of the numbers in a given list.
+"""
+Write a function which calculates the average of the numbers in a given list.
 
-Note: Empty arrays should return 0."""
+Note: Empty arrays should return 0.
+"""
+(find_average([1, 2, 3]), 2)
+(find_average([]), 0)
 
 
 def find_average(numbers):
     return sum(numbers) / len(numbers) if numbers else 0
-(find_average([1, 2, 3]), 2)
-(find_average([]), 0)
 
 import numpy as np
 
@@ -4763,13 +4854,11 @@ def find_average(numbers):
 
 # Sum Mixed Array
 # https://www.codewars.com/kata/57eaeb9578748ff92a000009
-"""Given an array of integers as strings and numbers, return the sum of the array values as if all were numbers.
+"""
+Given an array of integers as strings and numbers, return the sum of the array values as if all were numbers.
 
-Return your answer as a number."""
-
-
-def sum_mix(arr):
-    return sum(map(int, arr))
+Return your answer as a number.
+"""
 (sum_mix([9, 3, '7', '3']), 22)
 (sum_mix(['5', '0', 9, 3, 2, 1, '9', 6, 7]), 42)
 (sum_mix(['3', 6, 6, 0, '5', 8, 5, '6', 2,'0']), 41)
@@ -4777,37 +4866,66 @@ def sum_mix(arr):
 (sum_mix([8, 0, 0, 8, 5, 7, 2, 3, 7, 8, 6, 7]), 61)
 
 
+def sum_mix(arr):
+    return sum(map(int, arr))
+
+
 
 
 
 # Switch it Up!
 # https://www.codewars.com/kata/5808dcb8f0ed42ae34000031
-"""When provided with a number between 0-9, return it in words.
+"""
+When provided with a number between 0-9, return it in words.
 
 Input :: 1
 
 Output :: "One".
 
-If your language supports it, try using a switch statement."""
-
-
-def switch_it_up(number):
-    number_dict = {0: 'Zero',
-                   1: 'One',
-                   2: 'Two',
-                   3: 'Three',
-                   4: 'Four',
-                   5: 'Five',
-                   6: 'Six',
-                   7: 'Seven',
-                   8: 'Eight',
-                   9: 'Nine'}
-    return number_dict[number]
+If your language supports it, try using a switch statement.
+"""
 (switch_it_up(0), "Zero")
 (switch_it_up(9), "Nine")
 
-def switch_it_up(number):
-    return 'Zero One Two Three Four Five Six Seven Eight Nine'.split()[number]
+
+def switch_it_up(digit):
+    return ("Zero One Two Three Four Five Six Seven Eight Nine"
+            .split()[digit])
+
+
+def switch_it_up(digit):
+    return ("Zero", "One", "Two", "Three", "Four", "Five", 
+            "Six", "Seven", "Eight", "Nine")[digit]
+
+
+def switch_it_up(digit):
+    digit_to_sring = {
+        0: 'Zero',
+        1: 'One',
+        2: 'Two',
+        3: 'Three',
+        4: 'Four',
+        5: 'Five',
+        6: 'Six',
+        7: 'Seven',
+        8: 'Eight',
+        9: 'Nine'
+    }
+    return digit_to_sring[digit]
+
+
+def switch_it_up(digit):
+    match digit:
+        case 0: return "Zero"
+        case 1: return "One"
+        case 2: return "Two"
+        case 3: return "Three"
+        case 4: return "Four"
+        case 5: return "Five"
+        case 6: return "Six"
+        case 7: return "Seven"
+        case 8: return "Eight"
+        case 9: return "Nine"
 
 
 
@@ -4815,28 +4933,34 @@ def switch_it_up(number):
 
 # Array.diff
 # https://www.codewars.com/kata/523f5d21c841566fde000009
-"""Your goal in this kata is to implement a difference function, which subtracts one list from another and returns the result.
+"""
+Your goal in this kata is to implement a difference function, which subtracts one list from another and returns the result.
 
 It should remove all values from list a, which are present in list b keeping their order.
 
 array_diff([1,2],[1]) == [2]
 If a value is present in b, all of its occurrences must be removed from the other:
 
-array_diff([1,2,2,2,3],[2]) == [1,3]"""
+array_diff([1,2,2,2,3],[2]) == [1,3]
+"""
+(array_diff([1, 2], [1]), [2])
+(array_diff([1, 2, 2], [1]), [2, 2])
+(array_diff([1, 2, 2], [2]), [1])
+(array_diff([1, 2, 2], []), [1, 2, 2])
+(array_diff([], [1, 2]), [])
+(array_diff([1, 2, 3], [1, 2]), [3])
 
 
-def array_diff(a, b):
-    return [i for i in a if i not in set(b)]
-(array_diff([1,2], [1]), [2], "a was [1,2], b was [1], expected [2]")
-(array_diff([1,2,2], [1]), [2,2], "a was [1,2,2], b was [1], expected [2,2]")
-(array_diff([1,2,2], [2]), [1], "a was [1,2,2], b was [2], expected [1]")
-(array_diff([1,2,2], []), [1,2,2], "a was [1,2,2], b was [], expected [1,2,2]")
-(array_diff([], [1,2]), [], "a was [], b was [1,2], expected []")
-(array_diff([1,2,3], [1, 2]), [3], "a was [1,2,3], b was [1, 2], expected [3]")
+def array_diff(numbers, tabu_list):
+    tabu_set = set(tabu_list)
 
-# from codewars
-def array_diff(a, b):
-    return list(filter(lambda x: x not in b, a))
+    return list(filter(lambda digit: digit not in tabu_set, numbers))
+
+
+def array_diff(numbers, tabu_list):
+    tabu_set = set(tabu_list)
+
+    return [number for number in numbers if number not in tabu_set]
 
 
 
@@ -4844,7 +4968,8 @@ def array_diff(a, b):
 
 # Welcome!
 # https://www.codewars.com/kata/577ff15ad648a14b780000e7
-"""Your start-up's BA has told marketing that your website has a large audience in Scandinavia and surrounding countries. Marketing thinks it would be great to welcome visitors to the site in their own language. Luckily you already use an API that detects the user's location, so this is an easy win.
+"""
+Your start-up's BA has told marketing that your website has a large audience in Scandinavia and surrounding countries. Marketing thinks it would be great to welcome visitors to the site in their own language. Luckily you already use an API that detects the user's location, so this is an easy win.
 
 The Task
 Think of a way to store the languages as a database (eg an object). The languages are listed below so you can copy and paste!
@@ -4871,32 +4996,8 @@ Possible invalid inputs include:
 
 IP_ADDRESS_INVALID - not a valid ipv4 or ipv6 ip address
 IP_ADDRESS_NOT_FOUND - ip address not in the database
-IP_ADDRESS_REQUIRED - no ip address was supplied"""
-
-
-# from codewars
-def greet(language):
-    lang_db = {'english': 'Welcome',
-               'czech': 'Vitejte',
-               'danish': 'Velkomst',
-               'dutch': 'Welkom',
-               'estonian': 'Tere tulemast',
-               'finnish': 'Tervetuloa',
-               'flemish': 'Welgekomen',
-               'french': 'Bienvenue',
-               'german': 'Willkommen',
-               'irish': 'Failte',
-               'italian': 'Benvenuto',
-               'latvian': 'Gaidits',
-               'lithuanian': 'Laukiamas',
-               'polish': 'Witamy',
-               'spanish': 'Bienvenido',
-               'swedish': 'Valkommen',
-               'welsh': 'Croeso'
-               }
-    return lang_db.get(language, lang_db["english"])
-    # return lang_db[language] if language in lang_db else lang_db["english"]
-
+IP_ADDRESS_REQUIRED - no ip address was supplied
+"""
 (greet('english'), 'Welcome')
 (greet('dutch'), 'Welkom')
 (greet('IP_ADDRESS_INVALID'), 'Welcome')
@@ -4904,25 +5005,52 @@ def greet(language):
 (greet(2), 'Welcome')
 
 
+language_to_greet = {
+    "english": "Welcome",
+    "czech": "Vitejte",
+    "danish": "Velkomst",
+    "dutch": "Welkom",
+    "estonian": "Tere tulemast",
+    "finnish": "Tervetuloa",
+    "flemish": "Welgekomen",
+    "french": "Bienvenue",
+    "german": "Willkommen",
+    "irish": "Failte",
+    "italian": "Benvenuto",
+    "latvian": "Gaidits",
+    "lithuanian": "Laukiamas",
+    "polish": "Witamy",
+    "spanish": "Bienvenido",
+    "swedish": "Valkommen",
+    "welsh": "Croeso"
+}
+
+def greet(language):
+    return language_to_greet.get(language, language_to_greet['english'])
+
+
 
 
 
 # Area or Perimeter
 # https://www.codewars.com/kata/5ab6538b379d20ad880000ab
-"""You are given the length and width of a 4-sided polygon. The polygon can either be a rectangle or a square.
+"""
+You are given the length and width of a 4-sided polygon. The polygon can either be a rectangle or a square.
 If it is a square, return its area. If it is a rectangle, return its perimeter.
 
 area_or_perimeter(6, 10) --> 32
 area_or_perimeter(3, 3) --> 9
-Note: for the purposes of this kata you will assume that it is a square if its length and width are equal, otherwise it is a rectangle."""
-
-
-def area_or_perimeter(l, w):
-    return l ** 2 if l == w else (l+w) << 1
+Note: for the purposes of this kata you will assume that it is a square if its length and width are equal, otherwise it is a rectangle.
+"""
 (area_or_perimeter(4, 4), 16)
 (area_or_perimeter(6, 10), 32)
 
-area_or_perimeter = lambda l, w: l ** 2 if l == w else (l+w) << 1
+
+def area_or_perimeter(width, height):
+    if width == height:
+        return width ** 2
+    else:
+        return (width + height) << 1
 
 
 
@@ -4930,7 +5058,8 @@ area_or_perimeter = lambda l, w: l ** 2 if l == w else (l+w) << 1
 
 # Total amount of points
 # https://www.codewars.com/kata/5bb904724c47249b10000131
-"""Our football team finished the championship. The result of each match look like "x:y". Results of all matches are recorded in the collection.
+"""
+Our football team finished the championship. The result of each match look like "x:y". Results of all matches are recorded in the collection.
 
 For example: ["3:1", "2:2", "0:1", ...]
 
@@ -4943,9 +5072,31 @@ Notes:
 
 there are 10 matches in the championship
 0 <= x <= 4
-0 <= y <= 4"""
+0 <= y <= 4
+"""
+(points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3']), 30)
+(points(['1:1','2:2','3:3','4:4','2:2','3:3','4:4','3:3','4:4','4:4']), 10)
+(points(['0:1','0:2','0:3','0:4','1:2','1:3','1:4','2:3','2:4','3:4']), 0)
+(points(['1:0','2:0','3:0','4:0','2:1','1:3','1:4','2:3','2:4','3:4']), 15)
+(points(['1:0','2:0','3:0','4:4','2:2','3:3','1:4','2:3','2:4','3:4']), 12)
 
 
+def points(games):
+    points = 0
+
+    for game in games:
+        team_a, team_b = game.split(":")
+        team_a, team_b = int(team_a), int(team_b)
+        
+        if team_a > team_b:
+            points += 3
+        elif team_a == team_b:
+            points += 1
+
+    return points
+
+
+import re
 def points(games):
     points = 0
     for game in games:
@@ -4955,11 +5106,6 @@ def points(games):
         elif a > b:
             points += 3
     return points
-(points(['1:0','2:0','3:0','4:0','2:1','3:1','4:1','3:2','4:2','4:3']), 30)
-(points(['1:1','2:2','3:3','4:4','2:2','3:3','4:4','3:3','4:4','4:4']), 10)
-(points(['0:1','0:2','0:3','0:4','1:2','1:3','1:4','2:3','2:4','3:4']), 0)
-(points(['1:0','2:0','3:0','4:0','2:1','1:3','1:4','2:3','2:4','3:4']), 15)
-(points(['1:0','2:0','3:0','4:4','2:2','3:3','1:4','2:3','2:4','3:4']), 12)
 
 def points(games):
     return sum(3 if x > y else 1 for x, _, y in games if x >= y)
@@ -4971,30 +5117,33 @@ def points(games):
 
 # Two Sum
 # https://www.codewars.com/kata/52c31f8e6605bcc646000082
-"""Write a function that takes an array of numbers (integers for the tests) and a target number. It should find two different items in the array that, when added together, give the target value. The indices of these items should then be returned in a tuple / list (depending on your language) like so: (index1, index2).
+"""
+Write a function that takes an array of numbers (integers for the tests) and a target number. It should find two different items in the array that, when added together, give the target value. The indices of these items should then be returned in a tuple / list (depending on your language) like so: (index1, index2).
 
 For the purposes of this kata, some tests may have multiple answers; any valid solutions will be accepted.
 
 The input will always be valid (numbers will be an array of length 2 or greater, and all of the items will be numbers; target will always be the sum of two different items from that array).
 
-Based on: http://oj.leetcode.com/problems/two-sum/
+Based on: http://leetcode.com/problems/two-sum/
 
-twoSum [1, 2, 3] 4 === (0, 2)"""
+twoSum [1, 2, 3] 4 === (0, 2)
+"""
+(two_sum([1, 2, 3], 4), [0, 2])
+(two_sum([1234, 5678, 9012], 14690), [1, 2])
+(two_sum([2, 2, 3], 4), [0, 1])
 
 
 def two_sum(numbers, target):
-    seen = dict()
+    seen_numbers = {}
+
     for index, number in enumerate(numbers):
         diff = target - number
-        if diff in seen:
-            return [seen[diff], index]
+
+        if diff in seen_numbers:
+            return [seen_numbers[diff], index]
         else:
-            seen[number] = index
-            # seen[number] = seen.get(number, 0) + index
-    return None
-(sorted(two_sum([1, 2, 3], 4)), [0, 2])
-(sorted(two_sum([1234, 5678, 9012], 14690)), [1, 2])
-(sorted(two_sum([2, 2, 3], 4)), [0, 1])
+            seen_numbers[number] = index  # seen_numbers.update({number: index})
+
 
 # O(n2)
 def two_sum(numbers, target):
@@ -5009,7 +5158,8 @@ def two_sum(numbers, target):
 
 # How good are you really?
 # https://www.codewars.com/kata/5601409514fc93442500010b
-"""There was a test in your class and you passed it. Congratulations!
+"""
+There was a test in your class and you passed it. Congratulations!
 But you're an ambitious person. You want to know if you're better than the average student in your class.
 
 You receive an array with your peers' test scores. Now calculate the average and compare your score!
@@ -5017,20 +5167,8 @@ You receive an array with your peers' test scores. Now calculate the average and
 Return True if you're better, else False!
 
 Note:
-Your points are not included in the array of your class's points. For calculating the average point you may add your point to the given array!"""
-
-
-def better_than_average(class_points, your_points):
-    return your_points > ((sum(class_points) + your_points)/(len(class_points) + 1)) # including your_points in the sum
-    return your_points > (sum(class_points)/len(class_points))
-better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75)
-
-import numpy as np
-def better_than_average(class_points, your_points):
-    return your_points > np.mean(class_points + [your_points])
-
-better_than_average = lambda class_points, your_points: your_points > np.mean(class_points + [your_points])
-
+Your points are not included in the array of your class's points. For calculating the average point you may add your point to the given array!
+"""
 (better_than_average([2, 3], 5), True)
 (better_than_average([100, 40, 34, 57, 29, 72, 57, 88], 75), True)
 (better_than_average([12, 23, 34, 45, 56, 67, 78, 89, 90], 69), True)
@@ -5038,10 +5176,27 @@ better_than_average = lambda class_points, your_points: your_points > np.mean(cl
 (better_than_average([29, 55, 74, 60, 11, 90, 67, 28], 21), False)
 
 
+def better_than_average(class_points, your_points):
+    class_points.append(your_points)
+
+    return your_points > (sum(class_points) / len(class_points))
+
+
+# oldies
+import numpy as np
+def better_than_average(class_points, your_points):
+    return your_points > np.mean(class_points + [your_points])
+
+better_than_average = lambda class_points, your_points: your_points > np.mean(class_points + [your_points])
 
 
 
-"""altERnaTIng cAsE <=> ALTerNAtiNG CaSe
+
+
+# altERnaTIng cAsE <=> ALTerNAtiNG CaSe
+# https://www.codewars.com/kata/56efc695740d30f963000557
+"""
+altERnaTIng cAsE <=> ALTerNAtiNG CaSe
 altERnaTIng cAsE <=> ALTerNAtiNG CaSe
 Define String.prototype.toAlternatingCase (or a similar function/method such as to_alternating_case/toAlternatingCase/ToAlternatingCase in your selected language; see the initial solution for details) such that each lowercase letter becomes uppercase and each uppercase letter becomes lowercase. For example:
 
@@ -5052,18 +5207,8 @@ Define String.prototype.toAlternatingCase (or a similar function/method such as 
 "12345".to_alternating_case() === "12345" // Non-alphabetical characters are unaffected
 "1a2b3c4d5e".to_alternating_case() === "1A2B3C4D5E"
 "String.prototype.toAlternatingCase".toAlternatingCase() === "sTRING.PROTOTYPE.TOaLTERNATINGcASE"
-As usual, your function/method should be pure, i.e. it should not mutate the original string."""
-
-
-def to_alternating_case(string):
-    return string.swapcase()
-    return "".join(i.upper() if i.islower() else i.lower() for i in string)
-
-to_alternating_case = lambda string: string.swapcase()
-to_alternating_case = str.swapcase
-to_alternating_case("hello1 WORLD")
-
-
+As usual, your function/method should be pure, i.e. it should not mutate the original string.
+"""
 (to_alternating_case("hello world"), "HELLO WORLD")
 (to_alternating_case("HELLO WORLD"), "hello world")
 (to_alternating_case("hello WORLD"), "HELLO world")
@@ -5074,38 +5219,70 @@ to_alternating_case("hello1 WORLD")
 (to_alternating_case(to_alternating_case("Hello World")), "Hello World")
 
 
+def reverse_case(letter):
+    return letter.lower() if letter.isupper() else letter.upper()
+
+def to_alternating_case(text):
+    return "".join(map(reverse_case, text))
+    # return "".join(reverse_case(letter) for letter in text)
+
+
+def to_alternating_case(text):
+    return text.swapcase()
+
+to_alternating_case = lambda text: text.swapcase()
+to_alternating_case = str.swapcase
+
+
 
 
 
 # Sort the odd
 # https://www.codewars.com/kata/578aa45ee9fd15ff4600090d
-"""You will be given an array of numbers. You have to sort the odd numbers in ascending order while leaving the even numbers at their original positions.
+"""
+You will be given an array of numbers. You have to sort the odd numbers in ascending order while leaving the even numbers at their original positions.
 
 Examples
 [7, 1]  =>  [1, 7]
 [5, 8, 6, 3, 4]  =>  [3, 8, 6, 5, 4]
-[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]  =>  [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]"""
-
-
-def sort_array(source_array):
-    odds = sorted(filter(lambda x: x % 2, source_array), reverse=True)
-    return [odds.pop() if digit % 2 else digit for digit in source_array]
-sort_array([5, 3, 2, 8, 1, 4])
+[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]  =>  [1, 8, 3, 6, 5, 4, 7, 2, 9, 0]
+"""
 (sort_array([5, 3, 2, 8, 1, 4]), [1, 3, 2, 8, 5, 4])
 (sort_array([5, 3, 1, 8, 0]), [1, 3, 5, 8, 0])
-(sort_array([]),[])
+(sort_array([]), [])
+(sort_array([1, 11, 2, 8, 3, 4, 5]), [1, 3, 2, 8, 5, 4, 11])
 
-def sort_array(source_array):
-    odds = sorted(filter(lambda x: x % 2, source_array))
-    index = 0
-    result_list = []
-    for i in source_array:
-        if i % 2:
-            result_list.append(odds[index])
-            index += 1
-        else:
-            result_list.append(i)
-    return result_list
+
+def sort_array(numbers):
+    odd_numbers = []
+
+    # exteract odd numbers
+    for number in numbers:
+        if number % 2:
+            odd_numbers.append(number)
+
+    # sort in reverced order to pop from the end
+    odd_numbers.sort(reverse=True)
+
+    # insert odd numbers
+    for index, number in enumerate(numbers):
+        if number % 2:
+            numbers[index] = odd_numbers.pop()
+
+    return numbers
+
+
+def sort_array(numbers):
+    # exteract odd numbers
+    odd_numbers = list(filter(lambda number: number % 2, numbers))
+
+    # sort in reverced order to pop from the end
+    odd_numbers.sort(reverse=True)
+
+    # insert odd numbers
+    return [
+        odd_numbers.pop() if number % 2 else number
+        for number in numbers]
 
 
 
@@ -5113,23 +5290,21 @@ def sort_array(source_array):
 
 # Double Char
 # https://www.codewars.com/kata/56b1f01c247c01db92000076
-"""Given a string, you have to return a string in which each character (case-sensitive) is repeated once.
+"""
+Given a string, you have to return a string in which each character (case-sensitive) is repeated once.
 
 Examples (Input -> Output):
 * "String"      -> "SSttrriinngg"
 * "Hello World" -> "HHeelllloo  WWoorrlldd"
 * "1234!_ "     -> "11223344!!__  "
 """
-
-
-def double_char(s):
-    return "".join(map(lambda x: x*2, s))
-    # return "".join([char*2 for char in s])
 (double_char("String"),"SSttrriinngg")
 (double_char("Hello World"),"HHeelllloo  WWoorrlldd")
 (double_char("1234!_ "),"11223344!!__  ")
 
-double_char = lambda s: ''.join(i * 2 for i in s)
+def double_char(word):
+    return "".join(letter * 2 for letter in word)
+    # return "".join(map(lambda letter: letter * 2, word))
 
 
 
@@ -5137,7 +5312,8 @@ double_char = lambda s: ''.join(i * 2 for i in s)
 
 # Calculate BMI
 # https://www.codewars.com/kata/57a429e253ba3381850000fb
-"""Write function bmi that calculates body mass index (bmi = weight / height2).
+"""
+Write function bmi that calculates body mass index (bmi = weight / height2).
 
 if bmi <= 18.5 return "Underweight"
 
@@ -5147,23 +5323,25 @@ if bmi <= 30.0 return "Overweight"
 
 if bmi > 30 return "Obese"
 """
-
-
-def bmi(weight, height):
-    b = weight / height ** 2
-    if b > 30:
-        return 'Obese'
-    elif b > 25:
-        return 'Overweight'
-    elif b > 18.5:
-        return 'Normal'
-    else:
-        return 'Underweight'
 (bmi(50, 1.80), "Underweight")
 (bmi(80, 1.80), "Normal")
 (bmi(90, 1.80), "Overweight")
 (bmi(110, 1.80), "Obese")
-(bmi(50, 1.50), "Normal")
+(bmi(50, 1.50), "Normal")   
+(bmi(100, 2.00), "Normal")
+
+
+def bmi(weight, height):
+    bmi = weight / height ** 2
+    if bmi > 30:
+        return "Obese"
+    elif bmi > 25:
+        return "Overweight"
+    elif bmi > 18.5:
+        return "Normal"
+    else:
+        return "Underweight"
+
 
 # from codewars
 def bmi(weight, height):
@@ -5176,7 +5354,8 @@ def bmi(weight, height):
 
 # Sort array by string length
 # https://www.codewars.com/kata/57ea5b0b75ae11d1e800006c
-"""Write a function that takes an array of strings as an argument and returns a sorted array containing the same strings, ordered from shortest to longest.
+"""
+Write a function that takes an array of strings as an argument and returns a sorted array containing the same strings, ordered from shortest to longest.
 
 For example, if this array were passed as an argument:
 
@@ -5186,31 +5365,27 @@ Your function would return the following array:
 
 ["Eyes", "Glasses", "Monocles", "Telescopes"]
 
-All of the strings in the array passed to your function will be different lengths, so you will not have to decide how to order multiple strings of the same length."""
+All of the strings in the array passed to your function will be different lengths, so you will not have to decide how to order multiple strings of the same length.
+"""
+(sort_by_length(["beg", "life", "i", "to"]), ["i", "to", "beg", "life"])
+(sort_by_length(["", "moderately", "brains", "pizza"]), ["", "pizza", "brains", "moderately"])
+(sort_by_length(["longer", "longest", "short"]), ["short", "longer", "longest"])
+(sort_by_length(["dog", "food", "a", "of"]), ["a", "of", "dog", "food"])
+(sort_by_length(["", "dictionary", "eloquent", "bees"]), ["", "bees", "eloquent", "dictionary"])
+(sort_by_length(["a longer sentence", "the longest sentence", "a short sentence"]), ["a short sentence", "a longer sentence", "the longest sentence"])
+
+
+def sort_by_length(item_list):
+    item_list.sort(key=len)
+    # item_list.sort(key=lambda word: len(word))
+    return item_list
 
 
 sort_by_length = lambda arr: sorted(arr, key=len)
-sort_by_length(["Telescopes", "Glasses", "Eyes", "Monocles"])
 
 def sort_by_length(arr):
     return sorted(arr, key=len)
     # return sorted(arr, key=lambda x: len(x))
-
-def sort_by_length(arr):
-    arr.sort(key=len)
-    return arr
-
-tests = [
-    [["i", "to", "beg", "life"], ["beg", "life", "i", "to"]],
-    [["", "pizza", "brains", "moderately"], ["", "moderately", "brains", "pizza"]],
-    [["short", "longer", "longest"], ["longer", "longest", "short"]],
-    [["a", "of", "dog", "food"], ["dog", "food", "a", "of"]],
-    [["", "bees", "eloquent", "dictionary"], ["", "dictionary", "eloquent", "bees"]],
-    [["a short sentence", "a longer sentence", "the longest sentence"], ["a longer sentence", "the longest sentence", "a short sentence"]],
-]
-        
-for exp, inp in tests:
-    (sort_by_length(inp), exp)
 
 
 
@@ -5218,7 +5393,8 @@ for exp, inp in tests:
 
 # Make a function that does arithmetic!
 # https://www.codewars.com/kata/583f158ea20cfcbeb400000a
-"""Given two numbers and an arithmetic operator (the name of it, as a string), return the result of the two numbers having that operator used on them.
+"""
+Given two numbers and an arithmetic operator (the name of it, as a string), return the result of the two numbers having that operator used on them.
 
 a and b will both be positive integers, and a will always be the first number in the operation, and b always the second.
 
@@ -5230,17 +5406,31 @@ A few examples:(Input1, Input2, Input3 --> Output)
 5, 2, "subtract" --> 3
 5, 2, "multiply" --> 10
 5, 2, "divide"   --> 2.5
-Try to do it without using if statements!"""
+Try to do it without using if statements!
+"""
+(arithmetic(1, 2, "add"), 3)
+(arithmetic(8, 2, "subtract"), 6)
+(arithmetic(5, 2, "multiply"), 10)
+(arithmetic(8, 2, "divide"), 4)
+
+
+def arithmetic(a, b, operator):
+    match operator:
+        case "add":
+            return a + b
+        case "subtract":
+            return a - b
+        case "multiply":
+            return a * b
+        case "divide":
+            return a / b
 
 
 def arithmetic(a, b, operator):
     ar_dict = {'add': '+', 'subtract': '-', 'multiply': '*', 'divide': '/'}
     return eval(f"{a}{ar_dict[operator]}{b}")
     # return eval('(' + 'a' + ar_dict[operator] + 'b' + ')')
-(arithmetic(1, 2, "add"), 3, "'add' should return the two numbers added together!")
-(arithmetic(8, 2, "subtract"), 6, "'subtract' should return a minus b!")
-(arithmetic(5, 2, "multiply"), 10, "'multiply' should return a multiplied by b!")
-(arithmetic(8, 2, "divide"), 4, "'divide' should return a divided by b!")
+
 
 # from codewars
 def arithmetic(a, b, operator):
@@ -5257,7 +5447,8 @@ def arithmetic(a, b, operator):
 
 # Beginner Series #3 Sum of Numbers
 # https://www.codewars.com/kata/55f2b110f61eb01779000053
-"""Given two integers a and b, which can be positive or negative, find the sum of all the integers between and including them and return it. If the two numbers are equal return a or b.
+"""
+Given two integers a and b, which can be positive or negative, find the sum of all the integers between and including them and return it. If the two numbers are equal return a or b.
 
 Note: a and b are not ordered!
 
@@ -5267,14 +5458,22 @@ Examples (a, b) --> output (explanation)
 (0, 1) --> 1 (0 + 1 = 1)
 (1, 1) --> 1 (1 since both are same)
 (-1, 0) --> -1 (-1 + 0 = -1)
-(-1, 2) --> 2 (-1 + 0 + 1 + 2 = 2)"""
-
-
-def get_sum(a, b):
-    a, b = sorted((a, b))
-    return sum(range(a, b + 1))
+(-1, 2) --> 2 (-1 + 0 + 1 + 2 = 2)
+"""
+(get_sum(1, 0), 1)
+(get_sum(1, 2), 3)
 (get_sum(0, 1), 1)
-(get_sum(0, -1), -1)
+(get_sum(1, 1), 1)
+(get_sum(-1, 0), -1)
+(get_sum(-1, 2), 2 )
+
+
+def get_sum(start, stop):
+    if stop < start:
+        start, stop = stop, start
+
+    return sum(range(start, stop + 1))
+
 
 get_sum = lambda a, b: sum(range(min(a, b), max(a, b) + 1))
 
@@ -5282,10 +5481,10 @@ get_sum = lambda a, b: sum(range(min(a, b), max(a, b) + 1))
 
 
 
-
 # Equal Sides Of An Array
 # https://www.codewars.com/kata/5679aa472b8f57fb8c000047
-"""You are going to be given an array of integers. Your job is to take that array and find an index N where the sum of the integers to the left of N is equal to the sum of the integers to the right of N. If there is no index that would make this happen, return -1.
+"""
+You are going to be given an array of integers. Your job is to take that array and find an index N where the sum of the integers to the left of N is equal to the sum of the integers to the right of N. If there is no index that would make this happen, return -1.
 
 For example:
 
@@ -5312,14 +5511,8 @@ Output:
 The lowest index N where the side to the left of N is equal to the side to the right of N. If you do not find an index that fits these rules, then you will return -1.
 
 Note:
-If you are given an array with multiple answers, return the lowest correct index."""
-
-
-def find_even_index(arr):
-    for i in range(len(arr)):
-        if sum(arr[:i]) == sum(arr[i+1:]):
-            return i
-    return -1
+If you are given an array with multiple answers, return the lowest correct index.
+"""
 (find_even_index([1, 2, 3, 4, 3, 2, 1]), 3)
 (find_even_index([1, 100, 50, -51, 1, 1]), 1,)
 (find_even_index([1, 2, 3, 4, 5, 6]), -1)
@@ -5332,12 +5525,27 @@ def find_even_index(arr):
 (find_even_index(list(range(-100, -1))), -1)
 
 
-def find_even_index(arr):
-    try:
-        return [ind for ind in range(len(arr)) if (sum(arr[:ind]) == sum(arr[ind + 1:]))][0]
-        # return [(sum(arr[:ind]) == sum(arr[ind + 1:])) for ind in range(len(arr))].index(True)
-    except:
-        return -1
+def find_even_index(numbers):
+    left = 0
+    right = sum(numbers)
+
+    for index, number in enumerate(numbers):
+        right -= number
+        
+        if left == right:
+            return index
+        
+        left += number
+    
+    return -1
+
+
+def find_even_index(numbers):
+    for index in range(len(numbers)):
+        if sum(numbers[:index]) == sum(numbers[index + 1:]):
+            return index
+    
+    return -1
 
 
 
@@ -5345,27 +5553,9 @@ def find_even_index(arr):
 
 # Simple multiplication
 # https://www.codewars.com/kata/583710ccaa6717322c000105
-"""This kata is about multiplying a given number by eight if it is an even number and by nine otherwise."""
-
-
-def simple_multiplication(number):
-    return number * 9 if number % 2 else number * 8
-    return number * 8 if not number % 2 else number * 9
-    return number * (8 + number % 2)
-simple_multiplication(5)
-simple_multiplication(6)
-
-simple_multiplication = lambda number: number * (8 + (number&1))
-
-4 & 1  # 0
-100 & 1  # 0
-5 & 1  # 1  
-101 & 1  # 1
-
-0b101 & 0b101  # 5
-0b100 | 0b101  # 5
-0b100 ^ 0b101  # 1
-
+"""
+This kata is about multiplying a given number by eight if it is an even number and by nine otherwise.
+"""
 (simple_multiplication(2), 16)
 (simple_multiplication(1), 9)
 (simple_multiplication(8), 64)
@@ -5373,12 +5563,24 @@ simple_multiplication = lambda number: number * (8 + (number&1))
 (simple_multiplication(5), 45)
 
 
+def simple_multiplication(number):
+    return number * 9 if number % 2 else number * 8
+
+
+def simple_multiplication(number):
+    return (9 if number % 2 else 8) * number
+
+
+simple_multiplication = lambda number: number * (8 + (number&1))
+
+
 
 
 
 # Sum of a sequence
 # https://www.codewars.com/kata/586f6741c66d18c22800010a
-"""Your task is to make function, which returns the sum of a sequence of integers.
+"""
+Your task is to make function, which returns the sum of a sequence of integers.
 
 The sequence is defined by 3 non-negative values: begin, end, step (inclusive).
 
@@ -5389,11 +5591,8 @@ Examples
 2,2,2 --> 2
 2,6,2 --> 12 (2 + 4 + 6)
 1,5,1 --> 15 (1 + 2 + 3 + 4 + 5)
-1,5,3  --> 5 (1 + 4)"""
-
-
-def sequence_sum(begin_number, end_number, step):
-    return sum(range(begin_number, end_number + 1, step))
+1,5,3  --> 5 (1 + 4)
+"""
 (sequence_sum(2, 6, 2), 12)
 (sequence_sum(1, 5, 1), 15)
 (sequence_sum(1, 5, 3), 5)
@@ -5406,22 +5605,22 @@ def sequence_sum(begin_number, end_number, step):
 (sequence_sum(15, 1, 3), 0)
 
 
+def sequence_sum(begin, end, step):
+    return sum(range(begin, end + 1, step))
+
+
 
 
 
 # Extract the domain name from a URL
 # https://www.codewars.com/kata/514a024011ea4fb54200004b
-"""Write a function that when given a URL as a string, parses out just the domain name and returns it as a string. For example:
+"""
+Write a function that when given a URL as a string, parses out just the domain name and returns it as a string. For example:
 
 * url = "http://github.com/carbonfive/raygun" -> domain name = "github"
 * url = "http://www.zombie-bites.com"         -> domain name = "zombie-bites"
 * url = "https://www.cnet.com"                -> domain name = cnet"
 """
-
-
-def domain_name(url):
-    return re.sub(r'^(https?://)?(www\.)?([\w-]+)\..*$', r"\3", url)
-    return re.sub(r"(https?://)?(www\.)?([\w-]+)(\..*)", r"\3", url)
 domain_name('http://google.com')
 domain_name('https://google.com')
 domain_name('https://www.codewars.com')
@@ -5429,6 +5628,16 @@ domain_name('https://google.co.jp')
 domain_name('www.xakep.ru')
 domain_name('https://hyphen-site.org')
 domain_name('icann.org')
+
+
+import re
+
+def domain_name(url):
+    match = re.search(r"(https?://)?(www\.)?([\w-]+)\..*", url)
+    return match.group(3) if match else None
+
+def domain_name(url):
+    return re.sub(r"(https?://)?(www\.)?([\w-]+)\..*", r"\3", url)
 
 
 # from codewars
@@ -5446,7 +5655,8 @@ def domain_name(url):
 
 # Find the middle element
 # https://www.codewars.com/kata/545a4c5a61aa4c6916000755
-"""As a part of this Kata, you need to create a function that when provided with a triplet, returns the index of the numerical element that lies between the other two elements.
+"""
+As a part of this Kata, you need to create a function that when provided with a triplet, returns the index of the numerical element that lies between the other two elements.
 
 The input to the function will be an array of three distinct numbers (Haskell: a tuple).
 
@@ -5458,13 +5668,15 @@ gimme([2, 3, 1]) => 0
 Another example (just to make sure it is clear):
 
 gimme([5, 10, 14]) => 1
-10 is the number that fits between 5 and 14 and the index of 10 in the input array is 1."""
+10 is the number that fits between 5 and 14 and the index of 10 in the input array is 1.
+"""
+(gimme([2, 3, 1]), 0)
+(gimme([5, 10, 14]), 1)
 
 
-def gimme(input_array):
-    return input_array.index(sorted(input_array)[1])
-(gimme([2, 3, 1]), 0, 'Finds the index of middle element')
-(gimme([5, 10, 14]), 1, 'Finds the index of middle element')
+def gimme(nums):
+    _, middle, _ = sorted(nums)
+    return nums.index(middle)
 
 
 
@@ -5472,7 +5684,8 @@ def gimme(input_array):
 
 # Grasshopper - Messi goals function
 # https://www.codewars.com/kata/55f73be6e12baaa5900000d4
-"""Messi goals function
+"""
+Messi goals function
 Messi is a soccer player with goals in three leagues:
 
 LaLiga
@@ -5484,15 +5697,16 @@ Note: the input will always be valid.
 
 For example:
 
-5, 10, 2  -->  17"""
-
-
-goals = lambda *x: sum(x)
+5, 10, 2  -->  17
+"""
 (goals(0, 0, 0), 0)
 (goals(5, 10, 2), 17)
 
-def goals(*x):
-    return sum(x)
+
+def goals(*args):
+    return sum(args)
+
+goals = lambda *args: sum(args)
 
 
 
@@ -5500,26 +5714,18 @@ def goals(*x):
 
 # Beginner Series #4 Cockroach
 # https://www.codewars.com/kata/55fab1ffda3e2e44f00000c6
-"""The cockroach is one of the fastest insects. Write a function which takes its speed in km per hour and returns it in cm per second, rounded down to the integer (= floored).
+"""
+The cockroach is one of the fastest insects. Write a function which takes its speed in km per hour and returns it in cm per second, rounded down to the integer (= floored).
 
 For example:
 
-1.08 --> 30"""
+1.08 --> 30
+"""
+(cockroach_speed(1.08), 30)
 
 
-import numpy as np
-def cockroach_speed(s):
-    return np.floor(s * 100_000 / 3600)
-cockroach_speed(1.08)
-
-
-def cockroach_speed(s):
-    return int(s * 100000 / 3600)
-
-cockroach_speed = lambda s: s * 100000 // 3600
-(cockroach_speed(1.08),30)
-(cockroach_speed(1.09),30)
-(cockroach_speed(0),0)
+def cockroach_speed(speed):
+    return speed * 100_000 / 3600
 
 
 
@@ -5527,7 +5733,8 @@ cockroach_speed = lambda s: s * 100000 // 3600
 
 # Two fighters, one winner.
 # https://www.codewars.com/kata/577bd8d4ae2807c64b00045b
-"""Create a function that returns the name of the winner in a fight between two fighters.
+"""
+Create a function that returns the name of the winner in a fight between two fighters.
 
 Each fighter takes turns attacking the other and whoever kills the other first is victorious. Death is defined as having health <= 0.
 
@@ -5544,6 +5751,13 @@ Example:
   Harry attacks Lew; Lew now has 2 health.
   Lew attacks Harry: Harry now has -1 health and is dead. Lew wins.
 """
+(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew"), "Lew")
+(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry"),"Harry")
+(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry"),"Harald")
+(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harald"),"Harald")
+(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry"), "Harald")
+(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Harald"),"Harald")
+
 
 class Fighter(object):
     def __init__(self, name, health, damage_per_attack):
@@ -5556,30 +5770,43 @@ class Fighter(object):
     __repr__ = __str__
 
 
+def attack_order(fighter1, fighter2, first_attacker):
+    if fighter1.name == first_attacker:
+        return (fighter1, fighter2)
+    else:
+        return (fighter2, fighter1)
+    
+
 def declare_winner(fighter1, fighter2, first_attacker):
+    first, second = attack_order(fighter1, fighter2, first_attacker)
+    rounds = ((first, second), (second, first))
+    
     while True:
-        if fighter1.name == first_attacker:
-            fighter2.health -= fighter1.damage_per_attack
-            if fighter2.health <= 0:
-                return fighter1.name
-            fighter1.health -= fighter2.damage_per_attack
-            if fighter1.health <= 0:
-                return fighter2.name
-            
-        else:
-            fighter1.health -= fighter2.damage_per_attack
-            if fighter1.health <= 0:
-                return fighter2.name
-            fighter2.health -= fighter1.damage_per_attack
-            if fighter2.health <= 0:
-                return fighter1.name
-            
-(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Lew"), "Lew")
-(declare_winner(Fighter("Lew", 10, 2), Fighter("Harry", 5, 4), "Harry"),"Harry")
-(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harry"),"Harald")
-(declare_winner(Fighter("Harald", 20, 5), Fighter("Harry", 5, 4), "Harald"),"Harald")
-(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Jerry"), "Harald")
-(declare_winner(Fighter("Jerry", 30, 3), Fighter("Harald", 20, 5), "Harald"),"Harald")
+        for (attacker, defender) in rounds:
+            defender.health -= attacker.damage_per_attack
+
+            if defender.health <= 0:
+                return attacker.name
+
+
+def declare_winner(fighter1, fighter2, first_attacker):
+    if fighter1.name == first_attacker:
+        attacker, defender = fighter1.name, fighter2.name
+    else:
+        attacker, defender = fighter2.name, fighter1.name
+    
+    while True:
+        if attacker.name == first_attacker:
+            defender.health -= attacker.damage_per_attack
+
+            if defender.health <= 0:
+                return attacker.name
+
+            attacker.health -= defender.damage_per_attack
+
+            if attacker.health <= 0:
+                return defender.name            
+
 
 import numpy as np
 def declare_winner(fighter1, fighter2, first_attacker):
@@ -5608,35 +5835,47 @@ def declare_winner(fighter1, fighter2, first_attacker):
 
 # Primes in numbers
 # https://www.codewars.com/kata/54d512e62a5e54c96200019e/
-"""Given a positive number n > 1 find the prime factor decomposition of n. The result will be a string with the following form :
+"""
+Given a positive number n > 1 find the prime factor decomposition of n. The result will be a string with the following form :
 
  "(p1**n1)(p2**n2)...(pk**nk)"
 with the p(i) in increasing order and n(i) empty if n(i) is 1.
 
 Example: n = 86240 should return "(2**5)(5)(7**2)(11)"
 """
-
-
-def prime_factors(n):
-    factors = []
-    while n > 1:
-        for i in range(2, n + 1):
-            if not n % i:
-                factors.append(i)
-                n //= i
-                break
-    
-    solution = ""
-    for digit in sorted(set(factors)):
-        if factors.count(digit) == 1:
-            solution += f"({digit})"
-        else:
-            solution += f"({digit}**{factors.count(digit)})"
-    return solution         
-    # return "".join([f"({digit})" if factors.count(digit) == 1 else f"({digit}**{factors.count(digit)})" for digit in sorted(set(factors))])
 (prime_factors(86240), "(2**5)(5)(7**2)(11)")
 (prime_factors(7775460), "(2**2)(3**3)(5)(7)(11**2)(17)")
 (prime_factors(7919), "(7919)")
+
+
+def prime_factors(number):
+    # get dividers
+    dividers = []
+    
+    while number > 1:
+        for divider in range(2, number + 1):
+            if not number % divider:
+                number //= divider
+                dividers.append(divider)
+                break
+
+    # count dividers
+    counter = {}
+
+    for divider in dividers:
+            counter[divider] = counter.get(divider, 0) + 1
+
+
+    # set answer string
+    divider_string = ""
+
+    for key, val in counter.items():
+        if val == 1:
+            divider_string += f"({key})"
+        else:
+            divider_string += f"({key}**{val})"
+             
+    return divider_string
 
 
 from collections import Counter
@@ -5657,9 +5896,8 @@ def prime_factors(n):
 
 # Count the divisors of a number
 # https://www.codewars.com/kata/542c0f198e077084c0000c2e
-
-
-"""Count the number of divisors of a positive integer n.
+"""
+Count the number of divisors of a positive integer n.
 
 Random tests go up to n = 500000.
 
@@ -5668,7 +5906,35 @@ Examples (input --> output)
 5 --> 2 // we have 2 divisors - 1 and 5
 12 --> 6 // we have 6 divisors - 1, 2, 3, 4, 6 and 12
 30 --> 8 // we have 8 divisors - 1, 2, 3, 5, 6, 10, 15 and 30
-Note you should only return a number, the count of divisors. The numbers between parentheses are shown only for you to see which numbers are counted in each case."""
+Note you should only return a number, the count of divisors. The numbers between parentheses are shown only for you to see which numbers are counted in each case.
+"""
+(divisors(1), 1)
+(divisors(4), 3)
+(divisors(5), 2)
+(divisors(12), 6)
+(divisors(30), 8)
+(divisors(4096), 13)
+
+# O(sqrtn)
+import numpy as np
+
+def divisors(number):
+    counter = 0
+
+    for divider in range(1, int(np.sqrt(number) + 1)):
+        if not number % divider:
+            counter += 2
+
+    if not np.sqrt(number) % 1:
+        counter -= 1
+
+    return counter
+
+
+# O(n)
+def divisors(number):
+    return sum(True for divider in range(1, number + 1)
+               if not number % divider)
 
 
 def divisors(n):
@@ -5682,20 +5948,14 @@ def divisors(n):
     return len(list(filter(lambda i: not n % i, range(1, n + 1))))  # 6.283454425999935
     return sum(map(lambda x: not n % x, range(1, n + 1)))
 
-(divisors(1), 1)
-(divisors(4), 3)
-(divisors(5), 2)
-(divisors(12), 6)
-(divisors(30), 8)
-(divisors(4096), 13)
-
 
 
 
 
 # Square Every Digit
 # https://www.codewars.com/kata/546e2562b03326a88e000020/train/python
-"""Welcome. In this kata, you are asked to square every digit of a number and concatenate them.
+"""
+Welcome. In this kata, you are asked to square every digit of a number and concatenate them.
 
 For example, if we run 9119 through the function, 811181 will come out, because 92 is 81 and 12 is 1. (81-1-1-81)
 
@@ -5703,13 +5963,15 @@ Example #2: An input of 765 will/should return 493625 because 72 is 49, 62 is 36
 
 Note: The function accepts an integer and returns an integer.
 
-Happy Coding!"""
-
-
-def square_digits(num):
-    # return int("".join(str(int(digit)**2) for digit in str(num)))
-    return "".join(map(lambda x: str(int(x)**2), str(num)))
+Happy Coding!
+"""
 (square_digits(9119), 811181)
+(square_digits(0), 0)
+
+
+def square_digits(number):
+    return int("".join(map(lambda digit: str(int(digit) ** 2), str(number))))
+    # return int("".join(str(int(digit) ** 2) for digit in str(number)))
 
 
 
@@ -5717,18 +5979,22 @@ def square_digits(num):
 
 # Powers of 2
 # https://www.codewars.com/kata/57a083a57cb1f31db7000028
-"""Complete the function that takes a non-negative integer n as input, and returns a list of all the powers of 2 with the exponent ranging from 0 to n ( inclusive ).
+"""
+Complete the function that takes a non-negative integer n as input, and returns a list of all the powers of 2 with the exponent ranging from 0 to n ( inclusive ).
 
 Examples
 n = 0  ==> [1]        # [2^0]
 n = 1  ==> [1, 2]     # [2^0, 2^1]
-n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]"""
-
-
-def powers_of_two(n):
-    # return [2**index for index in range(n + 1)]
-    return list(map(lambda x: 2**x, range(n + 1)))
+n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]
+"""
+(powers_of_two(0), [1])
+(powers_of_two(1), [1, 2])
 (powers_of_two(4), [1, 2, 4, 8, 16])
+
+
+def powers_of_two(number):
+    return [2 ** power for power in range(number + 1)]
+    return list(map(lambda power: 2 ** power, range(number + 1)))
 
 
 
@@ -5736,39 +6002,46 @@ def powers_of_two(n):
 
 # Thinkful - Logic Drills: Traffic light
 # https://www.codewars.com/kata/58649884a1659ed6cb000072
-"""You're writing code to control your town's traffic lights. You need a function to handle each change from green, to yellow, to red, and then to green again.
+"""
+You're writing code to control your town's traffic lights. You need a function to handle each change from green, to yellow, to red, and then to green again.
 
 Complete the function that takes a string as an argument representing the current state of the light and returns a string representing the state the light should change to.
 
-For example, when the input is green, output should be yellow."""
-
-
-def update_lights(current):
-    next_light = {"green": "yellow", "yellow": "red", "red": "green"}
-    return next_light.get(current)
+For example, when the input is green, output should be yellow.
+"""
 (update_light('green'), 'yellow')
 (update_light('yellow'), 'red')
 (update_light('red'), 'green')
 
-def update_light(current):
-    lights = ("green", "yellow", "red", "green")
-    return lights[lights.index(current) + 1]
 
-def update_light(current):
-    lights = ("green", "yellow", "red")
-    return lights[(lights.index(current) + 1) % 3]
+def update_light(color):
+    colors = ("green", "yellow", "red")
+    index_of_color = colors.index(color)
+
+    return colors[(index_of_color + 1) % 3]
+
+def update_light(color):
+    next_color = {
+        "green": "yellow",
+        "yellow": "red",
+        "red": "green"
+    }
+
+    return next_color[color]
 
 
 
 
 
-# Thinkful - Logic Drills: Traffic light
-# https://www.codewars.com/kata/58649884a1659ed6cb000072
-"""Your function takes two arguments:
+# Twice as old
+# https://www.codewars.com/kata/5b853229cfde412a470000d0/train/
+"""
+Your function takes two arguments:
 
 current father's age (years)
 current age of his son (years)
-Calculate how many years ago the father was twice as old as his son (or in how many years he will be twice as old). The answer is always greater or equal to 0, no matter if it was in the past or it is in the future."""
+Calculate how many years ago the father was twice as old as his son (or in how many years he will be twice as old). The answer is always greater or equal to 0, no matter if it was in the past or it is in the future.
+"""
 
 
 def twice_as_old(dad_years_old, son_years_old):
