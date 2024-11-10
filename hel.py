@@ -390,6 +390,7 @@ next("udp".__len__)
 
 [1, 2] + [3]  # [1, 2, 3] # concatenate lists
 list([2, 3])  # [2, 3] # create a list
+list("123")  # ['1', '2', '3']  # list from a string
 a = [2, 3, 4, 3]  # [2, 3, 4, 3]  # create a list
 
 a.remove(3)  # removes the first occurrence of the chosen value
@@ -416,6 +417,7 @@ animal_lst = ['cat', 'mammal', 'goat', 'is', '']
 animal_lst.sort()
 animal_lst.sort(key=len)
 sorted(animal_lst, key=len)
+" ".join(animal_lst)  # "cat mammal goat is"
 
 a = [1, 2]
 b = [3, 4]
@@ -565,6 +567,8 @@ s_dict[0]
 
 'Tim' in s_dict
 'Tim' in s_dict.keys()
+
+list(dict.fromkeys([1, 2, 2, 3, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
 {**s_dict} == s_dict
 {**s_dict, **{'Sam': 55}}
