@@ -978,7 +978,7 @@ html.unescape('&pound;682m')
 
 # Chr
 
-chr(97)  # "a"
+chr(97)  # "a" # chr(65) => "A"
 ord('a')  # 97
 ord("z") - ord("a")  # 25
 ord("a") % 32  # 1
