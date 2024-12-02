@@ -539,6 +539,7 @@ s_dict = {'Tim': 28,
 names = s_dict.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
 ages = s_dict.values()  # dict_values([28, 35, 40])
 s_dict.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
+len(s_dict)  # 3
 s_dict.get('Tim')  # 28
 s_dict.get('Ukasz')  # Nothin # dict.get() is safer then dict[]
 s_dict.get('Ukasz', 100)  # 100 # dict.get() returns 100 if key not in dict
@@ -919,7 +920,7 @@ int(15.456)  # 15
 [i for i in range(4, -1, -1)]  # [4, 3, 2, 1, 0]
 [i for i in range(1, 3*2, 3)]  # [1, 4]
 range(ord('a'), ord('c'))  # range(97, 99)
-
+list(range(3, 5))  # [3, 4]
 
 
 
@@ -1675,7 +1676,7 @@ timeit.timeit('foo = 10 * 5')
 timeit.timeit(stmt='a=10; b=10; sum = a + b')
 
 test_str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-timeit.timeit(lambda: xxx, number=100000)
+# timeit.timeit(lambda: tested_function, number=number_of_iterations)
 timeit.timeit(lambda: sum(i in "aeiou" for i in test_str), number=100000)
 timeit.timeit(lambda: sum(True for i in test_str if i in "aeiou"), number=100000)
 timeit.timeit(lambda: sum(map(lambda x: True if x in 'aeiou' else False, test_str)), number=100000)
@@ -2002,6 +2003,30 @@ re.sub(r" ?[%s].*" % (markers), "", "bananas !apples")
 
 
 # Exceptions
+
+class MinStack:
+    def __init__(self):
+        self.stack = []
+        
+    def pop_return_error(self) -> None:
+        try: 
+            self.stack.pop()
+        except Exception as error:
+            return f"{error}"
+
+    def pop_raise_error(self) -> None:
+        try: 
+            self.stack.pop()
+        except Exception as error:
+            raise error
+
+
+# Explanation
+minStack = MinStack()
+minStack.pop_return_error()
+minStack.pop_raise_error()
+
+
 
 # accepts ints only
 def prin():

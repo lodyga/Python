@@ -8952,4 +8952,38 @@ def stairs_in_20(stairs):
 
 
 
+# Vowel remover
+# https://www.codewars.com/kata/5547929140907378f9000039/train/python
+"""
+Create a function called shortcut to remove the lowercase vowels (a, e, i, o, u ) in a given string.
+
+Examples
+"hello"     -->  "hll"
+"codewars"  -->  "cdwrs"
+"goodbye"   -->  "gdby"
+"HELLO"     -->  "HELLO"
+"""
+(shortcut("hello"), "hll")
+(shortcut("hellooooo"), "hll")
+(shortcut("how are you today?"), "hw r y tdy?")
+(shortcut("complain"), "cmpln")
+(shortcut("never"), "nvr")
+
+
+import re
+
+def shortcut(word):
+    return re.sub(r"[aeoiu]", "", word)
+
+def shortcut(word):
+    return "".join(letter 
+                   for letter in word 
+                   if letter not in "aeoiu")
+
+def is_lower_vovel(vovel):
+    return vovel in "aeoiu"
+
+def shortcut(word):
+    return "".join(filter(not is_lower_vovel, word))
+
 
