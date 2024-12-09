@@ -3513,7 +3513,7 @@ class Solution:
 
 
 # O(n2), O(n2)
-# build-in data structure - defaultdict(set) form collections
+# built-in data structure - defaultdict(set) form collections
 from collections import defaultdict
 class Solution:
     def isValidSudoku(self, board: list[list[str]]) -> bool:
@@ -8332,6 +8332,73 @@ Example 2:
 Input: head = [1,2,3,4,5]
 Output: [1,5,2,4,3]
 """
+# 1, 2, 3, 4, 5, None
+# s  f
+#    s     f
+#       s        f
+# 1, 2, 3, 4
+# s  f
+#    s     f  
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+# O(n), O(1)
+# linked list (Reverse And Merge)
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        # find middle node
+        slow = head
+        fast = head.next
+
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        # slow.next is an end
+        previous = None
+        node = slow.next
+        slow.next = None  # Cut the list into two halves
+
+        # reverse second part (always even size)
+        while node:
+            next_node = node.next
+            node.next = previous
+            previous = node
+            node = next_node
+        
+        # reorder
+        left = head
+        right = previous
+
+        while right:
+            next_left = left.next
+            next_right = right.next
+            left.next = right
+            right.next = next_left
+            left = next_left
+            right = next_right
+
+
+# node4 = ListNode(5, None)
+# node3 = ListNode(4, node4)
+node3 = ListNode(4, None)
+node2 = ListNode(3, node3)
+node1 = ListNode(2, node2)
+node0 = ListNode(1, node1)
+
+print(node0.next)
+reordered = Solution().reorderList(node0)
+print(node0.next)
+
+
 
 # Definition for singly-linked list.
 class ListNode:
@@ -8388,73 +8455,6 @@ print(node1.next)
 
 
 
-# Definition for singly-linked list.
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-# O(n), O(1)
-# Reverse And Merge
-# 1, 2, 3, 4, 5
-# s  f
-#    s     f
-#       s     f
-# 1, 2, 3, 4
-# s  f
-#    s     f  
-
-class Solution:
-    def reorderList(self, head: ListNode) -> None:
-        """
-        Do not return anything, modify head in-place instead.
-        """
-        # find middle node
-        slow = head
-        fast = head.next
-
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-
-        # slow.next is an end
-        current = slow.next
-        previous = None
-        # Cut the list into two halves
-        slow.next = None
-
-        # reverse second part
-        while current:
-            next = current.next
-            current.next = previous
-            previous = current
-            current = next
-        
-        # reorder
-        first = head
-        last = previous
-
-        while last:
-            second = first.next
-            previous = last.next
-            first.next = last
-            last.next = second
-            first = second
-            last = previous
-
-
-# node4 = ListNode(5, None)
-# node3 = ListNode(4, node4)
-node3 = ListNode(4, None)
-node2 = ListNode(3, node3)
-node1 = ListNode(2, node2)
-node0 = ListNode(1, node1)
-
-print(node0.next)
-reordered = Solution().reorderList(node0)
-print(node0.next)
-
-
 
 # Remove Nth Node From End of List
 # https://leetcode.com/problems/remove-nth-node-from-end-of-list/
@@ -8476,6 +8476,36 @@ Input: head = [1,2], n = 1
 Output: [1]
 """
 
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        anchor = ListNode(0, head)  # add and anchor
+        left = anchor  # left pointer
+        right = anchor  # right pointer
+
+        # move the right pointer `n` nodes ahead
+        while n:
+            right = right.next
+            n -= 1
+        
+        # when right.next points to None, left.next points to node to remove
+        while right.next:
+            left = left.next
+            right = right.next
+        
+        left.next = left.next.next  # skip nth node
+
+        return anchor.next
+
+
 # O(n), O(n)
 # List
 class Solution:
@@ -8493,27 +8523,6 @@ class Solution:
             node_index = len(nodes) - n
             nodes[node_index - 1].next = nodes[node_index].next
             return head
-
-
-# O(n), O(1)
-# two pointers
-class Solution:
-    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
-        dummy = ListNode(0, head)
-        left = dummy
-        right = head
-
-        while n:
-            right = right.next
-            n -= 1
-        
-        while right:
-            left = left.next
-            right = right.next
-            
-        left.next = left.next.next
-
-        return dummy.next
 
 
 
@@ -8552,7 +8561,6 @@ Example 3:
 
 Input: head = [[3,null],[3,0],[3,null]]
 Output: [[3,null],[3,0],[3,null]]
-
 """
 
 
@@ -8593,11 +8601,8 @@ class Solution:
 You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
 
 You may assume the two numbers do not contain any leading zero, except the number 0 itself.
-
  
-
 Example 1:
-
 
 Input: l1 = [2,4,3], l2 = [5,6,4]
 Output: [7,0,8]
@@ -8611,22 +8616,24 @@ Example 3:
 Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
 Output: [8,9,9,9,0,0,0,1]
 """
+
+
 # Definition for singly-linked list.
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
+
+# O(n), O(1)
+# Iteration
 class Solution:
     def addTwoNumbers(self, head1: ListNode, head2: ListNode) -> ListNode:
-        node1 = head1
-        node2 = head2
-        dummy = ListNode()
-        node = dummy
+        anchor = node = ListNode()
         carry = 0
 
-        while node1 or node2:
-            first_value = node1.val if node1 else 0
-            second_value = node2.val if node2 else 0
+        while head1 or head2:
+            first_value = head1.val if head1 else 0
+            second_value = head2.val if head2 else 0
             value = first_value + second_value + carry
             
             carry = value // 10
@@ -8634,14 +8641,17 @@ class Solution:
                 
             node.next = ListNode(value)
             node = node.next
-            node1 = node1.next if node1 else None
-            node2 = node2.next if node2 else None
+            head1 = head1.next if head1 else None
+            head2 = head2.next if head2 else None
 
         # case where there'a a carry after while loop finishes
         if carry:
             node.next = ListNode(carry)
+            node = node.next
+        
+        node.next = None  # end linked list with None
 
-        return dummy.next
+        return anchor.next
 
 
 nodeA2 = ListNode(3, None)
@@ -9445,7 +9455,7 @@ Output: ["h","a","n","n","a","H"]
 
 
 # O(n), O(1)
-# build-in function
+# built-in function
 class Solution:
     def reverseString(self, s: list[str]) -> None:
         """
@@ -10532,7 +10542,7 @@ print(Solution().numUniqueEmails(["a@leetcode.com", "b@leetcode.com", "c@leetcod
 
 
 # O(n2), O(n)
-# build-in functions
+# built-in function
 class Solution:
     def numUniqueEmails(self, emails: list[str]) -> int:
         clean_emails = set()
@@ -10671,13 +10681,13 @@ print(Solution().totalFruit([3, 3, 3, 1, 2, 1, 1, 2, 3, 3, 4]), 5)
 print(Solution().totalFruit([1, 0, 1, 4, 1, 4, 1, 2, 3]), 5)
 
 
-# O(n), O(n)
+# O(n), O(1)
 # sliding window
 class Solution:
     def totalFruit(self, fruits: list[int]) -> int:
         left = 0
         basket = {}
-        max_fruits = 0
+        max_fruit = 0
 
         for right, fruit in enumerate(fruits):
             basket[fruit] = basket.get(fruit, 0) + 1  # add a fruit to the basket
@@ -10685,16 +10695,1068 @@ class Solution:
             while len(basket) > 2:  # while too many fruit types
                 left_fruit = fruits[left]  # `left` fruit type
                 basket[left_fruit] -= 1  # remove one `left` fruit from basket
-
-                if basket[left_fruit] == 0:  # if no `left` fruit
-                    basket.pop(left_fruit)  # pop that fruit type
-
                 left += 1  # increase the left pointer
 
-            if right - left + 1 > max_fruits:  # update max fruit counter
-                max_fruits = right - left + 1
+                if not basket[left_fruit]:  # if no `left` fruit
+                    basket.pop(left_fruit)  # pop that fruit type
 
-        return max_fruits
+            if right - left + 1 > max_fruit:  # update max fruit counter
+                max_fruit = right - left + 1
+
+        return max_fruit
+
+
+
+
+
+# Validate Stack Sequences
+# https://leetcode.com/problems/validate-stack-sequences/description/
+"""
+Given two integer arrays pushed and popped each with distinct values, return true if this could have been the result of a sequence of push and pop operations on an initially empty stack, or false otherwise.
+
+Example 1:
+
+Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+Output: true
+Explanation: We might do the following sequence:
+push(1), push(2), push(3), push(4),
+pop() -> 4,
+push(5),
+pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+Example 2:
+
+Input: pushed = [1,2,3,4,5], popped = [4,3,5,1,2]
+Output: false
+Explanation: 1 cannot be popped before 2.
+"""
+print(Solution().validateStackSequences([1, 2, 3, 4, 5], [4, 5, 3, 2, 1]), True)
+print(Solution().validateStackSequences([1, 2, 3, 4, 5], [4, 3, 5, 1, 2]), False)
+print(Solution().validateStackSequences([2, 1, 0], [1, 2, 0]), True)
+
+
+# O(n), O(n)
+# stack, deque
+from collections import deque
+
+class Solution:
+    def validateStackSequences(self, pushed: list[int], popped: list[int]) -> bool:
+        queue = deque(popped)
+        stack = []
+
+        for number in pushed:
+            stack.append(number)
+
+            while stack and stack[-1] == queue[0]:
+                stack.pop()
+                queue.popleft()
+
+        if stack or queue:
+            return False
+        else:
+            return True
+
+
+
+
+
+# Arranging Coins
+# https://leetcode.com/problems/arranging-coins/description/
+"""
+You have n coins and you want to build a staircase with these coins. The staircase consists of k rows where the ith row has exactly i coins. The last row of the staircase may be incomplete.
+
+Given the integer n, return the number of complete rows of the staircase you will build.
+
+Example 1:
+
+
+Input: n = 5
+Output: 2
+Explanation: Because the 3rd row is incomplete, we return 2.
+Example 2:
+
+
+Input: n = 8
+Output: 3
+Explanation: Because the 4th row is incomplete, we return 3.
+"""
+
+
+print(Solution().arrangeCoins(5), 2)
+print(Solution().arrangeCoins(8), 3)
+print(Solution().arrangeCoins(2), 1)
+
+# O(logn), O(1)
+# arithmetic sequence
+class Solution:
+    def arrangeCoins(self, coins: int) -> int:
+        left = 1  # minimum number of coins
+        right = coins  # max upper boundry eg. for 10 coins there will be less than 10 rows
+
+        while left <= right:
+            middle = (left + right) // 2  # row number
+            coin_stack = (1 + middle) / 2 * middle  # number of coins in coin stack
+
+            if coin_stack == coins:  # if the number of provided coins is equal to the number of coins in the stack
+                return middle
+            elif coin_stack > coins:  # to much coins in the stack or the last row is not full
+                right = middle - 1
+            else:  # too little coins in the stack
+                left = middle + 1
+
+        return right
+
+# O(n), O(n)
+class Solution:
+    def arrangeCoins(self, coins: int) -> int:
+        total = 0
+        index = 0
+
+        while total < coins:
+            index += 1
+            total += index
+
+        # if totlal == coins then the last row if full of coins
+        return index if total == coins else index - 1
+
+
+
+
+
+# Remove Duplicates from Sorted List
+# https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/
+"""
+Given the head of a sorted linked list, delete all duplicates such that each element appears only once. Return the linked list sorted as well.
+
+Example 1:
+
+Input: head = [1,1,2]
+Output: [1,2]
+Example 2:
+
+
+Input: head = [1,1,2,3,3]
+Output: [1,2,3]
+"""
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        node = head
+
+        while node.next:
+            if node.val == node.next.val:
+                node.next = node.next.next
+            else:
+                node = node.next
+        
+        return head
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        node = head
+
+        while node:
+            while node.next and node.val == node.next.val:
+                node.next = node.next.next
+            
+            node = node.next
+        
+        return head
+
+
+
+
+
+# Isomorphic Strings
+# https://leetcode.com/problems/isomorphic-strings/description/
+"""
+Given two strings s and t, determine if they are isomorphic.
+
+Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.
+
+Example 1:
+
+Input: s = "egg", t = "add"
+
+Output: true
+
+Explanation:
+
+The strings s and t can be made identical by:
+
+Mapping 'e' to 'a'.
+Mapping 'g' to 'd'.
+Example 2:
+
+Input: s = "foo", t = "bar"
+
+Output: false
+
+Explanation:
+
+The strings s and t can not be made identical as 'o' needs to be mapped to both 'a' and 'r'.
+
+Example 3:
+
+Input: s = "paper", t = "title"
+
+Output: true
+"""
+print(Solution().isIsomorphic("egg", "add"), True)
+print(Solution().isIsomorphic("foo", "bar"), False)
+print(Solution().isIsomorphic("paper", "title"), True)
+print(Solution().isIsomorphic("badc", "baba"), False)
+
+
+class Solution:
+    def isIsomorphic(self, word1: str, word2: str) -> bool:
+        iso_map = {}  # letter from word1 => letter in word2
+
+        for index, letter in enumerate(word1):
+            if letter in iso_map:  # if the letter appeared before
+                if iso_map[letter] != word2[index]:  # if no match in same indexes
+                    return False
+            else:  # if the letter is seen for the first time
+                if word2[index] in iso_map.values():  # if there's already another key pointing to that letter
+                    return False
+
+                iso_map[letter] = word2[index]  # add letter to iso dict
+
+        return True
+
+
+
+
+
+# Assign Cookies
+# https://leetcode.com/problems/assign-cookies/description/
+"""
+Assume you are an awesome parent and want to give your children some cookies. But, you should give each child at most one cookie.
+
+Each child i has a greed factor g[i], which is the minimum size of a cookie that the child will be content with; and each cookie j has a size s[j]. If s[j] >= g[i], we can assign the cookie j to the child i, and the child i will be content. Your goal is to maximize the number of your content children and output the maximum number.
+
+Example 1:
+
+Input: g = [1,2,3], s = [1,1]
+Output: 1
+Explanation: You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. 
+And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.
+You need to output 1.
+Example 2:
+
+Input: g = [1,2], s = [1,2,3]
+Output: 2
+Explanation: You have 2 children and 3 cookies. The greed factors of 2 children are 1, 2. 
+You have 3 cookies and their sizes are big enough to gratify all of the children, 
+You need to output 2.
+"""
+print(Solution().findContentChildren([1, 2, 3], [1, 1]), 1)
+print(Solution().findContentChildren([1, 2], [1, 2, 3]), 2)
+print(Solution().findContentChildren([10, 9, 8, 7], [5, 6, 7, 8]), 2)
+
+
+class Solution:
+    def findContentChildren(self, children: list[int], cookies: list[int]) -> int:
+        children.sort()
+        cookies.sort()
+        left = 0
+
+        for cookie in cookies:
+            if (left < len(children) and  # if in bounds of children and
+                    children[left] <= cookie):  # child is content
+                left += 1  # move to the next child
+
+        return left
+
+
+
+# Maximum Number of Vowels in a Substring of Given Length
+# https://leetcode.com/problems/maximum-number-of-vowels-in-a-substring-of-given-length/description/
+"""
+Given a string s and an integer k, return the maximum number of vowel letters in any substring of s with length k.
+
+Vowel letters in English are 'a', 'e', 'i', 'o', and 'u'.
+
+Example 1:
+
+Input: s = "abciiidef", k = 3
+Output: 3
+Explanation: The substring "iii" contains 3 vowel letters.
+Example 2:
+
+Input: s = "aeiou", k = 2
+Output: 2
+Explanation: Any substring of length 2 contains 2 vowels.
+Example 3:
+
+Input: s = "leetcode", k = 3
+Output: 2
+Explanation: "lee", "eet" and "ode" contain 2 vowels.
+"""
+print(Solution().maxVowels("abciiidef", 3), 3)
+print(Solution().maxVowels("aeiou", 2), 2)
+print(Solution().maxVowels("leetcode", 3), 2)
+
+
+class Solution:
+    def maxVowels(self, word: str, substring_length: int) -> int:
+        left = 0
+        vovels = "aeoiu"
+        vovel_count = 0
+        max_vovels = 0
+
+        for right, letter in enumerate(word):
+            if letter in vovels:  # if right letter is a vovel increase the counter
+                vovel_count += 1
+
+            if right - left + 1 == substring_length + 1:  # if substring is longer than its upper limit
+                if word[left] in vovels:  # if left letter is a vovel decrease the counter
+                    vovel_count -= 1
+                
+                left += 1  # maintain the window length
+            
+            max_vovels = max(max_vovels, vovel_count)
+
+        return max_vovels
+
+
+
+
+
+# Asteroid Collision
+# https://leetcode.com/problems/asteroid-collision/description/
+"""
+We are given an array asteroids of integers representing asteroids in a row.
+
+For each asteroid, the absolute value represents its size, and the sign represents its direction (positive meaning right, negative meaning left). Each asteroid moves at the same speed.
+
+Find out the state of the asteroids after all collisions. If two asteroids meet, the smaller one will explode. If both are the same size, both will explode. Two asteroids moving in the same direction will never meet.
+
+Example 1:
+
+Input: asteroids = [5,10,-5]
+Output: [5,10]
+Explanation: The 10 and -5 collide resulting in 10. The 5 and 10 never collide.
+Example 2:
+
+Input: asteroids = [8,-8]
+Output: []
+Explanation: The 8 and -8 collide exploding each other.
+Example 3:
+
+Input: asteroids = [10,2,-5]
+Output: [10]
+Explanation: The 2 and -5 collide resulting in -5. The 10 and -5 collide resulting in 10.
+"""
+print(Solution().asteroidCollision([5, 10, -5]), [5, 10])
+print(Solution().asteroidCollision([8, -8]), [])
+print(Solution().asteroidCollision([10, 2, -5]), [10])
+print(Solution().asteroidCollision([-2, -1, 1, 2]), [-2, -1, 1, 2])
+print(Solution().asteroidCollision([1, 2, -5]), [-5])
+print(Solution().asteroidCollision([-2, -2, 1, -2]), [-2, -2, -2])
+print(Solution().asteroidCollision([-2, -1, 1, -2]), [-2, -1, -2])
+print(Solution().asteroidCollision([-2, 2, 1, -2]), [-2])
+
+
+class Solution:
+    def asteroidCollision(self, asteroids: list[int]) -> list[int]:
+        stack = []
+
+        for asteroid in asteroids:
+            add_astr = True
+
+            # pop all asteroids from the end of the stack that collide with current asteroid
+            while (add_astr and  # can add asteroid 
+                   stack and  # stack is not empty
+                   asteroid < 0 and  # curren asteroid moves left
+                   stack[-1] > 0):  # asteroid from stack movet right
+                diff = asteroid + stack[-1]  
+
+                if not diff:  # both asteroids are the same size
+                    add_astr = False  # stop the loop and don't add the curren asteroid to the stack
+                    stack.pop()
+                elif diff < 0:  # current asteroid is bigger
+                    stack.pop()
+                else:  # asteroid in the stack is bigger
+                    add_astr = False  # stop the loop and don't add the curren asteroid to the stack
+
+            if add_astr:
+                stack.append(asteroid)
+
+        return stack
+
+
+
+
+
+# Squares of a Sorted Array
+# https://leetcode.com/problems/squares-of-a-sorted-array/description/
+"""
+Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+
+Example 1:
+
+Input: nums = [-4,-1,0,3,10]
+Output: [0,1,9,16,100]
+Explanation: After squaring, the array becomes [16,1,0,9,100].
+After sorting, it becomes [0,1,9,16,100].
+Example 2:
+
+Input: nums = [-7,-3,2,3,11]
+Output: [4,9,9,49,121]
+"""
+print(Solution().sortedSquares([-4, -1, 0, 3, 10]), [0, 1, 9, 16, 100])
+print(Solution().sortedSquares([-7, -3, 2, 3, 11]), [4, 9, 9, 49, 121])
+print(Solution().sortedSquares([1, 2, 3]), [1, 4, 9])
+print(Solution().sortedSquares([-3, -2, -1]), [1, 4, 9])
+print(Solution().sortedSquares([0]), [0])
+print(Solution().sortedSquares([0, 1]), [0, 1])
+print(Solution().sortedSquares([-10000, -9999, -7, -5, 0, 0, 10000]), [0, 0, 25, 49, 99980001, 100000000, 100000000])
+print(Solution().sortedSquares([-1, 1]), [1, 1])
+print(Solution().sortedSquares([-1, 1, 1]), [1, 1, 1])
+print(Solution().sortedSquares([-3, -3, -2, 1]), [1, 4, 9, 9])
+
+
+class Solution:
+    def sortedSquares(self, numbers: list[int]) -> list[int]:
+        left = 0
+        right = len(numbers) - 1
+        sorted_squared = []
+
+        while left <= right:
+            if numbers[left] ** 2 > numbers[right] ** 2:
+                sorted_squared.append(numbers[left] ** 2)
+                left += 1
+            else:
+                sorted_squared.append(numbers[right] ** 2)
+                right -= 1
+        
+        sorted_squared.reverse()
+        
+        return sorted_squared
+
+
+
+
+
+# Middle of the Linked List
+# https://leetcode.com/problems/middle-of-the-linked-list/description/
+"""
+Given the head of a singly linked list, return the middle node of the linked list.
+
+If there are two middle nodes, return the second middle node.
+
+Example 1:
+
+Input: head = [1,2,3,4,5]
+Output: [3,4,5]
+Explanation: The middle node of the list is node 3.
+Example 2:
+
+Input: head = [1,2,3,4,5,6]
+Output: [4,5,6]
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one.
+"""
+
+# [1, 2, 3_, 4, 5_]
+# [1, 2, 3, 4_, 5, 6, None_]
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def middleNode(self, head: ListNode) -> ListNode:
+        slow = head
+        fast = head
+
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        
+        return slow
+
+
+
+
+
+# Can Place Flowers
+# https://leetcode.com/problems/can-place-flowers/description/
+"""
+You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in adjacent plots.
+
+Given an integer array flowerbed containing 0's and 1's, where 0 means empty and 1 means not empty, and an integer n, return true if n new flowers can be planted in the flowerbed without violating the no-adjacent-flowers rule and false otherwise.
+
+Example 1:
+
+Input: flowerbed = [1,0,0,0,1], n = 1
+Output: true
+Example 2:
+
+Input: flowerbed = [1,0,0,0,1], n = 2
+Output: false
+"""
+print(Solution().canPlaceFlowers([1, 0, 0, 0, 1], 1), True)
+print(Solution().canPlaceFlowers([1, 0, 0, 0, 1], 2), False)
+print(Solution().canPlaceFlowers([1, 0, 0, 0], 1), True)
+print(Solution().canPlaceFlowers([1, 0, 1, 0, 1, 0, 1], 0), True)
+print(Solution().canPlaceFlowers([0, 0, 1, 0, 1], 1), True)
+print(Solution().canPlaceFlowers([1, 0, 0, 0, 1, 0, 0], 2), True)
+print(Solution().canPlaceFlowers([0, 0, 0], 2), True)
+
+
+# O(n), O(1)
+# Iteration
+class Solution:
+    def canPlaceFlowers(self, flowerbed: list[int], n: int) -> bool:
+        if not n:
+            return True
+        
+        counter = 0
+        contiguous_zeros = 1  # count current contiguous zeros length, initialize with 1 because start with  [0, 0, 1, ...] is legit place for a flower
+
+        for place in flowerbed:
+            if place:  # if occupied by a flower
+                if contiguous_zeros >= 3:
+                    counter += (contiguous_zeros - 1) // 2  # 3, 4 => 1; 5, 6 => 2
+
+                    # early exit
+                    if counter >= n:
+                        return True
+
+                contiguous_zeros = 0  # reset contiguous zeros length
+            else:  # if free place for a flower
+                contiguous_zeros += 1
+
+        # if free places at the end of the flowerbed
+        counter += contiguous_zeros // 2
+
+        return counter >= n
+
+
+
+
+
+# Find First Palindromic String in the Array
+# https://leetcode.com/problems/find-first-palindromic-string-in-the-array/description/
+"""
+Given an array of strings words, return the first palindromic string in the array. If there is no such string, return an empty string "".
+
+A string is palindromic if it reads the same forward and backward.
+
+Example 1:
+
+Input: words = ["abc","car","ada","racecar","cool"]
+Output: "ada"
+Explanation: The first string that is palindromic is "ada".
+Note that "racecar" is also palindromic, but it is not the first.
+Example 2:
+
+Input: words = ["notapalindrome","racecar"]
+Output: "racecar"
+Explanation: The first and only string that is palindromic is "racecar".
+Example 3:
+
+Input: words = ["def","ghi"]
+Output: ""
+Explanation: There are no palindromic strings, so the empty string is returned.
+"""
+print(Solution().firstPalindrome(["abc", "car", "ada", "racecar", "cool"]), "ada")
+print(Solution().firstPalindrome(["notapalindrome", "racecar"]), "racecar")
+print(Solution().firstPalindrome(["def", "ghi"]), "")
+
+# O(n), O(1)
+# built-in function
+class Solution:
+    def firstPalindrome(self, words: list[str]) -> str:
+        for word in words:
+            if word == word[::-1]:
+                return word
+
+        return ""
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def firstPalindrome(self, words: list[str]) -> str:
+        for word in words:
+            left = 0
+            right = len(word) - 1
+
+            while left < right:
+                if word[left] != word[right]:
+                    break
+                
+                left += 1
+                right -= 1
+            
+            else:
+                return word
+
+        return ""
+
+
+
+
+
+# Sort Array By Parity
+# https://leetcode.com/problems/sort-array-by-parity/description/
+"""
+Given an integer array nums, move all the even integers at the beginning of the array followed by all the odd integers.
+
+Return any array that satisfies this condition.
+
+Example 1:
+
+Input: nums = [3,1,2,4]
+Output: [2,4,3,1]
+Explanation: The outputs [4,2,3,1], [2,4,1,3], and [4,2,1,3] would also be accepted.
+Example 2:
+
+Input: nums = [0]
+Output: [0]
+"""
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def sortArrayByParity(self, numbers: list[int]) -> list[int]:
+        left = 0
+
+        for right, number in enumerate(numbers):
+            if not number % 2:
+                numbers[left], numbers[right] = numbers[right], numbers[left]
+                left += 1
+
+        return numbers
+
+
+# O(n), O(n)
+# deque
+from collections import deque
+
+class Solution:
+    def sortArrayByParity(self, numbers: list[int]) -> list[int]:
+        queue = deque()
+
+        for number in numbers:
+            if number % 2:
+                queue.append(number)
+            else:
+                queue.appendleft(number)
+
+        return list(queue)
+
+
+
+
+
+# Intersection of Two Linked Lists
+# https://leetcode.com/problems/intersection-of-two-linked-lists/description/
+"""
+Given the heads of two singly linked-lists headA and headB, return the node at which the two lists intersect. If the two linked lists have no intersection at all, return null.
+
+For example, the following two linked lists begin to intersect at node c1:
+
+
+The test cases are generated such that there are no cycles anywhere in the entire linked structure.
+
+Note that the linked lists must retain their original structure after the function returns.
+
+Example 1:
+
+
+Input: intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+Output: Intersected at '8'
+Explanation: The intersected node's value is 8 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [4,1,8,4,5]. From the head of B, it reads as [5,6,1,8,4,5]. There are 2 nodes before the intersected node in A; There are 3 nodes before the intersected node in B.
+- Note that the intersected node's value is not 1 because the nodes with value 1 in A and B (2nd node in A and 3rd node in B) are different node references. In other words, they point to two different locations in memory, while the nodes with value 8 in A and B (3rd node in A and 4th node in B) point to the same location in memory.
+Example 2:
+
+
+Input: intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+Output: Intersected at '2'
+Explanation: The intersected node's value is 2 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [1,9,1,2,4]. From the head of B, it reads as [3,2,4]. There are 3 nodes before the intersected node in A; There are 1 node before the intersected node in B.
+Example 3:
+
+
+Input: intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+Output: No intersection
+Explanation: From the head of A, it reads as [2,6,4]. From the head of B, it reads as [1,5]. Since the two lists do not intersect, intersectVal must be 0, while skipA and skipB can be arbitrary values.
+Explanation: The two lists do not intersect, so return null.
+"""
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    # get the length of a linked list
+    def getLength(self, node):
+        list_length = 0
+        
+        while node:
+            list_length += 1
+            node = node.next
+        
+        return list_length
+
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:        
+        a_length = self.getLength(headA)
+        b_length = self.getLength(headB)
+        diff_length = abs(a_length - b_length)
+        
+        if a_length > b_length:
+            for _ in range(diff_length):
+                headA = headA.next
+        else:
+            for _ in range(diff_length):
+                headB = headB.next
+
+        while headA and headB:
+            if headA == headB:
+                return headA
+            else:
+                headA = headA.next
+                headB = headB.next
+
+        return None
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:        
+        nodeA = headA
+        nodeB = headB
+
+        while nodeA != nodeB:
+            nodeA = nodeA.next if nodeA else headB
+            nodeB = nodeB.next if nodeB else headA
+        else:
+            return nodeA
+
+
+
+
+
+# Majority Element
+# https://leetcode.com/problems/majority-element/description/
+"""
+Given an array nums of size n, return the majority element.
+
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+Example 1:
+
+Input: nums = [3,2,3]
+Output: 3
+Example 2:
+
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+"""
+print(Solution().majorityElement([3, 2, 3]), 3)
+print(Solution().majorityElement([2, 2, 1, 1, 1, 2, 2]), 2)
+
+
+# O(n), O(n)
+# dict, two pass
+class Solution:
+    def majorityElement(self, numbers: list[int]) -> int:
+        counter = {}
+
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        max_value = 0
+        max_key = 0
+        
+        for key, value in counter.items():            
+            if value > max_value:
+                max_value = max(max_value, value)
+                max_key = key
+
+        return max_key
+
+
+# O(n), O(n)
+# dict, one pass
+class Solution:
+    def majorityElement(self, numbers: list[int]) -> int:
+        counter = {}
+        max_value = 0
+        max_key = 0
+
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+            if counter[number] > max_value:
+                max_key = number
+                max_value = max(max_value, counter[number])
+
+        return max_key
+
+
+# O(n), O(1)
+# Boyer-Moore
+class Solution:
+    def majorityElement(self, numbers: list[int]) -> int:
+        key = 0
+        value = 0
+        
+        for number in numbers:
+            if not value:
+                key = number
+                value += 1
+            else:
+                if key == number:
+                    value += 1
+                else:
+                    value -= 1
+
+        return key
+
+# O(n), O(1)
+# Boyer-Moore
+class Solution:
+    def majorityElement(self, numbers: list[int]) -> int:
+        key = 0
+        value = 0
+        
+        for number in numbers:
+            if not value:
+                key = number
+            
+            value += 1 if key == number else -1
+
+        return key
+
+
+
+
+
+# Reverse Words in a String III
+# https://leetcode.com/problems/reverse-words-in-a-string-iii/
+"""
+Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+
+Example 1:
+
+Input: s = "Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+Example 2:
+
+Input: s = "Mr Ding"
+Output: "rM gniD"
+"""
+print(Solution().reverseWords("Let's take LeetCode contest"), "s'teL ekat edoCteeL tsetnoc")
+print(Solution().reverseWords("Mr Ding"), "rM gniD")
+print(Solution().reverseWords("hehhhhhhe"), "ehhhhhheh")
+
+
+# O(n), O(n)
+# built-in function
+class Solution:
+    def reverseWords(self, text: str) -> str:
+        return " ".join(word[::-1] 
+                        for word in text.split())
+
+
+# O(n), O(n)
+# two pionters
+class Solution:
+    def reverseWords(self, text: str) -> str:
+        text = list(text)
+        text.append(" ")  # add space to catch the last word
+        left = 0  # the start of the word pointer
+
+        for index, letter in enumerate(text):
+            if letter == " ":
+                right = index - 1  # the end of the word pointer
+
+                while left < right:
+                    text[left], text[right] = text[right], text[left]  # swap letters
+                    left += 1
+                    right -= 1
+                
+                left = index + 1  # move the left pointer to the beginning of the next word
+
+        return "".join(text[:-1])
+
+
+class Solution:
+    def reverseWords(self, text: str) -> str:
+        rev_str = ""
+
+        for word in text.split():
+            rev_str = rev_str + word[::-1] + " "
+
+        return rev_str[:-1]
+
+
+class Solution:
+    def reverseWords(self, text: str) -> str:
+        rev_word = ""
+        rev_text = ""
+
+        for letter in text:
+            if letter != " ":
+                rev_word = letter + rev_word
+            else:
+                rev_text += rev_word + " "
+                rev_word = ""
+        
+        return rev_text + rev_word
+
+
+
+
+# Minimum Number of Flips to Make the Binary String Alternating
+# https://leetcode.com/problems/minimum-number-of-flips-to-make-the-binary-string-alternating/description/
+"""
+You are given a binary string s. You are allowed to perform two types of operations on the string in any sequence:
+
+Type-1: Remove the character at the start of the string s and append it to the end of the string.
+Type-2: Pick any character in s and flip its value, i.e., if its value is '0' it becomes '1' and vice-versa.
+Return the minimum number of type-2 operations you need to perform such that s becomes alternating.
+
+The string is called alternating if no two adjacent characters are equal.
+
+For example, the strings "010" and "1010" are alternating, while the string "0100" is not.
+ 
+
+Example 1:
+
+Input: s = "111000"
+Output: 2
+Explanation: Use the first operation two times to make s = "100011".
+Then, use the second operation on the third and sixth elements to make s = "101010".
+Example 2:
+
+Input: s = "010"
+Output: 0
+Explanation: The string is already alternating.
+Example 3:
+
+Input: s = "1110"
+Output: 1
+Explanation: Use the second operation on the second element to make s = "1010".
+"""
+print(Solution().minFlips("111000"), 2)
+print(Solution().minFlips("010"), 0)
+print(Solution().minFlips("1110"), 1)
+
+
+# blueprint
+# "111000" numbers
+# "010101" target A
+# "101010" target B
+
+
+# O(n), O(n)
+# sliding window
+class Solution:
+    def minFlips(self, numbers: str) -> int:
+        left = 0
+        target_a = "01" * len(numbers)  # target string A "0101..."
+        target_b = "10" * len(numbers)  # target string B "1010..."
+        numbers = numbers * 2  # double the numbers length
+        flip_a = 0  # count numbers to flip to get current tagret A in a loop
+        flip_b = 0  # count numbers to flip to get current tagret B in a loop
+        min_flip_a = len(numbers)  # minimum flips to get the best matching target A
+        min_flip_b = len(numbers)  # minimum flips to get the best matching target B
+
+
+        for right, number in enumerate(numbers):
+            # if no match increase the flip counter
+            if number != target_a[right]:
+                flip_a += 1
+            if number != target_b[right]:
+                flip_b += 1
+
+            # if the window is the right length
+            if right - left + 1 == len(numbers) / 2:
+                min_flip_a = min(min_flip_a, flip_a)
+                min_flip_b = min(min_flip_b, flip_b)
+
+                # early exit when any of min flips is zero
+                if not min_flip_a or not min_flip_b:
+                    return 0
+
+                # if no match decrease the flip counter
+                if numbers[left] != target_a[left]:
+                    flip_a -= 1
+                if numbers[left] != target_b[left]:
+                    flip_b -= 1
+
+                left += 1
+
+        return min(min_flip_a, min_flip_b)
+
+
+# O(n2), O(n)
+# brute force
+class Solution:
+    def minFlips(self, numbers: str) -> int:
+        min_flip_a = len(numbers)
+        min_flip_b = len(numbers)
+        
+        if len(numbers) % 2:
+            target_a = "01" * (len(numbers) // 2) + "0"
+            target_b = "10" * (len(numbers) // 2) + "1"
+        else:
+            target_a = "01" * (len(numbers) // 2)
+            target_b = "10" * (len(numbers) // 2)
+
+        for _ in range(len(numbers)):
+            numbers = numbers[1:] + numbers[0]
+            flip_a = 0
+            flip_b = 0
+
+            for index, number in enumerate(numbers):
+                if number != target_a[index]:
+                    flip_a += 1
+
+                if number != target_b[index]:
+                    flip_b += 1
+
+            min_flip_a = min(min_flip_a, flip_a)
+            min_flip_b = min(min_flip_b, flip_b)
+        
+        return min(min_flip_a, min_flip_b)
+
 
 
 

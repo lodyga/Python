@@ -412,58 +412,6 @@ class Solution:
 
 
 
-# Reverse Words in a String III
-# https://leetcode.com/problems/reverse-words-in-a-string-iii/
-"""
-Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
-
-Example 1:
-
-Input: s = "Let's take LeetCode contest"
-Output: "s'teL ekat edoCteeL tsetnoc"
-Example 2:
-
-Input: s = "Mr Ding"
-Output: "rM gniD"
-"""
-
-
-# O(n), O(n)
-class Solution:
-    def reverseWords(self, s: str) -> str:
-        return " ".join(word[::-1] for word in s.split())
-(Solution().reverseWords("Let's take LeetCode contest"), "s'teL ekat edoCteeL tsetnoc")
-(Solution().reverseWords("Mr Ding"), "rM gniD")
-(Solution().reverseWords("hehhhhhhe"), "ehhhhhheh")
-
-
-class Solution:
-    def reverseWords(self, s: str) -> str:
-        rev_str = ""
-
-        for word in s.split(" "):
-            rev_str = rev_str + "".join(word[::-1]) + " "
-
-        return rev_str[:-1]
-
-
-class Solution:
-    def reverseWords(self, s: str) -> str:
-        rev_word = ""
-        rev_str = ""
-
-        for letter in s:
-            if letter != " ":
-                rev_word = letter + rev_word
-            else:
-                rev_str += rev_word + " "
-                rev_word = ""
-        return rev_str + rev_word
-
-
-
-
-
 # Substrings of Size Three with Distinct Characters
 # https://leetcode.com/problems/substrings-of-size-three-with-distinct-characters/
 """

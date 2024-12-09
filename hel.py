@@ -59,7 +59,8 @@ print('GGT\nCAG\r')
 'A Alan'.split('l')  # ['A A', 'an']
 'A  Alan'.split()  # ['A', 'Alan'] # remove additional spaces
 'A  Alan'.split(' ')  # ['A', '', 'Alan'] # capture additional spaces
-list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from string
+list('abcd')  # ['a', 'b', 'c', 'd'] # list from a string  # JS word.split('')
+list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from a string
 {x:int(y) for x, _, y in ['0+1', '1-2']}  # {'0': 1, '1':2}
 
 ';'.join(str(123))  # '1;2;3'
