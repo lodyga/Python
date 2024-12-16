@@ -5447,8 +5447,9 @@ Example 3:
 Input: root = []
 Output: []
 """
+# Definition for a binary tree node.
 class TreeNode:
-    def __init__(self, val=1, left=None, right=None):
+    def __init__(self, val=0, left=None, right=None):
         self.val = val
         self.left = left
         self.right = right
@@ -5553,12 +5554,8 @@ from binarytree import Node  # or use TreeNode
 (Solution().invertTree([]), [])
 
 
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
+# O(n), O(n)
+# dfs, recursion
 class Solution:
     def invertTree(self, root: TreeNode | None) -> TreeNode | None:
         if not root:
@@ -5571,19 +5568,69 @@ class Solution:
         return root
 
 
+# O(n), O(n)
+# dfs, recursion
 class Solution:
     def invertTree(self, root: TreeNode | None) -> TreeNode | None:
         if root:
             root.left, root.right = root.right, root.left
-
             self.invertTree(root.left) 
             self.invertTree(root.right)
         
         return root
 
 
+# O(n), O(n)
+# dfs, recursion
+class Solution:
+    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
+        if root:
+            root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
+        
+            return root
 
 
+# O(n), O(n)
+# dfs, stack, iteration
+class Solution:
+    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
+        if not root:
+            return None
+        
+        stack = [root]
+
+        while stack:
+            node = stack.pop()
+            node.left, node.right = node.right, node.left
+            
+            if node.left:
+                stack.append(node.left)
+            if node.right:
+                stack.append(node.right)
+        
+        return root
+
+
+from collections import deque
+# O(n), O(n)
+# bfs, deque, iteration
+class Solution:
+    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
+        if not root:
+            return None
+        
+        queue = deque([root])
+
+        while queue:
+            node = queue.popleft()
+            node.left, node.right = node.right, node.left
+            
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        return root
 
 
 # Maximum Depth of Binary Tree
@@ -5654,8 +5701,8 @@ tree_from_list = build_tree_from_list(
 print(tree_from_list)
 
  
-# dp, dfs, recursion
 # O(n), O(n)
+# dfs, recursion
 class Solution:
     def maxDepth(self, root: TreeNode | None) -> int:
         if not root:
@@ -5667,8 +5714,8 @@ class Solution:
             ) + 1
 
 
-# dp, dfs, recursion, explict dfs function
 # O(n), O(n)
+# dfs, recursion, explict dfs function
 class Solution:
     def maxDepth(self, root: TreeNode | None) -> int:
         def dfs(node):
@@ -5683,8 +5730,8 @@ class Solution:
         return dfs(root)
 
 
-# dp, bfs, iteration, dequeue, level order traversal
 # O(n), O(n)
+# bfs, iteration, deque, level order traversal
 from collections import deque
 
 class Solution:
@@ -5711,27 +5758,49 @@ class Solution:
         return depth
 
 
-# dp, dfs, iteration, stack, pre-order traversal
 # O(n), O(n)
+# bfs, deque, iteration
+from collections import deque
+
+class Solution:
+    def maxDepth(self, root: TreeNode | None) -> int:
+        if not root:
+            return 0
+        
+        depth = 1
+        deq = deque([(1, root)])
+
+        while deq:
+            level, node = deq.popleft()
+            depth = max(depth, level)
+            
+            if node.left:
+                deq.append((level + 1, node.left))
+            if node.right:
+                deq.append((level + 1, node.right))
+        
+        return depth
+    
+
+# O(n), O(n)
+# dfs, iteration, stack, pre-order traversal
 class Solution:
     def maxDepth(self, root: TreeNode | None) -> int:
         if not root:
             return 0
 
-        stack = []
-        stack.append((root, 1))
+        stack = [(root, 1)]
         max_depth = 1
 
         while stack:
             node, depth = stack.pop()
+            max_depth = max(max_depth, depth)
 
             if node.left:
                 stack.append((node.left, depth + 1))
-                max_depth = max(max_depth, depth + 1)
             
             if node.right:
                 stack.append((node.right, depth + 1))
-                max_depth = max(max_depth, depth + 1)
 
         return max_depth
 
@@ -5824,27 +5893,25 @@ build_tree_from_list([1, 2, 3, 4, 5], Node)
 #         self.val = val
 #         self.left = left
 #         self.right = right
-# dp, dfs, recursion
 # O(n), O(n)
+# dfs, recursion
 class Solution:
-    def __init__(self) -> None:
-        self.longest_diameter = 0
-
     def diameterOfBinaryTree(self, root: TreeNode | None) -> int:
+        self.diameter = 0
+        
         def dfs(node):
             if not node:
                 return 0
         
             left = dfs(node.left)  # left branch depth
             right = dfs(node.right)  # right branch depth
-
-            self.longest_diameter = max(self.longest_diameter, left + right)  # left + rigth = path between two nodes
+            self.diameter = max(self.diameter, left + right)  # updates diameter with current node as a root
             
-            return max(left, right) + 1  # current node max depth
+            return max(left, right) + 1  # (height)  current node max depth
 
         dfs(root)
 
-        return self.longest_diameter
+        return self.diameter
 
 
 
@@ -5939,13 +6006,12 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 #         self.val = val
 #         self.left = left
 #         self.right = right
-# dp, dfs, recursive
+# dfs, recursive
 # O(n), O(n)
 class Solution:
-    def __init__(self) -> None:
-        self.is_balanced = True  # default valuef for balanced tree
-
     def isBalanced(self, root: TreeNode | None) -> bool:
+        self.is_balanced = True  # default value for balanced tree
+        
         def dfs(node):
             if not node:
                 return 0
@@ -6048,11 +6114,48 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 #         self.val = val
 #         self.left = left
 #         self.right = right
-# dp, dfs, recursive
+
+
 # O(n), O(n)
+# dfs, recursion
+class Solution:
+    def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
+        def dfs(node1, node2):
+            if not node1 and not node2:
+                return True
+            elif not node1 or not node2:
+                return False
+            elif node1.val != node2.val:
+                return False
+
+            return (
+                dfs(node1.left, node2.left) and
+                dfs(node1.right, node2.right))
+
+        return dfs(p, q)
+
+
+# O(n), O(n)
+# dfs, recursion
 class Solution:
     def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
         if not p and not q:
+            return True
+        elif not p or not q:
+            return False
+        elif p.val != q.val:
+            return False
+
+        return (
+            self.isSameTree(p.left, q.left) and
+            self.isSameTree(p.right, q.right))
+
+
+# O(n), O(n)
+# dfs, recursion
+class Solution:
+    def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
+        if not p and not q:  # if both are None
             return True
         
         if (p and q and p.val == q.val):  # if both nodes exist and have equal values
@@ -6062,50 +6165,35 @@ class Solution:
             return False
 
 
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-# dp, bfs, iteration, queue
 # O(n), O(n)
+# bfs, iteration, queue
 class Solution:
     def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
-        if not p and not q:  # p and q are empyt
-            return True
-        
-        if not p or not q:  # p or q is empyt
-            return False
-
         p_queue = deque([p])  # initiate dequeues
         q_queue = deque([q])
 
-        while p_queue and q_queue:  # if both queues not empty
-            for _ in range(max(len(p_queue), len(q_queue))):  # for every node in queue
-                p_node = p_queue.popleft()  # take a node
+        while p_queue or q_queue:  # while one queue is not empty
+            if len(p_queue) != len(q_queue):  # different queue lengths
+                return False
+            
+            for _ in range(len(p_queue)):  # for every node in queue
+                p_node = p_queue.popleft()  # pop a node
                 q_node = q_queue.popleft()
-                
-                if p_node.val != q_node.val:  # compare p and q values
+
+                if not p_node and not q_node:  # p and q are empty
+                    continue
+                elif not p_node or not q_node:  # p or q is empty
                     return False
-                
-                if (not p_node.left and not q_node.left):  # if p and q are None
-                    pass
-                elif (p_node.left and q_node.left and  # if p and q exist
-                        p_node.left.val == q_node.left.val):  # if p and q left value is the same
-                    p_queue.append(p_node.left)  # append p left value to queue
-                    q_queue.append(q_node.left)  # append q left value to queue
-                else:  # in any other case
+                elif p_node.val != q_node.val:  # different p and q values
                     return False
 
-                if (not p_node.right and not q_node.right):
-                    pass
-                elif (p_node.right and q_node.right and
-                        p_node.right.val == q_node.right.val):
+                if p_node.left or q_node.left:  # if both nodes are not None add them to their queues
+                    p_queue.append(p_node.left)
+                    q_queue.append(q_node.left)
+            
+                if p_node.right or q_node.right:
                     p_queue.append(p_node.right)
                     q_queue.append(q_node.right)
-                else:
-                    return False
 
         return True
 
@@ -6215,7 +6303,7 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 #         self.val = val
 #         self.left = left
 #         self.right = right
-# dp, dfs, recursive
+# dfs, recursive
 # O(n2), O(n)
 class Solution:
     def isSubtree(self, root: TreeNode | None, subRoot: TreeNode | None) -> bool:
@@ -8757,7 +8845,7 @@ class LRUCache:
 # O(1), O(n)
 # Double Linked List
 class Node:
-    def __init__(self, key=0, value=0, next=None, prev=None):
+    def __init__(self, key=0, value=0, next=None, prev=None) -> None:
         self.key = key
         self.value = value
         self.next = next
@@ -8765,7 +8853,7 @@ class Node:
 
 
 class LRUCache:
-    def __init__(self, capacity: int):
+    def __init__(self, capacity: int) -> None:
         self.capacity = capacity
         self.cache = {}
         self.first = Node()
@@ -8774,7 +8862,7 @@ class LRUCache:
         self.last.prev = self.first
 
 
-    def insert(self, node: Node) -> None:
+    def push_node(self, node: Node) -> None:
         prev = self.last.prev
         next = self.last
         prev.next = node
@@ -8783,84 +8871,83 @@ class LRUCache:
         node.next = next
 
 
-    def remove(self, node: Node) -> None:
-        prev = node.prev
-        next = node.next
-        prev.next = next
-        next.prev = prev
+    def pop_node(self, node: Node) -> None:
+        node.prev.next, node.next.prev = node.next, node.prev
 
 
     def get(self, key: int) -> int:
         if key in self.cache:
-            self.remove(self.cache[key])
-            self.insert(self.cache[key])
-            return self.cache[key].value
+            node = self.cache[key]
+            self.pop_node(node)
+            self.push_node(node)
+
+            return node.value
         else:
             return -1
         
 
     def put(self, key: int, value: int) -> None:
         if key in self.cache:
-            self.remove(self.cache[key])
+            self.pop_node(self.cache[key])
         elif self.capacity:
             self.capacity -= 1
         else:
             lru = self.first.next
-            self.remove(lru)
+            self.pop_node(lru)
             self.cache.pop(lru.key)
 
         node = Node(key, value)
         self.cache[key] = node
-        self.insert(self.cache[key])
+        self.push_node(node)
 
 
 # O(1), O(n)
-# two dicts ({key: index}, {index: key})
+# three dicts (cache, {key: index}, {index: key})
 class LRUCache:
     def __init__(self, capacity: int):
         self.capacity = capacity
-        self.cache = {}
-        self.last_key_index = {}
-        self.last_index_key = {}
-        self.max_index = 0
-        self.min_index = 1
+        self.cache = {}  # {key: value}
+        self.index = 0  # in which iteration key has been modified/added
+        self.key_index = {}  # {key: index}
+        self.index_key = {}  # {index: key}
 
     def get(self, key: int) -> int:
         if key in self.cache:
-            index = self.last_key_index[key]
-            self.last_index_key.pop(index)
-            self.max_index += 1
-            self.last_key_index[key] = self.max_index
-            self.last_index_key[self.max_index] = key
+            self.index_key.pop(self.key_index[key])  # pop least recent index_key element
+            self.key_index[key] = self.index  # update key_index with a new index
+            self.index_key[self.index] = key  # update new index_key with a key
+            self.index += 1  # increase index
             return self.cache[key]
         else:
             return -1
 
     def put(self, key: int, value: int) -> None:
-        if key in self.cache:
-            self.cache[key] = value
+        if key in self.cache:  # if key in cache
+            self.cache[key] = value  # add new key, value pair to cache
+            
             # when updating the key with max index no need to update index
-            if self.last_key_index[key] != self.max_index:
-                self.last_index_key.pop(self.last_key_index[key])
-                self.max_index += 1
-                self.last_index_key[self.max_index] = key
-                self.last_key_index[key] = self.max_index
-        elif self.capacity:
-            self.capacity -= 1
-            self.cache[key] = value
-            self.max_index += 1
-            self.last_index_key[self.max_index] = key
-            self.last_key_index[key] = self.max_index
-        else:
-            min_index = next(iter(self.last_index_key))
-            min_index_key = self.last_index_key[min_index]
-            self.last_key_index.pop(min_index_key)
-            self.cache.pop(min_index_key)
-            self.last_index_key.pop(min_index)
-            self.cache[key] = value
-            self.max_index += 1
-            self.last_index_key[self.max_index] = key
-            self.last_key_index[key] = self.max_index
+            if self.key_index[key] != self.index:
+                self.index_key.pop(self.key_index[key])  # pop least recent index_key element
+                self.key_index[key] = self.index  # update key_index with a new index
+                self.index_key[self.index] = key  # update new index_key with a key
+                self.index += 1  # increase index
+        elif self.capacity:  # there it capacity for another key
+            self.capacity -= 1  # decrease capacity
+            self.cache[key] = value  # add new key, value pair to cache
+            self.key_index[key] = self.index  # update key_index with a new index
+            self.index_key[self.index] = key  # update new index_key with a key
+            self.index += 1  # increase index
+        else:  # no capacity for new key
+            min_index = next(iter(self.index_key))  # indexes are in ascending order but are not contiguous
+            min_key = self.index_key[min_index]  # key to the lowest index
+            self.cache.pop(min_key)  # pop key with the lowest index
+            self.key_index.pop(min_key)  # pop key with the lowest index
+            self.index_key.pop(min_index)  # pop lowest index from index_key
+
+            self.cache[key] = value  # add new key, value pair to cache
+            self.key_index[key] = self.index  # update key_index with a new index
+            self.index_key[self.index] = key  # update new index_key with a key
+            self.index += 1  # increase index
 
 
 
@@ -11756,6 +11843,680 @@ class Solution:
             min_flip_b = min(min_flip_b, flip_b)
         
         return min(min_flip_a, min_flip_b)
+
+
+
+
+
+# Online Stock Span
+# https://leetcode.com/problems/online-stock-span/description/
+"""
+Design an algorithm that collects daily price quotes for some stock and returns the span of that stock's price for the current day.
+
+The span of the stock's price in one day is the maximum number of consecutive days (starting from that day and going backward) for which the stock price was less than or equal to the price of that day.
+
+For example, if the prices of the stock in the last four days is [7,2,1,2] and the price of the stock today is 2, then the span of today is 4 because starting from today, the price of the stock was less than or equal 2 for 4 consecutive days.
+Also, if the prices of the stock in the last four days is [7,34,1,2] and the price of the stock today is 8, then the span of today is 3 because starting from today, the price of the stock was less than or equal 8 for 3 consecutive days.
+Implement the StockSpanner class:
+
+StockSpanner() Initializes the object of the class.
+int next(int price) Returns the span of the stock's price given that today's price is price.
+ 
+
+Example 1:
+
+Input
+["StockSpanner", "next", "next", "next", "next", "next", "next", "next"]
+[[], [100], [80], [60], [70], [60], [75], [85]]
+Output
+[null, 1, 1, 1, 2, 1, 4, 6]
+
+Explanation
+StockSpanner stockSpanner = new StockSpanner();
+stockSpanner.next(100); // return 1
+stockSpanner.next(80);  // return 1
+stockSpanner.next(60);  // return 1
+stockSpanner.next(70);  // return 2
+stockSpanner.next(60);  // return 1
+stockSpanner.next(75);  // return 4, because the last 4 prices (including today's price of 75) were less than or equal to today's price.
+stockSpanner.next(85);  // return 6
+"""
+
+
+# 100
+# 100, 80
+# 100, 80, 60
+# 100, 80, 70
+# 100, 80, 70, 60
+# 100, 80, 70, 60
+
+
+# O(n), O(n)
+# stack
+class StockSpanner:
+    def __init__(self):
+        self.prices = []  # (price, counter)
+
+    def next(self, price: int) -> int:
+        counter = 1  # counts the same or lower prices as the price
+        right = len(self.prices) - 1  # the top of the stack index
+
+        while (right >= 0 and  # while index in bounds and
+               price >= self.prices[-1][0]):  # price higher of equal to the price of the top of the stack
+            _, current_counter = self.prices.pop()  # pop that price and get counter
+            counter += current_counter  # increase the counter
+            right -= 1  # decrease index
+
+        self.prices.append((price, counter))  # add (price, counter)
+
+        return counter
+
+
+# Your StockSpanner object will be instantiated and called as such:
+# obj = StockSpanner()
+# param_1 = obj.next(price)
+
+
+# O(n2), O(n)
+# brute force
+class StockSpanner:
+    def __init__(self):
+        self.prices = []
+
+    def next(self, price: int) -> int:
+        self.prices.append(price)
+        counter = 0
+
+        for current_price in reversed(self.prices):
+            if price < current_price:
+                break
+
+            counter += 1
+
+        return counter
+
+
+# O(n2), O(n)
+# brute force
+class StockSpanner:
+    def __init__(self):
+        self.prices = []
+
+    def next(self, price: int) -> int:
+        self.prices.append(price)
+        counter = 0
+        right = len(self.prices) - 1
+
+        while (right >= 0 and
+               price >= self.prices[right]):
+            counter += 1
+            right -= 1
+
+        return counter
+
+
+
+
+
+# Valid Perfect Square
+# https://leetcode.com/problems/valid-perfect-square/description/
+"""
+Given a positive integer num, return true if num is a perfect square or false otherwise.
+
+A perfect square is an integer that is the square of an integer. In other words, it is the product of some integer with itself.
+
+You must not use any built-in library function, such as sqrt.
+
+Example 1:
+
+Input: num = 16
+Output: true
+Explanation: We return true because 4 * 4 = 16 and 4 is an integer.
+Example 2:
+
+Input: num = 14
+Output: false
+Explanation: We return false because 3.742 * 3.742 = 14 and 3.742 is not an integer.
+"""
+print(Solution().isPerfectSquare(16), True)
+print(Solution().isPerfectSquare(14), False)
+
+
+# O(logn), O(1)
+# binary search
+class Solution:
+    def isPerfectSquare(self, number: int) -> bool:
+        left = 0
+        right = number
+
+        while left <= right:
+            middle = (left + right) // 2
+            square = middle ** 2
+
+            if square == number:
+                return True
+            elif square > number:
+                right = middle - 1
+            else:
+                left = middle + 1
+
+        return False
+
+
+
+
+
+# Merge In Between Linked Lists
+# https://leetcode.com/problems/merge-in-between-linked-lists/description/
+"""
+You are given two linked lists: list1 and list2 of sizes n and m respectively.
+
+Remove list1's nodes from the ath node to the bth node, and put list2 in their place.
+
+The blue edges and nodes in the following figure indicate the result:
+
+Build the result list and return its head.
+
+Example 1:
+
+Input: list1 = [10,1,13,6,9,5], a = 3, b = 4, list2 = [1000000,1000001,1000002]
+Output: [10,1,13,1000000,1000001,1000002,5]
+Explanation: We remove the nodes 3 and 4 and put the entire list2 in their place. The blue edges and nodes in the above figure indicate the result.
+Example 2:
+
+
+Input: list1 = [0,1,2,3,4,5,6], a = 2, b = 5, list2 = [1000000,1000001,1000002,1000003,1000004]
+Output: [0,1,1000000,1000001,1000002,1000003,1000004,6]
+Explanation: The blue edges and nodes in the above figure indicate the result.
+"""
+
+
+# O(n), O(1)
+# linked list
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def mergeInBetween(self, head1: ListNode, a: int, b: int, head2: ListNode) -> ListNode:
+        node = ListNode(0, head1)
+        counter = 0
+
+        while counter - 1 != b: # 0!=5,
+            if counter == a: # 0==3,
+                start = node  # node before start # start = 6
+
+            counter += 1  # 1, 2, 3, 4
+            node = node.next  # 10, 1, 13, 6
+        
+        end = node  # node before end  # 9
+
+        start.next = head2  # inject head2 after start
+
+        while head2.next:  # find the end of the inserted list
+            head2 = head2.next  # node points to the element before None # 1000002
+
+        head2.next = end.next  # switch end in list2
+
+        return head1
+
+nodeA5 = ListNode(5)
+nodeA4 = ListNode(9, nodeA5)
+nodeA3 = ListNode(6, nodeA4)
+nodeA2 = ListNode(13, nodeA3)
+nodeA1 = ListNode(1, nodeA2)
+nodeA0 = ListNode(10, nodeA1)
+
+nodeB2 = ListNode(1000002)
+nodeB1 = ListNode(1000001, nodeB2)
+nodeB0 = ListNode(1000000, nodeB1)
+
+print(Solution().mergeInBetween(nodeA0, 3, 4, nodeB0))
+
+
+
+
+
+# Next Greater Element I
+# https://leetcode.com/problems/next-greater-element-i/description/
+"""
+The next greater element of some element x in an array is the first greater element that is to the right of x in the same array.
+
+You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2.
+
+For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater element of nums2[j] in nums2. If there is no next greater element, then the answer for this query is -1.
+
+Return an array ans of length nums1.length such that ans[i] is the next greater element as described above.
+ 
+
+Example 1:
+
+Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+Output: [-1,3,-1]
+Explanation: The next greater element for each value of nums1 is as follows:
+- 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+- 1 is underlined in nums2 = [1,3,4,2]. The next greater element is 3.
+- 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+Example 2:
+
+Input: nums1 = [2,4], nums2 = [1,2,3,4]
+Output: [3,-1]
+Explanation: The next greater element for each value of nums1 is as follows:
+- 2 is underlined in nums2 = [1,2,3,4]. The next greater element is 3.
+- 4 is underlined in nums2 = [1,2,3,4]. There is no next greater element, so the answer is -1.
+"""
+print(Solution().nextGreaterElement([4, 1, 2], [1, 3, 4, 2]), [-1, 3, -1])
+print(Solution().nextGreaterElement([2, 4], [1, 2, 3, 4]), [3, -1])
+print(Solution().nextGreaterElement([1, 3, 5, 2, 4], [6, 5, 4, 3, 2, 1, 7]), [7, 7, 7, 7, 7])
+
+
+# O(n), O(1)
+# stack
+class Solution:
+    def nextGreaterElement(self, numbers1: list[int], numbers2: list[int]) -> list[int]:
+        next_greater = [-1] * len(numbers1)
+        stack = []
+        numbers1_index = {number: index
+                          for index, number in enumerate(numbers1)}
+
+        for number in numbers2:
+            while stack and number > stack[-1]:
+                value = stack.pop()
+                index = numbers1_index[value]
+                next_greater[index] = number
+
+            if number in numbers1_index:
+                stack.append(number)
+
+        return next_greater
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def nextGreaterElement(self, numbers1: list[int], numbers2: list[int]) -> list[int]:
+        next_greater = [-1] * len(numbers1)
+
+        for index, number in enumerate(numbers1):
+            next_right = numbers2.index(number) + 1
+
+            for index_right in range(next_right, len(numbers2)):
+                if numbers2[index_right] > number:
+                    next_greater[index] = numbers2[index_right]
+                    break
+
+        return next_greater
+
+
+
+
+
+# Minimum Size Subarray Sum
+# https://leetcode.com/problems/minimum-size-subarray-sum/description/
+"""
+Given an array of positive integers nums and a positive integer target, return the minimal length of a 
+subarray
+ whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+
+Example 1:
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+Example 2:
+
+Input: target = 4, nums = [1,4,4]
+Output: 1
+Example 3:
+
+Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+Output: 0
+"""
+print(Solution().minSubArrayLen(7, [2, 3, 1, 2, 4, 3]), 2)
+print(Solution().minSubArrayLen(4, [1, 4, 4]), 1)
+print(Solution().minSubArrayLen(11, [1, 1, 1, 1, 1, 1, 1, 1]), 0)
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def minSubArrayLen(self, target: int, numbers: list[int]) -> int:
+        left = 0
+        window_sum = 0
+        window_size = len(numbers) + 1
+
+        for right, number in enumerate(numbers):
+            window_sum += number
+
+            while window_sum >= target:
+                window_size = min(window_size, right - left + 1)
+                window_sum -= numbers[left]
+                left += 1
+
+        return window_size if window_size != len(numbers) + 1 else 0
+
+
+
+
+
+# Backspace String Compare
+# https://leetcode.com/problems/backspace-string-compare/description/
+"""
+Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+
+Example 1:
+
+Input: s = "ab#c", t = "ad#c"
+Output: true
+Explanation: Both s and t become "ac".
+Example 2:
+
+Input: s = "ab##", t = "c#d#"
+Output: true
+Explanation: Both s and t become "".
+Example 3:
+
+Input: s = "a#c", t = "b"
+Output: false
+Explanation: s becomes "c" while t becomes "b".
+"""
+print(Solution().backspaceCompare("ab#c", "ad#c"), True)
+print(Solution().backspaceCompare("ab##", "c#d#"), True)
+print(Solution().backspaceCompare("a#c", "b"), False)
+print(Solution().backspaceCompare("xywrrmp", "xywrrmu#p"), True)
+print(Solution().backspaceCompare("nzp#o#g", "b#nzp#o#g"), True)
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    """
+    Find the first valid character left to `index`.
+    """
+    def next_valid_char(self, index, text):
+        joker = 0
+
+        while (index >= 0 and 
+               (text[index] == "#" or joker)):
+            joker += 1 if text[index] == "#" else -1            
+            index -= 1
+        
+        return index
+
+    def backspaceCompare(self, text1: str, text2: str) -> bool:
+        index1 = len(text1) - 1
+        index2 = len(text2) - 1
+        
+        while index1 >= 0 and index2 >= 0:
+            # find the next valid character from the end
+            index1 = self.next_valid_char(index1, text1)
+            index2 = self.next_valid_char(index2, text2)
+
+            # if characters doesn't match
+            if text1[index1] != text2[index2]:
+                return False
+
+            index1 -= 1
+            index2 -= 1
+            
+            # both texts folded to empty string
+            if index1 == 0 and index2 == 0:
+                return True
+
+        # when one index is -1 (string folded to empty string) and the other is not, the other may still fold to empty string
+        return (self.next_valid_char(index1, text1) == 
+                self.next_valid_char(index2, text2))
+
+
+# O(n), O(n)
+# stack
+class Solution:
+    def clean_text(self, text):
+        stack = []
+        
+        for letter in text:
+            if letter == "#":
+                stack and stack.pop()
+            else:
+                stack.append(letter)
+        
+        return "".join(stack)
+
+    def backspaceCompare(self, text1: str, text2: str) -> bool:
+        text1_clean = self.clean_text(text1)
+        text2_clean = self.clean_text(text2)
+
+        return text1_clean == text2_clean
+
+
+
+
+
+# Find Pivot Index
+# https://leetcode.com/problems/find-pivot-index/description/
+"""
+Given an array of integers nums, calculate the pivot index of this array.
+
+The pivot index is the index where the sum of all the numbers strictly to the left of the index is equal to the sum of all the numbers strictly to the index's right.
+
+If the index is on the left edge of the array, then the left sum is 0 because there are no elements to the left. This also applies to the right edge of the array.
+
+Return the leftmost pivot index. If no such index exists, return -1.
+
+ 
+
+Example 1:
+
+Input: nums = [1,7,3,6,5,6]
+Output: 3
+Explanation:
+The pivot index is 3.
+Left sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11
+Right sum = nums[4] + nums[5] = 5 + 6 = 11
+Example 2:
+
+Input: nums = [1,2,3]
+Output: -1
+Explanation:
+There is no index that satisfies the conditions in the problem statement.
+Example 3:
+
+Input: nums = [2,1,-1]
+Output: 0
+Explanation:
+The pivot index is 0.
+Left sum = 0 (no elements to the left of index 0)
+Right sum = nums[1] + nums[2] = 1 + -1 = 0
+"""
+print(Solution().pivotIndex([1, 7, 3, 6, 5, 6]), 3)
+print(Solution().pivotIndex([1, 2, 3]), -1)
+print(Solution().pivotIndex([2, 1, -1]), 0)
+
+
+# O(n), O(1)
+# prefix sum
+class Solution:
+    def pivotIndex(self, numbers: list[int]) -> int:
+        right_sum = sum(numbers)
+        left_sum = 0
+
+        for index, number in enumerate(numbers):
+            right_sum -= number
+            left_sum += numbers[index - 1] if index else 0
+
+            if left_sum == right_sum:
+                return index
+
+        return -1
+
+
+
+
+
+# Find K Closest Elements
+# https://leetcode.com/problems/find-k-closest-elements/description/
+"""
+Given a sorted integer array arr, two integers k and x, return the k closest integers to x in the array. The result should also be sorted in ascending order.
+
+An integer a is closer to x than an integer b if:
+
+|a - x| < |b - x|, or
+|a - x| == |b - x| and a < b
+ 
+
+Example 1:
+
+Input: arr = [1,2,3,4,5], k = 4, x = 3
+
+Output: [1,2,3,4]
+
+Example 2:
+
+Input: arr = [1,1,2,3,4,5], k = 4, x = -1
+
+Output: [1,1,2,3]
+"""
+print(Solution().findClosestElements([1, 1, 2, 3, 4, 5], 4, -1), [1, 1, 2, 3])
+print(Solution().findClosestElements([1, 2, 3, 4, 5], 4, 3), [1, 2, 3, 4])
+
+# [2, 1, 0, 1, 2]
+# [0, 0, 1, 2, 3, 4]
+
+
+# O(n), O(n)
+# brute force
+from collections import deque
+class Solution:
+    def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        numbers = deque(numbers)
+
+        while len(numbers) > k:
+            if x - numbers[0] > numbers[-1] - x:
+                numbers.popleft()
+            else:
+                numbers.pop()
+
+        return list(numbers)
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        left = 0
+        right = len(numbers) - 1
+
+        while right - left + 1 > k:
+            if x - numbers[0] > numbers[-1] - x:
+                left += 1
+            else:
+                right -= 1
+
+        return numbers[left: right + 1]
+
+
+# O(log(n-k)+k), O(1)
+# sliding window
+class Solution:
+    def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        left = 0
+        right = len(numbers) - k  # 2
+
+        while left < right:  # O(log(n-k))
+            middle = (left + right) // 2  # 1, 0
+            if numbers[middle + k] - x < x - numbers[middle]:  # 5--1=6<-1-1=-2; 4--1=5<-1-1=-2
+                left = middle + 1
+            else:
+                right = middle  # 1, 0
+
+        return numbers[left: left + k]  # O(k))
+
+
+
+
+class Solution:
+    def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        left = 0
+        right = len(numbers) - 1
+
+        while right - left + 1 != k:
+            if ((x - numbers[left]) < (numbers[right] - x) or
+                    (x - numbers[left]) == (numbers[right] - x) and
+                    numbers[left] < numbers[right]):
+                right -= 1
+            else:
+                left += 1
+
+        return numbers[left: right + 1]
+
+
+
+
+
+# Range Sum Query - Immutable
+# https://leetcode.com/problems/range-sum-query-immutable/description/
+"""
+Given an integer array nums, handle multiple queries of the following type:
+
+Calculate the sum of the elements of nums between indices left and right inclusive where left <= right.
+Implement the NumArray class:
+
+NumArray(int[] nums) Initializes the object with the integer array nums.
+int sumRange(int left, int right) Returns the sum of the elements of nums between indices left and right inclusive (i.e. nums[left] + nums[left + 1] + ... + nums[right]).
+ 
+
+Example 1:
+
+Input
+["NumArray", "sumRange", "sumRange", "sumRange"]
+[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]
+Output
+[null, 1, -1, -3]
+
+Explanation
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);
+numArray.sumRange(0, 2); // return (-2) + 0 + 3 = 1
+numArray.sumRange(2, 5); // return 3 + (-5) + 2 + (-1) = -1
+numArray.sumRange(0, 5); // return (-2) + 0 + 3 + (-5) + 2 + (-1) = -3
+"""
+
+
+# O(1), O(n)
+# prefix sum
+class NumArray:
+    def __init__(self, numbers: list[int]):
+        prefix = 0
+        self.numbers = []
+
+        for number in numbers:
+            prefix += number
+            self.prefixes.append(prefix)
+
+    def sumRange(self, left: int, right: int) -> int:
+        if not left:
+            return self.prefixes[right]
+        else:
+            return self.prefixes[right] - self.prefixes[left - 1]
+
+
+# O(n), O(1)
+class NumArray:
+    def __init__(self, numbers: list[int]):
+        self.numbers = numbers
+
+    def sumRange(self, left: int, right: int) -> int:
+        return sum(self.numbers[left: right + 1])
+
+# Your NumArray object will be instantiated and called as such:
+# obj = NumArray(numbers)
+# param_1 = obj.sumRange(left,right)
+
+
+
 
 
 
