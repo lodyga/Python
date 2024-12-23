@@ -6054,16 +6054,11 @@ Example 3:
 Input: p = [1,2,1], q = [1,1,2]
 Output: false
 """
-(Solution().isSameTree(build_tree_from_list([1, 2, 3], TreeNode), 
-                       build_tree_from_list([1, 2, 3], TreeNode)), True)
-(Solution().isSameTree(build_tree_from_list([1, 2], TreeNode), 
-                       build_tree_from_list([1, None, 2], TreeNode)), False)
-(Solution().isSameTree(build_tree_from_list([1, 2, 1], TreeNode), 
-                       build_tree_from_list([1, 1, 2], TreeNode)), False)
-(Solution().isSameTree(build_tree_from_list([10, 5, 15], TreeNode), 
-                       build_tree_from_list([10, 5, None, None, 15], TreeNode)), False)
-(Solution().isSameTree(build_tree_from_list([1, None, 2, 3], TreeNode), 
-                       build_tree_from_list([1, None, 2, None, 3], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([1, 2, 3], TreeNode), build_tree_from_list([1, 2, 3], TreeNode)), True)
+(Solution().isSameTree(build_tree_from_list([1, 2], TreeNode), build_tree_from_list([1, None, 2], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([1, 2, 1], TreeNode), build_tree_from_list([1, 1, 2], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([10, 5, 15], TreeNode), build_tree_from_list([10, 5, None, None, 15], TreeNode)), False)
+(Solution().isSameTree(build_tree_from_list([1, None, 2, 3], TreeNode), build_tree_from_list([1, None, 2, None, 3], TreeNode)), False)
 
 
 from binarytree import Node
@@ -6121,16 +6116,16 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 class Solution:
     def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
         def dfs(node1, node2):
-            if not node1 and not node2:
+            if not node1 and not node2:  # if both nodes are None
                 return True
-            elif not node1 or not node2:
+            elif not node1 or not node2:  # if one node is None and the other is not None
                 return False
-            elif node1.val != node2.val:
+            elif node1.val != node2.val:  # if both node values are not equal
                 return False
 
             return (
-                dfs(node1.left, node2.left) and
-                dfs(node1.right, node2.right))
+                dfs(node1.left, node2.left) and  # left subtree is the same and
+                dfs(node1.right, node2.right))  # right subtree is the same
 
         return dfs(p, q)
 
@@ -6139,16 +6134,16 @@ class Solution:
 # dfs, recursion
 class Solution:
     def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
-        if not p and not q:
+        if not p and not q:  # if both nodes are None
             return True
-        elif not p or not q:
+        elif not p or not q:  # if one node is None and the other is not None
             return False
-        elif p.val != q.val:
+        elif p.val != q.val:  # if both node values are not equal
             return False
 
         return (
-            self.isSameTree(p.left, q.left) and
-            self.isSameTree(p.right, q.right))
+            self.isSameTree(p.left, q.left) and  # left subtree is the same and
+            self.isSameTree(p.right, q.right))  # right subtree is the same
 
 
 # O(n), O(n)
@@ -6245,14 +6240,10 @@ subRoot = [4,1,2]
 
 Output: false
 """
-(Solution().isSameTree(build_tree_from_list([4, 1, 2]),
-                       (build_tree_from_list([4, 1, 2]))), True)
-(Solution().isSameTree(build_tree_from_list([3, 4, 5, 1, 2]),
-                       build_tree_from_list([4, 1, 2])), False)
-(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2]),
-                      build_tree_from_list([4, 1, 2])), True)
-(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2, None, None, None, None, 0]),
-                      build_tree_from_list([4, 1, 2])), False)
+(Solution().isSameTree(build_tree_from_list([4, 1, 2]), (build_tree_from_list([4, 1, 2]))), True)
+(Solution().isSameTree(build_tree_from_list([3, 4, 5, 1, 2]), build_tree_from_list([4, 1, 2])), False)
+(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2]), build_tree_from_list([4, 1, 2])), True)
+(Solution().isSubtree(build_tree_from_list([3, 4, 5, 1, 2, None, None, None, None, 0]), build_tree_from_list([4, 1, 2])), False)
 
 
 from binarytree import Node
@@ -6306,6 +6297,19 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 # dfs, recursive
 # O(n2), O(n)
 class Solution:
+    def isSameTree(self, p: TreeNode | None, q: TreeNode | None) -> bool:
+        if not p and not q:  # if both nodes are None
+            return True
+        elif not p or not q:  # if one node is None and the other is not None
+            return False
+        elif p.val != q.val:  # if both node values are not equal
+            return False
+
+        return (
+            self.isSameTree(p.left, q.left) and  # left subtree is the same and
+            self.isSameTree(p.right, q.right))  # right subtree is the same    
+    
+    
     def isSubtree(self, root: TreeNode | None, subRoot: TreeNode | None) -> bool:
         if not subRoot:  # if no subRoot then always True
             return True
@@ -6313,22 +6317,10 @@ class Solution:
             return False
         elif self.isSameTree(root, subRoot):  # if tres are equal
             return True
-        else:            
-            return (
-                self.isSubtree(root.left, subRoot) or  # check if subtree if in left tree branch
-                self.isSubtree(root.right, subRoot))  # check if subtree if in right tree branch
-
-
-    def isSameTree(self, root: TreeNode | None, subRoot: TreeNode | None) -> bool:
-        if not root and not subRoot:  # if both nodes are None
-            return True
-
-        if (root and subRoot and  # if both nodes exist
-            root.val == subRoot.val):  #  and have equal values
-            return (self.isSameTree(root.left, subRoot.left) and  # left subtree is the same
-                    self.isSameTree(root.right, subRoot.right))  # right subtree is the same
-        # else:  # None is treated like False
-        #     return False
+        
+        return (
+            self.isSubtree(root.left, subRoot) or  # check if subtree if in left tree branch
+            self.isSubtree(root.right, subRoot))  # check if subtree if in right tree branch
 
 
 
@@ -10718,14 +10710,14 @@ print(Solution().removeDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]), 5)
 # two pointers
 class Solution:
     def removeDuplicates(self, numbers: list[int]) -> int:
-        left = 1
-
+        left = 0
+        
         for number in numbers[1:]:
-            if number > numbers[left - 1]:
-                numbers[left] = number
+            if number > numbers[left]:
                 left += 1
-                
-        return left
+                numbers[left] = number
+
+        return left + 1
 
 
 
@@ -12519,5 +12511,898 @@ class NumArray:
 
 
 
+# Check If Two String Arrays are Equivalent
+# https://leetcode.com/problems/check-if-two-string-arrays-are-equivalent/description/
+"""
+Given two string arrays word1 and word2, return true if the two arrays represent the same string, and false otherwise.
+
+A string is represented by an array if the array elements concatenated in order forms the string.
+
+ 
+
+Example 1:
+
+Input: word1 = ["ab", "c"], word2 = ["a", "bc"]
+Output: true
+Explanation:
+word1 represents string "ab" + "c" -> "abc"
+word2 represents string "a" + "bc" -> "abc"
+The strings are the same, so return true.
+Example 2:
+
+Input: word1 = ["a", "cb"], word2 = ["ab", "c"]
+Output: false
+Example 3:
+
+Input: word1  = ["abc", "d", "defg"], word2 = ["abcddefg"]
+Output: true
+"""
+print(Solution().arrayStringsAreEqual(["ab", "c"], ["a", "bc"]), True)
+print(Solution().arrayStringsAreEqual(["a", "cb"], ["ab", "c"]), False)
+print(Solution().arrayStringsAreEqual(["abc", "d", "defg"], ["abcddefg"]), True)
+print(Solution().arrayStringsAreEqual(["abc", "d", "defg"], ["abcddef"]), False)
+
+
+# O(n), O(n)
+# build-in function
+class Solution:
+    def arrayStringsAreEqual(self, words1: list[str], words2: list[str]) -> bool:
+        return "".join(words1) == "".join(words2)
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def arrayStringsAreEqual(self, words1: list[str], words2: list[str]) -> bool:
+        index_word1 = 0  # index for a word
+        index_word2 = 0
+        index_letter1 = 0  # index for a letter in the word
+        index_letter2 = 0
+
+        while (index_word1 < len(words1) and 
+               index_word2 < len(words2)):
+            if words1[index_word1][index_letter1] != words2[index_word2][index_letter2]:
+                return False
+
+            index_letter1 += 1  # get next letter index
+            index_letter2 += 1
+
+            # if end of the word reached
+            if index_letter1 == len(words1[index_word1]):
+                index_letter1 = 0  # zero the letter index
+                index_word1 += 1  # get next word index
+
+            if index_letter2 == len(words2[index_word2]):
+                index_letter2 = 0
+                index_word2 += 1
+
+        # both index_word have to get out of bounds to strings to be equal
+        return (index_word1 == len(words1) and
+                index_word2 == len(words2))
+
+
+
+
+
+
+# Minimum Operations to Reduce X to Zero
+# https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero/description/
+"""
+You are given an integer array nums and an integer x. In one operation, you can either remove the leftmost or the rightmost element from the array nums and subtract its value from x. Note that this modifies the array for future operations.
+
+Return the minimum number of operations to reduce x to exactly 0 if it is possible, otherwise, return -1.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,4,2,3], x = 5
+Output: 2
+Explanation: The optimal solution is to remove the last two elements to reduce x to zero.
+Example 2:
+
+Input: nums = [5,6,7,8,9], x = 4
+Output: -1
+Example 3:
+
+Input: nums = [3,2,20,1,1,3], x = 10
+Output: 5
+Explanation: The optimal solution is to remove the last three elements and the first two elements (5 operations in total) to reduce x to zero.
+"""
+print(Solution().minOperations([1, 1, 4, 2, 3], 5), 2)
+print(Solution().minOperations([5, 6, 7, 8, 9], 4), -1)
+print(Solution().minOperations([3, 2, 20, 1, 1, 3], 10), 5)
+print(Solution().minOperations([5, 2, 3, 1, 1], 5), 1)
+print(Solution().minOperations([8828, 9581, 49, 9818, 9974, 9869, 9991, 10000, 10000, 10000, 9999, 9993, 9904, 8819, 1231, 6309], 134365), 16)
+print(Solution().minOperations([1, 1], 3), -1)
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def minOperations(self, numbers: list[int], x: int) -> int:
+        left = 0
+        window_sum = 0
+        window_min_length = len(numbers) + 1
+        target = sum(numbers) - x
+
+        for right, number in enumerate(numbers):
+            window_sum += number
+
+            while (left <= right and  # target might be less than zero and left gets out of bounds
+                   window_sum > target):
+                window_sum -= numbers[left]
+                left += 1
+
+            if window_sum == target:
+                window_min_length = min(window_min_length, len(numbers) - (right - left + 1))
+
+        return window_min_length if window_min_length != len(numbers) + 1 else - 1
+
+
+
+# Simplify Path
+# https://leetcode.com/problems/simplify-path/description/
+"""
+You are given an absolute path for a Unix-style file system, which always begins with a slash '/'. Your task is to transform this absolute path into its simplified canonical path.
+
+The rules of a Unix-style file system are as follows:
+
+A single period '.' represents the current directory.
+A double period '..' represents the previous/parent directory.
+Multiple consecutive slashes such as '//' and '///' are treated as a single slash '/'.
+Any sequence of periods that does not match the rules above should be treated as a valid directory or file name. For example, '...' and '....' are valid directory or file names.
+The simplified canonical path should follow these rules:
+
+The path must start with a single slash '/'.
+Directories within the path must be separated by exactly one slash '/'.
+The path must not end with a slash '/', unless it is the root directory.
+The path must not have any single or double periods ('.' and '..') used to denote current or parent directories.
+Return the simplified canonical path.
+
+ 
+
+Example 1:
+
+Input: path = "/home/"
+
+Output: "/home"
+
+Explanation:
+
+The trailing slash should be removed.
+
+Example 2:
+
+Input: path = "/home//foo/"
+
+Output: "/home/foo"
+
+Explanation:
+
+Multiple consecutive slashes are replaced by a single one.
+
+Example 3:
+
+Input: path = "/home/user/Documents/../Pictures"
+
+Output: "/home/user/Pictures"
+
+Explanation:
+
+A double period ".." refers to the directory up a level (the parent directory).
+
+Example 4:
+
+Input: path = "/../"
+
+Output: "/"
+
+Explanation:
+
+Going one level up from the root directory is not possible.
+
+Example 5:
+
+Input: path = "/.../a/../b/c/../d/./"
+
+Output: "/.../b/d"
+
+Explanation:
+
+"..." is a valid name for a directory in this problem.
+"""
+print(Solution().simplifyPath("/home/"), "/home")
+print(Solution().simplifyPath("/home//foo/"), "/home/foo")
+print(Solution().simplifyPath("/home/user/Documents/../Pictures"), "/home/user/Pictures")
+print(Solution().simplifyPath("/../"), "/")
+print(Solution().simplifyPath("/.../a/../b/c/../d/./"), "/.../b/d")
+print(Solution().simplifyPath("/a/../../b/../c//.//"), "/c")
+print(Solution().simplifyPath("/."), "/")
+print(Solution().simplifyPath("/..hidden"), "/..hidden")
+
+
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        stack = []
+        cache = ""
+
+        for char in (path + "/"):
+            if char == "/":
+                if cache == "..":
+                    if stack:
+                        stack.pop()
+                elif cache and cache != ".":
+                    stack.append(cache)
+                    
+                cache = ""
+            else:
+                cache += char
+            
+        return "/" + "/".join(stack)
+            
+
+
+
+
+# Sqrt(x)
+# https://leetcode.com/problems/sqrtx/description/
+"""
+Given a non-negative integer x, return the square root of x rounded down to the nearest integer. The returned integer should be non-negative as well.
+
+You must not use any built-in exponent function or operator.
+
+For example, do not use pow(x, 0.5) in c++ or x ** 0.5 in python.
+ 
+
+Example 1:
+
+Input: x = 4
+Output: 2
+Explanation: The square root of 4 is 2, so we return 2.
+Example 2:
+
+Input: x = 8
+Output: 2
+Explanation: The square root of 8 is 2.82842..., and since we round it down to the nearest integer, 2 is returned.
+"""
+print(Solution().mySqrt(4), 2)
+print(Solution().mySqrt(8), 2)
+
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        left = 1
+        right = x
+
+        while left <= right:
+            middle = (left + right) // 2
+
+            if middle ** 2 == x:
+                return middle
+            elif middle ** 2 > x:
+                right = middle - 1
+            else:
+                left = middle + 1
+
+        return right
+
+
+
+
+# Find All Numbers Disappeared in an Array
+# https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/description/
+"""
+Given an array nums of n integers where nums[i] is in the range [1, n], return an array of all the integers in the range [1, n] that do not appear in nums.
+
+Example 1:
+
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [5,6]
+Example 2:
+
+Input: nums = [1,1]
+Output: [2]
+"""
+print(Solution().findDisappearedNumbers([4, 3, 2, 7, 8, 2, 3, 1]), [5, 6])
+print(Solution().findDisappearedNumbers([1, 1]), [2])
+
+
+# O(n), O(n)
+# dict
+class Solution:
+    def findDisappearedNumbers(self, numbers: list[int]) -> list[int]:
+        number_set = set(range(1, len(numbers) + 1))
+
+        for num in set(numbers):
+            if num in number_set:
+                number_set.discard(num)
+
+        return list(number_set)
+
+
+# O(n), O(1) # You may assume the returned list does not count as extra space.
+# mutate input array
+class Solution:
+    def findDisappearedNumbers(self, numbers: list[int]) -> list[int]:
+        for number in numbers:
+            numbers[abs(number) - 1] = -abs(numbers[abs(number) - 1])
+
+        return [index for
+                index, number in enumerate(numbers, 1)
+                if number > 0]
+
+
+
+
+
+# Binary Tree Inorder Traversal
+# https://leetcode.com/problems/binary-tree-inorder-traversal/description/
+"""
+Given the root of a binary tree, return the inorder traversal of its nodes' values.
+
+Example 1:
+
+Input: root = [1,null,2,3]
+
+Output: [1,3,2]
+
+Explanation:
+1__
+   \
+    2
+   /
+  3
+
+
+Example 2:
+
+Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
+
+Output: [4,2,6,5,7,1,3,9,8]
+
+Explanation:
+    ______1
+   /       \
+  2__       3__
+ /   \         \
+4     5         8
+     / \       /
+    6   7     9
+
+
+Example 3:
+
+Input: root = []
+
+Output: []
+
+Example 4:
+
+Input: root = [1]
+
+Output: [1]
+"""
+print(Solution().inorderTraversal(build_tree_from_list([1,None,2,3], Node)), [1, 3, 2])
+print(Solution().inorderTraversal(build_tree_from_list([1,2,3,4,5,None,8,None,None,6,7,9])), [4,2,6,5,7,1,3,9,8])
+print(Solution().inorderTraversal(build_tree_from_list([], Node)), [])
+print(Solution().inorderTraversal(build_tree_from_list([1], Node)), [1])
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# O(n), O(n)
+# dfs, recursion
+class Solution:
+    def inorderTraversal(self, root: TreeNode | None) -> list[int]:
+        node_list = []
+
+        def dfs(node):
+            if not node:
+                return
+
+            dfs(node.left)  # traverse left
+            node_list.append(node.val)
+            dfs(node.right)  # traverse right
+            
+        dfs(root)
+
+        return node_list
+    
+
+# O(n), O(n)
+# dfs, iterative, stack
+class Solution:
+    def inorderTraversal(self, root: TreeNode | None) -> list[int]:
+        node_list = []
+        stack = []
+        node = root
+
+        while node or stack:
+            while node:
+                stack.append(node)
+                node = node.left
+            
+            node = stack.pop()
+            node_list.append(node.val)
+            node = node.right
+
+        return node_list
+
+
+
+
+
+# Maximum Number of Balloons
+# https://leetcode.com/problems/maximum-number-of-balloons/
+"""
+Given a string text, you want to use the characters of text to form as many instances of the word "balloon" as possible.
+
+You can use each character in text at most once. Return the maximum number of instances that can be formed.
+
+Example 1:
+
+Input: text = "nlaebolko"
+Output: 1
+Example 2:
+
+Input: text = "loonbalxballpoon"
+Output: 2
+Example 3:
+
+Input: text = "leetcode"
+Output: 0
+"""
+print(Solution().maxNumberOfBalloons("nlaebolko"), 1)
+print(Solution().maxNumberOfBalloons("loonbalxballpoon"), 2)
+print(Solution().maxNumberOfBalloons("leetcode"), 0)
+print(Solution().maxNumberOfBalloons("balon"), 0)
+
+
+class Solution:
+    def maxNumberOfBalloons(self, text: str) -> int:
+        balloon = {"b": 1, "a": 1, "l": 2, "o": 2, "n": 1}
+        text_map = {}
+        max_balloons = len(text)
+
+        for letter in text:
+            text_map[letter] = text_map.get(letter, 0) + 1
+        
+        for letter in balloon:
+            if letter not in text_map:
+                return 0
+
+            max_balloons = min(max_balloons, text_map[letter] // balloon[letter])
+
+        return max_balloons
+
+
+
+
+# Binary Tree Preorder Traversal
+# https://leetcode.com/problems/binary-tree-preorder-traversal/description/
+"""
+Given the root of a binary tree, return the preorder traversal of its nodes' values.
+
+ 
+
+Example 1:
+
+Input: root = [1,null,2,3]
+
+Output: [1,2,3]
+
+Explanation:
+1__
+   \
+    2
+   /
+  3
+
+
+Example 2:
+
+Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
+
+Output: [1,2,4,5,6,7,3,8,9]
+
+Explanation:
+    ______1
+   /       \
+  2__       3__
+ /   \         \
+4     5         8
+     / \       /
+    6   7     9
+
+
+Example 3:
+
+Input: root = []
+
+Output: []
+
+Example 4:
+
+Input: root = [1]
+
+Output: [1]
+"""
+print(Solution().preorderTraversal(build_tree_from_list([1, 2, 3, 4, 5, None, 8, None, None, 6, 7, 9], TreeNode)), [1, 2, 4, 5, 6, 7, 3, 8, 9])
+print(Solution().preorderTraversal(build_tree_from_list([1, None, 2, 3], TreeNode)), [1, 2, 3])
+print(Solution().preorderTraversal(build_tree_from_list([], TreeNode)), [])
+print(Solution().preorderTraversal(build_tree_from_list([1], TreeNode)), [1])
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# 
+# O(n), O(n)
+# dfs, recursion
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> list[int]:
+        node_list = []  # initialize the preorder traversal value list
+
+        def dfs(node):
+            if not node:  # if node is None return
+                return
+
+            node_list.append(node.val)  # add its value to node list
+            dfs(node.left)  # traverse left
+            dfs(node.right)  # traverse right
+
+        dfs(root)
+
+        return node_list
+    
+
+# O(n), O(n)
+# dfs, iteration, stack
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> list[int]:
+        if not root:
+            return []
+
+        node_list = []  # initialize the preorder traversal value list
+        stack = [root]  # Initialize the stack with the root node
+
+        while stack:
+            for _ in stack:
+                node = stack.pop()  # Pop the current node
+                node_list.append(node.val)  # add its value to node list
+
+                if node.right:  # Add left child to the stack if it exists
+                    stack.append(node.right)
+                if node.left:  # Add right child to the stack if it exists
+                    stack.append(node.left)
+
+        return node_list
+
+
+# O(n), O(n)
+# dfs, iteration, stack
+class Solution:
+    def preorderTraversal(self, root: TreeNode) -> list[int]:
+        node_list = []  # initialize the preorder traversal value list
+        stack = []  # Initialize an empty stack
+        node = root  # Start traversal from the root node
+
+        while stack or node:
+            if node:
+                node_list.append(node.val)  # Add current node's value to the result
+                stack.append(node.right)  # Add right child to the stack even if it's null
+                node = node.left  # Pop the current node
+            else:
+                node = stack.pop()  # Backtrack to the last right child
+
+        return node_list
+
+
+
+
+
+# Binary Tree Postorder Traversal
+# https://leetcode.com/problems/binary-tree-postorder-traversal/description/
+"""
+Given the root of a binary tree, return the postorder traversal of its nodes' values.
+
+ 
+
+Example 1:
+
+Input: root = [1,null,2,3]
+
+Output: [3,2,1]
+
+Explanation:
+1__
+   \
+    2
+   /
+  3
+
+
+Example 2:
+
+Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
+
+Output: [4,6,7,5,2,9,8,3,1]
+
+Explanation:
+    ______1
+   /       \
+  2__       3__
+ /   \         \
+4     5         8
+     / \       /
+    6   7     9
+
+
+Example 3:
+
+Input: root = []
+
+Output: []
+
+Example 4:
+
+Input: root = [1]
+
+Output: [1]
+"""
+print(Solution().postorderTraversal(build_tree_from_list([1, 2, 3, 4, 5, None, 8, None, None, 6, 7, 9], TreeNode)), [4, 6, 7, 5, 2, 9, 8, 3, 1])
+print(Solution().postorderTraversal(build_tree_from_list([1, None, 2, 3], TreeNode)), [3, 2, 1])
+print(Solution().postorderTraversal(build_tree_from_list([], TreeNode)), [])
+print(Solution().postorderTraversal(build_tree_from_list([1], TreeNode)), [1])
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# O(n), O(n)
+# dfs, recursion
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> list[int]:
+        node_list = []  # initialize the preorder traversal value list
+
+        def dfs(node):
+            if not node:  # if node is None return
+                return
+
+            dfs(node.left)  # traverse left
+            dfs(node.right)  # traverse right
+            node_list.append(node.val)  # add its value to node list
+
+        dfs(root)
+
+        return node_list
+
+
+# O(n), O(n)
+# dfs, iteration, stack
+class Solution:
+    def postorderTraversal(self, root: TreeNode) -> list[int]:
+        node_list = []  # initialize the preorder traversal value list
+        stack = [root]  # Initialize the stack with the root node
+        visited = [False]
+
+        while stack:
+            node = stack.pop()  # Pop the current node
+            visit = visited.pop()
+
+            if node:
+                if visit:
+                    node_list.append(node.val)  # add its value to node list
+                else:
+                    stack.append(node)  # Add node to the stack
+                    visited.append(True)
+                    stack.append(node.right)  # Add left child to the stack
+                    visited.append(False)
+                    stack.append(node.left)  # Add right child to the stack
+                    visited.append(False)
+
+        return node_list
+
+
+
+
+
+# Word Pattern
+# https://leetcode.com/problems/word-pattern/description/
+"""
+Given a pattern and a string s, find if s follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in s. Specifically:
+
+Each letter in pattern maps to exactly one unique word in s.
+Each unique word in s maps to exactly one letter in pattern.
+No two letters map to the same word, and no two words map to the same letter.
+ 
+
+Example 1:
+
+Input: pattern = "abba", s = "dog cat cat dog"
+
+Output: true
+
+Explanation:
+
+The bijection can be established as:
+
+'a' maps to "dog".
+'b' maps to "cat".
+Example 2:
+
+Input: pattern = "abba", s = "dog cat cat fish"
+
+Output: false
+
+Example 3:
+
+Input: pattern = "aaaa", s = "dog cat cat dog"
+
+Output: false
+"""
+print(Solution().wordPattern("abba", "dog cat cat dog"), True)
+print(Solution().wordPattern("abba", "dog cat cat fish"), False)
+print(Solution().wordPattern("aaaa", "dog cat cat dog"), False)
+
+# O(n), O(n)
+# dictionary, set
+class Solution:
+    def wordPattern(self, pattern: str, text: str) -> bool:
+        text_list = text.split()  # split text into words
+        text_set = set()  # unique word set
+        pattern_text = {}  # letter to word map
+        
+        if len(pattern) != len(text_list):  # if text list length and pattern length are not the same
+            return False
+
+        for index, letter in enumerate(pattern):
+            if letter in pattern_text:
+                if pattern_text[letter] != text_list[index]:  # if letter is already mapped to another word
+                    return False
+            else:
+                word = text_list[index]  # current word
+                
+                if word in text_set:  # if another letter is mapped to current word
+                    return False
+                
+                pattern_text[letter] = word  # update `letter to word` map
+                text_set.add(word)  # add word to unique set
+        
+        return True
+
+
+
+
+
+# Remove Duplicates from Sorted Array II
+# https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/description/
+"""
+Given an integer array nums sorted in non-decreasing order, remove some duplicates in-place such that each unique element appears at most twice. The relative order of the elements should be kept the same.
+
+Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. It does not matter what you leave beyond the first k elements.
+
+Return k after placing the final result in the first k slots of nums.
+
+Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3]
+Output: 5, nums = [1,1,2,2,3,_]
+Explanation: Your function should return k = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+Example 2:
+
+Input: nums = [0,0,1,1,1,1,2,3,3]
+Output: 7, nums = [0,0,1,1,2,3,3,_,_]
+Explanation: Your function should return k = 7, with the first seven elements of nums being 0, 0, 1, 1, 2, 3 and 3 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+"""
+print(Solution().removeDuplicates([1, 1, 1, 2, 2, 3]), 5)
+print(Solution().removeDuplicates([0, 0, 1, 1, 1, 1, 2, 3, 3]), 7)
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def removeDuplicates(self, numbers: list[int]) -> int:
+        left = 0
+
+        for right, number in enumerate(numbers):
+            if (right < 2 or  # the first two numbers or
+                    number > numbers[left - 2]):  # number is greater than the first of the two last values
+                numbers[left] = number  # move the number to the left pointer position
+                left += 1
+
+        return left
+
+
+# O(n), O(1)
+# two pointers
+class Solution:
+    def removeDuplicates(self, numbers: list[int]) -> int:
+        left = 0
+        twice = False
+
+        for number in numbers[1:]:
+            if number == numbers[left] and not twice:
+                left += 1
+                numbers[left] = number
+                twice = True
+            elif number > numbers[left]:
+                left += 1
+                numbers[left] = number
+                twice = False
+
+        return left + 1
+
+
+
+
+
+# Get Equal Substrings Within Budget
+# https://leetcode.com/problems/get-equal-substrings-within-budget/description/
+"""
+You are given two strings s and t of the same length and an integer maxCost.
+
+You want to change s to t. Changing the ith character of s to ith character of t costs |s[i] - t[i]| (i.e., the absolute difference between the ASCII values of the characters).
+
+Return the maximum length of a substring of s that can be changed to be the same as the corresponding substring of t with a cost less than or equal to maxCost. If there is no substring from s that can be changed to its corresponding substring from t, return 0.
+
+ 
+
+Example 1:
+
+Input: s = "abcd", t = "bcdf", maxCost = 3
+Output: 3
+Explanation: "abc" of s can change to "bcd".
+That costs 3, so the maximum length is 3.
+Example 2:
+
+Input: s = "abcd", t = "cdef", maxCost = 3
+Output: 1
+Explanation: Each character in s costs 2 to change to character in t,  so the maximum length is 1.
+Example 3:
+
+Input: s = "abcd", t = "acde", maxCost = 0
+Output: 1
+Explanation: You cannot make any change, so the maximum length is 1.
+"""
+print(Solution().equalSubstring("abcd", "bcdf", 3), 3)
+print(Solution().equalSubstring("abcd", "cdef", 3), 1)
+print(Solution().equalSubstring("abcd", "acde", 0), 1)
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def equalSubstring(self, text1: str, text2: str, max_cost: int) -> int:
+        left = 0
+        window_length = 0
+
+        for right, (letter1, letter2) in enumerate(zip(text1, text2)):
+            max_cost -= abs(ord(letter1) - ord(letter2))
+
+            while max_cost < 0:
+                max_cost += abs(ord(text1[left]) - ord(text2[left]))
+                left += 1
+
+            window_length = max(window_length, right - left + 1)
+
+        return window_length
 
 
