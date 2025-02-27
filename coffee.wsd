@@ -1,0 +1,35 @@
+@startuml name
+interface Coffee {
+    + cost() : int
+    + description() : str
+}
+
+class SimpleCoffee {
+    + cost() : int
+    + description() : str
+}
+
+abstract class CoffeeDecorator {
+    - coffee: Coffee
+    + cost() : int
+    + description() : str
+}
+
+class MilkDecorator {
+    - milk_cost : int = 2
+    + cost() : int
+    + description() : str
+}
+
+class SugarDecorator {
+    - sugar_cost : int = 1
+    + cost() : int
+    + description() : str
+}
+
+Coffee <|-- SimpleCoffee
+Coffee <|-- CoffeeDecorator
+CoffeeDecorator <|-- MilkDecorator
+CoffeeDecorator <|-- SugarDecorator
+CoffeeDecorator o-- Coffee : "has a"
+@enduml
