@@ -487,7 +487,7 @@ s.add(1)
 s.pop()  # removes and shows first element from set
 s.remove(5)  # removes chosen value with error if missing
 s.discard(5)  # removes chosen value without an error if missing
-
+s.update({4})  # update a set with another set
 
 A = {0, 1, 2, 3, 4}
 B = {0, 2, 4, 6, 8}
@@ -1455,7 +1455,7 @@ def filter4(arg):
 
 list(filter4(sequence))
 filtered_seq = filter4(sequence)
-next(filtered_seq)
+next(filtered_seq, None)
 
 
 def hello_gen():
@@ -3645,31 +3645,53 @@ print(rectangle1.width)
 
 
 
-# decorator, wrapper
-def icing(func):
-    def wrap(*args, **kwargs):
-        return (
-            "Sprinkles added\n" +
-            func(*args, **kwargs)
-        )
-    return wrap
 
 
-def fudge(func):
-    def wrap(*args, **kwargs):
-        return (
-            "Fudge added \n" +
-            func(*args, **kwargs)
-        )
-
-    return wrap
 
 
-@icing
-@fudge
-def get_ice_cream(flavor="Normal"):
-    return flavor + " ice"
 
 
-print(get_ice_cream("Vanilla"))
-print(get_ice_cream())
+
+
+
+
+
+
+
+# difference between property and attribute
+# An attribute is a variable that belongs to an object.
+# A property is a special type of attribute that allows controlled access (getters, setters, and deleters).
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name  # Attribute
+        self.age = age  # Attribute
+
+person = Person("Alice", 25)
+print(person.name)  # Output: Alice
+print(person.age)   # Output: 25
+print(person.__dict__)
+print(person.__dict__["name"])
+
+
+
+class ListWithLength():
+    def __init__(self, elements):
+        self.elements = elements
+
+    @property
+    def length(self):
+        return len(self.elements)
+
+    @property    
+    def print_p(self):
+        return self.elements
+    
+    def print(self):
+        print(self.elements)
+
+list_1 = ListWithLength([3, 4, 5])
+print(list_1.print_p)  # [3, 4, 5]
+list_1.print()  # [3, 4, 5]
+print(list_1.length)  # 3
+

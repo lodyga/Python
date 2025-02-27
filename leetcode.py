@@ -512,3 +512,279 @@ class Solution:
 
 
 
+# Design Compressed String Iterator
+# https://leetcode.com/problems/design-compressed-string-iterator
+"""
+Design and implement a data structure for a compressed string iterator. It should support the following operations: next and hasNext.
+
+The given compressed string will be in the form of each letter followed by a positive integer representing the number of this letter existing in the original uncompressed string.
+
+next() - if the original string still has uncompressed characters, return the next letter; Otherwise return a white space.
+hasNext() - Judge whether there is any letter needs to be uncompressed.
+
+Note:
+Please remember to RESET your class variables declared in StringIterator, as static/class variables are persisted across multiple test cases. Please see here for more details.
+
+Example:
+
+StringIterator iterator = new StringIterator("L1e2t1C1o1d1e1");
+
+iterator.next(); // return 'L'
+iterator.next(); // return 'e'
+iterator.next(); // return 'e'
+iterator.next(); // return 't'
+iterator.next(); // return 'C'
+iterator.next(); // return 'o'
+iterator.next(); // return 'd'
+iterator.hasNext(); // return true
+iterator.next(); // return 'e'
+iterator.hasNext(); // return false
+iterator.next(); // return ' '
+"""
+
+
+# O(1), O(1)
+# Design, Array, String, Iterator
+# generator
+class StringIterator:
+    def __init__(self, compressed_string: str):
+        self.generator = self._generate(compressed_string)
+        self.letter = next(self.generator, " ")  # Preload the first letter
+
+    def _generate(self, compressed_string):
+        index = 0
+        
+        while index < len(compressed_string):
+            letter = compressed_string[index]
+            index += 1
+            frequency = 0
+            
+            # Parse the number representing the letter frequency
+            while (index < len(compressed_string) and 
+                   compressed_string[index].isdigit()):
+                frequency = 10 * frequency + int(compressed_string[index])
+                index += 1
+            
+            # Yield the letter `frequency` times
+            for _ in range(frequency):
+                yield letter
+        
+    def next(self) -> str:
+        current_letter = self.letter
+        self.letter = next(self.generator, " ")
+        return current_letter
+
+    def hasNext(self) -> bool:
+        return self.letter != " "
+
+
+# O(n): constructor; O(1): next, hasNext; aux space O(n)
+# Design, Array, String, Iterator
+# compressed string coppied to self.text in constructor
+class StringIterator:
+    def __init__(self, text: str):
+        self.text = text
+        self.index = 0
+        self.letter = ""
+        self.letter_frequency = []
+        
+    def _get_next_letter(self):
+        """
+        Method to get next letter and its frequency. Its called when current
+        letter frequency reaches zero.
+        """
+        if self.index == len(self.text):
+            self.letter = " "
+            self.letter_frequency = 0
+            return
+        
+        self.letter = self.text[self.index]
+        self.index += 1
+        number = 0
+
+        while (self.index < len(self.text) and
+               self.text[self.index].isdigit()):
+            number = 10 * number + int(self.text[self.index])
+            self.index += 1
+        
+        self.letter_frequency = number
+
+    def next(self):
+        if not self.letter_frequency:
+            self._get_next_letter()
+        
+        if self.letter_frequency:
+            self.letter_frequency -= 1
+            return self.letter
+        
+        return " "
+
+        # if self.index == len(self.text):
+        #     return " "
+        # elif self.letter_frequency:
+        #     self.letter_frequency -= 1
+        #     return self.letter
+        # else:
+        #     self._get_next_letter()
+        #     self.letter_frequency -= 1
+        #     return self.letter
+
+    def hasNext(self):
+        return (self.index < len(self.text) or
+                self.letter_frequency > 0)
+
+
+# O(n): constructor; O(1): next, hasNext; aux space O(n)
+# Design, Array, String, Iterator
+# compressed string processed in constructor
+class StringIterator:
+    def __init__(self, text: str):
+        self.index = 0
+        self.text = []
+        self.str_to_list(text)
+        
+    def str_to_list(self, text):
+        frequency = 0
+        for char in text:
+            if char.isalpha():
+                if frequency:
+                    self.text.append(frequency)
+                    frequency = 0
+                self.text.append(char)
+            elif char.isnumeric():
+                frequency = frequency * 10 + int(char)
+        self.text.append(frequency)
+
+    def next(self):
+        if not self.hasNext():
+            return " "
+        
+        letter = self.text[self.index]  # a letter to return
+        self.text[self.index + 1] -= 1  # decrease a letter frequency
+        if not self.text[self.index + 1]:  # if all letter occurences used
+            self.index += 2  # update index (list pointer)        
+        return letter
+
+    def hasNext(self):
+        return self.index < len(self.text)
+
+
+iterator = StringIterator("L1e2t1C1o1d1e1")
+print(iterator.next())  # return "L"
+print(iterator.next())  # return "e"
+print(iterator.next())  # return "e"
+print(iterator.next())  # return "t"
+print(iterator.next())  # return "C"
+print(iterator.next())  # return "o"
+print(iterator.next())  # return "d"
+print(iterator.hasNext())  # return True
+print(iterator.next())  # return "e"
+print(iterator.hasNext())  # return False
+print(iterator.next())  # return " "
+
+
+
+
+
+# Binary Search Tree Iterator
+# https://leetcode.com/problems/binary-search-tree-iterator/
+"""
+Implement the BSTIterator class that represents an iterator over the in-order traversal of a binary search tree (BST):
+
+BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part of the constructor. The pointer should be initialized to a non-existent number smaller than any element in the BST.
+boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false.
+int next() Moves the pointer to the right, then returns the number at the pointer.
+Notice that by initializing the pointer to a non-existent smallest number, the first call to next() will return the smallest element in the BST.
+
+You may assume that next() calls will always be valid. That is, there will be at least a next number in the in-order traversal when next() is called.
+
+ 
+
+Example 1:
+  7__
+ /   \
+3     15
+     /  \
+    9    20
+
+Input
+["BSTIterator", "next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"]
+[[[7, 3, 15, null, null, 9, 20]], [], [], [], [], [], [], [], [], []]
+Output
+[null, 3, 7, true, 9, true, 15, true, 20, false]
+
+Explanation
+BSTIterator bSTIterator = new BSTIterator([7, 3, 15, null, null, 9, 20]);
+bSTIterator.next();    // return 3
+bSTIterator.next();    // return 7
+bSTIterator.hasNext(); // return True
+bSTIterator.next();    // return 9
+bSTIterator.hasNext(); // return True
+bSTIterator.next();    // return 15
+bSTIterator.hasNext(); // return True
+bSTIterator.next();    // return 20
+bSTIterator.hasNext(); // return False
+"""
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+
+# Your BSTIterator object will be instantiated and called as such:
+# obj = BSTIterator(root)
+# param_1 = obj.next()
+# param_2 = obj.hasNext()
+
+
+# O(n): constructor; O(1): next, hasNext; aux space O(n)
+class BSTIterator:
+    def __init__(self, root: Optional[TreeNode]):
+        self.node_list = []
+        self.tree_to_queue(root)
+        self.index = 0
+    
+    def tree_to_queue(self, node):
+        if not node:
+            return
+        
+        self.tree_to_queue(node.left)
+        self.node_list.append(node.val)
+        self.tree_to_queue(node.right)
+            
+    def next(self) -> int:
+        self.index += 1
+        return self.node_list[self.index - 1]
+
+    def hasNext(self) -> bool:
+        return self.index < len(self.node_list)
+
+
+# O(n): constructor; O(1): next, hasNext; aux space O(n)
+class BSTIterator:
+    def __init__(self, root: Optional[TreeNode]):
+        self.node_list = self.tree_to_queue(root)
+        self.index = 0
+    
+    def tree_to_queue(self, node):
+        if not node:
+            return []
+
+        return (self.tree_to_queue(node.left) + 
+                [node.val] + 
+                self.tree_to_queue(node.right))
+            
+    def next(self) -> int:
+        self.index += 1
+        return self.node_list[self.index - 1]
+
+    def hasNext(self) -> bool:
+        return self.index < len(self.node_list)
+
+
+
+

@@ -321,17 +321,19 @@ if __name__ == "__main__":
     main()
 
 
+"""
+instance: {
+    instance variables, 
+    instance methods}
 
-instance variables
-instance methods
-
-class variables
-class methods @classmethod
+class: {
+    class variables, 
+    class methods @classmethod}
 
 Instance methods doesn't have decortors.
 Class methods have @classmethod
 @staticmethod
-
+"""
 
 import numpy as np
 

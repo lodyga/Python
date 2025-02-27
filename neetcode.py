@@ -746,15 +746,15 @@ Explanation: The only possible triplet sums up to 0.
 
 class Solution:
     def threeSum(self, numbers: list[int]) -> list[list[int]]:
+        numbers.sort()  # sort list to be able to ignore duplicate numbers
         triplets = []
-        numbers.sort()
 
-        for index, num in enumerate(numbers[:-2]):
+        for index, number in enumerate(numbers[:-2]):
             # Skip positive numbers
-            if num > 0:
+            if number > 0:
                 break
             
-            # Skip same num values
+            # Skip same number values
             if (index and 
                 numbers[index] == numbers[index - 1]):
                 continue
@@ -762,16 +762,15 @@ class Solution:
             left = index + 1  # left pointer
             right = len(numbers) - 1  # right pointer
 
-            # two pointers
-            while left < right:
-                curr_sum = num + numbers[left] + numbers[right]
+            while left < right:  # two pointers
+                triplet = number + numbers[left] + numbers[right]
                 
-                if curr_sum < 0:  # if sum is less than 0
+                if triplet < 0:  # if sum is less than 0
                     left += 1
-                elif curr_sum > 0:  # if sum is geater than 0
+                elif triplet > 0:  # if sum is geater than 0
                     right -= 1
                 else:  # if sum is equal to 0
-                    triplets.append([num, numbers[left], numbers[right]])
+                    triplets.append([number, numbers[left], numbers[right]])
                     left += 1
                     right -= 1
                     
@@ -1075,31 +1074,66 @@ Output: 3
 Explanation: The answer is "wke", with the length of 3.
 Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
 """
-(Solution().lengthOfLongestSubstring("abcabcbb"), 3)
-(Solution().lengthOfLongestSubstring("bbbbb"), 1)
-(Solution().lengthOfLongestSubstring("pwwkew"), 3)
-(Solution().lengthOfLongestSubstring("aabaab!bb"), 3)
-(Solution().lengthOfLongestSubstring("aab"), 2)
+print(Solution().lengthOfLongestSubstring("abcabcbb"), 3)
+print(Solution().lengthOfLongestSubstring("bbbbb"), 1)
+print(Solution().lengthOfLongestSubstring("pwwkew"), 3)
+print(Solution().lengthOfLongestSubstring("aabaab!bb"), 3)
+print(Solution().lengthOfLongestSubstring("aab"), 2)
 
 
 # O(n), O(n)
-# window as set()
-# two pointers
+# sliding window (as hash set)
 class Solution:
-    def lengthOfLongestSubstring(self, word):
+    def lengthOfLongestSubstring(self, word: str) -> int:
+        left = 0
         window = set()  # slidiong window without repeating characters
-        longest_substring = 0
-        left = 0  # left pointer
+        longest = 0
 
-        for right, letter in enumerate(word):  # right pointer
-            while letter in window:  # if duplicate found
-                window.discard(word[left])  # remove (discard) that charactr with every preceding character
+        for right, letter in enumerate(word):
+            while letter in window:  # while duplicate found
+                window.remove(word[left])  # remove (discard) that charactr with every preceding character
                 left += 1  # increase the left pointer
 
             window.add(letter)  # add an unique letter
-            longest_substring = max(longest_substring, right - left + 1)  # update the length of the longest substring
+            longest = max(longest, right - left + 1)  # update the length of the longest substring
+        return longest
 
-        return longest_substring
+
+# O(n), O(n)
+# sliding window (as hash map)
+class Solution:
+    def lengthOfLongestSubstring(self, word: str) -> int:
+        left = 0
+        window = {}  # sliding window as hash map
+        longest = 0
+
+        for right, letter in enumerate(word):
+            window[letter] = window.get(letter, 0) + 1  # update window
+
+            while window[letter] == 2:  # if duplicate found
+                window[word[left]] -= 1  #  pop window left
+                if window[word[left]] == 0:  # if no key
+                    window.pop(word[left])  # remove a key
+                left += 1  # increase the left pointer
+
+            longest = max(longest, right - left + 1)  # update the length of the longest substring
+        return longest
+
+
+# O(n3), O(1)
+# brute force
+class Solution:
+    def lengthOfLongestSubstring(self, word: str) -> int:
+            longest = 0
+
+            for left in range(len(word)):
+                for right in range(left, len(word)):
+                    substring = word[left: right + 1]
+
+                    if len(substring) == len(set(substring)):
+                        longest = max(longest, right - left + 1)
+
+            return longest
 
 
 
@@ -1127,10 +1161,53 @@ Explanation: Replace the one 'A' in the middle with 'B' and form "AABBBBA".
 The substring "BBBB" has the longest repeating letters, which is 4.
 There may exists other ways to achieve this answer too.
 """
-(Solution().characterReplacement("ABAB", 2), 4)
-(Solution().characterReplacement("AABABBA", 1), 4)
+print(Solution().characterReplacement("ABAB", 2), 4)
+print(Solution().characterReplacement("AABABBA", 1), 4)
 
 
+# O(n), O(n)
+# sliding window
+class Solution:
+    def characterReplacement(self, word: str, joker: int) -> int:
+        left = 0  # left pointer
+        window = {}  # sliding window as hash map
+        longest = 0  # length of the longest substring meeting conditions
+        max_count = 0  # most frequent character counter
+
+        for right, letter in enumerate(word):  # right pointer
+            window[letter] = window.get(letter, 0) + 1  # update window
+            max_count = max(max_count, window[letter])  # add new letter to window
+            
+            while (right - left + 1) - max_count > joker:  # while too many characters to change
+                window[word[left]] -= 1  # remove "left" character from the window
+                left += 1  # update left pointer
+
+            longest = max(longest, right - left + 1)  # update the length of the longest substring
+        return longest
+
+
+# O(n2), O(n)
+# brute force
+class Solution:
+    def characterReplacement(self, word: str, joker: int) -> int:
+            longest = 0
+
+            for left in range(len(word)):
+                counter = {}
+                max_count = 0
+                
+                for right in range(left, len(word)):    
+                    counter[word[right]] = counter.get(word[right], 0) + 1
+                    max_count = max(max_count, counter[word[right]])
+                    if (right - left + 1) - max_count > joker:
+                        break
+                    
+                longest = max(longest, min(max_count + joker, right - left + 1))
+
+            return longest
+
+
+# oldies
 # O(n), O(n)
 # sliding window
 class Solution:
@@ -1148,27 +1225,6 @@ class Solution:
 
             longest = max(longest, (right - left + 1))  # update the length of the longest replacement
             # (right - left + 1) is much faster than sum(window.values())
-
-        return longest
-
-# O(n), O(n)
-# sliding window, max_requency
-class Solution:
-    def characterReplacement(self, word: str, joker: int) -> int:
-        window = {}
-        longest = 0
-        left = 0
-        max_frequency = 0
-        
-        for right, letter in enumerate(word):
-            window[letter] = window.get(letter, 0) + 1
-            max_frequency = max(max_frequency, window[letter])
-
-            while (right - left + 1) - max_frequency > joker:
-                window[word[left]] -= 1
-                left += 1
-         
-            longest = max(longest, right - left + 1)
 
         return longest
 
@@ -1201,36 +1257,37 @@ Example 3:
 Input: s = "(]"
 Output: false
 """
-(Solution().isValid("()"), True)
-(Solution().isValid("({})"), True)
-(Solution().isValid("(]"), False)
-(Solution().isValid("(})"), False)
-(Solution().isValid("([)"), False)
-(Solution().isValid(""), True)
-(Solution().isValid("["), False)
+print(Solution().isValid("()"), True)
+print(Solution().isValid("({})"), True)
+print(Solution().isValid("(]"), False)
+print(Solution().isValid("(})"), False)
+print(Solution().isValid("([)"), False)
+print(Solution().isValid(""), True)
+print(Solution().isValid("["), False)
 
 
+# O(n), O(n)
+# stack
 class Solution:
     def isValid(self, brackets: str) -> bool:
-        seen_bracket = []
-        oppos_bracket = {
+        stacked_brackets = []
+        opposing_bracket = {
             ")": "(",
             "]": "[",
             "}": "{"
         }
 
         for bracket in brackets:
-            if bracket in oppos_bracket:
-                if (seen_bracket and 
-                    oppos_bracket[bracket] == seen_bracket[-1]):
-                    seen_bracket.pop()
+            if bracket in opposing_bracket:
+                if (stacked_brackets and 
+                        opposing_bracket[bracket] == stacked_brackets[-1]):
+                    stacked_brackets.pop()
                 else:
                     return False
             else:
-                seen_bracket.append(bracket)
+                stacked_brackets.append(bracket)
         
-        # if not empty then unmatched brackets left
-        return not seen_bracket
+        return not stacked_brackets  # if not empty then unmatched brackets left
 
 
 
@@ -1354,16 +1411,16 @@ Input: nums = [4,5,6,7,0,1,2], target = 3
 Output: -1
 Example 3:
 """
-(Solution().search([4, 5, 6, 7, 8, 1, 2, 3], 8), 4)
-(Solution().search([1, 3, 5], 5), 2)
-(Solution().search([3, 5, 1], 3), 0)
-(Solution().search([3, 5, 1], 1), 2)
-(Solution().search([5, 1, 3], 3), 2)
-(Solution().search([4, 5, 6, 7, 0, 1, 2], 0), 4)
-(Solution().search([4, 5, 6, 7, 0, 1, 2], 3), -1)
-(Solution().search([1], 0), -1)
-(Solution().search([5, 1, 3], 4), -1)
-(Solution().search([4, 5, 6, 7, 8, 1, 2, 3], 8), 4)
+print(Solution().search([4, 5, 6, 7, 8, 1, 2, 3], 8), 4)
+print(Solution().search([1, 3, 5], 5), 2)
+print(Solution().search([3, 5, 1], 3), 0)
+print(Solution().search([3, 5, 1], 1), 2)
+print(Solution().search([5, 1, 3], 3), 2)
+print(Solution().search([4, 5, 6, 7, 0, 1, 2], 0), 4)
+print(Solution().search([4, 5, 6, 7, 0, 1, 2], 3), -1)
+print(Solution().search([1], 0), -1)
+print(Solution().search([5, 1, 3], 4), -1)
+print(Solution().search([4, 5, 6, 7, 8, 1, 2, 3], 8), 4)
 
 
 # if middle < right: right portion is contiguous
@@ -1389,12 +1446,12 @@ class Solution:
             if middle_number == target:
                 return middle
             elif middle_number < numbers[right]:  # contiguous right side portion
-                if target > middle_number and target <= numbers[right]:  # target in the right side
+                if middle_number < target <= numbers[right]:  # target in the right side # numbers[right] or numbers[len(numbers) - 1]
                     left = middle + 1
                 else:
-                    right = middle - 1  # tagget in the left side
+                    right = middle - 1  # target in the left side
             else:  # contiguous left side portion
-                if target >= numbers[0] and target < middle_number:
+                if numbers[left] <= target < middle_number:  # numbers[left] or numebrs[0]
                     right = middle - 1  # tagget in the left side
                 else:
                     left = middle + 1  # target in the right side
@@ -1456,101 +1513,198 @@ Explanation: There are three ways to climb to the top.
 2. 1 step + 2 steps
 3. 2 steps + 1 step
 """
-(Solution().climbStairs(0), 0)
-(Solution().climbStairs(1), 1)
-(Solution().climbStairs(2), 2)
-(Solution().climbStairs(3), 3)
-(Solution().climbStairs(4), 5)
-(Solution().climbStairs(5), 8)
+print(Solution().climbStairs(0), 0)
+print(Solution().climbStairs(1), 1)
+print(Solution().climbStairs(2), 2)
+print(Solution().climbStairs(3), 3)
+print(Solution().climbStairs(4), 5)
+print(Solution().climbStairs(5), 8)
 
 
-# Fibonnacci problem
-# dp, bottom-up with no auxiliary memory space
-# O(n), O(1)
+"""
+blueprint
+             ___5
+           _| 4
+         _| 3
+       _| 2
+     _| 1
+____|
+
+           ___4
+         _|  3
+       _|  2
+     _|  1
+____|
+
+         ___3
+       _|  2
+     _|  1
+____|
+
+
+Adding steps
+                   0
+             /1          \2
+            1             2
+        /1     \2      /1   \2
+       2        3     3      4
+     /1  \2    /1    /1
+   3      4   4     4
+  /1
+ 4
+
+Subtracting steps
+                   4
+             /1          \2
+            3             2
+        /1     \2      /1   \2
+       2        1     1      0
+     /1  \2    /1    /1
+   1      0   0     0
+  /1
+ 0
+
+
+5 -> 1 + 4 + 3 = 8
+4 -> 5
+3 -> 3
+2 -> 2
+1 -> 1
+0 -> 0
+
+Fibonnacci problem
+"""
+
+
 class Solution:
-    def climbStairs(self, num: int) -> int:
-        if num < 4:
-            return num
-
-        a = 0
-        b = 1
-
-        for _ in range(num):
-            a, b = b, a + b
-
-        return b
-
-
-# dp, bottom-up
-# O(n), O(n)
-class Solution:
-    def climbStairs(self, num: int) -> int:
-        if num < 4:
-            return num
+    def climbStairs(self, number: int) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        if number == 0:
+            return 0
+        elif number == 1:
+            return 1
         
-        dp = [0 for _ in range(num + 2)]
-        dp[1] = 1
+        cache = [1, 1]
 
-        for index in range(2, num + 2):
-            dp[index] = dp[index - 1] + dp[index - 2]
+        for _ in range(2, number + 1):
+            cache = [cache[1], cache[0] + cache[1]]
 
-        return dp[-1]
+        return cache[-1]
 
 
-# dp, top-down with memoization
-# O(n), O(n)
 class Solution:
-    def __init__(self) -> None:
-        self.memo = {}
-
-    def climbStairs(self, num: int) -> int:
-        if num < 4:
-            return num
+    def climbStairs(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        if number == 0:
+            return 0
+        elif number == 1:
+            return 1
         
-        if num in self.memo:
-            return self.memo[num]
-        else:
-            self.memo[num] = self.climbStairs(num - 1) + self.climbStairs(num - 2)
-            return self.memo[num]
+        cache = [1] * (number + 1)
+
+        for index in range(2, number + 1):
+            cache[index] = cache[index - 1] + cache[index - 2]
+
+        return cache[number]
 
 
-# dfs, unefficient
-# O(2^n), O(n)
-# counter as shared variable (list)
 class Solution:
-    def climbStairs(self, num: int, index = 0) -> int:
-        counter = []
+    def climbStairs(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        if number == 0:
+            return 0
+        
+        memo = {0: 1}
 
         def dfs(index):
-            if index > num:
-                return
-            
-            if index == num:
-                counter.append(1)
-                return
-
-            dfs(index + 1)
-            dfs(index + 2)
-            
-        dfs(index)
-        return len(counter)
-
-
-# dfs, unefficient
-# O(2^n), O(n)
-# "counter" as a return statement from dfs
-class Solution:
-    def climbStairs(self, num: int, index = 0) -> int:
-        def dfs(num, index):
-            if index > num:
+            if index < 0:
                 return 0
-            
-            if index == num:
+            elif index in memo:
+                return memo[index]
+
+            memo[index] = dfs(index - 1) + dfs(index - 2)
+            return memo[index]
+
+        return dfs(number)
+
+
+class Solution:
+    def climbStairs(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        if number == 0:
+            return 0
+        
+        memo = [None] * (number + 1)
+        memo[0] = 1
+
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif memo[index] is not None:
+                return memo[index]
+
+            memo[index] = dfs(index - 1) + dfs(index - 2)
+            return memo[index]
+
+        return dfs(number)
+
+
+class Solution:
+    def climbStairs(self, number: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, pure recursion, tle
+        converts to top-down
+        """
+        if number == 0:
+            return 0
+        
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif index == 0:
                 return 1
 
-            return dfs(num, index + 1) + dfs(num, index + 2)
-            
-        return dfs(num, index)
+            return dfs(index - 1) + dfs(index - 2)
+
+        return dfs(number)
+
+
+class Solution:
+    def climbStairs(self, number: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, shared state, tle
+        """
+        if number == 0:
+            return 0
+        
+        self.counter = 0
+
+        def dfs(index):
+            if index == 0:
+                self.counter += 1
+                return
+            elif index < 0:
+                return
+
+            dfs(index - 1)
+            dfs(index - 2)
+
+        dfs(number)
+        return self.counter
 
 
 # generator
@@ -1592,14 +1746,20 @@ Output: 12
 Explanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).
 Total amount you can rob = 2 + 9 + 1 = 12.
 """
-(Solution().rob([2, 100, 9, 3, 100]), 200)
-(Solution().rob([100, 9, 3, 100, 2]), 200)
-(Solution().rob([1, 2, 3, 1]), 4)
-(Solution().rob([2, 7, 9, 3, 1]), 12)
-(Solution().rob([0]), 0)
-(Solution().rob([2, 1]), 2)
+print(Solution().rob([2]), 2)
+print(Solution().rob([0]), 0)
+print(Solution().rob([2, 1]), 2)
+print(Solution().rob([2, 100, 9, 3, 100]), 200)
+print(Solution().rob([100, 9, 3, 100, 2]), 200)
+print(Solution().rob([1, 2, 3, 1]), 4)
+print(Solution().rob([2, 7, 9, 3, 1]), 12)
+print(Solution().rob([183,219,57,193,94,233,202,154,65,240,97,234,100,249,186,66,90,238,168,128,177,235,50,81,185,165,217,207,88,80,112,78,135,62,228,247,211]), 3365)
+print(Solution().rob([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]), 0)
 
 # draft
+# values     [2, 7, 9,  3,  1]
+# cumulative [2, 7, 11,11. 12]
+
 # [2, 100, 9, 3, 100] data
 # [2, 100, 100, 100, 200] dp solution
 # [(2), (2, 100), (100, 100) ....]
@@ -1608,94 +1768,118 @@ Total amount you can rob = 2 + 9 + 1 = 12.
 # [100, 100, 100, 200, 200] dp solution
 
 
-# dp, bottom-up
-# O(n), O(1), cache only two last elements
 class Solution:
-    def rob(self, nums: list[int]):
-        if len(nums) == 1:
-            return nums[0]
-        
-        house_1 = nums[0]
-        house_2 = max(nums[0], nums[1])
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        if len(numbers) < 3:
+            return max(numbers)
 
-        for index in range(2, len(nums)):
-            house_1, house_2 = house_2, max(nums[index] + house_1, house_2)
-        
-        return house_2
+        cache = [numbers[0], max(numbers[:2])]
+
+        for index in range(2, len(numbers)):
+            cache = [cache[1], max(numbers[index] + cache[0], cache[1])]
+
+        return cache[1]
 
 
-# dp, bottom-up
-# O(n), O(n), cache every robbery
 class Solution:
-    def rob(self, nums: list[int]):
-        if len(nums) == 1:
-            return nums[0]
-        
-        dp = [0 for _ in range(len(nums))]
-        dp[0] = nums[0]
-        dp[1] = max(nums[0], nums[1])
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        mutate input list
+        """
+        if len(numbers) < 3:
+            return max(numbers)
 
-        for index in range(2, len(nums)):
-            dp[index] = max(nums[index] + dp[index - 2], dp[index - 1])
-        
-        return dp[-1]
+        numbers[1] = max(numbers[:2])
+
+        for index in range(2, len(numbers)):
+            numbers[index] = max(numbers[index] + numbers[index - 2], 
+                                 numbers[index - 1])
+
+        return numbers[-1]
 
 
-# dp, top-down, with memoization
-# memo in init
-# O(n), O(n)
 class Solution:
-    def __init__(self):
-        self.memo = {}  # memoization cache
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        if len(numbers) < 3:
+            return max(numbers)
 
-    def rob(self, nums: list[int], index=1):
-        if len(nums) == 1:  # if one element in nums
-            return nums[0]
+        cache = [0] * len(numbers)  # stores max money we can rob considering only first i houses.
+        cache[0] = numbers[0]
+        cache[1] = max(numbers[:2])
 
-        if len(nums) - index == 1:  # if index is 1
-            return max(nums[0], nums[1])
+        for index in range(2, len(numbers)):
+            cache[index] = max(numbers[index] + cache[index - 2], 
+                               cache[index - 1])
 
-        if len(nums) - index == 0:  # if index is 0
-            return nums[0]
-
-        if not index + 1 in self.memo:  # if "index + 1" is not in the memo
-            self.memo[index + 1] = self.rob(nums, index + 1)  # calculate it
-        prev = self.memo[index + 1]  # take it
-
-        if not index + 2 in self.memo:
-            self.memo[index + 2] = self.rob(nums, index + 2)
-        prev_prev = self.memo[index + 2]
-
-        return max(nums[len(nums) - index] + prev_prev, prev)
+        return cache[-1]
 
 
-# dp, top-down, with memoization
-# memo as and argumen with default value
-# In Python, default arguments are evaluated once when the function is defined, not each time the function is called. So, when you use a mutable object (like a dictionary) as a default argument, it persists between function calls, causing unexpected behavior if the function is called multiple times.
-# O(n), O(n)
 class Solution:
-    def rob(self, nums: list[int], index=1, memo=None):
-        if not memo:
-            memo = {}
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {}  # caches max money we can rob from house index to end.
 
-        if len(nums) == 1:  # if one element in nums
-            return nums[0]
+        def dfs(index):
+            if index >= len(numbers):
+                return 0
+            elif index in memo:
+                return memo[index]
 
-        if len(nums) - index == 1:  # if index is 1
-            return max(nums[0], nums[1])
+            memo[index] = max(numbers[index] + dfs(index + 2), 
+                              dfs(index + 1))
+            return memo[index]
 
-        if len(nums) - index == 0:  # if index is 0
-            return nums[0]
+        return dfs(0)
 
-        if not index + 1 in memo:  # if "index + 1" is not in the memo
-            memo[index + 1] = self.rob(nums, index + 1, memo)  # calculate it
-        prev = memo[index + 1]  # take it
 
-        if not index + 2 in memo:
-            memo[index + 2] = self.rob(nums, index + 2, memo)
-        prev_prev = memo[index + 2]
+class Solution:
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * (len(numbers) + 1)  # caches max money we can rob from house index to end.
 
-        return max(nums[len(nums) - index] + prev_prev, prev)
+        def dfs(index):
+            if index >= len(numbers):
+                return 0
+            elif memo[index] is not None:
+                return memo[index]
+
+            memo[index] = max(numbers[index] + dfs(index + 2), 
+                              dfs(index + 1))
+            return memo[index]
+
+        return dfs(0)
+
+
+class Solution:
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index):
+            if index >= len(numbers):
+                return 0
+
+            return max(numbers[index] + dfs(index + 2), 
+                       dfs(index + 1))
+
+        return dfs(0)
 
 
 
@@ -1724,39 +1908,68 @@ Example 3:
 Input: nums = [1,2,3]
 Output: 3
 """
-(Solution().rob([2, 3, 2]), 3)
-(Solution().rob([1, 2, 3, 1]), 4)
-(Solution().rob([1, 2, 3]), 3)
-(Solution().rob([1]), 1)
-(Solution().rob([0, 0]), 0)
-(Solution().rob([1, 3, 1, 3, 100]), 103)
+print(Solution().rob([2, 3, 2]), 3)
+print(Solution().rob([1, 2, 3, 1]), 4)
+print(Solution().rob([1, 2, 3]), 3)
+print(Solution().rob([1]), 1)
+print(Solution().rob([0, 0]), 0)
+print(Solution().rob([1, 3, 1, 3, 100]), 103)
 
 
-# O(n), 0(1)
-# function in function
 class Solution:
-    def rob(self, nums: list[int]) -> int:  # rob in circle
-        if len(nums) < 3:
-            return max(nums)
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        if len(numbers) < 3:
+            return max(numbers)
         
-        def rob_straight(nums):  # rob in stight line
-            house1 = nums[0]
-            house2 = max(nums[0], nums[1])
+        def rob2(numbers):
+            if len(numbers) < 3:
+                return max(numbers)
+            
+            cache = [numbers[0], max(numbers[:2])]
 
-            for num in nums[2:]:
-                house1, house2 = house2, max(num + house1, house2)
+            for index in range(2, len(numbers)):
+                cache = [cache[1], max(numbers[index] + cache[0], cache[1])]
 
-            return house2
+            return cache[1]
 
-        return max(
-            rob_straight(nums[:-1]), 
-            rob_straight(nums[1:]))
+        return max(rob2(numbers[1:]), 
+                   rob2(numbers[:-1]))
 
 
-# O(n), 0(1)
+class Solution:
+    def rob(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        if len(numbers) < 3:
+            return max(numbers)
+        
+        def rob2(numbers):
+            if len(numbers) < 3:
+                return max(numbers)
+            
+            cache = [0] * len(numbers)  # stores max money we can rob considering only first i houses.
+            cache[:2] = [numbers[0], max(numbers[:2])]
+
+            for index in range(2, len(numbers)):
+                cache[index] = max(numbers[index] + cache[index - 2], 
+                                   cache[index - 1])
+
+            return cache[-1]
+
+        return max(rob2(numbers[1:]), 
+                   rob2(numbers[:-1]))
+
+
+# O(n), 0(n)
 # both functions directly under class
 class Solution:
-    def rob_straight(self, nums: list[int]) -> int:  # rob in stight line
+    def inner_rob(self, nums: list[int]) -> int:  # rob in stight line
         house1 = nums[0]
         house2 = max(nums[0], nums[1])
 
@@ -1770,8 +1983,8 @@ class Solution:
             return max(nums)
 
         return max(
-            self.rob_straight(nums[:-1]), 
-            self.rob_straight(nums[1:]))
+            self.inner_rob(nums[:-1]), 
+            self.inner_rob(nums[1:]))
 
 
 
@@ -1795,50 +2008,107 @@ Example 2:
 Input: s = "cbbd"
 Output: "bb"
 """
-(Solution().longestPalindrome("babad"), "bab")
-(Solution().longestPalindrome("cbbd"), "bb")
-(Solution().longestPalindrome("a"), "a")
-(Solution().longestPalindrome(""), "")
-(Solution().longestPalindrome("bb"), "bb")
-(Solution().longestPalindrome("ab"), "a")
-(Solution().longestPalindrome("aacabdkacaa"), "aca")
-(Solution().longestPalindrome("abdka"), "a")
-(Solution().longestPalindrome("aaaa"), "aaaa")
+print(Solution().longestPalindrome("babad"), "bab")
+print(Solution().longestPalindrome("cbbd"), "bb")
+print(Solution().longestPalindrome("a"), "a")
+print(Solution().longestPalindrome(""), "")
+print(Solution().longestPalindrome("bb"), "bb")
+print(Solution().longestPalindrome("ab"), "a")
+print(Solution().longestPalindrome("aacabdkacaa"), "aca")
+print(Solution().longestPalindrome("abdka"), "a")
+print(Solution().longestPalindrome("aaaa"), "aaaa")
 
 
-# O(n2), O(n)
+# O(n2), O(1)
+# two pointers
 class Solution:
-    def longestPalindrome(self, word):
-        longest_palindrome = ""
-        max_word_len = 0
+    def longestPalindrome(self, word: str) -> str:
+        start = 0
+        palindrome_length = 0
+
+        for index in range(len(word)):
+            # odd length palindrome
+            left = index
+            right = index
+            while (left >= 0 and  # check if not out of bounds left
+                   right < len(word) and  # check if not out of bounds right
+                   word[left] == word[right]):  # if letter match
+                if right - left + 1 > palindrome_length:  # if longer palindrome found
+                    palindrome_length = right - left + 1
+                    start = left
+                
+                left -= 1
+                right += 1
+
+            # even lenght palindrome
+            left = index
+            right = index + 1
+            while (left >= 0 and  # check if not out of bounds left
+                   right < len(word) and  # check if not out of bounds right
+                   word[left] == word[right]):  # if letter match
+                if right - left + 1 > palindrome_length:  # if longer palindrome found
+                    palindrome_length = right - left + 1
+                    start = left
+
+                left -= 1
+                right += 1
+
+        return word[start: start + palindrome_length]
+
+
+# O(n2), O(1)
+# two pointers
+class Solution:
+    def longestPalindrome(self, word: str) -> str:
+        left = 0
+        palindrome_length = 0
 
         for index in range(len(word)):
             # odd length palindrome
             edge = 1
-
             while (index - edge >= 0 and  # check if not out of bounds left
                    index + edge < len(word) and  # check if not out of bounds right
                    word[index - edge] == word[index + edge]):  # if letter match
                 edge += 1  # 1 -> 3, 2i + 1 increase palindrome length
 
-            if 2 * edge - 1 > max_word_len:  # if longer palindrome found
-                max_word_len = 2 * edge - 1
-                longest_palindrome = word[index - edge + 1: index + edge]
+            edge -= 1
+            if 2 * edge + 1 > palindrome_length:  # if longer palindrome found
+                palindrome_length = 2 * edge + 1
+                left = index - edge
 
             # even lenght palindrome
             edge = 0
-
             while (index - edge >= 0 and  # check if not out of bounds left
                    index + edge + 1 < len(word) and  # check if not out of bounds right
                    word[index - edge] == word[index + 1 + edge]):  # if letter match
                 edge += 1  # 2 -> 4, 2i increase palindrome length
 
-            if 2 * edge > max_word_len:  # if longer palindrome found
-                max_word_len = 2 * edge
-                longest_palindrome = word[index - edge + 1: index + edge + 1]
+            edge -= 1
+            if 2 * (edge + 1) > palindrome_length:  # if longer palindrome found
+                palindrome_length = 2 * (edge + 1)
+                left = index - edge
 
-        return longest_palindrome
+        return word[left: left + palindrome_length]
 
+
+# O(n3), O(n)
+# brute force
+class Solution:
+    def is_palindrome(self, word: str) -> bool:
+        return word == word[::-1]
+    
+    def longestPalindrome(self, word: str) -> str:
+        palindrome = ""
+        palindrome_length = 0
+
+        for left in range(len(word)):
+            for right in range(left, len(word)):
+                if self.is_palindrome(word[left: right + 1]):
+                    if right - left + 1 > palindrome_length:
+                        palindrome = word[left: right + 1]
+                        palindrome_length = right - left + 1
+
+        return palindrome
 
 
 # oldies
@@ -1880,21 +2150,6 @@ class Solution:
 
 
 
-# O(n3)
-class Solution:
-    def longestPalindrome(self, s: str) -> str:
-        if not s:
-            return None
-        longest = s[0]
-        for left in range(len(s) - 1):
-            for right in range(left + 1, len(s)):
-                is_longest = s[left:right + 1]
-                if is_longest == (is_longest)[::-1] and len(is_longest) > len(longest):
-                    longest = is_longest
-        return longest
-
-
-
 
 
 # Palindromic Substrings
@@ -1917,57 +2172,36 @@ Input: s = "aaa"
 Output: 6
 Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
 """
-(Solution().countSubstrings("abc"), 3)
-(Solution().countSubstrings("aaa"), 6)
+print(Solution().countSubstrings("abc"), 3)
+print(Solution().countSubstrings("aaa"), 6)
 
 
 # draft
 # "aaa"
 # a aa a aa aaa a 
 
-class Solution:
-    def countSubstrings(self, word):
-        counter_sum = 0
-        
-        for index in range(len(word)):
-            # odd length palindrome
-            counter = 1
-
-            while (index - counter >=0 and  # check if not out of bounds left
-                   index + counter < len(word) and  # check if not out of bounds right
-                   word[index - counter] == word[index + counter]):  # if letter match
-                counter += 1
-
-            counter_sum += counter  # update counter_sum
-    
-            # even length palindrome
-            counter = 0
-
-            while (index - counter >=0 and
-                   index + 1 + counter < len(word) and
-                   word[index - counter] == word[index + 1 + counter]):
-                counter += 1
-
-            counter_sum += counter
-
-        return counter_sum
-
-
+# O(n2), O(1)
+# two pointers
 class Solution:
     def __init__(self) -> None:
-        self.substrings_count = 0
+        self.counter = 0  # count palindroms
 
-    def count_pal(self, left: int, right: int, s: str) -> None:
-        while left >= 0 and right < len(s) and s[left] == s[right]:
-            self.substrings_count += 1
-            left -= 1
-            right += 1
-        
-    def countSubstrings(self, s: str) -> int:
-        for i in range(len(s)):
-            self.count_pal(i, i, s)
-            self.count_pal(i, i + 1, s)
-        return self.substrings_count
+    def count_palindroms(self, left: int, right: int) -> None:
+        while (left >= 0 and  # check if not out of bounds left
+               right < len(self.word) and  # check if not out of bounds right
+               self.word[left] == self.word[right]):  # if letter match
+            self.counter += 1  # increase counter
+            left -= 1  # move left pointer
+            right += 1  # move right pointer
+
+    def countSubstrings(self, word: str) -> int:
+        self.word = word
+
+        for index in range(len(word)):
+            self.count_palindroms(index, index)  # odd length palindromes
+            self.count_palindroms(index, index + 1)  # even length palindromes
+
+        return self.counter
 
 
 
@@ -1996,106 +2230,136 @@ Example 3:
 Input: coins = [1], amount = 0
 Output: 0
 """
-(Solution().coinChange([1, 2, 5], 11), 3)
-(Solution().coinChange([2, 5, 10, 1], 27), 4)
-(Solution().coinChange([186, 419, 83, 408], 6249), 20)
-(Solution().coinChange([2], 3), -1)
-(Solution().coinChange([2], 1), -1)
-(Solution().coinChange([1], 0), 0)
+print(Solution().coinChange([5], 5), 1)
+print(Solution().coinChange([1, 2], 3), 2)
+print(Solution().coinChange([1, 2, 5], 11), 3)
+print(Solution().coinChange([2, 5, 10, 1], 27), 4)
+print(Solution().coinChange([186, 419, 83, 408], 6249), 20)
+print(Solution().coinChange([2], 3), -1)
+print(Solution().coinChange([2], 1), -1)
+print(Solution().coinChange([1], 0), 0)
 
 
-# dp, bottom-up, iteration, tabulation (with list)
 class Solution:
-    def coinChange(self, coins, amount):
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with tabulation as list
+        """
         # min number of coins needed to get target amount (equal to the index)
         # "anmount + 1" an imposbile value stays when the last element of min_coins was not modified
-        min_coins = [amount + 1 for _ in range(amount + 1)]
-        min_coins[0] = 0  # no coins needed to get 0
+        cache = [amount + 1] * (amount + 1)  # cache
+        cache[0] = 0  # no coins needed to get 0
 
-        for index in range(1, amount + 1):  # check each 'min_coins' index
+        for index in range(1, amount + 1):  # check each 'cache' index
             for coin in coins:  # check every coin
-                # choose current amount of coins or get ammount without current coin and add 1
-                if index - coin >= 0:
-                    min_coins[index] = min(min_coins[index], min_coins[index - coin] + 1)
+                if index - coin >= 0:  # target ammount must be greater equal to current coin
+                    # choose current amount of coins or get ammount without current coin and add 1
+                    cache[index] = min(cache[index], cache[index - coin] + 1)
         
-        if min_coins[amount] == amount + 1:  # if the last value was not modified so there is no valid combination
-            return -1
-        else:
-            return min_coins[amount]  # valid combination
-        # return -1 if tabulation[amount] == amount + 1 else tabulation[amount]
+        # if the last value was not modified, there is no valid combination
+        return (cache[amount] 
+                if cache[amount] != amount + 1
+                else -1)
 
 
-# dp, bottom-up, iteration, tabulation (with dict)
-# cache as dict and is slower than cache as list
 class Solution:
-    def coinChange(self, coins, amount):
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with tabulation as hash map
+        """
         # min number of coins needed to get target amount (equal to the index)
-        # "anmount + 1" an imposbile value stays when the last element of min_coins was not modified
-        min_coins = {k: amount + 1 for k in range(amount + 1)}
-        min_coins[0] = 0  # no coins needed to get 0
+        cache = {0: 0}  # {ammont: min coins to get that amount}
 
-        for coin in coins:  # check every coin
-            for index in range(coin, amount + 1):  # check each 'min_coins' index
-                # choose current amount of coins or get ammount without current coin and add 1
-                min_coins[index] = min(min_coins[index], min_coins[index - coin] + 1)
+        for index in range(1, amount + 1):
+            for coin in coins:
+                if index - coin >= 0:
+                    cache[index] = min(cache.get(index, amount + 1), # "anmount + 1" an imposbile value stays when the last element of min_coins was not founded
+                                       cache.get(index - coin, amount + 1) + 1)
         
-        if (amount in min_coins and  # if amount exists and
-            min_coins[amount] < amount + 1):  # the value is less than impossible value
-            return min_coins[amount]  # valid combination
-        else:
-            return -1
+        return (cache[amount] 
+                if (amount in cache and  # if amount exists and
+                    cache[amount] != amount + 1)  # the value is not impossible value
+                else -1)
 
 
-# dp, dfs, top-down, recursion, memoization (with dict)
 class Solution:
-    def coinChange(self, coins, amount):
-        # Create a memoization dictionary
-        memo = {}
-        memo[0] = 0  # Base case: 0 coins needed to make amount 0
-
-        def dfs(index):
-            if index < 0:  # If the remainder is negative
-                return amount + 1  # return an impossible value
-            elif index in memo:  # Already computed this value
-                return memo[index]
-
-            memo[index] = amount + 1
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        """
+        base_amount = amount
+        memo = {0: 0}  # {ammont: min coins to get that amount}
+        
+        def dfs(amount):
+            if amount < 0:
+                return base_amount + 1  # return impossible value
+            elif amount in memo:
+                return memo[amount]
 
             # Calculate the minimum number of coins needed for this amount
-            for coin in coins:
-                memo[index] = min(memo[index], dfs(index - coin) + 1)
+            memo[amount] = min(1 + dfs(amount - coin) 
+                               for coin in coins)
 
-            return memo[index]
-        
-        solution = dfs(amount)
+            return memo[amount]
 
-        return -1 if solution == amount + 1 else solution
+        number_of_coins = dfs(amount)
+        return (number_of_coins 
+                if number_of_coins <= amount
+                else -1)
 
 
-# dp, dfs, top-down, recursion, memoization (with dict)
-# list is not working for
-# (Solution().coinChange([186, 419, 83, 408], 6249), 20)
 class Solution:
-    def coinChange(self, coins, amount):
-        # Create a memoization array with initial high values
-        memo = [amount + 1] * (amount + 1)
-        memo[0] = 0  # Base case: 0 coins needed to make amount 0
-
-        def dfs(index):
-            if index < 0:  # If the remainder is negative
-                return amount + 1  # return an impossible value
-            elif memo[index] != amount + 1:  # Already computed this value
-                return memo[index]
-
-            # Calculate the minimum number of coins needed for this amount
-            for coin in coins:
-                memo[index] = min(memo[index], dfs(index - coin) + 1)
-
-            return memo[index]
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * (amount + 1)  # [min coins to get index amount]
+        memo[0] = 0
+        base_amount = amount
         
-        solution = dfs(amount)
+        def dfs(amount):
+            if amount < 0:
+                return base_amount + 1
+            elif memo[amount] is not None:
+                return memo[amount]
 
-        return -1 if solution == amount + 1 else solution
+            memo[amount] = min(1 + dfs(amount - coin) 
+                               for coin in coins)
+
+            return memo[amount]
+
+        number_of_coins = dfs(amount)
+        return (number_of_coins 
+                if number_of_coins <= amount
+                else -1)
+
+
+class Solution:
+    def coinChange(self, coins: list[int], amount: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        O(coins^amount)
+        """
+        base_amount = amount
+        
+        def dfs(amount):
+            if amount == 0:
+                return 0
+            elif amount < 0:
+                return base_amount + 1
+
+            return min(1 + dfs(amount - coin) 
+                       for coin in coins)
+
+        number_of_coins = dfs(amount)
+        return (number_of_coins 
+                if number_of_coins <= amount
+                else -1)
 
 
 
@@ -2119,98 +2383,105 @@ Input: nums = [-2,0,-1]
 Output: 0
 Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
 """
-(Solution().maxProduct([-4, -3]), 12)
-(Solution().maxProduct([2, 3, -2, 4]), 6)
-(Solution().maxProduct([-2]), -2)
-(Solution().maxProduct([-4, -3]), 12)
-(Solution().maxProduct([-2, 0, -1]), 0)
-(Solution().maxProduct([-2, -3, 7]), 42)
-(Solution().maxProduct([2, -5, -2, -4, 3]), 24)
-(Solution().maxProduct([-2]), -2)
-(Solution().maxProduct([0]), 0)
-(Solution().maxProduct([-2, 0]), 0)
-(Solution().maxProduct([0, 2]), 2)
+print(Solution().maxProduct([-2]), -2)
+print(Solution().maxProduct([-4, -3]), 12)
+print(Solution().maxProduct([2, 3, -2, 4]), 6)
+print(Solution().maxProduct([-2, 0, -1]), 0)
+print(Solution().maxProduct([-2, -3, 7]), 42)
+print(Solution().maxProduct([2, -5, -2, -4, 3]), 24)
+print(Solution().maxProduct([0]), 0)
+print(Solution().maxProduct([-2, 0]), 0)
+print(Solution().maxProduct([0, 2]), 2)
 
+
+# draft
 # [2, 3, -2, 4]
-# 2, 2*3 3 = 6, 6*-2 -2=-2
+# (2, 2), (3, !2*3!), (-2*6, -2), (-48, -2)
 
-# dp, bottom-up
-# O(n), O(1)
+
 class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        dp_0 = (nums[0], nums[0])  # O(1) cache
-        max_product = nums[0]  # track max product with default value
+    def maxProduct(self, numbers: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        cache = (1, 1)
+        max_product = numbers[0]
 
-        for index in range(1, len(nums)):  # check all nums indexes
-            # multiply prefix values with current value to get min, max or
-            # current value only when prefix is (0, 0)
-            triplet = (dp_0[0] * nums[index], 
-                       dp_0[1] * nums[index], 
-                       nums[index])
-        
-            dp_0 = (max(triplet), min(triplet))  # append min, max pair
-            max_product = max(max_product, max(triplet))  # update max product
+        for number in numbers:
+            triplet = (cache[0] * number, 
+                       cache[1] * number, 
+                       number)
+            cache = (max(triplet), min(triplet))
+            max_product = max(max_product, cache[0])
 
         return max_product
 
 
-# dp, bottom-up
-# O(n), O(n)
 class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        dp = [0 for _ in range(len(nums))]  # min, max pair list for tabulation
-        dp[0] = (nums[0], nums[0])  # insert the first element
-        max_product = nums[0]  # track max product with default value
-
-        for index in range(1, len(nums)):  # check all nums indexes
-            # multiply prefix values with current value to get min, max or
-            # current value only when prefix is (0, 0)
-            triplet = (dp[index - 1][0] * nums[index],
-                       dp[index - 1][1] * nums[index], 
-                       nums[index])
+    def maxProduct(self, numbers: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        mutate input array
+        """
+        max_product = numbers[0]
         
-            dp[index] = (max(triplet), min(triplet))  # append min, max pair
-            max_product = max(max_product, max(triplet))  # update max product
+        for index, number in enumerate(numbers):
+            if index == 0:
+                numbers[0] = (numbers[0], numbers[0])
+                continue
+
+            triplet = (numbers[index - 1][0] * number, 
+                       numbers[index - 1][1] * number, 
+                       number)
+            numbers[index] = (max(triplet), min(triplet))
+            max_product = max(max_product, numbers[index][0])
 
         return max_product
 
 
-# dp, bottom-up
-# reversed search
-# O(n), O(n)
 class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        dp = [(1, 1) for _ in range(len(nums) + 1)]  # min, max pair list for tabulation
-        max_product = nums[0]  # track max product with default value
-
-        for index in range(len(nums))[::-1]:  # check all nums indexes
-            # multiply prefix values with current value to get min, max or
-            # current value only when prefix is (0, 0)
-            triplet = (dp[index + 1][0] * nums[index],
-                       dp[index + 1][1] * nums[index], 
-                       nums[index])
+    def maxProduct(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down
+        single recursive call per index
+        """
+        self.max_product = numbers[0]
         
-            dp[index] = (max(triplet), min(triplet))  # append min, max pair
-            max_product = max(max_product, max(triplet))  # update max product
+        def dfs(index):
+            if index == len(numbers):
+                return (1, 1)
 
-        return max_product
+            next_dfs = dfs(index + 1)
+            triplet = (next_dfs[0] * numbers[index], 
+                       next_dfs[1] * numbers[index], 
+                       numbers[index])
+            
+            current_max = max(triplet)
+            self.max_product = max(self.max_product, current_max)
 
+            return (current_max, min(triplet))
 
-# oldies
-# O(n2)
-import numpy as np
+        return max(max(dfs(0)), self.max_product)
 
 
 class Solution:
-    def maxProduct(self, nums: list[int]) -> int:
-        max_prod = nums[0]
+    def maxProduct(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(1)
+        brute force
+        """
+        max_product = numbers[0]
 
-        for i in range(len(nums)):
-            for j in range(i, len(nums)):
-                print(i, j)
-                max_prod = max(max_prod, np.prod(nums[i:j + 1]))
-                # print(nums[i:j + 1])
-        return max_prod
+        for left in range(len(numbers)):
+            val = 1
+            for right in range(left, len(numbers)):
+                val *= numbers[right]
+                max_product = max(max_product, val)
+        
+        return max_product
 
 
 
@@ -2239,27 +2510,155 @@ Example 3:
 Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
 Output: false
 """
-(Solution().wordBreak("leetcode", ["leet", "code"]), True)
-(Solution().wordBreak("applepenapple", ["apple","pen"]), True)
-(Solution().wordBreak("catsandog", ["cats","dog","sand","and","cat"]), False)
-(Solution().wordBreak("cars", ["car", "ca", "rs"]), True)
+print(Solution().wordBreak("leetcode", ["leet", "code"]), True)
+print(Solution().wordBreak("applepenapple", ["apple","pen"]), True)
+print(Solution().wordBreak("catsandog", ["cats","dog","sand","and","cat"]), False)
+print(Solution().wordBreak("cars", ["car", "ca", "rs"]), True)
 
 
-# dp, bottom-up
-# O(n2), O(n)
 class Solution:
-    def wordBreak(self, sentence: str, word_list: list[str]) -> bool:
+    def wordBreak(self, text: str, word_list: list[str]) -> bool:
+        """
+        O(n3), O(n)
+        dp, bottom-up
+        """
         # cache where each elemet tells if sentece can be fold from this index to the right
-        can_fold = [False for _ in range(len(sentence) + 1)]
-        can_fold[-1] = True  # dummy element tells that everything after "sentence can be folded"
+        cache = [False] * (len(text) + 1)  # can fold
+        cache[-1] = True  # dummy element tells that everything after "text can be folded"
         word_set = set(word_list)
 
-        for index in range(len(sentence))[::-1]:  # go through every index reversed
+        for index in reversed(range(len(text))):  # go through every index reversed
             for word in word_set:  # go through every word
-                if sentence[index : index + len(word)] == word:  # if found the word
-                    can_fold[index] = can_fold[index] or can_fold[index + len(word)]  # update can fold
+                if text[index: index + len(word)] == word:  # if found the word
+                    cache[index] = (cache[index] or  # if already can fold
+                                       cache[index + len(word)])  # update can fold
+                if cache[index]:  # early exit
+                    break
+        return cache[0]
 
-        return can_fold[0]
+
+class Solution:
+    def wordBreak(self, text: str, word_list: list[str]) -> bool:
+        """
+        O(n3), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {len(text): True}
+        word_set = set(word_list)
+
+        def dfs(index):
+            if index in memo:
+                return memo[index]
+            
+            for word in word_set:
+                if (text[index: index + len(word)] == word and
+                        dfs(index + len(word))):
+                    memo[index] = True
+                    return True
+            
+            memo[index] = False
+            return False
+
+        return dfs(0)
+
+
+class Solution:
+    def wordBreak(self, text: str, word_list: list[str]) -> bool:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        word_set = set(word_list)
+
+        def dfs(index):
+            if index == len(text):
+                return True
+            
+            for word in word_set:
+                if (text[index: index + len(word)] == word and
+                        dfs(index + len(word))):
+                    return True
+
+            return False
+
+        return dfs(0)
+
+
+class TrieNode:
+    def __init__(self):
+        # Each TrieNode contains a dictionary of children and a boolean to indicate if it's the end of a word.
+        self.children = {}
+        self.is_word = False
+
+class Trie:
+    def __init__(self) -> None:
+        # Initialize the Trie with a root node.
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        # Inserts a word into the Trie.
+        node = self.root
+        for letter in word:
+            if letter not in node.children:
+                # If the letter is not in children, create a new TrieNode.
+                node.children[letter] = TrieNode()
+            # Move to the child node.
+            node = node.children[letter]
+        # Mark the end of the word.
+        node.is_word = True
+
+    def search(self, text: str, start: int, end: int) -> bool:
+        # Checks if the substring `text[start:end+1]` exists in the Trie.
+        node = self.root
+        for letter in text[start: end + 1]:
+            if letter not in node.children:
+                # If a letter is not found in the children, return False.
+                return False
+            # Move to the child node.
+            node = node.children[letter]
+        # Return True if the substring is a complete word in the Trie.
+        return node.is_word
+
+class Solution:
+    def wordBreak(self, text: str, word_list: list[str]) -> bool:
+        """
+        O(n3), O(n2)
+        dp, bottom-up, trie
+
+        Determines if the string `text` can be segmented into words from `word_list`.
+
+        Args:
+        text (str): The input string.
+        word_list (list[str]): List of valid words.
+
+        Returns:
+        bool: True if `text` can be segmented, False otherwise.
+        """
+        # Cache stores whether `text[i:]` can be segmented (True or False).
+        cache = [False] * (len(text) + 1)
+        cache[-1] = True  # Base case: empty string is always segmentable.
+        
+        max_word_len = 0  # Track the length of the longest word in `word_list`.
+        trie = Trie()
+        
+        # Insert all words into the Trie and update the max word length.
+        for word in word_list:
+            trie.insert(word)
+            max_word_len = max(max_word_len, len(word))
+
+        # Iterate over the text from right to left.
+        for left in reversed(range(len(text))):
+            # Check substrings starting from the current position.
+            for right in range(left, min(len(text), left + max_word_len)):
+                # If a substring exists in the Trie and the rest of the string can be segmented.
+                if trie.search(text, left, right):
+                    cache[left] = cache[right + 1]
+                if cache[left]:
+                    # Stop checking further substrings if segmentation is already confirmed.
+                    break
+
+        # Return whether the entire string can be segmented.
+        return cache[0]
 
 
 
@@ -2285,43 +2684,171 @@ Example 3:
 Input: nums = [7,7,7,7,7,7,7]
 Output: 1
 """
-(Solution().lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]), 4)
-(Solution().lengthOfLIS([0, 1, 0, 3, 2, 3]), 4)
-(Solution().lengthOfLIS([7, 7, 7, 7, 7, 7, 7]), 1)
+print(Solution().lengthOfLIS([5]), 1)
+print(Solution().lengthOfLIS([5, 6]), 2)
+print(Solution().lengthOfLIS([5, 4]), 1)
+print(Solution().lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]), 4)
+print(Solution().lengthOfLIS([0, 1, 0, 3, 2, 3]), 4)
+print(Solution().lengthOfLIS([7, 7, 7, 7, 7, 7, 7]), 1)
+print(Solution().lengthOfLIS([4, 10, 4, 3, 8, 9]), 3)
 
 
-# draft
-# [10, 9, 2, 5, 3, 7, 101, 18]
-# [1, 1, 1, 2, 2, max(2,2)+1=3, 4, 1]
+"""
+draft
+[10, 9, 2, 5, 3, 7, 101, 18]
+[1, 1, 1, 2, 2, max(2,2)+1=3, 4, 1]
+                 .
+        /               \
+        2               .
+      /   \           /   \
+     8    .          8     .
+    / \  / \        / \   / \
+   4  . 4   .      4  .  4   .
+  /\ /\ /\  /\    /\  /\ /\  /\
+  5. 5. 5.  5.    5.  5.  5.  5.
+"""
 
-# dp, bottom-up, tabulation with list
-# O(n2), O(n)
+
 class Solution:
-    def lengthOfLIS(self, nums: list[int]) -> int:
-        dp = [1 for _ in range(len(nums))]  # LIS lengths
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with cache as list
+        """
+        cache = [1] * len(numbers)  # LIS lengths
 
-        for right in range(len(nums)):  # check every right (index)
+        for right in range(len(numbers)):  # check every right (index)
             for left in range(right):  # check every left (index) lower than right
-                if nums[left] < nums[right]:  # if right num is greater
-                    dp[right] = max(dp[right], dp[left] + 1)  # update LIS lengths 
+                if numbers[left] < numbers[right]:  # if right number is greater
+                    cache[right] = max(cache[right], cache[left] + 1)  # update LIS lengths 
 
-        return max(dp)
+        return max(cache)
 
 
-# dp, bottom-up, tabulation with dict
-# O(n2), O(n)
 class Solution:
-    def lengthOfLIS(self, nums: list[int]) -> int:
-        dp = {}  # LIS lengths
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with cache as hash map
+        """
+        cache = {}  # LIS lengths
 
-        for right in range(len(nums)):  # check every right (index)
-            dp[nums[right]] = 1  # add current element to dp
+        for right in range(len(numbers)):  # check every right (index)
+            cache[numbers[right]] = 1  # add current element to cache
             
-            for left in dp.keys():  # check every left (index) of dp
-                if left < nums[right]:  # if right num is greater
-                    dp[nums[right]] = max(dp[nums[right]], dp[left] + 1)  # update LIS lengths 
+            for left_val in cache.keys():  # check every left_val (index) of cache
+                if left_val < numbers[right]:  # if right number is greater
+                    cache[numbers[right]] = max(cache[numbers[right]], 
+                                                cache[left_val] + 1)  # update LIS lengths 
 
-        return max(dp.values())
+        return max(cache.values())
+
+
+class Solution:
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        mle
+        """
+        memo = {}
+
+        def dfs(index, prev_index):
+            if index == len(numbers):
+                return 0
+            elif (index, prev_index) in memo:
+                return memo[(index, prev_index)]
+
+            # Try skipping numbers[index]
+            longest = dfs(index + 1, prev_index)
+            
+            # Try including numbers[index] if it maintains an increasing order
+            if (prev_index == -1 or 
+                    numbers[index] > numbers[prev_index]):
+                longest = max(longest, 1 + dfs(index + 1, index))
+
+            memo[(index, prev_index)] = longest
+            return longest
+
+        return dfs(0, -1)
+
+
+class Solution:
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, pure recursion
+        tle, mle, converts to top-down
+        """
+
+        def dfs(index, prev_index):
+            if index == len(numbers):
+                return 0
+
+            # Try skipping numbers[index]
+            longest = dfs(index + 1, prev_index)
+            
+            # Try including numbers[index] if it maintains an increasing order
+            if (prev_index == -1 or 
+                    numbers[index] > numbers[prev_index]):
+                longest = max(longest, 1 + dfs(index + 1, index))
+
+            return longest
+
+        return dfs(0, -1)
+
+
+class Solution:
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, function argument
+        tle
+        """
+        self.longest = 0
+        
+        def dfs(index, subsequence):
+            if index == len(numbers):
+                self.longest = max(self.longest, len(subsequence))
+                return
+
+            # Try including numbers[index] if it maintains an increasing order
+            if not subsequence or subsequence[-1] < numbers[index]:
+                dfs(index + 1, subsequence + [numbers[index]])
+            
+            # Try skipping numbers[index]
+            dfs(index + 1, subsequence)
+
+        dfs(0, [])
+        return self.longest
+
+
+class Solution:
+    def lengthOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(n2^n), O(n)
+        brute force, backtracking
+        tle
+        """
+        self.counter = 1
+        subsequence = []
+
+        def dfs(index):
+            if index == len(numbers):
+                if len(subsequence) > 1:
+                    for ind in range(len(subsequence) - 1):
+                        if subsequence[ind] >= subsequence[ind + 1]:
+                            return
+                    self.counter = max(self.counter, len(subsequence))
+                return
+
+            subsequence.append(numbers[index])
+            dfs(index + 1)
+            subsequence.pop()
+            dfs(index + 1)
+
+        dfs(0)
+        return self.counter
 
 
 
@@ -2344,36 +2871,133 @@ Input: nums = [1,2,3,5]
 Output: false
 Explanation: The array cannot be partitioned into equal sum subsets.
 """
-(Solution().canPartition([14, 9, 8, 4, 3, 2]), True)
-(Solution().canPartition([1, 2, 5]), False)
-(Solution().canPartition([1, 5, 11, 5]), True)
-(Solution().canPartition([3, 3, 3, 4, 5]), True)
-(Solution().canPartition([1, 2, 3, 5]), False)
-(Solution().canPartition([1]), False)
-(Solution().canPartition([2, 2, 1, 1]), True)
+print(Solution().canPartition([2]), False)
+print(Solution().canPartition([2, 2]), True)
+print(Solution().canPartition([1, 5, 11, 5]), True)
+print(Solution().canPartition([14, 9, 8, 4, 3, 2]), True)
+print(Solution().canPartition([1, 2, 5]), False)
+print(Solution().canPartition([3, 3, 3, 4, 5]), True)
+print(Solution().canPartition([1, 2, 3, 5]), False)
+print(Solution().canPartition([1]), False)
+print(Solution().canPartition([2, 2, 1, 1]), True)
+
+
+"""
+draft
+                  .
+            /           \
+           1            .
+         /    \       /    \
+        5     .       5     .
+       /\     /\     /\    /\
+      11 .   11 .   11 .  11 .
+    /\
+   5 .
+"""
 
 
 class Solution:
-    def canPartition(self, nums: list[int]):
-        if sum(nums) % 2:  # if odd sum (cannot be split in half)
+    def canPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n2), O(n)
+        dp, bottom-up
+        """
+        total = sum(numbers)
+        if total % 2:  # if odd sum (cannot be split in half)
             return False
+        half = total // 2  # half of the sum
+        subset = set({0})  # set with addition neutral element
 
-        half = sum(nums) // 2  # half of the sum
-        seen_numbers = set()  # numbers seen in previous loop
+        for number in numbers:
+            subset.update({val + number  # update every val in subset with (val + number), but preserve orginal vals
+                           for val in subset.copy()})
+            subset.add(number)
 
-        for num in nums:  # for every number
-            new_numbers = seen_numbers.copy()  # copy of seen numbers
-            new_numbers = {new_number + num for new_number in new_numbers}  # new numbers in current loop
-            seen_numbers.update(new_numbers)  # seen_numbers |= new_numbers  update seen numbers
-            seen_numbers.add(num)  # add current num
-
-            # update seen_numbers in one line, has to initiate seen_numbers = {0} to have seen_numbers.add(num)
-            # seen_numbers.update({new_number + num for new_number in seen_numbers})
-
-            if half in seen_numbers:  # check if half is in seen numbers
+            if half in subset:
                 return True
 
         return False
+
+
+class Solution:
+    def canPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        """
+        total = sum(numbers)
+        if total % 2:  # if odd sum (cannot be split in half)
+            return False
+
+        memo = {}  # {(index, target): bool}
+        
+        def dfs(index: int, target: int) -> bool:
+            if (index, target) in memo:
+                return memo[(index, target)]
+            elif target <= 0:
+                return target == 0
+            elif index == len(numbers):
+                return False
+
+            memo[(index, target)] = (dfs(index + 1, target - numbers[index]) or 
+                                     dfs(index + 1, target))
+            return memo[(index, target)]
+
+        return dfs(0, total // 2)
+
+
+class Solution:
+    def canPartition(self, numbers: list[int]) -> bool:
+        """
+        O(2^n), O(n)
+        brute force, pure recursion, tle
+        converts to top-down
+        """
+        total = sum(numbers)
+        if total % 2:  # if odd sum (cannot be split in half)
+            return False
+
+        def dfs(index: int, target: int) -> bool:
+            if target <= 0:
+                return target == 0
+            elif index == len(numbers):
+                return False
+        
+            return (dfs(index + 1, target - numbers[index]) or
+                    dfs(index + 1, target))
+
+        return dfs(0, total // 2)
+
+
+class Solution:
+    def canPartition(self, numbers: list[int]) -> bool:
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
+        total = sum(numbers)
+        if total % 2:
+            return False
+        half = total // 2
+        subset = []
+
+        def dfs(index: int) -> bool:
+            if sum(subset) == half:
+                return True
+            elif (index == len(numbers) or
+                  sum(subset) > half):
+                return
+
+            subset.append(numbers[index])
+            if dfs(index + 1):
+                return True
+            subset.pop()
+            if dfs(index + 1):
+                return True
+
+            return False
+
+        return dfs(0)
 
 
 
@@ -2568,51 +3192,66 @@ Input: nums = [5,4,-1,7,8]
 Output: 23
 Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
 """
-(Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
-(Solution().maxSubArray([1]), 1)
-(Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
-(Solution().maxSubArray([-4, -2, -1, -3]), -1)
+print(Solution().maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]), 6)
+print(Solution().maxSubArray([1]), 1)
+print(Solution().maxSubArray([5, 4, -1, 7, 8]), 23)
+print(Solution().maxSubArray([-4, -2, -1, -3]), -1)
 
+
+#                      -2     
+#                    /    \    
+#                  -2+1   1    
+#                       /   \ 
+#                     1-3    -3
+#                     /  \
+#                  -2+4   4
+#                        /  \
+#                      4-1   -1
+#                      /  \
+#                   3+2    2
+#                  /   \
+#                5+1    1
+# 
 # for [-2, 1, -3, 4, -1, 2, 1, -5, 4]
 # cummulative sum [-2, 1, -2, 4, 3, 5, 6, 1, 4]
 
-# dp, bottom-up, dp list => 2 variables: cumulative, maxSum
-# O(n), O(1)
-class Solution:
-    def maxSubArray(self, nums: list[int]) -> int:
-        nums_len = len(nums)
-        cumulative = nums[0]  # in case of all negative values cannot take "0" as a base
-        max_value = nums[0]  # in case of all negative values cannot take "0" as a base
 
-        for index in range(1, nums_len):
-            cumulative = max(cumulative, 0) + nums[index]  # keep track of the cumulative sum or start a new one if below zero
+# O(n), O(1)
+# dp, bottom-up
+class Solution:
+    def maxSubArray(self, numbers: list[int]) -> int:
+        cumulative = numbers[0]  # take the first value as a default value
+        max_value = numbers[0]  # take the first value as a default value
+
+        for number in numbers[1:]:
+            cumulative = max(cumulative + number, number)  # keep track of the cumulative sum or start a new one
             max_value = max(cumulative, max_value)  # keep track of the highest value
 
         return max_value
 
 
-# dp, bottom-up, use nums as dp
 # O(n), O(n)
-class Solution:
-    def maxSubArray(self, nums: list[int]) -> int:
-        for index in range(1, len(nums)):
-            nums[index] += max(nums[index - 1], 0)  # add another element to sum or start a new one
-
-        return max(nums)
-
-
 # dp, bottom-up
-# O(n), O(n)
 class Solution:
-    def maxSubArray(self, nums: list[int]) -> int:
-        nums_len = len(nums)
-        dp = [0 for _ in range(nums_len)]  # for cumulative sum
-        dp[0] = nums[0]  # in case of all negative values cannot take "0" as a base
+    def maxSubArray(self, numbers: list[int]) -> int:
+        dp = [0 for _ in range(len(numbers))]  # for cumulative sum
+        dp[0] = numbers[0]  # in case of all negative values cannot take "0" as a base
 
-        for index in range(1, nums_len):
-            dp[index] = max(dp[index - 1], 0) + nums[index]  # add another element to sum or start a new one
+        for index in range(1, len(numbers)):
+            dp[index] = max(dp[index - 1] + numbers[index], numbers[index])   # add another element to sum or start a new one
         
         return max(dp)
+
+
+# O(n), O(n)
+# dp, bottom-up
+# use numbers as dp
+class Solution:
+    def maxSubArray(self, numbers: list[int]) -> int:
+        for index in range(1, len(numbers)):
+            numbers[index] += max(numbers[index - 1], 0)  # add another element to sum or start a new one
+
+        return max(numbers)
 
 
 
@@ -3329,7 +3968,7 @@ class Solution:
 
 
 # Brute force
-# Time Limit Exceeded
+# tle
 class Solution:
     def minEatingSpeed(self, piles: list[int], h: int) -> int:
         k = 1
@@ -3555,7 +4194,7 @@ In other words, return true if one of s1's permutations is the substring of s2.
 Example 1:
 
 Input: s1 = "ab", s2 = "eidbaooo"
-Output: true
+uOutput: true
 Explanation: s2 contains one permutation of s1 ("ba").
 
 Example 2:
@@ -3563,85 +4202,124 @@ Example 2:
 Input: s1 = "ab", s2 = "eidboaoo"
 Output: false
 """
-(Solution().checkInclusion("ab", "eidbaooo"), True)
-(Solution().checkInclusion("ab", "eidboaoo"), False)
-(Solution().checkInclusion("ccc", "cbac"), False)
-(Solution().checkInclusion("ab", "a"), False)
-(Solution().checkInclusion("abcdxabcde", "abcdeabcdx"), True)
-(Solution().checkInclusion("adc", "dcda"), True)
-(Solution().checkInclusion("hello", "ooolleoooleh"), False)
-(Solution().checkInclusion("mart", "karma"), False)
-(Solution().checkInclusion("abc", "ccccbbbbaaaa"), False)
- 
+print(Solution().checkInclusion("ab", "eidbaooo"), True)
+print(Solution().checkInclusion("ab", "eidboaoo"), False)
+print(Solution().checkInclusion("ccc", "cbac"), False)
+print(Solution().checkInclusion("ab", "a"), False)
+print(Solution().checkInclusion("abcdxabcde", "abcdeabcdx"), True)
+print(Solution().checkInclusion("adc", "dcda"), True)
+print(Solution().checkInclusion("hello", "ooolleoooleh"), False)
+print(Solution().checkInclusion("mart", "karma"), False)
+print(Solution().checkInclusion("abc", "ccccbbbbaaaa"), False)
+
 
 # O(n), O(n)
 # sliding window
 class Solution:
-    def checkInclusion(self, word1, word2):
+    def checkInclusion(self, word1: str, word2: str) -> bool:
+        left = 0  # `left` marks the start of the sliding window
         pattern = {}  # `pattern` stores the frequency of characters in `word1`
         window = {}  # `window` keeps track of character frequencies in the current window of `word2`
-        matched = 0   # `matched` keeps track of how many characters in `pattern` have matching frequencies in `window`
-        left = 0  # `left` marks the start of the sliding window
-
+        
         for letter in word1:
             pattern[letter] = pattern.get(letter, 0) + 1
+        
+        needed = len(pattern)  # `needed` keeps track of how many characters in `pattern` are still needed to match frequencies in `window`
 
-         # Iterate over `word2` with a sliding window approach
         for right, letter in enumerate(word2):
-            window[letter] = window.get(letter, 0) + 1
+            window[letter] = window.get(letter, 0) + 1  # add `letter` to `window`
+            
+            if (letter in pattern and  # if `letter` is in `pattern` and
+                    window[letter] == pattern[letter]):  # `letter` frequencies match
+                needed -= 1  # one less character needed to match strings
 
-            # If the current character is in the `pattern` and its frequency matches
-            if (letter in pattern and
-                    window[letter] == pattern[letter]):
-                matched += 1
+                if needed == 0:  # if no `needed` (strings matched)
+                    return True
+            
+            # if `window` is as long as `text1`
+            if (right - left + 1) == len(word1):
+                left_letter = word2[left]  # get left letter
+                
+                if (left_letter in pattern and  # if left letter is in pattern and
+                        window[left_letter] == pattern[left_letter]):  # frequency of that letter in window is same as in pattern
+                    needed += 1  # increase matching character frequences
 
-            # If all characters in the `pattern` are matched, return True
-            if matched == len(pattern):
-                return True
+                window[left_letter] -= 1  # decrease character frequency
 
-            # Check if the current window size is less than the size of `word1`
-            if right - left + 1 != len(word1):
-                continue  # Skip the rest of the loop until the window size matches `word1`
+                if window[left_letter] == 0:  # if character frequency is zero
+                    window.pop(left_letter)  # pop that character
 
-            # get left letter
-            left_letter = word2[left]
-
-            # If the character being removed is in the `pattern` and its frequency matches
-            if (left_letter in pattern and
-                    window[left_letter] == pattern[left_letter]):
-                matched -= 1  # Decrement the matched count
-
-            window[left_letter] -= 1  # remove a letter at the left pointer from the window
-            left += 1
-
+                left += 1
+        
         return False
 
 
 # O(n), O(n)
-# sliding window, compare whole dicts when checking for inclusion
+# sliding window
+# This code is wrong somehow. In this version correct window length is checked
+# just after adding a new letter. So when its too long it gets shorten.
+# In the working version window lenght is checkd as the end of the loop.
+# If it's the size of the pattern, it gets trimmed for the next loop.
 class Solution:
-    def checkInclusion(self, word1, word2):
-        counter1 = {}  # dict from word1
-        window = {}  # window as dict
-        left = 0  # left pointer
+    def checkInclusion(self, word1: str, word2: str) -> bool:
+        left = 0  # `left` marks the start of the sliding window
+        pattern = {}  # `pattern` stores the frequency of characters in `word1`
+        window = {}  # `window` keeps track of character frequencies in the current window of `word2`
         
-        for letter in word1:  # dict from word1
-            counter1[letter] = counter1.get(letter, 0) + 1
+        for letter in word1:
+            pattern[letter] = pattern.get(letter, 0) + 1
         
-        for right, letter in enumerate(word2):  # right pointer and right letter
-            window[letter] = window.get(letter, 0) + 1  # add a letter to the window
+        needed = len(pattern)  # `needed` keeps track of how many characters in `pattern` are still needed to match frequencies in `window`
+
+        for right, letter in enumerate(word2):
+            window[letter] = window.get(letter, 0) + 1  # add `letter` to `window`
             
-            if len(word1) != right - left + 1:  # if window is not long enough
-                continue
-            elif counter1 == window:  # comapre dicts
-                return True
-            else:
+            # if `window` is longer than `text1`
+            if (right - left + 1) == len(word1) + 1:
                 left_letter = word2[left]  # get left letter
-                window[left_letter] -= 1  # remove it from the window
+                
+                if (left_letter in pattern and  # if left letter is in pattern and
+                        window[left_letter] == pattern[left_letter]):  # frequency of that letter in window is same as in pattern
+                    needed += 1  # increase matching character frequences
+
+                window[left_letter] -= 1  # decrease character frequency
+
+                if window[left_letter] == 0:  # if character frequency is zero
+                    window.pop(left_letter)  # pop that character
+
                 left += 1
 
-                if not window[left_letter]:  # if a key with no value exists, important for compraing dicts
-                    window.pop(left_letter)  # remove that key
+            if (letter in pattern and  # if `letter` is in `pattern` and
+                    window[letter] == pattern[letter]):  # `letter` frequencies match
+                needed -= 1  # one less character needed to match strings
+
+                if needed == 0:  # if no `needed` (strings matched)
+                    return True
+        
+        return False
+
+
+# O(n2), O(n)
+# brute force
+class Solution:
+    def checkInclusion(self, word1: str, word2: str) -> bool:
+        counter_word1 = {}
+        for letter in word1:
+            counter_word1[letter] = counter_word1.get(letter, 0) + 1
+
+        for left in range(len(word2) - len(word1) + 1):
+            counter_word1_copy = counter_word1.copy()
+            
+            for right in range(left, left + len(word1)):
+                letter = word2[right]
+                if letter not in counter_word1_copy:
+                    break
+                counter_word1_copy[letter] -= 1
+                if counter_word1_copy[letter] == 0:
+                    counter_word1_copy.pop(letter)
+            
+            if not counter_word1_copy:
+                return True
 
         return False
 
@@ -3677,47 +4355,78 @@ Output: ""
 Explanation: Both 'a's from t must be included in the window.
 Since the largest window of s only has one 'a', return empty string.
 """
-(Solution().minWindow("ADOBECODEBANC", "ABC"), "BANC")
-(Solution().minWindow("a", "a"), "a")
-(Solution().minWindow("a", "aa"), "")
-(Solution().minWindow("a", "b"), "")
-(Solution().minWindow("ab", "b"), "b")
-(Solution().minWindow("bba", "ab"), "ba")
-(Solution().minWindow("abc", "a"), "a")
-(Solution().minWindow("jwsdrkqzrthzysvqqazpfnulprulwmwhiqlbcdduxktxepnurpmxegktzegxscfbusexvhruumrydhvvyjucpeyrkeodjvgdnkalutfoizoliliguckmikdtpryanedcqgpkzxahwrvgcdoxiylqjolahjawpfbilqunnvwlmtrqxfphgaxroltyuvumavuomodblbnzvequmfbuganwliwidrudoqtcgyeuattxxlrlruhzuwxieuqhnmndciikhoehhaeglxuerbfnafvebnmozbtdjdo", "qruzywfhkcbovewle"), "vequmfbuganwliwidrudoqtcgyeuattxxlrlruhzuwxieuqhnmndciik")
+print(Solution().minWindow("ADOBECODEBANC", "ABC"), "BANC")
+print(Solution().minWindow("a", "a"), "a")
+print(Solution().minWindow("a", "aa"), "")
+print(Solution().minWindow("a", "b"), "")
+print(Solution().minWindow("ab", "b"), "b")
+print(Solution().minWindow("bba", "ab"), "ba")
+print(Solution().minWindow("abc", "a"), "a")
+print(Solution().minWindow("jwsdrkqzrthzysvqqazpfnulprulwmwhiqlbcdduxktxepnurpmxegktzegxscfbusexvhruumrydhvvyjucpeyrkeodjvgdnkalutfoizoliliguckmikdtpryanedcqgpkzxahwrvgcdoxiylqjolahjawpfbilqunnvwlmtrqxfphgaxroltyuvumavuomodblbnzvequmfbuganwliwidrudoqtcgyeuattxxlrlruhzuwxieuqhnmndciikhoehhaeglxuerbfnafvebnmozbtdjdo", "qruzywfhkcbovewle"), "vequmfbuganwliwidrudoqtcgyeuattxxlrlruhzuwxieuqhnmndciik")
 
 
 # O(n), O(n)
 # sliding window
 class Solution:
-    def minWindow(self, word1, word2):
-        # `pattern` stores the frequency of characters in `word2` (target)
-        pattern = {}
-        # `window` tracks character frequencies in the current sliding window of `word1`
-        window = {}
-        # `matched` counts how many characters in `pattern` have matching frequencies in `window`
-        matched = 0
-        # `left` is the start pointer for the sliding window
-        left = 0
-        # `shortest` will store the shortest valid substring that contains all characters of `word2`
-        shortest = ""
+    def minWindow(self, word1: str, word2: str) -> str:
+        pattern = {}  # stores the frequency of characters in `word2` (target)
+        window = {}  # tracks character frequencies in the current sliding window of `word1`
+        left = 0  # the start pointer for the sliding window
+        start = -1  # the start of the shortest window
+        min_length = len(word1) + 1
+        
+        for letter in word2:
+            pattern[letter] = pattern.get(letter, 0) + 1
+        
+        need = len(pattern)  # the number of unique letters left to match the pattern
+        
+        for right, letter in enumerate(word1):
+            if letter in pattern:  # if pattern contains current letter
+                window[letter] = window.get(letter, 0) + 1  # Add the current character to the `window` dictionary
+                if window[letter] == pattern[letter]:
+                    need -= 1
 
-        # Populate the `pattern` dictionary with character frequencies from `word2`
+            while need == 0:  # if pattern is matched
+                if right - left + 1 < min_length:  # if current string shorter
+                    min_length = right - left + 1  # update shortest window length
+                    start = left  # mark the start of the shortest window
+        
+                # Shrink the window:
+                if word1[left] in pattern:
+                    if window[word1[left]] == pattern[word1[left]]:
+                        need += 1
+                    window[word1[left]] -= 1
+                left += 1
+
+        return (word1[start: start + min_length] 
+                if min_length != len(word1) + 1
+                else "")
+
+
+# O(n), O(n)
+# sliding window
+class Solution:
+    def minWindow(self, word1: str, word2: str) -> str:
+        pattern = {}  # stores the frequency of characters in `word2` (target)
+        window = {}  # tracks character frequencies in the current sliding window of `word1`
+        matched = 0  # counts how many characters in `pattern` have matching frequencies in `window`
+        left = 0  # the start pointer for the sliding window
+        # shortest = ""  # store the shortest valid substring that contains all characters of `word2`
+        start = -1
+        min_length = len(word1) + 1
+
         for letter in word2:
             pattern[letter] = pattern.get(letter, 0) + 1
 
-        # Iterate over `word1` to expand the sliding window
         for right, letter in enumerate(word1):
-            # Add the current character to the `window` dictionary
-            window[letter] = window.get(letter, 0) + 1
+            window[letter] = window.get(letter, 0) + 1  # Add the current character to the `window` dictionary
 
             # If the current character is in `pattern` and its frequency matches
             if (letter in pattern and
                     window[letter] == pattern[letter]):
                 matched += 1  # Increment the matched count
 
-            # Only proceed to shrinking the window if all characters in `pattern` are matched
-            if matched != len(pattern):
+            if matched != len(pattern):  # If not all characters in `pattern` are matched `continue`
                 continue
 
             # Shrink the window from the left while keeping it valid
@@ -3729,9 +4438,9 @@ class Solution:
                 left_letter = word1[left]  # Update the left character
 
             # Check if the current window is the smallest valid substring so far
-            if (not shortest or  # If `shortest` is empty
-                    right - left + 1 < len(shortest)):  # If the current window is smaller
-                shortest = word1[left: right + 1]  # Update the shortest substring
+            if right - left + 1 < min_length:  # If the current window is smaller
+                min_length = right - left + 1  # Update the shortest substring
+                start = left
 
             # Prepare for the next iteration by removing the leftmost character
             # (even if it is significant) and reducing the `matched` count
@@ -3740,92 +4449,9 @@ class Solution:
             left += 1
 
         # Return the shortest valid substring or an empty string if no such substring exists
-        return shortest
-
-
-# compare dictionaries directly
-class Solution:
-    def counter(self, word):
-        d = dict()
-
-        for letter in word:
-            d[letter] = d.get(letter, 0) + 1
-
-        return d
-    
-    # if window valid subdict of pattern, check only key from pattern
-    def is_sub(self, window, pattern):
-        for key in pattern:
-            if not key in window or window[key] < pattern[key]:
-                return False
-
-        return True
-
-    def minWindow(self, s: str, pattern: str) -> str:
-        if len(pattern) > len(s):
-            return ""
-        
-        l = 0
-        r = 0
-        pattern_counter = self.counter(pattern)
-        window_count = {}
-        min_window = s + ":"
-
-        while r < len(s):
-            # update curr window dict if element is significant
-            if s[r] in pattern_counter.keys():
-                window_count[s[r]] = window_count.get(s[r], 0) + 1
-
-            # while all elements from window are found in pattern
-            # Case where need to trim window from left (Solution().minWindow("bba", "ab"), "ba") is "bba"
-            while self.is_sub(window_count, pattern_counter):
-                # update minimum window
-                min_window = min(min_window, s[l: r + 1], key=len)
-        
-                # if l is a significant index
-                if s[l] in pattern_counter:
-                    # update current window dict
-                    window_count[s[l]] -= 1
-
-                l += 1
-
-            r += 1
-
-        return "" if min_window == s + ":" else min_window
-
- 
-# O(n2)
-class Solution:
-    def counter(self, word):
-        d = dict()
-
-        for letter in word:
-            d[letter] = d.get(letter, 0) + 1
-
-        return d
-
-    def dict_compare(self, s_dict, t_dict):
-        for key in t_dict:
-            if not key in s_dict or s_dict[key] < t_dict[key]:
-                return False
-
-        return True
-
-    def minWindow(self, s: str, t: str) -> str:
-        if len(t) > len(s):
-            return ""
-        
-        t_dict = self.counter(t)
-        min_wind = s + ":"
-
-        for l in range(len(s)):
-            for r in range(len(s)):
-                s_dict = self.counter(s[l:r + 1])
-
-                if self.dict_compare(s_dict, t_dict):
-                    min_wind = min(min_wind, s[l: r + 1], key=len)
-
-        return "" if min_wind == s + ":" else min_wind
+        return (word1[start: start + min_length] 
+                if min_length != len(word1) + 1
+                else "")
 
 
 
@@ -3857,50 +4483,46 @@ Example 2:
 Input: nums = [1], k = 1
 Output: [1]
 """
-(Solution().maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3), [3, 3, 5, 5, 6, 7])
-(Solution().maxSlidingWindow([1], 1), [1])
-(Solution().maxSlidingWindow([7, 2, 4], 2), [7, 4])
-(Solution().maxSlidingWindow([1, 3, 1, 2, 0, 5], 3), [3, 3, 2, 5])
+print(Solution().maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3), [3, 3, 5, 5, 6, 7])
+print(Solution().maxSlidingWindow([1], 1), [1])
+print(Solution().maxSlidingWindow([7, 2, 4], 2), [7, 4])
+print(Solution().maxSlidingWindow([1, 3, 1, 2, 0, 5], 3), [3, 3, 2, 5])
 
 
 # O(n), O(n)
-# sliding window as deque of indexes, Monotonic Decreasing Queue
-from collections import deque
-
+# sliding window, deque, monotonic queue
+# monotonically decreasing queue
 class Solution:
-    def maxSlidingWindow(self, numbers, window_size):
+    def maxSlidingWindow(self, numbers: list[int], window_size: int) -> list[int]:
         window = deque()  # sliding window as a deque
         left = 0  # left pointer
-        max_list = []  # stores the maximum values for each sliding window.
+        maxs_list = []  # stores the maximum values for each sliding window.
 
         for right, number in enumerate(numbers):
             # Remove elements from the back of the deque if they are less than or equal to
-            # the current number, as they cannot be the maximum in the current or any future window.
+            # the current number, as they cannot be the maximum in the current 
+            # or any future window. monotonically decreasing queue
             while (window and
-                   numbers[window[-1]] <= number):
+                   window[-1][1] <= number):
                 window.pop()
-
-            # Add the index of the current number to the deque.
-            window.append(right)
 
             # Remove elements from the front of the deque if they are outside the current window.
             while (window and
-                   window[0] < left):
+                   window[0][0] < left):
                 window.popleft()
 
-            # When the sliding window reaches the required size, record the maximum value.
-            if right - left + 1 == window_size:
-                # The maximum value in the current window is at the index `window[0]`.
-                max_list.append(numbers[window[0]])
-                # Slide the window forward by incrementing `left`.
-                left += 1
+            window.append((right, number))  # add the index, number pair to the deque.
 
-        return max_list
+            if right - left + 1 == window_size:  # When the sliding window reaches the required size, record the maximum value.
+                maxs_list.append(window[0][1])  # The maximum value in the current window is at the index `window[0][1]`.
+                left += 1  # Slide the window forward by incrementing `left`.
+
+        return maxs_list
 
 
 # window as a list of indexes
 class Solution:
-    def maxSlidingWindow(self, numbers, window_size):
+    def maxSlidingWindow(self, numbers: list[int], window_size: int) -> list[int]:
         window = []  # sliding window as a list
         left = 0  # left pointer
         current_max = []  # array with max value from each sliding window
@@ -3926,7 +4548,8 @@ class Solution:
         return current_max
 
 
-# O(n2)
+# O(n2), O(n)
+# brute force
 class Solution:
     def maxSlidingWindow(self, numbers: list[int], k: int) -> list[int]:
         left = 0
@@ -4053,12 +4676,14 @@ Explanation: ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
 = 17 + 5
 = 22
 """
-(Solution().evalRPN(["2", "1", "+", "3", "*"]), 9)
-(Solution().evalRPN(["4", "13", "5", "/", "+"]), 6)
-(Solution().evalRPN(["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]), 22)
-(Solution().evalRPN(["18"]), 18)
+print(Solution().evalRPN(["2", "1", "+", "3", "*"]), 9)
+print(Solution().evalRPN(["4", "13", "5", "/", "+"]), 6)
+print(Solution().evalRPN(["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]), 22)
+print(Solution().evalRPN(["18"]), 18)
 
 
+# O(n), O(n)
+# stack
 class Solution:
     def evalRPN(self, tokens: list[str]) -> int:
         stack = []
@@ -4069,17 +4694,13 @@ class Solution:
             elif token == "*":
                 stack.append(stack.pop() * stack.pop())
             elif token == "-":
-                b = stack.pop()
-                a = stack.pop()
-                stack.append(a - b)
+                last = stack.pop()
+                stack.append(stack.pop() - last)
             elif token == "/":
-                b = stack.pop()
-                a = stack.pop()
-                stack.append(int(a / b))
-                print(stack)
+                last = stack.pop()
+                stack.append(int(stack.pop() / last))
             else:
                 stack.append(int(token))
-
         return stack[0]
 
 
@@ -4106,41 +4727,42 @@ Example 3:
 Input: temperatures = [30,60,90]
 Output: [1,1,0]
 """
-(Solution().dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]), [1, 1, 4, 2, 1, 1, 0, 0])
-(Solution().dailyTemperatures([30, 40, 50, 60]), [1, 1, 1, 0])
-(Solution().dailyTemperatures([30, 60, 90]), [1, 1, 0])
+print(Solution().dailyTemperatures([73, 74, 75, 71, 69, 72, 76, 73]), [1, 1, 4, 2, 1, 1, 0, 0])
+print(Solution().dailyTemperatures([30, 40, 50, 60]), [1, 1, 1, 0])
+print(Solution().dailyTemperatures([30, 60, 90]), [1, 1, 0])
 
 
 # O(n), O(n)
+# stack, monotonic stack
+# monotonically decreasing stack
 class Solution:
     def dailyTemperatures(self, temps: list[int]) -> list[int]:
-        stack = []
-        days_delta = [0] * len(temps)
+        stack = []  # [(day, temperature), ]
+        days_to_warmer_day = [0] * len(temps)  # number of days needed to wait after day ith for a warmer day to arrive
 
         for current_day, temp in enumerate(temps):
-            while (stack and 
-                   temp > stack[-1][1]):  # check if temp is lower
-                
+            while stack and temp > stack[-1][1]:  # check if temp is lower
                 previous_day, _ = stack.pop()  # index of the last day in stack
-                days_delta[previous_day] = current_day - previous_day
+                days_to_warmer_day[previous_day] = current_day - previous_day  # set days needed to get higher temperature
 
             stack.append((current_day, temp))  # apped new temp
 
-        return days_delta
+        return days_to_warmer_day
 
 
-# O(n2)
+# O(n2), O(1)
+# brute force
 class Solution:
-    def dailyTemperatures(self, temps):
-        days_delta = [0 for _ in range(len(temps))]
+    def dailyTemperatures(self, temps: list[int]) -> list[int]:
+        days_to_warmer_day = [0] * len(temps)  # number of days needed to wait after day ith for a warmer day to arrive
 
-        for ind_l in range(len(temps) - 1):
-            for ind_p in range(ind_l + 1, len(temps)):
-                if temps[ind_l] < temps[ind_p]:
-                    days_delta[ind_l] = ind_p - ind_l            
+        for left in range(len(temps)):
+            for right in range(left + 1, len(temps)):
+                if temps[left] < temps[right]:
+                    days_to_warmer_day[left] = right - left
                     break
-
-        return days_delta
+        
+        return days_to_warmer_day
 
 
 
@@ -4194,11 +4816,13 @@ Explanation:
 The cars starting at 0 (speed 4) and 2 (speed 2) become a fleet, meeting each other at 4. The car starting at 4 (speed 1) travels to 5.
 Then, the fleet at 4 (speed 2) and the car at position 5 (speed 1) become one fleet, meeting each other at 6. The fleet moves at speed 1 until it reaches target.
 """
-(Solution().carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]), 3)
-(Solution().carFleet(10, [3], [3]), 1)
-(Solution().carFleet(100, [0, 2, 4], [4, 2, 1]), 1)
-(Solution().carFleet(10, [0, 4, 2], [2, 1, 3]), 1)
+print(Solution().carFleet(12, [10, 8, 0, 5, 3], [2, 4, 1, 1, 3]), 3)
+print(Solution().carFleet(10, [3], [3]), 1)
+print(Solution().carFleet(100, [0, 2, 4], [4, 2, 1]), 1)
+print(Solution().carFleet(10, [0, 4, 2], [2, 1, 3]), 1)
 
+
+# draft
 # (12 - 10) / 2 = 1;
 # (12 - 8) / 4 = 1;
 
@@ -4214,40 +4838,55 @@ Then, the fleet at 4 (speed 2) and the car at position 5 (speed 1) become one fl
 #     5         6       6
 
 
+# O(nlogn), O(n)
 class Solution:
-    def carFleet(self, target: int, position: list[int], speed: list[int]) -> int:
-        cars = sorted(zip(position, speed))
-        fleets = len(position)
-        distances = []
-        
-        for car in cars[::-1]:
-            pos, speed = car
-            distance = (target - pos) / speed
+    def carFleet(self, target: int, positions: list[int], speeds: list[int]) -> int:
+        cars = sorted(zip(positions, speeds), reverse=True)  # sort cars statring from ones closest to finish
+        previous_ttf = 0  # previous time to finish
+        fleets = 0  # count fleets
 
-            if (distances and 
-                distance <= distances[-1]):
-                fleets -= 1
-                # if the time to tartet is lower than the top stack time to target
-                # then the highter time should remain to possibly catch next cars
-            else:
-                distances.append(distance)
+        for position, speed in cars:
+            time_to_finish = (target - position) / speed  # calculate time to finish for curent car
+            fleets += time_to_finish > previous_ttf  # if current car time to finish is greater than the next fleet, add another fleet
+            previous_ttf = max(previous_ttf, time_to_finish)  # time to finish for the current fleet
 
         return fleets
 
 
+# O(nlogn), O(n)
+class Solution:
+    def carFleet(self, target: int, positions: list[int], speeds: list[int]) -> int:
+        cars = sorted(zip(positions, speeds), reverse=True)
+        fleets = len(positions)
+        times = []
+        
+        for position, speed in cars:
+            time = (target - position) / speed
+
+            if (times and 
+                    time <= times[-1]):
+                fleets -= 1
+                # if the time to tartet is lower than the top stack time to target
+                # then the highter time should remain to possibly catch next cars
+            else:
+                times.append(time)
+
+        return fleets
+
+
+# O(nlogn), O(n)
 class Solution:
     def carFleet(self, target, positions, speeds):
-        cars = list(zip(positions, speeds))
-        cars.sort(reverse=True)  # sort the cars so to start with the one closest to the target
+        cars = sorted(zip(positions, speeds), reverse=True)  # sort the cars so to start with the one closest to the target
         fleet_stack = []
 
         for position, speed in cars:
-            curr_dist = (target - position) / speed  # distance to the target
+            time = (target - position) / speed  # time to the target
             
-            if fleet_stack and fleet_stack[-1] >= curr_dist:  # if the car behind cought up next car
+            if fleet_stack and fleet_stack[-1] >= time:  # if the car behind cought up next car
                 continue
 
-            fleet_stack.append(curr_dist)  # append a car to a stack
+            fleet_stack.append(time)  # append a car to a stack
 
         return len(fleet_stack)
 
@@ -4273,49 +4912,53 @@ Example 2:
 Input: nums = [0]
 Output: [[],[0]]
 """
-(Solution().subsets([1, 2, 3]), [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]])
-(Solution().subsets([0]), [[], [0]])
+print(sorted(Solution().subsets([1, 2, 3])), [[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]])
+print(sorted(Solution().subsets([0])), [[], [0]])
  
 
+# O(n2^n), O(n)
+# backtracking
 # "dfs" method inside "subsets" method
 class Solution:
-    def subsets(self, nums):
+    def subsets(self, numbers: list[int]) -> list[list[int]]:
         subset = []  # current subset
-        subset_list = []  # solution
+        subset_list = []  # possible subset list
 
-        def dfs(level):
-            if level == len(nums):  # target level reached
+        def dfs(index):
+            if index == len(numbers):  # target index reached
                 subset_list.append(subset.copy())  # push subset to subset_list
-                return
+                return  
 
-            subset.append(nums[level])  # Include the current element in the subset
-            dfs(level + 1)  # Explore the path with the current element
+            subset.append(numbers[index])  # Include the current element in the subset
+            dfs(index + 1)  # Explore the path with the current element
             subset.pop()  # Backtrack by removing the current element from the subset
-            dfs(level + 1)  # Explore the path without including the current element
+            dfs(index + 1)  # Explore the path without including the current element
 
         dfs(0)  # start dfs with level = 0
     
         return subset_list
 
 
+# O(n2^n), O(n)
+# backtracking
 # "dfs" and "subset" methods inside a class
 class Solution:
     def __init__(self) -> None:
         self.subset = []
         self.subset_list = []
 
-    def subsets(self, nums: list[int]) -> list[list[int]]:
-        self.nums = nums
+    def subsets(self, numbers: list[int]) -> list[list[int]]:
+        self.numbers = numbers
         self.dfs(0)
         
         return self.subset_list
 
-    def dfs(self, level):
-        if level == len(self.nums):
+    def dfs(self, level: int) -> None:
+        if level == len(self.numbers):
             self.subset_list.append(self.subset.copy())
             return
         
-        self.subset.append(self.nums[level])
+        self.subset.append(self.numbers[level])
         self.dfs(level + 1)            
         self.subset.pop()
         self.dfs(level + 1)
@@ -4343,29 +4986,33 @@ Example 2:
 Input: nums = [0]
 Output: [[],[0]]
 """
-(Solution().subsetsWithDup([1, 2, 2]), [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]])
-(Solution().subsetsWithDup([0]), [[], [0]])
-(Solution().subsetsWithDup([4, 4, 4, 1, 4]), [[], [1], [1, 4], [1, 4, 4], [1, 4, 4, 4], [1, 4, 4, 4, 4], [4], [4, 4], [4, 4, 4], [4, 4, 4, 4]])
+print(Solution().subsetsWithDup([1, 2, 2]), [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]])
+print(Solution().subsetsWithDup([0]), [[], [0]])
+print(Solution().subsetsWithDup([4, 4, 4, 1, 4]), [[], [1], [1, 4], [1, 4, 4], [1, 4, 4, 4], [1, 4, 4, 4, 4], [4], [4, 4], [4, 4, 4], [4, 4, 4, 4]])
 
+
+# O(n2^n), O(n)
+# backtracking
 class Solution:
-    def subsetsWithDup(self, nums: list[int]) -> list[list[int]]:
-        nums.sort()
-        subset = []  # current subcet
+    def subsetsWithDup(self, numbers: list[int]) -> list[list[int]]:
+        numbers.sort()
+        subset = []  # current subset
         subset_list = []  # solution
 
         def dfs(index):
-            if index == len(nums):  # target level reached
+            if index == len(numbers):  # target level reached
                 subset_list.append(subset.copy())  # push subset to subset_list
                 return
 
-            subset.append(nums[index])  # Include the current element in the subset
+            subset.append(numbers[index])  # Include the current element in the subset
             dfs(index + 1)  # Explore the path with the current element
             subset.pop()  # Backtrack by removing the current element from the subset
 
-            # If num at the current index (that was poped previously) is the same as
-            # the num at next index skip it.
-            while (index + 1 < len(nums) and
-                    nums[index] == nums[index + 1]):
+            # Skip over duplicate elements to avoid generating duplicate subsets
+            # If number at the `index + 1` (that was poped previously) is the same as
+            # the number at current index skip it.
+            while (index + 1 < len(numbers) and
+                    numbers[index] == numbers[index + 1]):
                 index += 1
 
             dfs(index + 1)  # Explore the path without including the current element
@@ -4466,11 +5113,13 @@ Example 3:
 Input: candidates = [2], target = 1
 Output: []
 """
-(Solution().combinationSum([2, 3, 6, 7], 7), [[2, 2, 3], [7]])
-(Solution().combinationSum([2, 3, 5], 8), [[2, 2, 2, 2], [2, 3, 3], [3, 5]])
-(Solution().combinationSum([2], 1), [])
+print(Solution().combinationSum([2, 3, 6, 7], 7), [[2, 2, 3], [7]])
+print(Solution().combinationSum([2, 3, 5], 8), [[2, 2, 2, 2], [2, 3, 3], [3, 5]])
+print(Solution().combinationSum([2], 1), [])
 
 
+# O(n!), O(n)
+# backtracking
 class Solution:
     def combinationSum(self, candidates: list[int], target: int) -> list[list[int]]:
         combination = []
@@ -4554,11 +5203,14 @@ Output:
 [5]
 ]
 """
-(Solution().combinationSum2([10, 1, 2, 7, 6, 1, 5], 8), [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]])
-(Solution().combinationSum2([2, 5, 2, 1, 2], 5), [[1, 2, 2], [5]])
-(Solution().combinationSum2([6], 6), [[6]])
+print(Solution().combinationSum2([10, 1, 2, 7, 6, 1, 5], 8), [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]])
+print(Solution().combinationSum2([2, 5, 2, 1, 2], 5), [[1, 2, 2], [5]])
+print(Solution().combinationSum2([6], 6), [[6]])
+print(Solution().combinationSum2([2, 2, 2], 2), [[2]])
 
 
+# O(n2^n), O(n)
+# backtracking
 class Solution:
     def combinationSum2(self, candidates: list[int], target: int) -> list[list[int]]:
         candidates.sort()  # sort needed to skip same values
@@ -4641,27 +5293,71 @@ Example 3:
 Input: nums = [1]
 Output: [[1]]
 """
-(Solution().permute([1, 2, 3]), [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
-(Solution().permute([0, 1]), [[0, 1], [1, 0]])
-(Solution().permute([1]), [[1]])
+print(Solution().permute([1, 2, 3]), [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]])
+print(Solution().permute([0, 1]), [[0, 1], [1, 0]])
+print(Solution().permute([1]), [[1]])
 
 
+# O(n!), O(n)
+# backtracking
 class Solution:
-    def permute(self, nums: list[int]) -> list[list[int]]:
-        pernutation_list = []
+    def permute(self, numbers: list[int]) -> list[list[int]]:
+        permutation_list = []
 
-        def dfs(permutatioin, nums):
-            if not nums:  # in no nums left
-                pernutation_list.append(permutatioin)
+        def dfs(left):
+            if left == len(numbers):
+                permutation_list.append(numbers.copy())
                 return
             
-            for index in range(len(nums)):  # for every number in numbers
-                # include this number to 'permutations' and exclude it from numbers
-                dfs(permutatioin + [nums[index]], 
-                    nums[:index] + nums[index + 1 :])
+            for right in range(left, len(numbers)):
+                numbers[left], numbers[right] = numbers[right], numbers[left]
+                dfs(left + 1)
+                numbers[left], numbers[right] = numbers[right], numbers[left]
+        
+        dfs(0)
+        return permutation_list
 
-        dfs([], nums)
-        return pernutation_list
+
+# O(n!), O(n!)
+# backtracking
+class Solution:
+    def permute(self, numbers: list[int]) -> list[list[int]]:
+        permutation = []  # Current permutation being built
+        permutation_list = []  # List to store all permutations
+        
+        def dfs(numbers):
+            if not numbers:  # Base case: when there are no more numbers to permute
+                permutation_list.append(permutation.copy())
+                return
+            
+            for index in range(len(numbers)):  # Loop through all numbers to generate permutations
+                permutation.append(numbers[index])  # Choose the current number and add it to the permutation
+                dfs(numbers[:index] + numbers[index + 1:])  # Recurse with the remaining numbers (excluding the chosen one)
+                permutation.pop()  # Backtrack by removing the last added number
+
+        dfs(numbers)  # Start the recursive DFS with the initial list of numbers
+
+        return permutation_list
+
+
+# O(n!), O(n!)
+# backtracking
+class Solution:
+    def permute(self, numbers: list[int]) -> list[list[int]]:
+        permutation_list = []  # List to store all permutations
+        
+        def dfs(permutation, numbers):
+            if not numbers:  # Base case: when there are no more numbers to permute
+                permutation_list.append(permutation)
+                return
+            
+            for index in range(len(numbers)):  # Loop through all numbers to generate permutations
+                dfs(permutation + [numbers[index]], 
+                    numbers[:index] + numbers[index + 1:])
+
+        dfs([], numbers)  # Start the recursive DFS with empy permutation list and the initial list of numbers
+
+        return permutation_list
 
 
 
@@ -4671,7 +5367,7 @@ class Solution:
 # https://leetcode.com/problems/word-search/
 """
 Given an m x n grid of characters board and a string word, return true if word exists in the grid.
-
+UUu
 The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
 
 Example 1:
@@ -4689,22 +5385,26 @@ Example 3:
 Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
 Output: false
 """
-(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AAB"), True)
-(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AACA"), True)
-(Solution().exist([["A", "A"]], "AAA"), False)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "E", "S"], ["A", "D", "E", "E"]], "ABCEFSADEESE"), True)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AB"), True)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AZ"), False)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABFS"), True)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCCED"), True)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "SEE"), True)
-(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCB"), False)
+print(Solution().exist([["C", "A", "A"]], "AA"), True)
+print(Solution().exist([["C", "A", "A"], ["C", "C", "B"]], "AAB"), True)
+print(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AAB"), True)
+print(Solution().exist([["C", "A", "A"], ["A", "A", "A"], ["B", "C", "D"]], "AACA"), True)
+print(Solution().exist([["A", "A"]], "AAA"), False)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "E", "S"], ["A", "D", "E", "E"]], "ABCEFSADEESE"), True)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AB"), True)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "AZ"), False)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABFS"), True)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCCED"), True)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "SEE"), True)
+print(Solution().exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCB"), False)
 
 # ["A", "B", "C", "E"], 
 # ["S", "F", "E", "S"], 
 # ["A", "D", "E", "E"]
 
 
+# O(nm3^k), O(nm)
+# backtracking
 class Solution:
     def exist(self, board, word):
         rows = len(board)
@@ -4719,27 +5419,27 @@ class Solution:
 
             # check up, down, left, right for neighbouns
             if (col + 1 < cols and  # check if out of bounds and
-                not (row, col + 1) in tabu and  # if cell is not in tabo set
                 word[index] == board[row][col + 1] and  # Check if the current position matches the word's character
-                dfs(row, col + 1, index + 1)):  # Switch to that letter and check its neighbors
+                (row, col + 1) not in tabu and  # if cell is not in tabo set
+                    dfs(row, col + 1, index + 1)):  # Switch to that letter and check its neighbors
                 return True
 
             if (row + 1 < rows and
-                not (row + 1, col) in tabu and
                 word[index] == board[row + 1][col] and
-                dfs(row + 1, col, index + 1)):
+                (row + 1, col) not in tabu and
+                    dfs(row + 1, col, index + 1)):
                 return True
         
             if (col - 1 >= 0 and
-                not (row, col - 1) in tabu and
                 word[index] == board[row][col - 1] and
-                dfs(row, col - 1, index + 1)):
+                (row, col - 1) not in tabu and
+                    dfs(row, col - 1, index + 1)):
                 return True
 
             if (row - 1 >= 0 and
-                not (row - 1, col) in tabu and
                 word[index] == board[row - 1][col] and
-                dfs(row - 1, col, index + 1)):
+                (row - 1, col) not in tabu and
+                    dfs(row - 1, col, index + 1)):
                 return True
             
             # Backtrack: remove from tabu
@@ -4775,19 +5475,24 @@ Example 2:
 Input: s = "a"
 Output: [["a"]]
 """
-(Solution().partition("a"), [["a"]])
-(Solution().partition("aa"), [['a', 'a'], ['aa']])
-(Solution().partition("ab"), [["a", "b"]])
-(Solution().partition("aaa"), [['a', 'a', 'a'], ['a', 'aa'], ['aa', 'a'], ['aaa']])
-(Solution().partition("aab"), [["a", "a", "b"], ["aa", "b"]])
-(Solution().partition("aba"), [["a", "b", "a"], ["aba"]])
+print(Solution().partition("a"), [["a"]])
+print(Solution().partition("aa"), [['a', 'a'], ['aa']])
+print(Solution().partition("ab"), [["a", "b"]])
+print(Solution().partition("aaa"), [['a', 'a', 'a'], ['a', 'aa'], ['aa', 'a'], ['aaa']])
+print(Solution().partition("aab"), [["a", "a", "b"], ["aa", "b"]])
+print(Solution().partition("aba"), [["a", "b", "a"], ["aba"]])
 
 
-# passing "word" in dfs(), "palindrome" as a side effect
+# O(n2^n), O(2^n)
+# Space O(2^n) because every dfs call contains new string
+# backtracking `palindrome` as a global variable
 class Solution:
     def partition(self, word):
         palindrome = []  # This will track the current partition
         palindrome_list = []  # This will store all valid palindrome partitions
+    
+        def is_palindrome(word):
+            return word == word[::-1]
 
         def dfs(word):
             if not word:  # if word is empty that means all letters folded into palindrom
@@ -4795,10 +5500,10 @@ class Solution:
                 return
 
             for index in range(len(word)):  # for every index in "word"
-                substring = word[ : index + 1] # Current substring to check
+                prefix = word[: index + 1]  # Current prefix to check
 
-                if substring == substring[::-1]:  # if substring is a palindrme
-                    palindrome.append(substring)  # Add it to the current partition
+                if is_palindrome(prefix):  # if prefix is a palindrme
+                    palindrome.append(prefix)  # Add it to the current partition
                     dfs(word[index + 1 :])  # Explore the path with the current palindrome and look for the palindrome in the next part of the "word"
                     palindrome.pop()  # Backtrack by removing the last added palindrome
 
@@ -4806,14 +5511,16 @@ class Solution:
         return palindrome_list
 
 
-# passing current partition and "word" in dfs()
+# O(n2^n), O(2^n)
+# Space O(2^n) because every dfs call contains new string
+# `palindrome` as a function variable
 class Solution:
     def partition(self, word):
         palindrome_list = []
 
         def dfs(palindrome, word):
             if not word:
-                palindrome_list.append(palindrome.copy())
+                palindrome_list.append(palindrome)
                 return
             
             for index in range(len(word)):
@@ -4827,7 +5534,8 @@ class Solution:
         return palindrome_list
 
 
-# passing indexes (instead of the "word") in dfs()
+# O(n2^n), O(2^n)
+# Space O(2^n) because every `substring` contains new string
 class Solution:
     def partition(self, word):
         palindrome = []  # This will track the current partition
@@ -4875,11 +5583,12 @@ Example 3:
 Input: digits = "2"
 Output: ["a","b","c"]
 """
-(Solution().letterCombinations("2"), ["a", "b", "c"])
-(Solution().letterCombinations("23"), ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"])
-(Solution().letterCombinations(""), [])
+print(Solution().letterCombinations("2"), ["a", "b", "c"])
+print(Solution().letterCombinations("23"), ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"])
+print(Solution().letterCombinations(""), [])
 
 
+# O(n2^n), O(2^n)
 # passing index to dfs, combination as a shared variable (side effect)
 class Solution:
     def letterCombinations(self, digits: str) -> list[str]:
@@ -4917,7 +5626,7 @@ class Solution:
 
 # passing index and combination to dfs
 class Solution:
-    def letterCombinations(self, digits):
+    def letterCombinations(self, digits: str) -> list[str]:
         if not digits:
             return []
 
@@ -5146,33 +5855,34 @@ Example 2:
 Input: n = 1
 Output: ["()"]
 """
-(Solution().generateParenthesis(1), ["()"])
-(Solution().generateParenthesis(2), ["(())", "()()"])
-(Solution().generateParenthesis(3), ["((()))", "(()())", "(())()", "()(())", "()()()"])
+print(Solution().generateParenthesis(1), ["()"])
+print(Solution().generateParenthesis(2), ["(())", "()()"])
+print(Solution().generateParenthesis(3), ["((()))", "(()())", "(())()", "()(())", "()()()"])
 
 
+# O(n2^n), O(n)
+# backtracking
 class Solution:
-    def generateParenthesis(self, num: int) -> list[str]:
+    def generateParenthesis(self, number: int) -> list[str]:
         parenthesis = []  # current parenthesis sequence
         parenthesis_list = []  # list of parenthesis sequences
 
-        def dfs(open, close):
-            if open + close == 2 * num:  # if all opening and closing parenthesis are used
+        def dfs(opened, closed):
+            if opened + closed == 2 * number:  # if all opening and closing parenthesis are used
                 parenthesis_list.append("".join(parenthesis))  # append current sequence
                 return
 
-            if open < num:  # not all "(" have been used
+            if opened < number:  # not all "(" have been used
                 parenthesis.append("(")
-                dfs(open + 1, close)  # check this branch
+                dfs(opened + 1, closed)  # check this branch
                 parenthesis.pop()  # backtrack
 
-            if close < open:  # the number of ")" must not be greater than "("
+            if closed < opened:  # the number of ")" must not be greater than "("
                 parenthesis.append(")")
-                dfs(open, close + 1)  # check this branch
+                dfs(opened, closed + 1)  # check this branch
                 parenthesis.pop()  # backtrack
 
         dfs(0, 0)  # start with no parenthesis
-
         return parenthesis_list
 
 
@@ -5209,34 +5919,205 @@ Explanation: You will start at index 0.
 - Pay 1 and climb one step to reach the top.
 The total cost is 6.
 """
-(Solution().minCostClimbingStairs([10, 15, 20]), 15)
-(Solution().minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]), 6)
+print(Solution().minCostClimbingStairs([10, 15, 20]), 15)
+print(Solution().minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]), 6)
 
 
 # draft
-# 1, 100, 1+1=2, 2+1=3, 2+1=3, 103, 3+1=4, 4+1=5, 104, 6
+# cost to move from the i-th step       [1,100,1,1,1,100,1,1,100,1]
+# cumulative cost to get to i-th step   [0, 0, 1,1,2, 2, 3,4, 5, 5, 6]
+# cumulative cost to get from i-th step [1,100,2,3,3,103,4,5,104,6]
 
-# dp, bottom-up
-# O(n), O(n)
+
 class Solution:
     def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        cache = [cost[0], cost[1]]
+
         for index in range(2, len(cost)):
-            cost[index] = min(cost[index - 1], cost[index - 2]) + cost[index]  # min
+            prev = cache[0]
+            prev_prev = cache[1]
+            cache = [cache[1], cost[index] + min(prev, prev_prev)]
 
-        return min(cost[-2:])
+        return min(cache[-1], cache[-2])
 
 
-# dp, bottom-up
-# O(n), O(1)
 class Solution:
     def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
         a = cost[0]
         b = cost[1]
 
         for index in range(2, len(cost)):
-            a, b = b, min(a, b) + cost[index]
+            a, b = b, cost[index] + min(a, b)
 
         return min(a, b)
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        mutate input list
+        """
+        cache = [None] * len(cost)
+        cache[0] = cost[0]
+        cache[1] = cost[1]
+
+        for index in range(2, len(cost)):
+            cost[index] = cost[index] + min(cost[index - 1], cost[index - 2])
+
+        return min(cost[-1], cost[-2])
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        cache = [None] * len(cost)
+        cache[0] = cost[0]
+        cache[1] = cost[1]
+
+        for index in range(2, len(cost)):
+            cache[index] = cost[index] + min(cache[index - 1], cache[index - 2])
+
+        return min(cache[-1], cache[-2])
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        # Memoization dictionary to store the minimum cost to reach the top from each step
+        memo = {}
+
+        def dfs(index):
+            # Base case: if we're already at or beyond the top, no cost is needed
+            if index >= len(cost):
+                # No extra cost beyond the last step
+                return 0
+            # If the result is already computed, return it
+            elif index in memo:
+                return memo[index]
+            
+            # Recursively compute the cost of taking 1 step or 2 steps
+            # Store the result in the memo dictionary
+            memo[index] = cost[index] + min(dfs(index + 1), dfs(index + 2))
+            
+            return memo[index]
+
+        # Start from step 0 or step 1, whichever is cheaper
+        return min(dfs(0), dfs(1))
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * len(cost)
+
+        def dfs(index):
+            if index >= len(cost):
+                return 0  # No extra cost beyond the last step
+            elif memo[index] is not None:
+                return memo[index]
+
+            memo[index] = cost[index] + min(dfs(index + 1), dfs(index + 2))
+            return memo[index]
+
+        return min(dfs(0), dfs(1))
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, pure recursion, tle
+        converts to top-down
+        """
+        def dfs(index):
+            if index >= len(cost):
+                return 0
+            
+            return cost[index] + min(dfs(index + 1), dfs(index + 2))
+
+        return min(dfs(0), dfs(1))
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, function argument, tle
+        """
+        self.min_total_cost = sum(cost)
+
+        def dfs(index, total_cost):
+            if index >= len(cost):
+                self.min_total_cost = min(self.min_total_cost, total_cost)
+                return
+
+            dfs(index + 1, total_cost + cost[index])
+            dfs(index + 2, total_cost + cost[index])
+
+        dfs(0, 0)
+        dfs(1, 0)
+        return self.min_total_cost
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
+        self.total_cost = 0
+        self.min_total_cost = sum(cost)
+
+        def dfs(index):
+            if index >= len(cost):
+                self.min_total_cost = min(self.min_total_cost, self.total_cost)
+                return
+
+            self.total_cost += cost[index]
+            dfs(index + 1)
+            dfs(index + 2)
+            self.total_cost -= cost[index]
+
+
+        dfs(0)
+        dfs(1)
+        return self.min_total_cost
+
+
+class Solution:
+    def minCostClimbingStairs(self, cost: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, function argument, tle
+        """
+        def dfs(index, total_cost):
+            if index >= len(cost):
+                return total_cost
+
+            return min(
+                dfs(index + 1, total_cost + cost[index]),
+                dfs(index + 2, total_cost + cost[index]))
+
+        return min(dfs(0, 0), dfs(1, 0))
 
 
 
@@ -5300,78 +6181,220 @@ Explanation:
 
 "06" cannot be mapped to "F" because of the leading zero ("6" is different from "06"). In this case, the string is not a valid encoding, so return 0.
 """
-(Solution().numDecodings("226"), 3)
-(Solution().numDecodings("12"), 2)
-(Solution().numDecodings("06"), 0)
-(Solution().numDecodings("0"), 0)
-(Solution().numDecodings(""), 0)
-(Solution().numDecodings("2101"), 1)
-(Solution().numDecodings("111111111111111111111111111111111111111111111"), 1836311903)
+print(Solution().numDecodings("5"), 1)
+print(Solution().numDecodings("226"), 3)
+print(Solution().numDecodings("2261"), 3)
+print(Solution().numDecodings("12"), 2)
+print(Solution().numDecodings("2101"), 1)
+print(Solution().numDecodings("06"), 0)
+print(Solution().numDecodings("0"), 0)
+print(Solution().numDecodings(""), 0)
+print(Solution().numDecodings("111111111111111111111111111111111111111111111"), 1836311903)
 
 
-# draft
-# "226"
-# 2 2 6, 22 6, 2, 26
+"""
+draft
+[2, 2, 6, 1]
+ 2  2  6  1
+ 2    26  1
+ 22    6  1
+                  .
+            /           \
+           2            22
+        /     \       /
+       2      26     6
+     /       /     /
+    6       1     1
+   /
+  1
 
-# 2101
-# 2 10 1
+[3, 2, 1, 1, (1)]
+{0: 3, 1: 2, 2: 1, 3: 1, 4: 1}
+"""
 
-# Bottom-up
-# O(n), O(n)
+
 class Solution:
     def numDecodings(self, code: str) -> int:
-        if not code:  # ifcode is empty
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        if not code:
             return 0
+        
+        cache = [1, 1]  # `1` when the whole number is partitioned
 
-        dp = {len(code): 1}  # assume "code" is a prefix and everything after would be foleded into "1" possible path
+        for index in reversed(range(len(code))):
+            cache_0 = 0
 
-        for index in range(len(code))[::-1]:  # check every number in reversed order
-            if int(code[index]):  # check if number is not statring with 0
-                # one digit number case
-                dp[index] = dp.get(index, 0) + dp.get(index + 1, 0)  # continue legit one digit number path
+            if code[index] != "0":
+                cache_0 = cache[0]
 
-                # two digits number case
-                if (index + 1 < len(code) and  # if index in bounds
-                    int(code[index : index + 2]) <= 26):  # if two digit number between <10, 27)
-                    dp[index] = dp.get(index, 0) + dp.get(index + 2, 0)  # continue legit two digit number path
+            if (index + 1 < len(code) and
+                (code[index] == "1" or 
+                 (code[index] == "2" and 
+                  code[index + 1] <= "6"))):
+                cache_0 += cache[1]
 
-        return dp.get(0, 0)  # get first value from the dictionary or if code is not legit return 0
+            cache = [cache_0, cache[0]]
+
+        return cache[0]
 
 
-# Top-down with memoization
-# O(n), O(n)
 class Solution:
     def numDecodings(self, code: str) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up, list as cache
+        """
+        if not code:
+            return 0
+        
+        cache = [0] * (len(code) + 1)
+        cache[len(code)] = 1  # `1` when the whole number is partitioned
+
+        for index in reversed(range(len(code))):
+            if code[index] != "0":
+                cache[index] += cache[index + 1]
+
+            if (index + 1 < len(code) and
+                (code[index] == "1" or 
+                 (code[index] == "2" and 
+                  code[index + 1] <= "6"))):
+                cache[index] += cache[index + 2]
+
+        return cache[0]
+
+
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up, hash map as cache
+        """
+        if not code:
+            return 0
+        
+        cache = {len(code): 1}  # `1` when the whole number is partitioned
+
+        for index in reversed(range(len(code))):
+            cache[index] = 0
+            
+            if code[index] != "0":
+                cache[index] += cache[index + 1]
+
+            if (index + 1 < len(code) and
+                (code[index] == "1" or 
+                 (code[index] == "2" and 
+                  code[index + 1] <= "6"))):
+                cache[index] += cache[index + 2]
+
+        return cache[0]
+
+
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
         if not code:  # if "code" is empty
             return 0
         
-        dp = {len(code): 1}  # assume "code" is a prefix and everything after would be foleded into "1" possible path
+        memo = {len(code): 1}  # `1` when the whole number is partitioned
 
-        def dfs(index):
-            if index in dp:  # if memoized
-                return dp[index]  # Return memoized result if already computed.
-            
-            if code[index] == "0":  # check if number is statring with 0
+        def dfs(index):            
+            if index in memo:  # if memoized
+                return memo[index]  # Return memoized result if already computed.
+            elif code[index] == "0":  # check if number is statring with 0
                 return 0  # inwalid number
             
             # one digit number case
-            dp[index] = dp.get(index, 0) + dfs(index + 1)  # Proceed to decode the next number.
-        
+            memo[index] = dfs(index + 1)  # Proceed to decode the next number.
+
             # two digits number case
             if (index + 1 < len(code) and  # check if second digit within bounds
-                int(code[index : index + 2]) <= 26):  # if two digit number between <10, 27)
-                dp[index] = dp.get(index, 0) + dfs(index + 2)  # Add the result of two-digit decoding.
+                (code[index] == "1" or  # two digit number starts with one or
+                 (code[index] == "2" and  # two digit number starts with two and 
+                  code[index + 1] <= "6"))):  # ends with less equal to six
+                memo[index] += dfs(index + 2)  # Add the result of two-digit decoding.
 
-            return dp[index]  # Return the result for this index.
+            return memo[index]  # Return the result for this index.
 
-        return dfs(0)  # Start decoding from the first index.
+        return dfs(0)
 
 
-# DFS, slow, not for numDecodings("111111111111111111111111111111111111111111111")
-# O(2^n) O(n2)
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        if not code:  # if "code" is empty
+            return 0
+        
+        memo = [None] * (len(code) + 1)
+        memo[len(code)] = 1  # `1` when the whole number is partitioned
+
+        def dfs(index):
+            if memo[index] is not None:
+                return memo[index]
+            elif code[index] == "0":  # check if number is statring with 0
+                return 0  # inwalid number
+            
+            # one digit number case
+            memo[index] = dfs(index + 1)  # Proceed to decode the next number.
+
+            # two digits number case
+            if (index + 1 < len(code) and  # check if second digit within bounds
+                (code[index] == "1" or  # two digit number starts with one or
+                 (code[index] == "2" and  # two digit number starts with two and 
+                  code[index + 1] <= "6"))):  # ends with less equal to six
+                memo[index] += dfs(index + 2)  # Add the result of two-digit decoding.
+
+            return memo[index]  # Return the result for this index.
+
+        return dfs(0)
+
+
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        if not code:  # if "code" is empty
+            return 0
+        
+        def dfs(index):
+            if index == len(code):
+                return 1  # `1` when the whole number is partitioned
+            elif code[index] == "0":  # check if number is statring with 0
+                return 0  # inwalid number
+            
+            # one digit number case
+            one_digit_number = dfs(index + 1)  # Proceed to decode the next number.
+
+            # two digits number case
+            two_digit_number = 0
+            if (index + 1 < len(code) and  # check if second digit within bounds
+                (code[index] == "1" or  # two digit number starts with one or
+                 (code[index] == "2" and  # two digit number starts with two and 
+                  code[index + 1] <= "6"))):  # ends with less equal to six
+                two_digit_number = dfs(index + 2)  # Add the result of two-digit decoding.
+
+            return one_digit_number + two_digit_number  # Return the result for this index.
+
+        return dfs(0)
+
+
 class Solution:
     def numDecodings(self, word: str) -> int:
-        if not word or not int(word[0]):
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
+        if (not word or word[0] == "0"):
             return 0
 
         decoded = []
@@ -5382,27 +6405,75 @@ class Solution:
                 decoded_list.append(decoded.copy())
                 return
 
-            if (index + 1 < len(word)
-                and int(word[index + 1])
-                    or index == len(word) - 1):
+            if (index == len(word) - 1 or  # if last digit or
+                    index + 1 < len(word) and  # next index in bounds
+                    word[index + 1] != "0"):  # next digit is not zero
 
-                if int(word[index]) != 0:
-                    decoded.append(int(word[index]))
+                if word[index] != "0":
+                    decoded.append(word[index])
                     dfs(index + 1)
                     decoded.pop()
 
-            if (index + 2 < len(word)
-                and int(word[index + 2])
-                    or index == len(word) - 2):
+            if (index == len(word) - 2 or  # if two last digits or
+                    index + 2 < len(word) and  # next index in bounds
+                    word[index + 2] != "0"):  # next digit is not zero
 
                 if (index + 1 < len(word) and
-                        int(word[index: index + 2]) <= 26):
-                    decoded.append(int(word[index: index + 2]))
+                        word[index: index + 2] <= "26"):
+                    decoded.append(word[index: index + 2])
                     dfs(index + 2)
                     decoded.pop()
 
         dfs(0)
+        return len(decoded_list)
 
+
+class Solution:
+    def numDecodings(self, code: str) -> int:
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
+        if not code:
+            return 0
+
+        decoded = []
+        decoded_list = []
+
+        def dfs(index):
+            if index == len(code):
+                decoded_list.append(decoded.copy())
+                return
+
+            # check if next digit is not zero
+            is_not_zero = True
+            if (index + 1 < len(code) and
+                    code[index + 1] == "0"):
+                is_not_zero = False
+
+            if (code[index] != "0" and
+                    is_not_zero):
+                decoded.append(code[index])
+                dfs(index + 1)
+                decoded.pop()
+
+            # check if next next digit is not zero
+            is_not_zero = True
+            if (index + 2 < len(code) and
+                    code[index + 2] == "0"):
+                is_not_zero = False
+
+            if (code[index] != "0" and
+                code[index] <= "2" and
+                index + 1 < len(code) and
+                code[index + 1] <= "6" and
+                    is_not_zero):
+
+                decoded.append(code[index: index + 2])
+                dfs(index + 2)
+                decoded.pop()
+
+        dfs(0)
         return len(decoded_list)
 
 
@@ -5474,13 +6545,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -5682,13 +6753,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -5870,13 +6941,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -5987,13 +7058,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6089,13 +7160,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6274,13 +7345,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6427,13 +7498,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6466,12 +7537,6 @@ class Solution:
                 return root
 
 
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
 # dp, dfs, recursive
 # O(logn), O(h) # O(h) for recursion stack height
 class Solution:
@@ -6551,13 +7616,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6589,11 +7654,11 @@ class Solution:
             for _ in range(len(queue)):  # for every node
                 node = queue.popleft()  # take that node
 
-                if node.left != None:  # if left subnode is not empty
+                if node.left is not None:  # if left subnode is not empty
                     queue.append(node.left)  # append it to queue
                     current_level_list.append(node.left.val)  # append its value to current level solution
                 
-                if node.right != None:  # if right subnode is not empty
+                if node.right is not None:  # if right subnode is not empty
                     queue.append(node.right)  # append it to queue
                     current_level_list.append(node.right.val)  # append its value to current level solution
             
@@ -6671,13 +7736,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -6798,13 +7863,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -7014,6 +8079,8 @@ Explanation: The root node's value is 5 but its right child's value is 4.
 (Solution().isValidBST(build_tree_from_list([2, 1, 3])), True)
 (Solution().isValidBST(build_tree_from_list([5, 1, 4, None, None, 3, 6])), False)
 (Solution().isValidBST(build_tree_from_list([2, 2, 2])), False)
+(Solution().isValidBST(build_tree_from_list([0, -1])), True)
+(Solution().isValidBST(build_tree_from_list([5, 4, 6, None, None, 3, 7])), False)
 
 
 from binarytree import Node
@@ -7044,13 +8111,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -7068,9 +8135,34 @@ def build_tree_from_list(node_list, node_type=TreeNode):
 # O(n), O(n)
 class Solution:
     def isValidBST(self, root: TreeNode | None) -> bool:
-        def dfs(node, left_min,  right_max):
+        def dfs(node, min_val, max_val):
+            if (not node.left and 
+                    not node.right):
+                return True
+
+            is_left = not node.left
+            is_right = not node.right
+            
+            if (node.left and 
+                   min_val < node.left.val < node.val):
+                is_left = dfs(node.left, min_val, node.val)
+            
+            if (node.right and 
+                   node.val < node.right.val < max_val):
+                is_right = dfs(node.right, node.val, max_val)
+
+            return is_left and is_right
+
+        return dfs(root, float("-inf"), float("inf"))
+
+
+# dp, dfs, recursion, in-order traversal
+# O(n), O(n)
+class Solution:
+    def isValidBST(self, root: TreeNode | None) -> bool:
+        def dfs(node, left_min, right_max):
             if not node:  # if node is None then the current branch i legit
-                return True  
+                return True
             
             if not left_min < node.val < right_max:  # if value not in bounds
                 return False
@@ -7085,14 +8177,6 @@ class Solution:
 
 from collections import deque
 
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-# dp, bfs, iteration, level order traversal
-# O(n), O(n)
 class Solution:
     def isValidBST(self, root: TreeNode | None) -> bool:
         if not root:
@@ -7184,13 +8268,13 @@ def build_tree_from_list(node_list, node_type=TreeNode):
         node = queue.popleft()
 
         # Assign the left child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.left = node_type(node_list[index])
             queue.append(node.left)
         index += 1
 
         # Assign the right child if available
-        if index < len(node_list) and node_list[index] != None:
+        if index < len(node_list) and node_list[index] is not None:
             node.right = node_type(node_list[index])
             queue.append(node.right)
         index += 1
@@ -7440,135 +8524,146 @@ Example 2:
 Input: nums = [9], target = 3
 Output: 0
 """
-(Solution().combinationSum4([1, 2, 3], 4), 7)
-(Solution().combinationSum4([9], 3), 0)
-(Solution().combinationSum4([4, 2, 1], 32), 39882198)
-(Solution().combinationSum4([2, 3], 7), 3)
+print(Solution().combinationSum4([5], 5), 1)
+print(Solution().combinationSum4([2, 3], 7), 3)
+print(Solution().combinationSum4([1, 2, 3], 4), 7)
+print(Solution().combinationSum4([9], 3), 0)
+print(Solution().combinationSum4([4, 2, 1], 32), 39882198)
 
 
-# dp, bottom-up, iteration, tabulation (with List)
 class Solution:
-    def combinationSum4(self, nums: list[int], target: int) -> int:
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with tabulation as list
+        """
         # Initialize a list of zeros for tabulation, where tab[i] is the number of ways to make sum i
-        tab = [0 for _ in range(target + 1)]
+        cache = [0] * (target + 1)
         # Base case: 1 way to make target 0 (empty combination)
-        tab[0] = 1
+        cache[0] = 1
 
-        # Iterate through all indices from 1 to target
         for index in range(1, target + 1):
-            # For each number in nums, check if it can contribute to the current target (index)
-            for num in nums:
-                # If num can be subtracted from index, add the number of ways to make (index - num)
-                if index - num >= 0:
-                    tab[index] += tab[index - num]
-        
-        # Return the result for the target, which is stored in the last element of the list
-        return tab[-1]
+            for number in numbers:
+                # If num can be subtracted from index, add the number of ways to make (index - number)
+                if index - number >= 0:
+                    cache[index] += cache[index - number]
+            
+        return cache[-1]
 
 
-# dp, bottom-up, iteration, tabulation (with Dictionary)
 class Solution:
-    def combinationSum4(self, nums: list[int], target: int) -> int:
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up with tabulation as hash map
+        """
         # Tabulation dictionary, storing base case: 1 way to make target 0 (empty combination)
-        tab = {0: 1}
+        cache = {0: 1}
 
-        # Iterate through every index from 1 to target
         for index in range(1, target + 1):
-            # For each number in nums, check if it can be part of the combination
-            for num in nums:
-                # If the number can be used (valid combination), update the tabulation table
-                if index - num >= 0:
-                    tab[index] = tab.get(index, 0) + tab.get(index - num, 0)
-        
-        # Return the result for the target value, default to 0 if no combinations
-        return tab.get(target, 0)
+            for number in numbers:
+                if index - number >= 0:
+                    # If the number can be used (valid combination), update the tabulation table
+                    cache[index] = (cache.get(index, 0) + 
+                                    cache.get(index - number, 0))
+            
+        return cache.get(target, 0)
 
 
-# dp, dfs, top-down, recursion, memoization (with Dictionary)
 class Solution:
-    def combinationSum4(self, nums: list[int], target: int) -> int:
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        """
         # Memoization dictionary, storing base case: 1 way to make target 0 (empty combination)
         memo = {0: 1}
 
-        # Helper function that performs depth-first search (DFS)
-        def dfs(index):
-            # If the index is negative, no valid combination can be made, return 0
-            if index < 0:
+        def dfs(target: int) -> int:
+            if target in memo:
+                return memo[target]
+            elif target < 0:
                 return 0
-            # If the value has already been computed, return it (memoization check)
-            elif index in memo:
-                return memo[index]
 
-            # Iterate over each number in the list
-            for num in nums:
-                # Recursively compute number of combinations by reducing the target (index - num)
-                memo[index] = memo.get(index, 0) + dfs(index - num)
+            # Recursively compute number of combinations by reducing the target (target - number)
+            memo[target] = sum(dfs(target - number)
+                               for number in numbers)
+            return memo[target]
 
-            # Return the computed value for the current target (index)
-            return memo[index]
-
-        # Start the recursion with the target value
         return dfs(target)
 
 
-# dp,  dfs, top-down, recursion, memoization (with List)
 class Solution:
-    def combinationSum4(self, nums: list[int], target: int) -> int:
-        # Memoization dictionary, storing base case: 1 way to make target 0 (empty combination)
-        memo = [-1 for _ in range(target + 1)]
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as list
+        """
+        # Memoization list, storing base case: 1 way to make target 0 (empty combination)
+        memo = [None] * (target + 1)
         memo[0] = 1
 
-        # Helper function that performs depth-first search (DFS)
-        def dfs(index):
-            # If the index is negative, no valid combination can be made, return 0
-            if index < 0:
+        def dfs(target: int) -> int:
+            if target < 0:
                 return 0
-            # If the value has already been computed, return it (memoization check)
-            elif memo[index] != -1:
-                return memo[index]
+            elif memo[target] is not None:
+                return memo[target]
 
-            # Initialize the number of ways to make the current index
-            memo[index] = 0
+            # Recursively compute number of combinations by reducing the target (target - number)
+            memo[target] = sum(dfs(target - number)
+                               for number in numbers)
+            return memo[target]
 
-            # Iterate over each number in the list
-            for num in nums:
-                # Recursively compute number of combinations by reducing the target (index - num)
-                memo[index] += dfs(index - num)
-
-            # Return the computed value for the current target (index)
-            return memo[index]
-
-        # Start the recursion with the target value
         return dfs(target)
 
 
-
-
-
-# returns all possible permutations, not only the number of them
 class Solution:
-    def combinationSum4(self, nums: list[int], target: int) -> int:
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        converts to top-down
+        """
+        def dfs(target: int) -> int:
+            if target == 0:
+                return 1
+            elif target < 0:
+                return 0
+
+            return sum(dfs(target - number)
+                       for number in numbers)
+
+        return dfs(target)
+
+
+class Solution:
+    def combinationSum4(self, numbers: list[int], target: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
         combination = []
         combination_list = []
+        self.combination_counter = 0
 
-        def dfs():
-            combination_sum = sum(combination)
-
-            if combination_sum == target:
-                combination_list.append(combination.copy())
+        def dfs(target): #
+            if target < 0:
+                return
+            elif target == 0:
+                # combination_list.append(combination.copy())
                 # combination_list.append(True)
-                return
-            elif (combination_sum > target):
+                self.combination_counter += 1
                 return
 
-            for num in nums:
-                combination.append(num)
-                dfs()
+            for number in numbers:
+                combination.append(number)
+                dfs(target - number)
                 combination.pop()
 
-        dfs()
-
-        return combination_list
+        dfs(target)
+        # return combination_list
+        # return len(combination_list)
+        return self.combination_counter
 
 
 
@@ -7600,49 +8695,28 @@ Input: grid = [
 ]
 Output: 3
 """
-(Solution().numIslands([["1", "1", "1", "1", "0"], ["1", "1", "0", "1", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "0", "0", "0"]]), 1)
-(Solution().numIslands([["1", "1", "0", "0", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "1", "0", "0"], ["0", "0", "0", "1", "1"]]), 3)
+print(Solution().numIslands([["0"]]), 0)
+print(Solution().numIslands([["1"]]), 1)
+print(Solution().numIslands([["0", "0"], ["0", "1"]]), 1)
+print(Solution().numIslands([["1", "0"], ["0", "1"]]), 2)
+print(Solution().numIslands([["1", "0", "0"], ["0", "1", "0"], ["0", "0", "1"]]), 3)
+print(Solution().numIslands([["1", "1", "0"], ["0", "1", "0"], ["0", "0", "1"]]), 2)
+print(Solution().numIslands([["1", "1", "1", "1", "0"], ["1", "1", "0", "1", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "0", "0", "0"]]), 1)
+print(Solution().numIslands([["1", "1", "0", "0", "0"], ["1", "1", "0", "0", "0"], ["0", "0", "1", "0", "0"], ["0", "0", "0", "1", "1"]]), 3)
 
 
+# O(n2), O(n2)
 # dfs, recursion
-# Boundary checks: It ensures that neighbors are within grid bounds and haven't been visited before exploring them.
 class Solution:
-    def numIslands(self, grid: list[list[str]]) -> int:
-        rows = len(grid)  # Number of rows in the grid.
-        cols = len(grid[0])  # Number of columns in the grid.
-        visited_land = set()  # Set to keep track of visited land cells.
-        island_counter = 0  # Counter for the number of islands found.
+    """
+    Starts from not visited land tile, check recursively all neighbours and 
+    mark them as visited.
+    Add one to land counter.
 
-        def dfs(row, col):
-            visited_land.add((row, col))  # Mark the current cell as visited.
+    Boundary checks: It includes all the boundary 
+    and visited checks directly in the base case of the recursion.
+    """
 
-            # Iterate over the possible directions (right, left, down, up).
-            for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                i = row + di
-                j = col + dj
-                
-                # If the neighbor is within bounds, not visited, and is land, explore it.
-                if (0 <= i < rows and
-                    0 <= j < cols and
-                    not (i, j) in visited_land and
-                    grid[i][j] == "1"):
-                    dfs(i, j)
-
-        # Check each cell in the grid.
-        for row in range(rows):
-            for col in range(cols):
-                # Start a new DFS for every unvisited land cell, indicating a new island.
-                if (grid[row][col] == "1" and
-                    not (row, col) in visited_land):
-                    island_counter += 1  # Increment the island counter.
-                    dfs(row, col)  # Perform DFS to mark the entire island.
-
-        return island_counter  # Return the total number of islands found.
-
-
-# dfs, recursion
-# Boundary checks: It includes all the boundary and visited checks directly in the base case of the recursion.
-class Solution:
     def numIslands(self, grid: list[list[str]]) -> int:
         rows = len(grid)  # Number of rows in the grid.
         cols = len(grid[0])  # Number of columns in the grid.
@@ -7656,7 +8730,7 @@ class Solution:
                 row == rows or
                 col == cols or
                 (row, col) in visited_land or
-                grid[row][col] == "0"):
+                    grid[row][col] == "0"):
                 return
             
             visited_land.add((row, col))  # Mark the current cell as visited.
@@ -7670,16 +8744,99 @@ class Solution:
             for col in range(cols):
                 # Start a new DFS when an unvisited land cell ("1") is found.
                 if (grid[row][col] == "1" and
-                    (row, col) not in visited_land):
+                        (row, col) not in visited_land):
                     island_counter += 1  # Increment the island counter.
                     dfs(row, col)  # Perform DFS to mark the entire island.
 
         return island_counter  # Return the total number of islands found.
 
 
+# O(n2), O(n2)
+# dfs, recursion
+class Solution:
+    """
+    Starts from land tile and check recursively all neighbours.
+    Mark every visited cell and return area (True) to be counted as a one island.
+    Skip visited lands.
+    """
+    
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        visited_land = set()
+        island_counter = 0
+
+        def dfs(row, col):
+            if (row < 0 or 
+                row == rows or 
+                col < 0 or 
+                col == cols or 
+                grid[row][col] == "0" or 
+                    (row, col) in visited_land):
+                return 0
+            
+            visited_land.add((row, col))
+
+            return (
+                1 +
+                dfs(row - 1, col) + 
+                dfs(row + 1, col) +
+                dfs(row, col - 1) +
+                dfs(row, col + 1)
+            )
+
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == "1":
+                    if dfs(row, col):
+                        island_counter += 1
+
+        return island_counter
+
+
+# O(n2), O(n2)
+# dfs, recursion
+class Solution:
+    """
+    Starts from land tile and check recursively all neighbours and 
+    mark them as water tiles. Add one to land counter.
+    Skip visited water.
+    """
+    
+    def numIslands(self, grid: list[list[str]]) -> int:
+        rows = len(grid)
+        cols = len(grid[0])
+        island_counter = 0
+
+        def dfs(row, col):
+            if (row < 0 or 
+                row == rows or 
+                col < 0 or 
+                col == cols or 
+                    grid[row][col] == "0"):
+                return
+            
+            grid[row][col] = "0"
+
+            dfs(row - 1, col)
+            dfs(row + 1, col)
+            dfs(row, col - 1)
+            dfs(row, col + 1)
+
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == "1":
+                    dfs(row, col)
+                    island_counter += 1
+
+        return island_counter
+
+
 from collections import deque
 
+# O(n2), O(n2)
 # bfs, iterative
+# dfs, iterative with queue.pop()
 class Solution:
     def numIslands(self, grid: list[list[str]]) -> int:
         rows = len(grid)  # Number of rows in the grid.
@@ -7697,72 +8854,29 @@ class Solution:
                 row, col = queue.popleft()  # Dequeue the next cell to explore.
 
                 # Iterate over the possible directions (right, left, down, up).
-                for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                    i = row + di
-                    j = col + dj
+                for i, j in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+                    r = row + i
+                    c = col + j
 
                     # Check if the neighbor is within bounds, unvisited, and land.
-                    if (0 <= i < rows and
-                        0 <= j < cols and
-                        (i, j) not in visited_land and
-                        grid[i][j] == "1"):
-                        queue.append((i, j))  # Add the land cell to the queue.
-                        visited_land.add((i, j))  # Mark it as visited.
+                    if (0 <= r < rows and
+                        0 <= c < cols and
+                        grid[r][c] == "1" and
+                            (r, c) not in visited_land):
+                        queue.append((r, c))  # Add the land cell to the queue.
+                        visited_land.add((r, c))  # Mark it as visited.
 
         # Iterate over each cell in the grid.
         for row in range(rows):
             for col in range(cols):
                 # If the cell is land and hasn't been visited, start a new BFS.
-                if grid[row][col] == "1" and (row, col) not in visited_land:
+                if (grid[row][col] == "1" and 
+                        (row, col) not in visited_land):
                     island_counter += 1  # Increment the island counter.
                     bfs(row, col)  # Perform BFS to mark the entire island.
 
         return island_counter  # Return the total number of islands found.
 
-
-from collections import deque
-
-# dfs, iterative
-class Solution:
-    def numIslands(self, grid: list[list[str]]) -> int:
-        rows = len(grid)  # Number of rows in the grid.
-        cols = len(grid[0])  # Number of columns in the grid.
-        visited_land = set()  # Set to keep track of visited land cells.
-        island_counter = 0  # Counter for the number of islands found.
-
-        # BFS function to explore the island starting from the given cell.
-        def bfs(row, col):
-            visited_land.add((row, col))  # Mark the current cell as visited.
-            queue = deque()  # Initialize a queue for BFS.
-            queue.append((row, col))  # Start with the current land cell.
-
-            while queue:
-                row, col = queue.pop()  # Dequeue the next cell to explore.
-
-                # Iterate over the possible directions (right, left, down, up).
-                for di, dj in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                    i = row + di
-                    j = col + dj
-
-                    # Check if the neighbor is within bounds, unvisited, and land.
-                    if (0 <= i < rows and
-                        0 <= j < cols and
-                        (i, j) not in visited_land and
-                        grid[i][j] == "1"
-                    ):
-                        queue.append((i, j))  # Add the land cell to the queue.
-                        visited_land.add((i, j))  # Mark it as visited.
-
-        # Iterate over each cell in the grid.
-        for row in range(rows):
-            for col in range(cols):
-                # If the cell is land and hasn't been visited, start a new BFS.
-                if grid[row][col] == "1" and (row, col) not in visited_land:
-                    island_counter += 1  # Increment the island counter.
-                    bfs(row, col)  # Perform BFS to mark the entire island.
-
-        return island_counter  # Return the total number of islands found.
-    
 
 
 
@@ -7786,47 +8900,18 @@ Example 2:
 Input: grid = [[0,0,0,0,0,0,0,0]]
 Output: 0
 """
-(Solution().maxAreaOfIsland([[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]), 6)
-(Solution().maxAreaOfIsland([[0, 0, 0, 0, 0, 0, 0, 0]]), 0)
+print(Solution().maxAreaOfIsland([[0]]), 0)
+print(Solution().maxAreaOfIsland([[1]]), 1)
+print(Solution().maxAreaOfIsland([[0, 0], [0, 1]]), 1)
+print(Solution().maxAreaOfIsland([[1, 0], [0, 1]]), 1)
+print(Solution().maxAreaOfIsland([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), 1)
+print(Solution().maxAreaOfIsland([[1, 1, 0], [0, 1, 0], [0, 0, 1]]), 3)
+print(Solution().maxAreaOfIsland([[0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0], [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]]), 6)
+print(Solution().maxAreaOfIsland([[0, 0, 0, 0, 0, 0, 0, 0]]), 0)
 
 
-# dfs, recursion, check boundary first
-class Solution:
-    def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
-        rows = len(grid)  # Get the number of rows and columns in the grid
-        cols = len(grid[0])
-        visited_land = set()  # Set to keep track of the visited land cells
-        max_island_area = 0  # Variable to store the maximum area of an island found so far
-        
-        def dfs(row, col):  # Depth-First Search (DFS) function to explore an island
-            visited_land.add((row, col))  # Mark the current cell as visited
-            adjecent_area = 0  # Variable to track the area of the current island's adjacent cells
-            directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]  # Possible directions to move: right, down, up, and left
-            
-            for di, dj in directions:  # Explore the neighboring cells
-                i = row + di  # Row in the new direction
-                j = col + dj  # Column in the new direction
-                
-                if (0 <= i < rows and  # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
-                    0 <= j < cols and
-                    not (i, j) in visited_land and
-                    grid[i][j] == 1
-                ):
-                    adjecent_area += dfs(i, j)  # Recursively explore the neighboring land cell and add its area
-            
-            return adjecent_area + 1  # Return the area of the current cell (1) plus the adjacent area found
-                
-        for row in range(rows):  # Iterate through each cell in the grid
-            for col in range(cols):
-                if (grid[row][col] == 1 and  # If the current cell is land and hasn't been visited yet
-                    not (row, col) in visited_land
-                ):
-                    max_island_area = max(max_island_area, dfs(row, col))  # Perform DFS from this cell and update the maximum island area
-        
-        return max_island_area  # Return the largest island area found
-
-
-# # dfs, recursion, check boundary in recursion
+# O(n2), O(n2)
+# dfs, recursion
 class Solution:
     def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
         # Get the number of rows and columns in the grid
@@ -7836,27 +8921,73 @@ class Solution:
         max_island_area = 0  # Variable to store the maximum area of an island found so far
         
         def dfs(row, col):  # Depth-First Search (DFS) function to explore an island
-            if (not 0 <= row < rows or  # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
-                not 0 <= col < cols or
-                (row, col) in visited_land or
-                grid[row][col] == 0
-            ):
+            # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
+            if (row < 0 or
+                row == rows or
+                col < 0 or
+                col == cols or
+                not grid[row][col] or
+                    (row, col) in visited_land):
                 return 0
                      
             visited_land.add((row, col))  # Mark the current cell as visited
-            adjecent_area = 0  # Variable to track the area of the current island's adjacent cells
-            directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]  # Possible directions to move: right, down, up, and left
             
-            for di, dj in directions:  # Explore the neighboring cells
-                i = row + di  # Row in the new direction
-                j = col + dj  # Column in the new direction
-                adjecent_area += dfs(i, j)  # Recursively explore the neighboring land cell and add its area
-            
-            return adjecent_area + 1  # Return the area of the current cell (1) plus the adjacent area found
+            return (  # Return the area of the current cell (1) plus the adjacent area found
+                1 +
+                dfs(row - 1, col) +
+                dfs(row + 1, col) +
+                dfs(row, col - 1) +
+                dfs(row, col + 1)
+            )
                 
         for row in range(rows):  # Iterate through each cell in the grid
             for col in range(cols):
                 max_island_area = max(max_island_area, dfs(row, col))  # Perform DFS from this cell and update the maximum island area
+        
+        return max_island_area  # Return the largest island area found
+
+
+from collections import deque
+
+# O(n2), O(n2)
+# bfs, iteration
+# dfs, iteration with queue.pop()
+class Solution:
+    def maxAreaOfIsland(self, grid: list[list[int]]) -> int:
+        rows = len(grid)  # Get the number of rows and columns in the grid
+        cols = len(grid[0])
+        visited_land = set()  # Set to keep track of the visited land cells
+        max_island_area = 0  # Variable to store the maximum area of an island found so far
+        
+        def bfs(row, col):  # Depth-First Search (DFS) function to explore an island
+            visited_land.add((row, col))  # Mark the current cell as visited
+            directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]  # Possible directions to move: right, down, up, and left            
+            queue = deque()
+            queue.append((row, col))
+            island_area = 1
+
+            while queue:
+                row, col = queue.popleft()  # Dequeue the next cell to explore.
+
+                for i, j in directions:  # Explore the neighboring cells
+                    r = row + i  # Row in the new direction
+                    c = col + j  # Column in the new direction
+
+                    if (0 <= r < rows and  # Check if the new cell is within bounds, hasn't been visited, and is land (grid[i][j] == 1)
+                        0 <= c < cols and
+                        grid[r][c] == 1 and
+                            (r, c) not in visited_land):
+                        queue.append((r, c))  # add land cell to queue explore the neighboring land cell and add its area
+                        island_area += 1  # increase island area
+                        visited_land.add((r, c))  # Mark it as visited.
+            
+            return island_area  # Return the area of the current cell (1) plus the adjacent area found
+                
+        for row in range(rows):  # Iterate through each cell in the grid
+            for col in range(cols):
+                if (grid[row][col] == 1 and  # If the current cell is land and hasn't been visited yet
+                        not (row, col) in visited_land):
+                    max_island_area = max(max_island_area, bfs(row, col))  # Perform DFS from this cell and update the maximum island area
         
         return max_island_area  # Return the largest island area found
 
@@ -7911,33 +9042,34 @@ Explanation: This an empty graph, it does not have any nodes.
 
 # Definition for a Node.
 class Node:
-    def __init__(self, val=0, neighbors=[]):
+    def __init__(self, val=0, neighbors=None):
         self.val = val
         self.neighbors = neighbors if neighbors is not None else []
 
 
-# from typing import Optional
-# def cloneGraph(self, node: Optional['Node']) -> Optional['Node']:
+# O(n), O(n)
+# dfs, recursion
 class Solution:
     def cloneGraph(self, node: Node | None) -> Node | None:
-        org_to_copy = {}  # Dictionary to map original nodes to their clones
+        org_to_copy = {}  # {original node: copy node}, Dictionary to map original nodes to their clones
 
-        def clone(node):
+        def dfs(node):
             if node in org_to_copy:  # If the node is already cloned, return the clone
                 return org_to_copy[node]
 
-            new_node = Node(node.val)  # Create a new node with the same value
-            org_to_copy[node] = new_node  # Map the original node to the new clone
+            node_copy = Node(node.val)  # Create a new node with the same value
+            org_to_copy[node] = node_copy  # Map the original node to the new clone
 
             for neighbor in node.neighbors:  # Iterate through all neighbors
-                new_node.neighbors.append(clone(neighbor))  # Recursively clone neighbors and add to the clone's neighbor list
+                node_copy.neighbors.append(dfs(neighbor))  # Recursively clone neighbors and add to the clone's neighbor list
             
-            return new_node  # Return the cloned node
+            return node_copy  # Return the cloned node
 
-        return clone(node) if node else None  # Return cloned graph or None if input node is None
+        return dfs(node) if node else None  # Return cloned graph or None if input node is None
 
 
-# [[2, 4], [1, 3], [2, 4], [1, 3]]
+#  Input: [[2,4],[1,3],[2,4],[1,3]]
+# Output: [[2,4],[1,3],[2,4],[1,3]]
 
 node1 = Node(1)
 node2 = Node(2)
@@ -7996,45 +9128,91 @@ Output: [
   [1,2]
 ]
 """
-(Solution().islandsAndTreasure([[0, -1], [2147483647, 2147483647]]), [[0, -1], [1, 2]])
-(Solution().islandsAndTreasure([[2147483647, 2147483647, 2147483647], [2147483647, -1, 2147483647], [0, 2147483647, 2147483647]]), [[2, 3, 4], [1, -1, 3], [0, 1, 2]])
-(Solution().islandsAndTreasure([[2147483647, -1, 0, 2147483647], [2147483647, 2147483647, 2147483647, -1], [2147483647, -1, 2147483647, -1], [0, -1, 2147483647, 2147483647]]), [[3, -1, 0, 1], [2, 2, 1, -1], [1, -1, 2, -1], [0, -1, 3, 4]])
+print(Solution().islandsAndTreasure([[0, -1], [2147483647, 2147483647]]), [[0, -1], [1, 2]])
+print(Solution().islandsAndTreasure([[2147483647, 2147483647, 2147483647], [2147483647, -1, 2147483647], [0, 2147483647, 2147483647]]), [[2, 3, 4], [1, -1, 3], [0, 1, 2]])
+print(Solution().islandsAndTreasure([[2147483647, -1, 0, 2147483647], [2147483647, 2147483647, 2147483647, -1], [2147483647, -1, 2147483647, -1], [0, -1, 2147483647, 2147483647]]), [[3, -1, 0, 1], [2, 2, 1, -1], [1, -1, 2, -1], [0, -1, 3, 4]])
 
+
+# O(n4), O(n2)
+# may vistit the same land more than once
 # dfs, recursion
-# O(n4), O(n2)  - O(n4) = O(n2)2 - may vistit the same land more than once
 class Solution:
     def islandsAndTreasure(self, grid: list[list[int]]) -> None:
+        # def wallsAndGates(self, grid: list[list[int]]) -> None:
         rows = len(grid)  # Get the number of rows
         cols = len(grid[0])  # Get the number of columns
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1))  # Possible 4 directions
 
         def dfs(row, col, distance):
+            if (row < 0 or
+                row == rows or  # Check if row out of bounds
+                col < 0 or
+                col == cols or  # Check if column out of bounds
+                grid[row][col] == -1 or  # check if water
+                (distance and grid[row][col] == 0) or  # check if starting treasure
+                    grid[row][col] < distance):  # check if shorter distance is already found
+                return
+
             grid[row][col] = distance  # Mark the current cell with the distance
-            directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Possible 4 directions
 
-            for di, dj in directions:
-                i = row + di  # Calculate the next row
-                j = col + dj  # Calculate the next column
+            for i, j in directions:
+                dfs(row + i, col + j, distance + 1)
 
-                if (0 <= i < rows and  # Check if row is within bounds
-                    0 <= j < cols and  # Check if column is within bounds
-                    not grid[i][j] in (0, 1) and  # Skip water and land cells
-                    grid[i][j] > distance + 1  # Check if the current distance is smaller
-                ):
-                    dfs(i, j, distance + 1)  # Perform DFS on the next cell
-
-        for row in range(rows):  # Iterate over each row
-            for col in range(cols):  # Iterate over each column
-                if grid[row][col] == 0:  # If the cell is water, start DFS
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == 0:  # check if the cell is a treasure
                     dfs(row, col, 0)  # Start DFS with distance 0
 
-        return grid  # Return the modified grid
+        return grid
 
-# bfs, iteration, dequeue
+
+from collections import deque
+
 # O(n2), O(n2)
+# bfs, iteration, deque
+class Solution:
+    def islandsAndTreasure(self, grid: list[list[int]]) -> None:
+    # def wallsAndGates(self, grid: list[list[int]]) -> None:
+        rows = len(grid)
+        cols = len(grid[0])
+        directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
+        queue = deque()  # Initialize a queue for BFS
+        visited = set()  # Set to keep track of visited land
+
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col] == 0:  # If the cell is land (0)
+                    queue.append((row, col))  # Add the land cell to the queue
+
+        distance = 0  # Initialize distance from the treasure
+        while queue:  # While there are cells to process
+            for _ in range(len(queue)):  # Process each cell in the current layer
+                row, col = queue.popleft()  # Get the next cell freom the queue
+
+                # Check if the cell is in bounds, not water (-1), and not visited    
+                if (0 <= row < rows and
+                    0 <= col < cols and
+                    grid[row][col] != -1 and
+                        (row, col) not in visited):
+
+                    grid[row][col] = distance  # Set the current distance in the grid
+                    visited.add((row, col))  # Mark the cell as visited
+
+                    for i, j in directions:
+                        queue.append((row + i, col + j))  # Add the cell to the queue
+                    
+            distance += 1  # Increment distance for the next layer
+
+        return grid
+
+
+# O(n2), O(n2)
+# bfs, iteration, deque
 from collections import deque  # Import deque for efficient queue operations
 
 class Solution:
     def islandsAndTreasure(self, grid: list[list[int]]) -> None:
+    # def wallsAndGates(self, grid: list[list[int]]) -> None:
         rows = len(grid)  # Get the number of rows
         cols = len(grid[0])  # Get the number of columns
         queue = deque()  # Initialize a queue for BFS
@@ -8651,7 +9829,7 @@ class ListNode:
         self.next = next
         self.random = random
 
-# O(n), O(n):
+# O(n), O(n)
 # dictionary (two pass)
 class Solution:
     def copyRandomList(self, head: ListNode) -> ListNode:
@@ -8835,7 +10013,7 @@ class LRUCache:
 
 
 # O(1), O(n)
-# Double Linked List
+# linked list, doubly linked list
 class Node:
     def __init__(self, key=0, value=0, next=None, prev=None) -> None:
         self.key = key
@@ -8975,6 +10153,33 @@ print(Solution().largestRectangleArea([2, 4]), 4)
 print(Solution().largestRectangleArea([2, 1, 2]), 3)
 
 
+# O(n), O(n)
+# stack
+# monotonically increasing stack
+class Solution:
+    def largestRectangleArea(self, heights: list[int]) -> int:
+        stack = []  # [(index, height), ]
+        max_area = 0
+
+        for index, height in enumerate(heights):
+            width = 0
+            while stack and height < stack[-1][1]:
+                width = index - stack[-1][0]
+                max_area = max(max_area, width * stack[-1][1])
+                stack.pop()
+
+            stack.append((index - width, height))  # width: extend the width (index) by width of popped heights
+            
+        while stack:
+            width = len(heights) - stack[-1][0]
+            max_area = max(max_area, width * stack[-1][1])
+            stack.pop()
+
+        return max_area
+
+
+# O(n), O(n)
+# stack
 class Solution:
     def largestRectangleArea(self, heights: list[int]) -> int:
         # Stack to keep track of indices and heights of rectangles
@@ -8982,7 +10187,6 @@ class Solution:
         # Variable to store the maximum area found so far
         max_area = 0
 
-        # Iterate through the heights array
         for index, height in enumerate(heights):
             # Store the starting index for the current rectangle
             prev_index = index
@@ -8990,8 +10194,7 @@ class Solution:
             # If the current height is less than the height of the rectangle
             # on top of the stack, calculate the area of the rectangle
             # with the height on top of the stack as the smallest height
-            while (stack and
-                   height < stack[-1][1]):
+            while stack and height < stack[-1][1]:
                 prev_index, prev_height = stack.pop()
                 # Update max_area with the area of the rectangle
                 # formed by the popped height
@@ -9006,6 +10209,23 @@ class Solution:
             max_area = max(max_area, height * (len(heights) - index))
         
         # Return the largest rectangle area found
+        return max_area
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def largestRectangleArea(self, heights: list[int]) -> int:
+        max_area = 0
+
+        for left in range(len(heights)):
+            min_height = heights[left]
+            
+            for right in range(left, len(heights)):
+                min_height = min(min_height, heights[right])
+                current_area = min_height * (right - left + 1)
+                max_area = max(max_area, current_area)
+        
         return max_area
 
 
@@ -9183,24 +10403,24 @@ print(Solution().calPoints(["5","-2","4","C","D","9","+","+"]), 27)
 print(Solution().calPoints(["1","C"]), 0)
 
 
+# O(n), O(n)
+# stack
 class Solution:
     def calPoints(self, operations: list[str]) -> int:
         stack = []
 
         for operation in operations:
-            if operation == "D":
-                stack.append(stack[-1] * 2)
-            elif operation == "C":
+            if operation == "C":
                 stack.pop()
+            elif operation == "D":
+                stack.append(stack[-1] * 2)
             elif operation == "+":
-                x = stack.pop()
-                y = stack.pop()
-                stack.append(y)
-                stack.append(x)
-                stack.append(x + y)
+                prev = stack.pop()
+                last = stack[-1] + prev
+                stack.extend([prev, last])
             else:
                 stack.append(int(operation))
-        
+    
         return sum(stack)
 
 
@@ -9399,7 +10619,6 @@ myStack.empty(); // return False
 from collections import deque
 
 class MyStack:
-
     def __init__(self):
         self.queue = deque()
 
@@ -9632,12 +10851,22 @@ class Solution:
             else:
                 window.add(number)
 
-            if right - left + 1 != window_length + 1:
-                continue
-            
-            window.remove(numbers[left])  # discard
-            left += 1
+            if right - left + 1 == window_length + 1:
+                window.remove(numbers[left])  # discard
+                left += 1
 
+        return False
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def containsNearbyDuplicate(self, numbers: list[int], window_length: int) -> bool:
+        for index in range(len(numbers) - window_length):
+            subarray = numbers[index: index + window_length + 1]
+            if len(subarray) != len(set(subarray)):
+                return True
+            
         return False
 
 
@@ -9686,7 +10915,7 @@ print(Solution().containsNearbyDuplicate([1, 2, 3, 1, 2, 3], 2), False)
 class MyQueue:
     def __init__(self):
         self.stack = []
-        self.stack_reversed = []
+        self.reversed = []
 
 
     def push(self, x: int) -> None:
@@ -9694,28 +10923,28 @@ class MyQueue:
 
 
     def pop(self) -> int:
-        if self.stack_reversed:
-            return self.stack_reversed.pop()
+        if self.reversed:
+            return self.reversed.pop()
 
         while self.stack:
-            self.stack_reversed.append(self.stack.pop())
+            self.reversed.append(self.stack.pop())
         
-        return self.stack_reversed.pop()
+        return self.reversed.pop()
         
 
     def peek(self) -> int:
-        if self.stack_reversed:
-            return self.stack_reversed[-1]
+        if self.reversed:
+            return self.reversed[-1]
 
         while self.stack:
-            self.stack_reversed.append(self.stack.pop())
+            self.reversed.append(self.stack.pop())
         
-        return self.stack_reversed[-1]
+        return self.reversed[-1]
 
 
     def empty(self) -> bool:
         return (not self.stack and 
-                not self.stack_reversed)
+                not self.reversed)
 
 
 # Your MyQueue object will be instantiated and called as such:
@@ -9969,23 +11198,42 @@ print(Solution().numOfSubarrays([11, 13, 17, 23, 29, 31, 7, 5, 2, 3], 3, 5), 6)
 print(Solution().numOfSubarrays([8246,1867,193,4539,2650,4721,2944,5777,8055,7502,4334,2137,3658,4156,4628,1139,7963,8035,6008,8427,1841,9169,1059,6158,9116,8052,7074,7866,584,666,192,8081,8273,2809,3017,7852,1869,3395,4649,5366,8834,9100,1643,9511,4136,3897,7193,2500,2721,8477,2887,8300,3922,579,4228,7983,4247,5362,5581,9270,8602,1944,240,6044,6036,1219,6901,2007,2123,9699,3388,390,9144,7697,5160,6442,7078,9758,8841,2064,4096,146,7362,3952,2346,4171,7598,1201,1860,9101,8979,8437,1989,5349,5148,9422,7217,1406,8414,3586,5935,7395,2257,7802,9449,3824,6874,3684,4252,3947,8985,1052,7295,2976,2045,2315,4887,307,8784,988,942,7960,747,1593,1112,7874], 1, 307), 122)
 
 
+# O(n), O(n)
+# sliding window
 class Solution:
     def numOfSubarrays(self, numbers: list[int], size: int, threshold: int) -> int:
+        left = 0
+        window = 0
         counter = 0
 
-        for index in range(len(numbers) - size + 1):
-            # calculate the first sum
-            if not index:
-                subarray_sum = sum(numbers[index: index + size])
-            # calculate every other sum
-            else:
-                subarray_sum += - numbers[index - 1] + numbers[index + size - 1]
+        for right, number in enumerate(numbers):
+            window += number
 
-            # if average is greather than threshold
-            if subarray_sum / threshold >= threshold:
-                counter += 1
+            # check threshold
+            if right - left + 1 == size:  # if window is the right size
+                if window / size >= threshold:  # if average is greather equal than threshold
+                    counter += 1
+
+                # remove left
+                window -= numbers[left]
+                left += 1
 
         return counter
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def numOfSubarrays(self, numbers: list[int], size: int, threshold: int) -> int:
+            counter = 0
+
+            for index in range(len(numbers) - size + 1):
+                subarray = numbers[index: index + size]
+                
+                if sum(subarray) / size >= threshold:
+                    counter += 1
+            
+            return counter
 
 
 
@@ -10003,7 +11251,7 @@ s[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or
 To make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.
 
 Return the string after making it good. The answer is guaranteed to be unique under the given constraints.
-
+e
 Notice that an empty string is also good.
 
 Example 1:
@@ -10035,8 +11283,8 @@ class Solution:
 
         for letter in word:
             if (stack and  # Check if the stack is not empty
-                    letter != stack[-1]  and # and if the top of the stack differs the current letter
-                    letter.lower() == stack[-1].lower()):  # and both lowercase are the same
+                letter != stack[-1] and # and if the top of the stack differs the current letter
+                    letter == stack[-1].upper()):  # and both lowercase are the same
                 stack.pop()
             else:
                 stack.append(letter)
@@ -10119,21 +11367,21 @@ print(Solution().generate(5), [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4
 print(Solution().generate(1), [[1]])
 
 
+# O(n2), O(n)
 class Solution:
-    def generate(self, numRows: int) -> list[list[int]]:
-        triangle = []
+    def generate(self, rowIndex: int) -> list[int]:
+        triangle = [[1]]  # first row in Pascal's Triangle
 
-        for index in range(numRows):
-            if not index:  # first row in Pascal's Triangle
-                triangle.append([1])
-            else:  # not first row in Pascal's Triangle
-                row = [1]  # every row starts with `1``
+        for index1 in range(rowIndex - 1):
+            new_row = [1] * (index1 + 2)  # every new row starts and ends with with `1`
+            new_row[0] = 1  
+            row = triangle[-1]  # previous row
 
-                for number in range(index - 1):  # for at least 3 elemenst in the row
-                    row.append(sum(triangle[-1][number: number + 2]))
-
-                row.append(1)  # every row ends with `1``
-                triangle.append(row)  # push row to Pascal's Triangle
+            for index2 in range(index1):
+                # new_row[index2 + 1] = sum(row[index2: index2 + 2])
+                new_row[index2 + 1] = row[index2] + row[index2 + 1]
+            
+            triangle.append(new_row)  # push row to Pascal's Triangle
 
         return triangle
 
@@ -10238,7 +11486,27 @@ print(Solution().maxFrequency([3, 9, 6], 2), 1)
 print(Solution().maxFrequency([9930, 9923, 9983, 9997, 9934, 9952, 9945, 9914, 9985, 9982, 9970, 9932, 9985, 9902, 9975, 9990, 9922, 9990, 9994, 9937, 9996, 9964, 9943, 9963, 9911, 9925, 9935, 9945, 9933, 9916, 9930, 9938, 10000, 9916, 9911, 9959, 9957, 9907, 9913, 9916, 9993, 9930, 9975, 9924, 9988, 9923, 9910, 9925, 9977, 9981, 9927, 9930, 9927, 9925, 9923, 9904, 9928, 9928, 9986, 9903, 9985, 9954, 9938, 9911, 9952, 9974, 9926, 9920, 9972, 9983, 9973, 9917, 9995, 9973, 9977, 9947, 9936, 9975, 9954, 9932, 9964, 9972, 9935, 9946, 9966], 3056), 73)
 
 
-# O(nlogn), O(1)
+# O(nlogn), O(n)
+# sliding window
+class Solution:
+    def maxFrequency(self, numbers: list[int], joker: int) -> int:
+        numbers.sort()
+        left = 0
+        longest = 0
+
+        for right, number in enumerate(numbers):
+            joker -= (right - left) * (number - numbers[right - 1])  # decrease joker wirdcard by sum needed to level current window to its maximum value
+            
+            while joker < 0:  # while joker exceeded
+                joker += (number - numbers[left])  # return joker value from left number
+                left += 1  # move left pointer
+                
+            longest = max(longest, right - left + 1)  # update longest frequency
+
+        return longest
+
+
+# O(nlogn), O(n)
 # sliding window
 class Solution:
     def maxFrequency(self, numbers: list[int], k: int) -> int:
@@ -10301,6 +11569,8 @@ print(Solution().removeStars("leet**cod*e"), "lecoe")
 print(Solution().removeStars("erase*****"), "")
 
 
+# O(n), O(n)
+# stack
 class Solution:
     def removeStars(self, word: str) -> str:
         stack = []
@@ -10310,7 +11580,6 @@ class Solution:
                 stack.pop()
             else:
                 stack.append(letter)
-        
         return "".join(stack)
 
 
@@ -10766,7 +12035,7 @@ class Solution:
     def totalFruit(self, fruits: list[int]) -> int:
         left = 0
         basket = {}
-        max_fruit = 0
+        max_fruits = 0
 
         for right, fruit in enumerate(fruits):
             basket[fruit] = basket.get(fruit, 0) + 1  # add a fruit to the basket
@@ -10779,10 +12048,10 @@ class Solution:
                 if not basket[left_fruit]:  # if no `left` fruit
                     basket.pop(left_fruit)  # pop that fruit type
 
-            if right - left + 1 > max_fruit:  # update max fruit counter
-                max_fruit = right - left + 1
+            if right - left + 1 > max_fruits:  # update max fruit counter
+                max_fruits = right - left + 1
 
-        return max_fruit
+        return max_fruits
 
 
 
@@ -10814,9 +12083,26 @@ print(Solution().validateStackSequences([2, 1, 0], [1, 2, 0]), True)
 
 
 # O(n), O(n)
-# stack, deque
+# stack
+class Solution:
+    def validateStackSequences(self, pushed: list[int], popped: list[int]) -> bool:
+        stack = []
+        index = 0
+
+        for number in pushed:
+            stack.append(number)
+
+            while stack and stack[-1] == popped[index]:
+                stack.pop()
+                index += 1
+
+        return not stack
+
+
 from collections import deque
 
+# O(n), O(n)
+# stack, deque
 class Solution:
     def validateStackSequences(self, pushed: list[int], popped: list[int]) -> bool:
         queue = deque(popped)
@@ -10829,10 +12115,7 @@ class Solution:
                 stack.pop()
                 queue.popleft()
 
-        if stack or queue:
-            return False
-        else:
-            return True
+        return not stack
 
 
 
@@ -10939,11 +12222,6 @@ class Solution:
         return head
 
 
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
 class Solution:
     def deleteDuplicates(self, head: ListNode) -> ListNode:
         if not head or not head.next:
@@ -11096,6 +12374,8 @@ print(Solution().maxVowels("aeiou", 2), 2)
 print(Solution().maxVowels("leetcode", 3), 2)
 
 
+# O(n), O(1)
+# sliding window
 class Solution:
     def maxVowels(self, word: str, substring_length: int) -> int:
         left = 0
@@ -11113,7 +12393,7 @@ class Solution:
                 
                 left += 1  # maintain the window length
             
-            max_vovels = max(max_vovels, vovel_count)
+            max_vovels = max(max_vovels, vovel_count)  # update max vovels
 
         return max_vovels
 
@@ -11123,7 +12403,7 @@ class Solution:
 
 # Asteroid Collision
 # https://leetcode.com/problems/asteroid-collision/description/
-"""
+u"""
 We are given an array asteroids of integers representing asteroids in a row.
 
 For each asteroid, the absolute value represents its size, and the sign represents its direction (positive meaning right, negative meaning left). Each asteroid moves at the same speed.
@@ -11156,6 +12436,35 @@ print(Solution().asteroidCollision([-2, -1, 1, -2]), [-2, -1, -2])
 print(Solution().asteroidCollision([-2, 2, 1, -2]), [-2])
 
 
+# O(n), O(n)
+# stack
+class Solution:
+    def asteroidCollision(self, asteroids: list[int]) -> list[int]:
+        stack = []
+
+        for asteroid in asteroids:
+            if (stack and
+                stack[-1] > 0 and
+                    asteroid < 0):
+                while (stack and
+                       stack[-1] > 0 and
+                       stack[-1] < -asteroid):
+                    stack.pop()
+                if (stack and 
+                        stack[-1] == -asteroid):
+                    stack.pop()
+                    continue
+                elif (stack and 
+                    stack[-1] > 0 and 
+                        stack[-1] > asteroid):
+                    continue
+
+            stack.append(asteroid)
+        return stack
+
+
+# O(n), O(n)
+# stack
 class Solution:
     def asteroidCollision(self, asteroids: list[int]) -> list[int]:
         stack = []
@@ -11529,12 +12838,6 @@ class Solution:
         return None
 
 
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.next = None
-
 class Solution:
     def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> Optional[ListNode]:        
         nodeA = headA
@@ -11756,6 +13059,7 @@ Explanation: Use the second operation on the second element to make s = "1010".
 print(Solution().minFlips("111000"), 2)
 print(Solution().minFlips("010"), 0)
 print(Solution().minFlips("1110"), 1)
+print(Solution().minFlips("01001001101"), 2)
 
 
 # blueprint
@@ -11763,30 +13067,33 @@ print(Solution().minFlips("1110"), 1)
 # "010101" target A
 # "101010" target B
 
+# "111000111000" numbers
+# "010101010101" target A
+# "101010101010" target B
 
 # O(n), O(n)
 # sliding window
 class Solution:
     def minFlips(self, numbers: str) -> int:
         left = 0
-        target_a = "01" * len(numbers)  # target string A "0101..."
-        target_b = "10" * len(numbers)  # target string B "1010..."
-        numbers = numbers * 2  # double the numbers length
+        double_numbers = numbers * 2  # double the numbers length
+        zero = "01" * len(numbers)  # target string A "0101..."
+        one = "10" * len(numbers)  # target string B "1010..."
         flip_a = 0  # count numbers to flip to get current tagret A in a loop
         flip_b = 0  # count numbers to flip to get current tagret B in a loop
         min_flip_a = len(numbers)  # minimum flips to get the best matching target A
         min_flip_b = len(numbers)  # minimum flips to get the best matching target B
 
 
-        for right, number in enumerate(numbers):
+        for right, number in enumerate(double_numbers):
             # if no match increase the flip counter
-            if number != target_a[right]:
+            if number != zero[right]:
                 flip_a += 1
-            if number != target_b[right]:
+            if number != one[right]:
                 flip_b += 1
 
             # if the window is the right length
-            if right - left + 1 == len(numbers) / 2:
+            if right - left + 1 == len(numbers):
                 min_flip_a = min(min_flip_a, flip_a)
                 min_flip_b = min(min_flip_b, flip_b)
 
@@ -11795,9 +13102,9 @@ class Solution:
                     return 0
 
                 # if no match decrease the flip counter
-                if numbers[left] != target_a[left]:
+                if double_numbers[left] != zero[left]:
                     flip_a -= 1
-                if numbers[left] != target_b[left]:
+                if double_numbers[left] != one[left]:
                     flip_b -= 1
 
                 left += 1
@@ -11812,12 +13119,10 @@ class Solution:
         min_flip_a = len(numbers)
         min_flip_b = len(numbers)
         
-        if len(numbers) % 2:
-            target_a = "01" * (len(numbers) // 2) + "0"
-            target_b = "10" * (len(numbers) // 2) + "1"
-        else:
-            target_a = "01" * (len(numbers) // 2)
-            target_b = "10" * (len(numbers) // 2)
+        target_a = "".join(str(i % 2) 
+                           for i in range(len(numbers)))
+        target_b = "".join(str((i + 1) % 2) 
+                           for i in range(len(numbers)))
 
         for _ in range(len(numbers)):
             numbers = numbers[1:] + numbers[0]
@@ -11873,14 +13178,49 @@ stockSpanner.next(60);  // return 1
 stockSpanner.next(75);  // return 4, because the last 4 prices (including today's price of 75) were less than or equal to today's price.
 stockSpanner.next(85);  // return 6
 """
+# Your StockSpanner object will be instantiated and called as such:
+# obj = StockSpanner()
+# param_1 = obj.next(price)
 
 
+stockSpanner = StockSpanner()
+print(stockSpanner.next(100)) # return 1
+print(stockSpanner.next(80))  # return 1
+print(stockSpanner.next(60))  # return 1
+print(stockSpanner.next(70))  # return 2
+print(stockSpanner.next(60))  # return 1
+print(stockSpanner.next(75))  # return 4, because the last 4 prices (including today's price of 75) were less than or equal to today's price.
+print(stockSpanner.next(85))  # return 6
+
+
+# draft
 # 100
 # 100, 80
 # 100, 80, 60
-# 100, 80, 70
-# 100, 80, 70, 60
-# 100, 80, 70, 60
+# 100(0), 80(1), <- 70(ind = 2)
+# 100, 80, 70(2), 60(4)
+
+
+# O(n), O(n)
+# stack, monotonic stack
+# monotonically decreasing stack
+class StockSpanner:
+    def __init__(self):
+        self.stack = []
+        self.index = 0  # index of the current number
+
+    def next(self, price: int) -> int:
+        days_of_lower = 0  # consecutive days for which the stock price was less than or equal to the price of that day
+        index = self.index
+        
+        while self.stack and self.stack[-1][1] <= price:  # check while top stack price is lower equal to curent price
+            index, _ = self.stack.pop()  # get index of popped price
+            days_of_lower = self.index - index  # update days
+
+        self.stack.append((min(index, self.index), price))  # use current index or lower index for last popped price
+        self.index += 1  # update index
+
+        return days_of_lower + 1  # increase `1` to count current day
 
 
 # O(n), O(n)
@@ -11902,11 +13242,6 @@ class StockSpanner:
         self.prices.append((price, counter))  # add (price, counter)
 
         return counter
-
-
-# Your StockSpanner object will be instantiated and called as such:
-# obj = StockSpanner()
-# param_1 = obj.next(price)
 
 
 # O(n2), O(n)
@@ -12187,7 +13522,9 @@ class Solution:
                 window_sum -= numbers[left]
                 left += 1
 
-        return window_size if window_size != len(numbers) + 1 else 0
+        return (window_size 
+                if window_size != len(numbers) + 1 
+                else 0)
 
 
 
@@ -12372,30 +13709,34 @@ Input: arr = [1,1,2,3,4,5], k = 4, x = -1
 
 Output: [1,1,2,3]
 """
-print(Solution().findClosestElements([1, 1, 2, 3, 4, 5], 4, -1), [1, 1, 2, 3])
 print(Solution().findClosestElements([1, 2, 3, 4, 5], 4, 3), [1, 2, 3, 4])
+print(Solution().findClosestElements([1, 1, 2, 3, 4, 5], 4, -1), [1, 1, 2, 3])
+print(Solution().findClosestElements([0, 1, 2, 2, 2, 3, 6, 8, 8, 9], 5, 9), [3, 6, 8, 8, 9])
 
+
+# draft
 # [2, 1, 0, 1, 2]
 # [0, 0, 1, 2, 3, 4]
 
 
-# O(n), O(n)
-# brute force
 from collections import deque
+
+# O(n-k), O(n)
+# deque
 class Solution:
     def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
-        numbers = deque(numbers)
+        queue = deque(numbers)
 
-        while len(numbers) > k:
-            if x - numbers[0] > numbers[-1] - x:
-                numbers.popleft()
+        while len(queue) > k:
+            if x - queue[0] > queue[-1] - x:
+                queue.popleft()
             else:
-                numbers.pop()
+                queue.pop()
 
-        return list(numbers)
+        return list(queue)
 
 
-# O(n), O(1)
+# O(n-k), O(1)
 # sliding window
 class Solution:
     def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
@@ -12412,24 +13753,65 @@ class Solution:
 
 
 # O(log(n-k)+k), O(1)
-# sliding window
+# binary search, sliding window
 class Solution:
     def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        """
+        Starts with `sliding window` positioned in the middle of the `numbers`.
+        Start binary search. If the first number outside of the `sliding window` 
+        on the right minus `x` is less than `x` minus the first character 
+        in the `sliding window` then search the right portion of the binary search.
+        The solution on the right would be better than current `sliding window`.
+        Else search the left portion of the binary search while preserving current 
+        `sliding window` (current `sliding window` could be the solution).
+        """
         left = 0
-        right = len(numbers) - k  # 2
+        right = len(numbers) - k
 
         while left < right:  # O(log(n-k))
-            middle = (left + right) // 2  # 1, 0
-            if numbers[middle + k] - x < x - numbers[middle]:  # 5--1=6<-1-1=-2; 4--1=5<-1-1=-2
+            middle = (left + right) // 2
+            if x - numbers[middle] > numbers[middle + k] - x:
                 left = middle + 1
             else:
-                right = middle  # 1, 0
+                right = middle
 
         return numbers[left: left + k]  # O(k))
 
 
+# O(n), O(n)
+# two pointers
+class Solution:
+    def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
+        disttances = [abs(number - x)
+                      for number in numbers]
+
+        min_number = min(disttances)
+        min_index = disttances.index(min_number)
+
+        left = min_index - 1
+        right = min_index + 1
+        if left < 0:
+            left = 0
+            right = k - 1
+        elif right == len(disttances):
+            left = len(numbers) - k
+            right = len(numbers) - 1
+        else:
+            while k - 1:
+                if (right < len(disttances) and
+                        disttances[left] > disttances[right]):
+                    right += 1
+                else:
+                    left -= 1
+                k -= 1
+            left += 1
+            right -= 1
+
+        return numbers[left: right + 1]
 
 
+# O(n), O(1)
+# two pointers
 class Solution:
     def findClosestElements(self, numbers: list[int], k: int, x: int) -> list[int]:
         left = 0
@@ -12623,21 +14005,26 @@ class Solution:
     def minOperations(self, numbers: list[int], x: int) -> int:
         left = 0
         window_sum = 0
-        window_min_length = len(numbers) + 1
+        window_max_length = len(numbers) + 1  # minimum operations to reduce
         target = sum(numbers) - x
 
         for right, number in enumerate(numbers):
             window_sum += number
 
-            while (left <= right and  # target might be less than zero and left gets out of bounds
-                   window_sum > target):
+            while (left <= right and  # left in bounds and
+                   window_sum > target):  # window sum is too large
                 window_sum -= numbers[left]
                 left += 1
 
             if window_sum == target:
-                window_min_length = min(window_min_length, len(numbers) - (right - left + 1))
+                window_max_length = min(window_max_length, 
+                                        len(numbers) - (right - left + 1))
 
-        return window_min_length if window_min_length != len(numbers) + 1 else - 1
+        return (window_max_length 
+                if window_max_length != len(numbers) + 1
+                else -1)
+
+
 
 
 
@@ -12722,6 +14109,8 @@ print(Solution().simplifyPath("/."), "/")
 print(Solution().simplifyPath("/..hidden"), "/..hidden")
 
 
+# O(n), O(n)
+# stack
 class Solution:
     def simplifyPath(self, path: str) -> str:
         stack = []
@@ -12740,7 +14129,25 @@ class Solution:
                 cache += char
             
         return "/" + "/".join(stack)
+
             
+# O(n), O(n)
+# built-in function
+class Solution:
+    def simplifyPath(self, path: str) -> str:
+        clean_dirs = []
+        
+        for dir in path.split("/"):
+            if not dir or dir == ".":
+                continue
+            elif dir == "..":
+                if clean_dirs:
+                    clean_dirs.pop()
+            else:
+                clean_dirs.append(dir)
+        
+        return "/" + "/".join(clean_dirs)
+
 
 
 
@@ -13406,3 +14813,8882 @@ class Solution:
         return window_length
 
 
+
+
+
+# Decode String
+# https://leetcode.com/problems/decode-string/description/
+"""
+Given an encoded string, return its decoded string.
+
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there will not be input like 3a or 2[4].
+
+The test cases are generated so that the length of the output will never exceed 105.
+
+ 
+
+Example 1:
+
+Input: s = "3[a]2[bc]"
+Output: "aaabcbc"
+Example 2:
+
+Input: s = "3[a2[c]]"
+Output: "accaccacc"
+Example 3:
+
+Input: s = "2[abc]3[cd]ef"
+Output: "abcabccdcdcdef"
+"""
+print(Solution().decodeString("3[a]2[bc]"), "aaabcbc")
+print(Solution().decodeString("3[a2[c]]"), "accaccacc")
+print(Solution().decodeString("2[abc]3[cd]ef"), "abcabccdcdcdef")
+print(Solution().decodeString("3[z]2[2[y]pq4[2[jk]e1[f]]]ef"), "zzzyypqjkjkefjkjkefjkjkefjkjkefyypqjkjkefjkjkefjkjkefjkjkefef")
+print(Solution().decodeString("10[leetcode]"), "leetcodeleetcodeleetcodeleetcodeleetcodeleetcodeleetcodeleetcodeleetcodeleetcode")
+
+
+# O(n), O(n)
+# recursion
+class Solution:
+    def decodeString(self, text: str) -> str:
+        self.index = 0
+        
+        def recursion():
+            number = 0
+            word = ""
+            
+            while self.index < len(text):
+                char = text[self.index]
+
+                if char.isdigit():
+                    number += 10 * number + int(char)
+                    self.index += 1
+                elif char == "[":
+                    self.index += 1
+                    word += number * recursion()
+                    number = 0
+                elif char == "]":
+                    self.index += 1
+                    return word
+                else:
+                    word += char
+                    self.index += 1
+
+            return word
+            
+        return recursion()
+
+
+# O(n), O(n)
+# stack
+class Solution:
+    def decodeString(self, text: str) -> str:
+        stack = []
+
+        for char in text:
+            if char != "]":
+                stack.append(char)
+            else:
+                word = ""
+                while stack[-1] != "[":
+                    word = stack.pop() + word 
+                stack.pop()
+                
+                number = ""
+                while stack and stack[-1].isdigit():
+                    number = stack.pop() + number
+                
+                stack.append(int(number) * word)
+        
+        return "".join(stack)
+
+
+# O(n), O(n)
+# stack
+class Solution:
+    def decodeString(self, text: str) -> str:
+        stack = []  # (prefix, multiplier)
+        word = ""
+        number = ""
+        decoded = ""
+        opened = 0
+
+        for char in text:
+            if char not in "[]":
+                if char.isdigit():
+                    number += char
+                else:
+                    word += char  # c
+            else:
+                if char == "[":
+                    opened += 1
+                    if not number:
+                        number = 1
+                    stack.append((word, int(number)))  # ("", 3), (a, 2)
+                    word, number = "", ""
+                else:
+                    opened -= 1
+                    prefix, multi = stack.pop()  # (a, 2), (, 3)
+                    word = prefix + multi * word  # (a+2*c)
+                    if opened == 0:
+                        decoded += word
+                        word = ""
+
+        return decoded + word
+
+
+
+
+
+# Single Element in a Sorted Array
+# https://leetcode.com/problems/single-element-in-a-sorted-array/description/
+"""
+You are given a sorted array consisting of only integers where every element appears exactly twice, except for one element which appears exactly once.
+
+Return the single element that appears only once.
+
+Your solution must run in O(log n) time and O(1) space.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,2,3,3,4,4,8,8]
+Output: 2
+Example 2:
+
+Input: nums = [3,3,7,7,10,11,11]
+Output: 10
+"""
+print(Solution().singleNonDuplicate([1, 1, 2, 3, 3, 4, 4, 8, 8]), 2)
+print(Solution().singleNonDuplicate([3, 3, 7, 7, 10, 11, 11]), 10)
+print(Solution().singleNonDuplicate([1, 2, 2]), 1)
+print(Solution().singleNonDuplicate([1]), 1)
+
+# draft
+# [1, 1, 2]
+# [1, 2, 2]
+# [1, 1, 2, 2, 3]
+# [1, 2, 2, 3, 3]
+
+
+# O(logn), O(1)
+# binary search
+class Solution:
+    def singleNonDuplicate(self, numbers: list[int]) -> int:
+        left = 0
+        right = len(numbers) - 1
+
+        while left <= right:
+            middle = left + (right - left) // 2
+            middle_number = numbers[middle]
+
+            if (middle - 1 >= 0 and  # if index in bounds
+                    numbers[middle - 1] == middle_number):  # middle number same as previous one
+                if (middle - 1) % 2:  # if the previous index is odd
+                    right = middle - 1  # check the left part
+                else:
+                    left = middle + 1  # check the right part                
+            elif (middle + 1 < len(numbers) and  # if index in bounds
+                    numbers[middle + 1] == middle_number):  # middle number same as next one
+                if (middle + 1) % 2:  # if the next index is odd
+                    left = middle + 1  # check the right part
+                else:
+                    right = middle - 1  # check the left part
+            else:
+                return middle_number
+
+
+
+
+
+# Remove Nodes From Linked List
+# https://leetcode.com/problems/remove-nodes-from-linked-list/description/
+"""
+You are given the head of a linked list.
+
+Remove every node which has a node with a greater value anywhere to the right side of it.
+
+Return the head of the modified linked list.
+
+Example 1:
+
+Input: head = [5,2,13,3,8]
+Output: [13,8]
+Explanation: The nodes that should be removed are 5, 2 and 3.
+- Node 13 is to the right of node 5.
+- Node 13 is to the right of node 2.
+- Node 8 is to the right of node 3.
+Example 2:
+
+Input: head = [1,1,1,1]
+Output: [1,1,1,1]
+Explanation: Every node has value 1, so no nodes are removed.
+"""
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+# O(n), O(1)
+# linked list
+class Solution:
+    def removeNodes(self, head: ListNode | None) -> ListNode | None:
+        """
+        Reverse Linked List and return it's new head.
+        """
+        def reverse_linkedlist(node: ListNode | None) -> ListNode | None:
+            previous = None
+
+            while node:
+                next_node = node.next
+                node.next = previous
+                previous = node
+                node = next_node
+            
+            return previous
+
+        anchor = node = reverse_linkedlist(head)  # reversed link list head
+        max_value = node.val  # init maximum value with the last node value
+
+        while node.next:  # while in bounds
+            if node.next.val < max_value:  # it's value is less than current max value
+                node.next = node.next.next  # pop the next node
+            else:
+                max_value = max(max_value, node.val)  # update max value
+                node = node.next  # point to the next node
+
+        return reverse_linkedlist(anchor)
+
+
+list_nodes = [5, 2, 13, 3, 8]
+
+def list_to_linkedlist(list_nodes):
+    anchor = node = ListNode()
+
+    for static_node in list_nodes:
+        node.next = ListNode(static_node)
+        node = node.next
+    
+    node.next = None
+    
+    return anchor.next
+
+linkedlist_1 = list_to_linkedlist(list_nodes)
+print(linkedlist_1.val)
+
+
+# define LinkedList class to iterate throungh linked list
+class LinkedList:
+    def __init__(self, head):
+        self.head = head
+        self.node = None
+
+    # define iterator
+    def __iter__(self):
+        self.node = self.head
+        return self
+
+    # iterate
+    def __next__(self):
+        if self.node:
+            val = self.node.val
+            self.node = self.node.next
+            return val
+        else:
+            raise StopIteration
+
+linkedList1 = LinkedList(linkedlist_1)
+
+# iterate through LinkedList
+for linkedlist_node in linkedList1:
+    print(linkedlist_node)
+
+
+
+def linkedlist_to_list(node):
+    list_nodes = []
+
+    while node:
+        list_nodes.append(node.val)
+        node = node.next
+
+    return list_nodes
+
+print(linkedlist_to_list(linkedlist_1))
+
+print(linkedlist_to_list(Solution().removeNodes((list_to_linkedlist([5, 2, 13, 3, 8])))), [13, 8])
+print(linkedlist_to_list(Solution().removeNodes((list_to_linkedlist([1, 1, 1, 1])))), [1,1,1,1])
+
+print(
+    linkedlist_to_list(
+        Solution().removeNodes((
+            list_to_linkedlist([5, 2, 13, 3, 8])))), [13, 8])
+
+
+
+
+
+# Convert Sorted Array to Binary Search Tree
+# https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/
+"""
+Given an integer array nums where the elements are sorted in ascending order, convert it to a 
+height-balanced
+ binary search tree.
+
+Example 1:
+____0
+  /     \
+-10      5
+   \      \
+    -3     9
+
+Input: nums = [-10,-3,0,5,9]
+
+Output: [0,-3,9,-10,null,5]
+Explanation: [0,-10,5,null,-3,null,9] is also accepted:
+
+
+Example 2:
+
+
+Input: nums = [1,3]
+Output: [3,1]
+Explanation: [1,null,3] and [3,1] are both height-balanced BSTs.
+"""
+print(Solution().sortedArrayToBST([-10, -3, 0, 5, 9]))
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+from binarytree import Node
+
+# O(n), O(1)
+# binary treee
+class Solution:
+    def sortedArrayToBST(self, numbers: list[int]) -> Node | None:
+        if not numbers:  # if the list of child nodes is empty
+            return None
+
+        left = 0  # left pointer
+        right = len(numbers) - 1  # right pointer 
+        middle = left + (right - left) // 2  # middle pointer
+        middle_value = numbers[middle]  # middle value
+        left_node = self.sortedArrayToBST(numbers[:middle])
+        right_node = self.sortedArrayToBST(numbers[middle + 1:])
+        node = Node(middle_value, left_node, right_node)  # create a node
+
+        return node
+
+
+
+
+
+# Merge Two Binary Trees
+# https://leetcode.com/problems/merge-two-binary-trees/description/
+"""
+You are given two binary trees root1 and root2.
+
+Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree.
+
+Return the merged tree.
+
+Note: The merging process must start from the root nodes of both trees.
+
+ 
+
+Example 1:
+    1         __2           __3
+   / \       /   \         /   \
+  3   2  +  1     3   =   4     5
+ /           \     \     / \     \
+5             4     7   5   4     7
+
+
+
+Input: root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+Output: [3,4,5,5,4,null,7]
+Example 2:
+
+Input: root1 = [1], root2 = [1,2]
+Output: [2,2]
+"""
+print(level_order_traversal(Solution().mergeTrees(build_tree_from_list([1, 3, 2, 5]), build_tree_from_list([2, 1, 3, None, 4, None, 7]))))
+
+
+# O(n), O(n)
+# binary search
+class Solution:
+    def mergeTrees(self, root1: TreeNode | None, root2: TreeNode | None) -> TreeNode | None:
+        if not root1 and not root2:
+            return None
+        
+        if not root1:
+            root1 = TreeNode()
+        if not root2:
+            root2 = TreeNode()
+        
+        root = TreeNode(root1.val + root2.val)
+        root.left = self.mergeTrees(root1.left, root2.left)
+        root.right = self.mergeTrees(root1.right, root2.right)
+        
+        return root
+
+
+# O(n), O(n)
+# binary search
+class Solution:
+    def mergeTrees(self, root1: TreeNode | None, root2: TreeNode | None) -> TreeNode | None:
+        if not root1:
+            return root2
+        if not root2:
+            return root1
+        
+        root = TreeNode(root1.val + root2.val)
+        root.left = self.mergeTrees(root1.left, root2.left)
+        root.right = self.mergeTrees(root1.right, root2.right)
+        
+        return root
+
+print(level_order_traversal(
+    Solution().mergeTrees(
+        build_tree_from_list([1, 3, 2, 5]), 
+        build_tree_from_list([2, 1, 3, None, 4, None, 7]))))
+
+
+
+
+
+# Design HashSet
+# https://leetcode.com/problems/design-hashset/description/
+"""
+Design a HashSet without using any built-in hash table libraries.
+
+Implement MyHashSet class:
+
+void add(key) Inserts the value key into the HashSet.
+bool contains(key) Returns whether the value key exists in the HashSet or not.
+void remove(key) Removes the value key in the HashSet. If key does not exist in the HashSet, do nothing.
+ 
+
+Example 1:
+
+Input
+["MyHashSet", "add", "add", "contains", "contains", "add", "contains", "remove", "contains"]
+[[], [1], [2], [1], [3], [2], [2], [2], [2]]
+Output
+[null, null, null, true, false, null, true, null, false]
+
+Explanation
+MyHashSet myHashSet = new MyHashSet();
+myHashSet.add(1);      // set = [1]
+myHashSet.add(2);      // set = [1, 2]
+myHashSet.contains(1); // return True
+myHashSet.contains(3); // return False, (not found)
+myHashSet.add(2);      // set = [1, 2]
+myHashSet.contains(2); // return True
+myHashSet.remove(2);   // set = [1]
+myHashSet.contains(2); // return False, (already removed)
+"""
+
+
+class ListNode:
+    def __init__(self, val: int = 0):
+        self.val = val
+        self.next = None
+
+
+# O(1), O(n)
+# linked list
+class MyHashSet:
+    def __init__(self):
+        self.set = [ListNode() for _ in range(10**4)]
+
+
+    def add(self, key: int) -> None:
+        node = self.set[key % len(self.set)]
+
+        while node.next:
+            if node.next.val == key:
+                return
+            node = node.next
+        
+        node.next = ListNode(key)
+
+
+    def remove(self, key: int) -> None:
+        node = self.set[key % len(self.set)]
+
+        while node.next:
+            if node.next.val == key:
+                node.next = node.next.next
+                return
+            node = node.next
+
+
+    def contains(self, key: int) -> bool:
+        node = self.set[key % len(self.set)]
+
+        while node.next:
+            if node.next.val == key:
+                return True
+            node = node.next
+        
+        return False
+
+
+# Your MyHashSet object will be instantiated and called as such:
+# obj = MyHashSet()
+# obj.add(key)
+# obj.remove(key)
+# param_3 = obj.contains(key)
+
+
+# O(n), O(n)
+# list
+class MyHashSet:
+    def __init__(self):
+        self.hash_set = []
+
+    def add(self, key: int) -> None:
+        if key not in self.hash_set:
+            self.hash_set.append(key)
+
+    def remove(self, key: int) -> None:
+        if key in self.hash_set:
+            self.hash_set.remove(key)
+
+    def contains(self, key: int) -> bool:
+        return key in self.hash_set
+
+
+# O(1), O(10**6)
+# Memory is O(10**6) since the table size is constant
+# boolean list
+class MyHashSet:
+    def __init__(self):
+        self.hash_set = [False] * (10 ** 6 + 1)  # first: 0, last: 10 **6
+
+    def add(self, key: int) -> None:
+        self.hash_set[key] = True
+
+    def remove(self, key: int) -> None:
+        self.hash_set[key] = False
+
+    def contains(self, key: int) -> bool:
+        return self.hash_set[key]
+
+
+
+
+
+# 4Sum
+# https://leetcode.com/problems/4sum/description/
+"""
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+0 <= a, b, c, d < n
+a, b, c, and d are distinct.
+nums[a] + nums[b] + nums[c] + nums[d] == target
+You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+Example 2:
+
+Input: nums = [2,2,2,2,2], target = 8
+Output: [[2,2,2,2]]
+"""
+print(Solution().fourSum([1, 0, -1, 0, -2, 2], 0), [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]])
+print(Solution().fourSum([2, 2, 2, 2, 2], 8), [[2, 2, 2, 2]])
+print(Solution().fourSum([0, 0, 0, 0], 0), [[0, 0, 0, 0]])
+
+
+# [-2, -1, 0, 0, 1, 2]
+
+# O(n3), O(1)
+# two pointers
+class Solution:
+    def fourSum(self, numbers: list[int], target: int) -> list[list[int]]:
+        numbers.sort()  # sort list to be able to ignore duplicate numbers
+        quarduplets = []
+
+        for index1, number1 in enumerate(numbers[:-3]):
+            # Skip same number values
+            if (index1 and number1 == numbers[index1 - 1]):
+                continue
+
+            # for index2, number2 in enumerate(numbers[index1 + 1 :-2], index1 + 1):
+            for index2 in range(index1 + 1, len(numbers) - 2):
+                number2 = numbers[index2]
+                
+                # Skip same number values
+                if (index2 > index1 + 1 and number2 == numbers[index2 - 1]):
+                    continue
+
+                left = index2 + 1  # left pointer
+                right = len(numbers) - 1  # right pointer
+
+                while left < right:  # two pointers
+                    quarduplet = (number1 +
+                                  number2 +
+                                  numbers[left] +
+                                  numbers[right])
+
+                    if quarduplet == target:  # if sum is equal to the target
+                        quarduplets.append([number1,
+                                            number2,
+                                            numbers[left],
+                                            numbers[right]])
+                        left += 1
+                        right -= 1
+                        # skip same left pointer values
+                        while (left < right and
+                               numbers[left] == numbers[left - 1]):
+                            left += 1
+
+                    elif quarduplet < target:  # if sum is less than the target
+                        left += 1
+                    else:  # if sum is greater than the target
+                        right -= 1
+
+        return quarduplets
+
+
+
+
+
+# Implement Trie (Prefix Tree)
+# https://leetcode.com/problems/implement-trie-prefix-tree/description/
+"""
+A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker.
+
+Implement the Trie class:
+
+Trie() Initializes the trie object.
+void insert(String word) Inserts the string word into the trie.
+boolean search(String word) Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+ 
+
+Example 1:
+
+Input
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+Output
+[null, null, true, false, true, null, true]
+
+Explanation
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // return True
+trie.search("app");     // return False
+trie.startsWith("app"); // return True
+trie.insert("app");
+trie.search("app");     // return True
+"""
+
+
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_word = False
+
+
+# O(n), O(n)
+# dict
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+
+    def insert(self, word: str) -> None:
+        node = self.root
+
+        for letter in word:
+            if letter not in node.children:
+                node.children[letter] = TrieNode()
+            
+            node = node.children[letter]
+        
+        node.is_word = True
+
+
+    def search(self, word: str) -> bool:
+        node = self.root
+
+        for letter in word:
+            if letter not in node.children:
+                return False
+            
+            node = node.children[letter]
+
+        return node.is_word
+        
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+
+        for letter in prefix:
+            if letter not in node.children:
+                return False
+            
+            node = node.children[letter]
+
+        return True
+
+
+class TrieNode:
+    def __init__(self):
+        self.children = [False] * 26
+        self.is_word = False
+
+
+# O(n), O(n)
+# list
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+
+    def insert(self, word: str) -> None:
+        node = self.root
+
+        for letter in word:
+            index = ord(letter) - ord("a")
+            
+            if not node.children[index]:
+                node.children[index] = TrieNode()
+            
+            node = node.children[index]
+
+        node.is_word = True
+
+
+    def search(self, word: str) -> bool:
+        node = self.root
+
+        for letter in word:
+            index = ord(letter) - ord("a")
+            
+            if not node.children[index]:
+                return False
+            
+            node = node.children[index]
+
+        return node.is_word
+        
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.root
+
+        for letter in prefix:
+            index = ord(letter) - ord("a")
+            
+            if not node.children[index]:
+                return False
+            
+            node = node.children[index]
+
+        return True
+
+# Your Trie object will be instantiated and called as such:
+# obj = Trie()
+# obj.insert(word)
+# param_2 = obj.search(word)
+# param_3 = obj.startsWith(prefix)
+
+
+trie = Trie()
+trie.insert("apple")
+trie.search("apple")   # return True
+trie.search("app")     # return False
+trie.startsWith("app") # return True
+trie.insert("app")
+trie.search("app")     # return True
+
+
+
+    
+# Design HashMap
+# https://leetcode.com/problems/design-hashmap/description/
+"""
+Design a HashMap without using any built-in hash table libraries.
+
+Implement the MyHashMap class:
+
+MyHashMap() initializes the object with an empty map.
+void put(int key, int value) inserts a (key, value) pair into the HashMap. If the key already exists in the map, update the corresponding value.
+int get(int key) returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key.
+void remove(key) removes the key and its corresponding value if the map contains the mapping for the key.
+ 
+
+Example 1:
+
+Input
+["MyHashMap", "put", "put", "get", "get", "put", "get", "remove", "get"]
+[[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
+Output
+[null, null, null, 1, -1, null, 1, null, -1]
+
+Explanation
+MyHashMap myHashMap = new MyHashMap();
+myHashMap.put(1, 1); // The map is now [[1,1]]
+myHashMap.put(2, 2); // The map is now [[1,1], [2,2]]
+myHashMap.get(1);    // return 1, The map is now [[1,1], [2,2]]
+myHashMap.get(3);    // return -1 (i.e., not found), The map is now [[1,1], [2,2]]
+myHashMap.put(2, 1); // The map is now [[1,1], [2,1]] (i.e., update the existing value)
+myHashMap.get(2);    // return 1, The map is now [[1,1], [2,1]]
+myHashMap.remove(2); // remove the mapping for 2, The map is now [[1,1]]
+myHashMap.get(2);    // return -1 (i.e., not found), The map is now [[1,1]]
+"""
+
+
+class ListNode:
+    def __init__(self, key=0, val=0):
+        self.key = key
+        self.val = val
+        self.next = None
+
+
+# O(1), O(n)
+# linked list
+class MyHashMap:
+    def __init__(self):
+        self.map = [0] * 10**4
+
+    def put(self, key: int, val: int) -> None:
+        index = key % len(self.map)
+        
+        if not self.map[index]:
+            self.map[index] = ListNode()
+
+        node = self.map[index]
+
+        while node.next:
+            if node.next.key == key:
+                node.next.val = val
+                return
+            node = node.next
+
+        node.next = ListNode(key, val)
+        
+
+    def get(self, key: int) -> int:
+        index = key % len(self.map)
+
+        if not self.map[index]:
+            return -1
+        
+        node = self.map[index]
+
+        while node.next:
+            if node.next.key == key:
+                return node.next.val
+            node = node.next
+        
+        return -1
+        
+
+    def remove(self, key: int) -> None:
+        index = key % len(self.map)
+
+        if not self.map[index]:
+            return
+        
+        node = self.map[index]
+
+        while node.next:
+            if node.next.key == key:
+                node.next = node.next.next
+                return
+            node = node.next
+
+
+# Your MyHashMap object will be instantiated and called as such:
+# obj = MyHashMap()
+# obj.put(key,value)
+# param_2 = obj.get(key)
+# obj.remove(key)
+
+myHashMap = MyHashMap()
+myHashMap.put(1, 1) #  The map is now [[1,1]]
+myHashMap.put(2, 2) #  The map is now [[1,1], [2,2]]
+myHashMap.get(1)    #  return 1, The map is now [[1,1], [2,2]]
+myHashMap.get(3)    #  return -1 (i.e., not found), The map is now [[1,1], [2,2]]
+myHashMap.put(2, 1) #  The map is now [[1,1], [2,1]] (i.e., update the existing value)
+myHashMap.get(2)    #  return 1, The map is now [[1,1], [2,1]]
+myHashMap.remove(2) #  remove the mapping for 2, The map is now [[1,1]]
+myHashMap.get(2)    #  return -1 (i.e., not found), The map is now [[1,1]]
+
+
+
+
+
+# Rotate Array
+# https://leetcode.com/problems/rotate-array/description/
+"""
+Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+"""
+print(Solution().rotate([1, 2, 3, 4, 5, 6, 7], 3), [5, 6, 7, 1, 2, 3, 4])
+print(Solution().rotate([-1, -100, 3, 99], 2), [3, 99, -1, -100])
+print(Solution().rotate([-1], 2), [-1])
+print(Solution().rotate([1, 2], 3), [2, 1])
+
+
+# O(n), O(1)
+# reverse
+class Solution:
+    def reverse_str(self, left, right):
+        while left < right:
+            self.nums[left], self.nums[right] = self.nums[right], self.nums[left]
+            left += 1
+            right -= 1
+
+
+    def rotate(self, nums: list[int], k: int) -> None:
+        k = k % len(nums)
+        self.nums = nums
+        self.reverse_str(0, len(nums) - 1)
+        self.reverse_str(0, k - 1)
+        self.reverse_str(k, len(nums) - 1)
+        return self.nums
+
+
+# O(n), O(n)
+# slice
+class Solution:
+    def rotate(self, nums: list[int], k: int) -> None:
+        right = len(nums) - k % len(nums)
+        return nums[right:] + nums[:right]
+
+
+# O(n), O(n)
+# iteraton
+class Solution:
+    def rotate(self, nums: list[int], k: int) -> None:
+        nums_copy = [0] * len(nums)
+        
+        for index in range(len(nums)):
+            nums_copy[(index + k) % len(nums)] = nums[index]
+
+        nums[:] = nums_copy
+        
+        return nums
+
+
+
+
+
+# Binary Subarrays With Sum
+# https://leetcode.com/problems/binary-subarrays-with-sum/description/
+"""
+Given a binary array nums and an integer goal, return the number of non-empty subarrays with a sum goal.
+
+A subarray is a contiguous part of the array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,0,1,0,1], goal = 2
+Output: 4
+Explanation: The 4 subarrays are bolded and underlined below:
+[(1,0,1),0,1]
+[(1,0,1,0),1]
+[1,(0,1,0,1)]
+[1,0,(1,0,1)]
+Example 2:
+
+Input: nums = [0,0,0,0,0], goal = 0
+Output: 15
+"""
+print(Solution().numSubarraysWithSum([1, 0, 1, 0, 1], 2), 4)
+print(Solution().numSubarraysWithSum([0, 0, 0, 0, 0], 0), 15)
+
+
+# O(n3), O(n)
+# brute force
+class Solution:
+    def numSubarraysWithSum(self, numbers: list[int], goal: int) -> int:
+        counter = 0
+
+        for i in range(len(numbers)):
+            for j in range(i, len(numbers)):
+                if sum(numbers[i: j + 1]) == goal:
+                    counter += 1
+                elif sum(numbers[i: j + 1]) > goal:
+                    break
+            
+        return counter
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def numSubarraysWithSum(self, numbers: list[int], goal: int) -> int:
+        counter = 0
+
+        for i in range(len(numbers)):
+            sub_goal = goal
+            
+            for j in range(i, len(numbers)):
+                sub_goal -= numbers[j]
+                if sub_goal == 0:
+                    counter += 1
+                elif sub_goal < 0:
+                    break
+            
+        return counter
+
+
+
+
+
+# Remove K Digits
+# https://leetcode.com/problems/remove-k-digits/description/
+"""
+Given string num representing a non-negative integer num, and an integer k, return the smallest possible integer after removing k digits from num.
+
+ 
+
+Example 1:
+
+Input: num = "1432219", k = 3
+Output: "1219"
+Explanation: Remove the three digits 4, 3, and 2 to form the new number 1219 which is the smallest.
+Example 2:
+
+Input: num = "10200", k = 1
+Output: "200"
+Explanation: Remove the leading 1 and the number is 200. Note that the output must not contain leading zeroes.
+Example 3:
+
+Input: num = "10", k = 2
+Output: "0"
+Explanation: Remove all the digits from the number and it is left with nothing which is 0.
+"""
+print(Solution().removeKdigits("1432219", 3), "1219")
+print(Solution().removeKdigits("10200", 1), "200")
+print(Solution().removeKdigits("10", 2), "0")
+print(Solution().removeKdigits("9", 1), "0")
+print(Solution().removeKdigits("112", 1), "11")
+print(Solution().removeKdigits("1173", 2), "11")
+print(Solution().removeKdigits("10", 1), "0")
+
+
+# O(n), O(n)
+# stack, monotonic stack
+# monotonically increasing stack
+class Solution:
+    def removeKdigits(self, numbers: str, k: int) -> str:
+        stack = []
+        
+        for number in numbers:
+            while (k and stack and
+                   number < stack[-1]):
+                stack.pop()
+                k -= 1  # the number of digits to remove
+                
+            stack.append(number)
+        
+        # calculate `start` where leading zeros (if present) stops
+        start = 0
+        while (start < len(stack) and 
+               stack[start] == "0"):
+            start += 1
+        
+        # `start` to remove leading zeros and 
+        # `len(stack) - k` to remove exceeded characters if `k` is not zero
+        clean_stack = stack[start: len(stack) - k]
+
+        return ("".join(clean_stack) 
+                if clean_stack
+                else "0")
+
+
+
+
+
+# Find Peak Element
+# https://leetcode.com/problems/find-peak-element/description/
+"""
+A peak element is an element that is strictly greater than its neighbors.
+
+Given a 0-indexed integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks.
+
+You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly greater than a neighbor that is outside the array.
+
+You must write an algorithm that runs in O(log n) time.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1]
+Output: 2
+Explanation: 3 is a peak element and your function should return the index number 2.
+Example 2:
+
+Input: nums = [1,2,1,3,5,6,4]
+Output: 5
+Explanation: Your function can return either index number 1 where the peak element is 2, or index number 5 where the peak element is 6.
+"""
+print(Solution().findPeakElement([1, 2, 3, 1]), 2)
+print(Solution().findPeakElement([1, 2, 1, 3, 5, 6, 4]), 5)
+print(Solution().findPeakElement([1]), 0)
+print(Solution().findPeakElement([1, 2]), 1)
+
+
+# O(logn), O(1)
+# binary search
+class Solution:
+    def findPeakElement(self, numbers: list[int]) -> int:
+        left = 0
+        right = len(numbers) - 1
+
+        while left <= right:
+            if right - left + 1 == 1:  # if word length is 1
+                return left
+
+            middle = left + (right - left) // 2
+            middle_number = numbers[middle]
+            previous = middle_number - 1 if middle == 0 else numbers[middle - 1]  # if left index out of bounds
+            next = middle_number - 1 if middle == len(numbers) - 1 else numbers[middle + 1]  # if right indext out of bounds
+
+            if (previous < middle_number and
+                    middle_number > next):
+                return middle
+            elif next > previous:
+                left = middle + 1
+            else:
+                right = middle - 1
+
+
+
+
+
+# Maximum Twin Sum of a Linked List
+# https://leetcode.com/problems/maximum-twin-sum-of-a-linked-list/description/
+"""
+In a linked list of size n, where n is even, the ith node (0-indexed) of the linked list is known as the twin of the (n-1-i)th node, if 0 <= i <= (n / 2) - 1.
+
+For example, if n = 4, then node 0 is the twin of node 3, and node 1 is the twin of node 2. These are the only nodes with twins for n = 4.
+The twin sum is defined as the sum of a node and its twin.
+
+Given the head of a linked list with even length, return the maximum twin sum of the linked list.
+
+ 
+
+Example 1:
+
+
+Input: head = [5,4,2,1]
+Output: 6
+Explanation:
+Nodes 0 and 1 are the twins of nodes 3 and 2, respectively. All have twin sum = 6.
+There are no other nodes with twins in the linked list.
+Thus, the maximum twin sum of the linked list is 6. 
+Example 2:
+
+
+Input: head = [4,2,2,3]
+Output: 7
+Explanation:
+The nodes with twins present in this linked list are:
+- Node 0 is the twin of node 3 having a twin sum of 4 + 3 = 7.
+- Node 1 is the twin of node 2 having a twin sum of 2 + 2 = 4.
+Thus, the maximum twin sum of the linked list is max(7, 4) = 7. 
+Example 3:
+
+
+Input: head = [1,100000]
+Output: 100001
+Explanation:
+There is only one node with a twin in the linked list having twin sum of 1 + 100000 = 100001.
+"""
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+# O(n), O(1)
+# linked list, two pass
+class Solution:
+    def pairSum(self, head: ListNode | None) -> int:
+        twin_sum = 0
+
+        # find the last node of the left portion
+        slow, fast = head, head
+        previous = None
+        while fast and fast.next:
+            fast = fast.next.next
+            nextSlow = slow.next
+            # reverse the left portion
+            slow.next = previous
+            previous = slow
+            slow = nextSlow
+
+        # traverse through the list to find the twin sum
+        while previous:
+            twin_sum = max(twin_sum, previous.val + slow.val)
+            previous = previous.next
+            slow = slow.next
+
+        return twin_sum
+
+
+# O(n), O(1)
+# linked list, three pass
+class Solution:
+    def pairSum(self, head: ListNode | None) -> int:
+        node = head
+        index = 1
+        twin_sum = 0
+
+        # find the length of the linked list
+        while node and node.next:
+            node = node.next
+            index += 1
+        
+        node = head
+        middle = index // 2
+        # fast forward to the right portion
+        for _ in range(middle):
+            node = node.next
+
+        # reverse the right portion
+        previous = None
+        while node:
+            next_node = node.next
+            node.next = previous
+            previous = node
+            node = next_node
+        
+        # traverse through the list to find the twin sum
+        right_head = previous
+        while right_head:
+            twin_sum = max(twin_sum, head.val + right_head.val)
+            head = head.next
+            right_head = right_head.next
+
+        return twin_sum
+
+
+
+
+
+# Path Sum
+# https://leetcode.com/problems/path-sum/description/
+"""
+Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+
+A leaf is a node with no children.
+
+ 
+
+Example 1:
+         5___
+        /    \
+    ___4     _8
+   /        /  \
+  11       13   4
+ /  \            \
+7    2            1
+
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+Output: true
+Explanation: The root-to-leaf path with the target sum is shown.
+Example 2:
+  1
+ / \
+2   3
+
+Input: root = [1,2,3], targetSum = 5
+Output: false
+Explanation: There are two root-to-leaf paths in the tree:
+(1 --> 2): The sum is 3.
+(1 --> 3): The sum is 4.
+There is no root-to-leaf path with sum = 5.
+Example 3:
+
+Input: root = [], targetSum = 0
+Output: false
+Explanation: Since the tree is empty, there are no root-to-leaf paths.
+"""
+print(Solution().hasPathSum(build_tree_from_list([5, 4, 8, 11, None, 13, 4, 7, 2, None, None, None, 1]), 22), True)
+print(Solution().hasPathSum(build_tree_from_list([1, 2, 3]), 5), False)
+print(Solution().hasPathSum(build_tree_from_list([]), 0), False)
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+class Solution:
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
+        def dfs(node, targetSum):
+            if not node:
+                return False
+            elif not node.left and not node.right:
+                return targetSum - node.val == 0
+
+            return (dfs(node.left, targetSum - node.val) or
+                    dfs(node.right, targetSum - node.val))
+
+        return dfs(root, targetSum)
+
+
+
+
+
+# Sum of All Subset XOR Totals
+# https://leetcode.com/problems/sum-of-all-subset-xor-totals/description/
+"""
+The XOR total of an array is defined as the bitwise XOR of all its elements, or 0 if the array is empty.
+
+For example, the XOR total of the array [2,5,6] is 2 XOR 5 XOR 6 = 1.
+Given an array nums, return the sum of all XOR totals for every subset of nums. 
+
+Note: Subsets with the same elements should be counted multiple times.
+
+An array a is a subset of an array b if a can be obtained from b by deleting some (possibly zero) elements of b.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3]
+Output: 6
+Explanation: The 4 subsets of [1,3] are:
+- The empty subset has an XOR total of 0.
+- [1] has an XOR total of 1.
+- [3] has an XOR total of 3.
+- [1,3] has an XOR total of 1 XOR 3 = 2.
+0 + 1 + 3 + 2 = 6
+Example 2:
+
+Input: nums = [5,1,6]
+Output: 28
+Explanation: The 8 subsets of [5,1,6] are:
+- The empty subset has an XOR total of 0.
+- [5] has an XOR total of 5.
+- [1] has an XOR total of 1.
+- [6] has an XOR total of 6.
+- [5,1] has an XOR total of 5 XOR 1 = 4.
+- [5,6] has an XOR total of 5 XOR 6 = 3.
+- [1,6] has an XOR total of 1 XOR 6 = 7.
+- [5,1,6] has an XOR total of 5 XOR 1 XOR 6 = 2.
+0 + 5 + 1 + 6 + 4 + 3 + 7 + 2 = 28
+Example 3:
+
+Input: nums = [3,4,5,6,7,8]
+Output: 480
+Explanation: The sum of all XOR totals for every subset is 480.
+"""
+print(Solution().subsetXORSum([1, 3]), 6)
+print(Solution().subsetXORSum([5, 1, 6]), 28)
+print(Solution().subsetXORSum([3, 4, 5, 6, 7, 8]), 480)
+
+
+# O(n2^n), O(n)
+# backtracking
+# subset sum as a list
+class Solution:
+    def subsetXORSum(self, numbers: list[int]) -> int:
+        subset = []
+        subset_list = []
+
+        def dfs(index):
+            if index == len(numbers):
+                current = 0
+
+                for digit in subset:
+                    current ^= digit
+
+                subset_list.append(current)
+                return
+
+            subset.append(numbers[index])
+            dfs(index + 1)
+            subset.pop()
+            dfs(index + 1)
+
+        dfs(0)
+        return sum(subset_list)
+
+
+# O(n2^n), O(n)
+# backtracking
+# subset sum as class (immutable) value
+class Solution:
+    def __init__(self):
+        self.subset_sum = 0
+        
+    def subsetXORSum(self, numbers: list[int]) -> int:
+        subset = []
+
+        def dfs(index):
+            if index == len(numbers):
+                current = 0
+
+                for digit in subset:
+                    current ^= digit
+
+                self.subset_sum += current
+                return
+
+            subset.append(numbers[index])
+            dfs(index + 1)
+            subset.pop()
+            dfs(index + 1)
+
+        dfs(0)
+
+        return self.subset_sum
+
+
+# O(n2^n), O(2^n)
+# backtracking
+# subset sum passed as a funcion parameter
+class Solution:
+    def subsetXORSum(self, numbers: list[int]) -> int:
+        def dfs(index, subset_sum):
+            if index == len(numbers):
+                return subset_sum
+
+            return (dfs(index + 1, subset_sum ^ numbers[index]) + 
+                    dfs(index + 1, subset_sum))
+
+        return dfs(0, 0)
+
+
+# O(n2^n), O(2^n)
+# backtracking
+# subset sum as an (immutable) integer
+class Solution:
+    def subsetXORSum(self, numbers: list[int]) -> int:
+        subset = []
+
+        def dfs(index, subset_sum):
+            if index == len(numbers):
+                current = 0
+
+                for digit in subset:
+                    current ^= digit
+
+                subset_sum += current
+                return subset_sum
+
+            subset.append(numbers[index])
+            sum_with = dfs(index + 1, subset_sum)
+            subset.pop()
+            sum_without = dfs(index + 1, subset_sum)
+
+            return sum_with + sum_without
+
+        return dfs(0, 0)
+
+
+
+
+
+# Combinations
+# https://leetcode.com/problems/combinations/description/
+"""
+Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].
+
+You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: n = 4, k = 2
+Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+Explanation: There are 4 choose 2 = 6 total combinations.
+Note that combinations are unordered, i.e., [1,2] and [2,1] are considered to be the same combination.
+Example 2:
+
+Input: n = 1, k = 1
+Output: [[1]]
+Explanation: There is 1 choose 1 = 1 total combination.
+"""
+print(Solution().combine(4, 2), [[1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4]])
+print(Solution().combine(1, 1), [[1]])
+
+
+# O(n^k), O(n)
+# backtracking
+class Solution:
+    def combine(self, n: int, k: int) -> list[list[int]]:
+        combination = []
+        combination_list = []
+
+        def dfs(index):
+            if index == n:
+                if len(combination) == k:
+                    combination_list.append(combination.copy())
+                return
+
+            combination.append(index + 1)
+            dfs(index + 1)
+            combination.pop()
+            dfs(index + 1)
+
+        dfs(0)
+        return combination_list
+
+
+# O(n^k), O(n)
+# backtracking
+class Solution:
+    def combine(self, n: int, k: int) -> list[list[int]]:
+        combination_list = []
+
+        def dfs(index, combination):
+            if index == n:
+                if len(combination) == k:
+                    combination_list.append(combination.copy())
+                return
+
+            combination.append(index + 1)
+            dfs(index + 1, combination)
+            combination.pop()
+            dfs(index + 1, combination)
+
+        dfs(0, [])
+        return combination_list
+
+
+
+
+
+# Monotonic Array
+# https://leetcode.com/problems/monotonic-array/description/
+"""
+An array is monotonic if it is either monotone increasing or monotone decreasing.
+
+An array nums is monotone increasing if for all i <= j, nums[i] <= nums[j]. An array nums is monotone decreasing if for all i <= j, nums[i] >= nums[j].
+
+Given an integer array nums, return true if the given array is monotonic, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,2,3]
+Output: true
+Example 2:
+
+Input: nums = [6,5,4,4]
+Output: true
+Example 3:
+
+Input: nums = [1,3,2]
+Output: false
+"""
+print(Solution().isMonotonic([1, 2, 2, 3]), True)
+print(Solution().isMonotonic([6, 5, 4, 4]), True)
+print(Solution().isMonotonic([1, 3, 2]), False)
+
+
+# O(n), O(1)
+class Solution:
+    def isMonotonic(self, numbers: list[int]) -> bool:
+        increasing = True
+        decreasing = True
+
+        for index in range(1, len(numbers)):
+            # chieck if the stack is monoconicly increasing
+            if numbers[index - 1] > numbers[index]:
+                increasing = False
+            # chieck if the stack is monoconicly decreasing
+            elif numbers[index - 1] < numbers[index]:
+                decreasing = False
+            # early exit
+            if (not increasing and
+                not decreasing):
+                return False
+            
+        return (increasing or 
+                decreasing)
+
+
+
+
+
+# Number of Good Pairs
+# https://leetcode.com/problems/number-of-good-pairs/description/
+"""
+Given an array of integers nums, return the number of good pairs.
+
+A pair (i, j) is called good if nums[i] == nums[j] and i < j.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1,1,3]
+Output: 4
+Explanation: There are 4 good pairs (0,3), (0,4), (3,4), (2,5) 0-indexed.
+Example 2:
+
+Input: nums = [1,1,1,1]
+Output: 6
+Explanation: Each pair in the array are good.
+Example 3:
+
+Input: nums = [1,2,3]
+Output: 0
+"""
+print(Solution().numIdenticalPairs([1, 2, 3, 1, 1, 3]), 4)
+print(Solution().numIdenticalPairs([1, 1, 1, 1]), 6)
+print(Solution().numIdenticalPairs([1, 2, 3]), 0)
+
+
+# O(n), O(n)
+class Solution:
+    def numIdenticalPairs(self, numbers: list[int]) -> int:
+        counter = {}  # {number: frequency}
+        pair_counter = 0
+
+        # count numbers
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+        
+        # count identical pairs
+        for frequency in counter.values():
+            pair_counter += frequency * (frequency - 1) // 2
+        
+        return pair_counter
+
+
+
+
+
+# Number of Subsequences That Satisfy the Given Sum Condition
+# https://leetcode.com/problems/number-of-subsequences-that-satisfy-the-given-sum-condition/description/
+"""
+You are given an array of integers nums and an integer target.
+
+Return the number of non-empty subsequences of nums such that the sum of the minimum and maximum element on it is less or equal to target. Since the answer may be too large, return it modulo 109 + 7.
+
+ 
+
+Example 1:
+
+Input: nums = [3,5,6,7], target = 9
+Output: 4
+Explanation: There are 4 subsequences that satisfy the condition.
+[3] -> Min value + max value <= target (3 + 3 <= 9)
+[3,5] -> (3 + 5 <= 9)
+[3,5,6] -> (3 + 6 <= 9)
+[3,6] -> (3 + 6 <= 9)
+Example 2:
+
+Input: nums = [3,3,6,8], target = 10
+Output: 6
+Explanation: There are 6 subsequences that satisfy the condition. (nums can have repeated numbers).
+[3] , [3] , [3,3], [3,6] , [3,6] , [3,3,6]
+Example 3:
+
+Input: nums = [2,3,3,4,6,7], target = 12
+Output: 61
+Explanation: There are 63 non-empty subsequences, two of them do not satisfy the condition ([6,7], [7]).
+Number of valid subsequences (63 - 2 = 61).
+"""
+print(Solution().numSubseq([3, 5, 6, 7], 9), 4)
+print(Solution().numSubseq([3, 3, 6, 8], 10), 6)
+print(Solution().numSubseq([2, 3, 3, 4, 6, 7], 12), 61)
+print(Solution().numSubseq([7, 10, 7, 3, 7, 5, 4], 12), 56)
+print(Solution().numSubseq([14,4,6,6,20,8,5,6,8,12,6,10,14,9,17,16,9,7,14,11,14,15,13,11,10,18,13,17,17,14,17,7,9,5,10,13,8,5,18,20,7,5,5,15,19,14], 22), 272187084)
+print(Solution().numSubseq([9,25,9,28,24,12,17,8,28,7,21,25,10,2,16,19,12,13,15,28,14,12,24,9,6,7,2,15,19,13,30,30,23,19,11,3,17,2,14,20,22,30,12,1,11,2,2,20,20,27,15,9,10,4,12,30,13,5,2,11,29,5,3,13,22,5,16,19,7,19,11,16,11,25,29,21,29,3,2,9,20,15,9], 32), 91931447)
+
+
+# O(nlogn), O(n)
+# two pointers
+class Solution:
+    def numSubseq(self, numbers: list[int], target: int) -> int:
+        numbers.sort()
+        right = len(numbers) - 1
+        counter = 0
+
+        for left in range(len(numbers)):
+            while (left <= right and 
+                   numbers[left] + numbers[right] > target):
+                right -= 1
+
+            if left <= right:
+                counter += 2 ** (right - left)
+                counter %= 10**9 + 7
+            
+            if left == right:
+                break
+
+        return counter
+
+
+# O(n2^n), O(n)
+# backtracking
+# slow
+class Solution:
+    def __init__(self):
+        self.counter = 0
+
+    def numSubseq(self, numbers: list[int], target: int) -> int:
+        numbers.sort()
+        subsequence = []
+
+        def dfs(index):
+            if index == len(numbers):
+                if (subsequence and 
+                        subsequence[0] + subsequence[-1] <= target):
+                    self.counter += 1
+                return
+            
+            subsequence.append(numbers[index])
+            dfs(index + 1)
+            subsequence.pop()
+            dfs(index + 1)
+
+        dfs(0)
+        return self.counter % (10 ** 9 + 7)
+
+
+# O(n2^n), O(n)
+# backtracking
+# slow
+class Solution:
+    def numSubseq(self, numbers: list[int], target: int) -> int:
+        numbers.sort()
+        subsequence = []
+
+        def dfs(index, counter):
+            if index == len(numbers):
+                if (subsequence and 
+                        subsequence[0] + subsequence[-1] <= target):
+                    return 1
+                else:
+                    return 0
+            
+            subsequence.append(numbers[index])
+            left = dfs(index + 1, counter)
+            subsequence.pop()
+            right = dfs(index + 1, counter)
+            return (left + right) % (10 ** 9 + 7)
+
+        return dfs(0, 0)
+
+
+
+
+
+# Subarray Product Less Than K
+# https://leetcode.com/problems/subarray-product-less-than-k/description/
+"""
+Given an array of integers nums and an integer k, return the number of contiguous subarrays where the product of all the elements in the subarray is strictly less than k.
+
+ 
+
+Example 1:
+
+Input: nums = [10,5,2,6], k = 100
+Output: 8
+Explanation: The 8 subarrays that have product less than 100 are:
+[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]
+Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.
+Example 2:
+
+Input: nums = [1,2,3], k = 0
+Output: 0
+"""
+print(Solution().numSubarrayProductLessThanK([10, 5, 2, 6], 100), 8)
+print(Solution().numSubarrayProductLessThanK([1, 2, 3], 0), 0)
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def numSubarrayProductLessThanK(self, numbers: list[int], k: int) -> int:
+        left = 0
+        window = 1
+        counter = 0
+        
+        for right in range(len(numbers)):
+            window *= numbers[right]  # add a number to the window
+
+            while (left <= right and  # while in bounds and
+                   window >= k):  # product is too large
+                window //= numbers[left]  # subtract a number from the window
+                left += 1
+
+            counter += right - left + 1  # add the number of contiguous subarrays
+            # every new `number` adds new number to all previous arrays
+            # [5, 2] + [6], [2] + [6], [6]
+            # eg. add 3 for [5, 2, 6], where in previous loop added 2 for [5, 2]
+            
+        return counter
+
+
+# O(n3), O(1)
+# brute force
+class Solution:
+    def numSubarrayProductLessThanK(self, numbers: list[int], k: int) -> int:
+        counter = 0
+        
+        for left in range(len(numbers)):
+            for right in range(left, len(numbers)):
+                window = 1
+        
+                for number in numbers[left: right + 1]:
+                    window *= number
+                
+                if window < k:
+                    counter += 1
+        
+        return counter
+
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def numSubarrayProductLessThanK(self, numbers: list[int], k: int) -> int:
+        counter = 0
+        
+        for left in range(len(numbers)):
+            window = 1
+      
+            for right in range(left, len(numbers)):
+                window *= numbers[right]
+                
+                if window < k:
+                    counter += 1
+        
+        return counter
+
+
+
+
+
+# Remove All Adjacent Duplicates in String II
+# https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/description/
+"""
+You are given a string s and an integer k, a k duplicate removal consists of choosing k adjacent and equal letters from s and removing them, causing the left and the right side of the deleted substring to concatenate together.
+
+We repeatedly make k duplicate removals on s until we no longer can.
+
+Return the final string after all such duplicate removals have been made. It is guaranteed that the answer is unique.
+
+ 
+
+Example 1:
+
+Input: s = "abcd", k = 2
+Output: "abcd"
+Explanation: There's nothing to delete.
+Example 2:
+
+Input: s = "deeedbbcccbdaa", k = 3
+Output: "aa"
+Explanation: 
+First delete "eee" and "ccc", get "ddbbbdaa"
+Then delete "bbb", get "dddaa"
+Finally delete "ddd", get "aa"
+Example 3:
+
+Input: s = "pbbcggttciiippooaais", k = 2
+Output: "ps"
+"""
+print(Solution().removeDuplicates("abcd", 2), "abcd")
+print(Solution().removeDuplicates("deeedbbcccbdaa", 3), "aa")
+print(Solution().removeDuplicates("pbbcggttciiippooaais", 2), "ps")
+
+
+# O(n), O(n)
+# stack
+class Solution:
+    def removeDuplicates(self, letters: str, k: int) -> str:
+        stack = []  # [[letter, frequency]]
+
+        for letter in letters:
+            if (stack and 
+                    stack[-1][0] == letter):
+                stack[-1][1] += 1
+                
+                if (stack[-1][1] == k):
+                    stack.pop()
+
+            else:
+                stack.append([letter, 1])
+
+        return "".join(letter * frequency 
+                       for letter, frequency in stack)
+
+
+# O(n), O(n)
+# stack
+class Solution:
+    def removeDuplicates(self, letters: str, k: int) -> str:
+        stack = []  # [(letter, frequency)]
+
+        for letter in letters:
+            if (stack and 
+                stack[-1][0] == letter and
+                    stack[-1][1] == k - 1):
+                for _ in range(k - 1):
+                    stack.pop()
+            elif (stack and 
+                    stack[-1][0] == letter):
+                stack.append((letter, stack[-1][1] + 1))
+            else:
+                stack.append((letter, 1))
+
+        return "".join(letter for letter, _ in stack)  # "".join(map(lambda x: x[0], stack))
+
+
+# O(n2), O(n)
+class Solution:
+    def removeDuplicates(self, letters: str, k: int) -> str:
+        stack = []
+
+        for letter in letters:
+            is_substring = False
+
+            if (stack and 
+                    len(stack) >= k - 1):
+                is_substring = True
+                
+                for index in range(1, k):
+                    if stack[-index] != letter:
+                        is_substring = False
+                        break
+                
+                if is_substring:
+                    for _ in range(k - 1):
+                        stack.pop()
+            
+            if not is_substring:
+                stack.append(letter)
+        
+        return "".join(stack)
+
+
+
+
+
+# Successful Pairs of Spells and Potions
+# https://leetcode.com/problems/successful-pairs-of-spells-and-potions/description/
+"""
+You are given two positive integer arrays spells and potions, of length n and m respectively, where spells[i] represents the strength of the ith spell and potions[j] represents the strength of the jth potion.
+
+You are also given an integer success. A spell and potion pair is considered successful if the product of their strengths is at least success.
+
+Return an integer array pairs of length n where pairs[i] is the number of potions that will form a successful pair with the ith spell.
+
+ 
+
+Example 1:
+
+Input: spells = [5,1,3], potions = [1,2,3,4,5], success = 7
+Output: [4,0,3]
+Explanation:
+- 0th spell: 5 * [1,2,3,4,5] = [5,10,15,20,25]. 4 pairs are successful.
+- 1st spell: 1 * [1,2,3,4,5] = [1,2,3,4,5]. 0 pairs are successful.
+- 2nd spell: 3 * [1,2,3,4,5] = [3,6,9,12,15]. 3 pairs are successful.
+Thus, [4,0,3] is returned.
+Example 2:
+
+Input: spells = [3,1,2], potions = [8,5,8], success = 16
+Output: [2,0,2]
+Explanation:
+- 0th spell: 3 * [8,5,8] = [24,15,24]. 2 pairs are successful.
+- 1st spell: 1 * [8,5,8] = [8,5,8]. 0 pairs are successful. 
+- 2nd spell: 2 * [8,5,8] = [16,10,16]. 2 pairs are successful. 
+Thus, [2,0,2] is returned.
+"""
+print(Solution().successfulPairs([5, 1, 3], [1, 2, 3, 4, 5], 7), [4, 0, 3])
+print(Solution().successfulPairs([3, 1, 2], [8, 5, 8], 16), [2, 0, 2])
+print(Solution().successfulPairs([39, 34, 6, 35, 18, 24, 40], [27, 37, 33, 34, 14, 7, 23, 12, 22, 37], 43), [10, 10, 9, 10, 10, 10, 10])
+
+# blueprint
+# [lm5,r10,15,20,25]
+# [1, 2, 3, l4, r5]
+# [3, 6, lr9, 12, 15]
+
+
+# O(nlogn), O(n)
+# binary search
+class Solution:
+    def successfulPairs(self, spells: list[int], potions: list[int], success: int) -> list[int]:
+        potions.sort()
+        success_list = [0] * len(spells)
+
+        for index, spell in enumerate(spells):
+            left = 0
+            right = len(potions) - 1
+
+            while left < right:
+                middle = left + (right - left) // 2
+                middle_potion = potions[middle]
+
+                if middle_potion * spell < success:
+                    left = middle + 1
+                else:
+                    right = middle
+
+            if potions[right] * spell >= success:
+                success_list[index] = len(potions) - right
+        
+        return success_list
+
+
+
+
+
+# Swapping Nodes in a Linked List
+# https://leetcode.com/problems/swapping-nodes-in-a-linked-list/description/
+"""
+You are given the head of a linked list, and an integer k.
+
+Return the head of the linked list after swapping the values of the kth node from the beginning and the kth node from the end (the list is 1-indexed).
+
+ 
+
+Example 1:
+
+
+Input: head = [1,2,3,4,5], k = 2
+Output: [1,4,3,2,5]
+Example 2:
+
+Input: head = [7,9,6,6,7,8,3,0,9,5], k = 5
+Output: [7,9,6,6,8,7,3,0,9,5]
+"""
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+# O(n), O(1)
+# linked list, one pass
+class Solution:
+    def swapNodes(self, head: ListNode, k: int) -> ListNode:
+        left = head
+        right = head
+        node = head
+
+        for _ in range(k - 1):  # move both pointers
+            left = left.next
+            node = node.next
+    
+        # when node reaches the last node, right reaches its destination
+        while node.next:
+            node = node.next
+            right = right.next
+        
+        # swap the node values
+        left.val, right.val = right.val, left.val
+
+        return head
+
+
+# O(n), O(1)
+# linked list, two pass
+class Solution:
+    def swapNodes(self, head: ListNode, k: int) -> ListNode:
+        """
+        right node index: list_lenght - k + 1 
+        nodes distance: list_lenght - 2k + 1 # 5 - 4 + 1 = 2, 10 - 10 + 1 
+        """
+        # get list length
+        list_length = 0
+        node = head
+
+        while node:
+            list_length += 1
+            node = node.next
+        
+        k = min(k, list_length - k + 1)  # k cannot exceed half of the linked list
+
+        # move pointers to the right positions
+        left = head
+        right = head
+
+        for _ in range(list_length - 2*k + 1):  # move the right pointer by the distance between those two
+            right = right.next
+        
+        for _ in range(k - 1):  # move both pointers
+            left = left.next
+            right = right.next
+        
+        # swap the node values
+        left.val, right.val = right.val, left.val
+
+        return head
+
+
+
+
+
+# Range Sum of BST
+# https://leetcode.com/problems/range-sum-of-bst/description/
+"""
+Given the root node of a binary search tree and two integers low and high, return the sum of values of all nodes with a value in the inclusive range [low, high].
+
+ 
+
+Example 1:
+    __10
+   /    \
+  5      15
+ / \       \
+3   7       18
+
+Input: root = [10,5,15,3,7,null,18], low = 7, high = 15
+Output: 32
+Explanation: Nodes 7, 10, and 15 are in the range [7, 15]. 7 + 10 + 15 = 32.
+Example 2:
+      ____10___
+     /         \
+    5__        _15
+   /   \      /   \
+  3     7    13    18
+ /     /
+1     6
+
+Input: root = [10,5,15,3,7,13,18,1,null,6], low = 6, high = 10
+Output: 23
+Explanation: Nodes 6, 7, and 10 are in the range [6, 10]. 6 + 7 + 10 = 23.
+"""
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+# O(n), O(n)
+# binary tree
+class Solution:
+    def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
+        def dfs(node):
+            if not node:
+                return 0
+            
+            return (
+                (node.val if node.val >= low and node.val <= high else 0) +
+                (dfs(node.left) if  node.val > low else 0) + 
+                (dfs(node.right) if  node.val < high else 0))
+
+        return dfs(root)
+
+
+# O(n), O(n)
+# binary tree
+class Solution:
+    def __init__(self):
+        self.total = 0
+
+    def rangeSumBST(self, root: TreeNode, low: int, high: int) -> int:
+        def dfs(node):
+            if not node:
+                return
+            
+            if (node.val >= low and 
+                    node.val <= high):
+                self.total += node.val
+            
+            if node.val > low:
+                dfs(node.left)
+            if node.val < high:
+                dfs(node.right)
+        
+        dfs(root)
+        return self.total
+
+
+
+
+
+# Permutations II
+# https://leetcode.com/problems/permutations-ii/description/
+"""
+Given a collection of numbers, nums, that might contain duplicates, return all possible unique permutations in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,2]
+Output:
+[[1,1,2],
+ [1,2,1],
+ [2,1,1]]
+Example 2:
+
+Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+"""
+print(Solution().permuteUnique([1, 1, 2]), [[1, 2, 1], [2, 1, 1], [1, 1, 2]])
+print(Solution().permuteUnique([1, 2, 3]), [[1, 3, 2], [1, 2, 3], [2, 1, 3], [3, 2, 1], [3, 1, 2], [2, 3, 1]])
+print(Solution().permuteUnique([1]), [[1]])
+
+
+# O(n!), O(n!)
+# backtracking, set
+class Solution:
+    def permuteUnique(self, numbers: list[int]) -> list[list[int]]:
+        permutation = []
+        permutation_set = set()
+
+        def dfs(numbers):
+            if not numbers:
+                permutation_set.add(tuple(permutation))
+                return
+
+            for index, number in enumerate(numbers):
+                permutation.append(number)
+                dfs(numbers[:index] + numbers[index + 1:])
+                permutation.pop()
+
+        dfs(numbers)
+        return list(permutation_set)
+
+
+# O(n!), O(n!)
+# backtracking, set
+class Solution:
+    def permuteUnique(self, numbers: list[int]) -> list[list[int]]:
+        permutation_set = set()
+
+        def dfs(left):
+            if left == len(numbers):
+                permutation_set.add(tuple(numbers))
+                return
+
+            for right in range(left, len(numbers)):
+                numbers[left], numbers[right] = numbers[right], numbers[left]
+                dfs(left + 1)
+                numbers[left], numbers[right] = numbers[right], numbers[left]
+
+        dfs(0)
+        return list(permutation_set)
+
+
+# O(n!), O(n!)
+# backtracking, hash map
+class Solution:
+    def permuteUnique(self, numbers: list[int]) -> list[list[int]]:
+        permutation = []
+        permutation_list = []
+        counter = {}
+
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        def dfs():
+            if len(permutation) == len(numbers):
+                permutation_list.append(permutation[:])
+                return
+
+            for number in counter:
+                if counter[number] > 0:
+                    permutation.append(number)
+                    counter[number] -= 1
+                    dfs()
+                    permutation.pop()
+                    counter[number] += 1
+
+        dfs()
+        return permutation_list
+
+
+
+
+# Pascal's Triangle II
+# https://leetcode.com/problems/pascals-triangle-ii/description/
+"""
+Given an integer rowIndex, return the rowIndexth (0-indexed) row of the Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:
+
+
+Example 1:
+
+Input: rowIndex = 3
+Output: [1,3,3,1]
+Example 2:
+
+Input: rowIndex = 0
+Output: [1]
+Example 3:
+
+Input: rowIndex = 1
+Output: [1,1]
+"""
+print(Solution().getRow(3), [1, 3, 3, 1])
+print(Solution().getRow(0), [1])
+print(Solution().getRow(1), [1, 1])
+print(Solution().getRow(2), [1, 2, 1])
+
+
+# O(n2), O(n)
+class Solution:
+    def getRow(self, rowIndex: int) -> list[int]:
+        row = [1]
+
+        for index1 in range(rowIndex):
+            new_row = [1] * (index1 + 2)
+
+            for index2 in range(index1):
+                new_row[index2 + 1] = row[index2] + row[index2 + 1]
+            
+            row = new_row
+
+        return row
+
+
+
+
+
+# N-th Tribonacci Number
+# https://leetcode.com/problems/n-th-tribonacci-number/description/
+"""
+The Tribonacci sequence Tn is defined as follows: 
+
+T0 = 0, T1 = 1, T2 = 1, and Tn+3 = Tn + Tn+1 + Tn+2 for n >= 0.
+
+Given n, return the value of Tn.
+
+ 
+
+Example 1:
+
+Input: n = 4
+Output: 4
+Explanation:
+T_3 = 0 + 1 + 1 = 2
+T_4 = 1 + 1 + 2 = 4
+Example 2:
+
+Input: n = 25
+Output: 1389537
+"""
+print(Solution().tribonacci(3), 2)
+print(Solution().tribonacci(4), 4)
+print(Solution().tribonacci(25), 1389537)
+print(Solution().tribonacci(0), 0)
+print(Solution().tribonacci(31), 53798080)
+print(Solution().tribonacci(35), 615693474)
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        cache = [0, 1, 1]
+
+        if number < 3:
+            return cache[number]
+        
+        for _ in range(3, number + 1):
+            cache = [cache[1], cache[2], cache[2] + cache[1] + cache[0]]
+
+        return cache[2]
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up, fancy
+        """
+        triplet = [0, 1, 1]
+        
+        for index in range(3, number + 1):
+            triplet[index % 3] = sum(triplet)
+
+        return triplet[number % 3]
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        cache = [None] * (number + 1)
+        cache[:3] = [0, 1, 1]
+
+        if number < 3:
+            return cache[number]
+        
+        for index in range(3, number + 1):
+            cache[index] = cache[index - 1] + cache[index - 2] + cache[index - 3]
+
+        return cache[number]
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {0: 0, 1: 1, 2: 1}
+        
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif index in memo:
+                return memo[index]
+            
+            memo[index] = dfs(index - 1) + dfs(index - 2) + dfs(index - 3)
+            return memo[index]
+
+        return dfs(number)
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * (number + 1)
+        memo[:3] = [0, 1, 1]
+        
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif memo[index] is not None:
+                return memo[index]
+            
+            memo[index] = dfs(index - 1) + dfs(index - 2) + dfs(index - 3)
+            return memo[index]
+
+        return dfs(number)
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        memo = {0: 0, 1: 1, 2: 1}
+        
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif index in memo:
+                return memo[index]
+            
+            return dfs(index - 1) + dfs(index - 2) + dfs(index - 3)
+
+        return dfs(number)
+
+
+class Solution:
+    def tribonacci(self, number: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        memo = [None] * (number + 1)
+        memo[:3] = [0, 1, 1]
+        
+        def dfs(index):
+            if index < 0:
+                return 0
+            elif index in memo:
+                return memo[index]
+            
+            return dfs(index - 1) + dfs(index - 2) + dfs(index - 3)
+
+        return dfs(number)
+
+
+
+
+
+# Find Words That Can Be Formed by Characters
+# https://leetcode.com/problems/find-words-that-can-be-formed-by-characters/description/
+"""
+You are given an array of strings words and a string chars.
+
+A string is good if it can be formed by characters from chars (each character can only be used once).
+
+Return the sum of lengths of all good strings in words.
+
+ 
+
+Example 1:
+
+Input: words = ["cat","bt","hat","tree"], chars = "atach"
+Output: 6
+Explanation: The strings that can be formed are "cat" and "hat" so the answer is 3 + 3 = 6.
+Example 2:
+
+Input: words = ["hello","world","leetcode"], chars = "welldonehoneyr"
+Output: 10
+Explanation: The strings that can be formed are "hello" and "world" so the answer is 5 + 5 = 10.
+"""
+print(Solution().countCharacters(["cat", "bt", "hat", "tree"], "atach"), 6)
+print(Solution().countCharacters(["hello", "world", "leetcode"], "welldonehoneyr"), 10)
+
+
+# O(n2), O(1)
+# hash map
+class Solution:
+    def is_word_good(self, word: str, counter: dict) -> bool:
+        counter_copy = counter.copy()
+
+        for letter in word:
+            if letter not in counter_copy:
+                return
+            else:
+                if counter_copy[letter] == 0:
+                    return
+                counter_copy[letter] -= 1
+        
+        return True
+
+    def countCharacters(self, words: list[str], chars: str) -> int:
+        counter = {}  # {letter: frequency}
+        sum_of_lengths = 0
+
+        for char in chars:
+            counter[char] = counter.get(char, 0) + 1
+
+        for word in words:
+            if self.is_word_good(word, counter):
+                sum_of_lengths += len(word)
+            
+        return sum_of_lengths
+
+
+
+
+
+# Largest 3-Same-Digit Number in String
+# https://leetcode.com/problems/largest-3-same-digit-number-in-string/description/
+"""
+You are given a string num representing a large integer. An integer is good if it meets the following conditions:
+
+It is a substring of num with length 3.
+It consists of only one unique digit.
+Return the maximum good integer as a string or an empty string "" if no such integer exists.
+
+Note:
+
+A substring is a contiguous sequence of characters within a string.
+There may be leading zeroes in num or a good integer.
+ 
+
+Example 1:
+
+Input: num = "6777133339"
+Output: "777"
+Explanation: There are two distinct good integers: "777" and "333".
+"777" is the largest, so we return "777".
+Example 2:
+
+Input: num = "2300019"
+Output: "000"
+Explanation: "000" is the only good integer.
+Example 3:
+
+Input: num = "42352338"
+Output: ""
+Explanation: No substring of length 3 consists of only one unique digit. Therefore, there are no good integers.
+"""
+print(Solution().largestGoodInteger("6777133339"), "777")
+print(Solution().largestGoodInteger("2300019"), "000")
+print(Solution().largestGoodInteger("42352338"), "")
+print(Solution().largestGoodInteger("7678222622241118390785777474281834906756431393782326744172075725179542796491876218340"), "777")
+
+
+# O(n), O(1)
+class Solution:
+    def largestGoodInteger(self, number: str) -> str:
+        triplet = []
+        solution = []
+        
+        for digit in number:
+            if (solution and  # if solution exists
+                    digit <= solution[0]):  # digit smaller than solution
+                triplet = []  # reset triplet
+                continue
+
+            if (triplet and  # if triplet exists
+                    digit != triplet[-1]):  # digit is different than those in current triplet
+                triplet = []  # reset triplet
+            
+            triplet.append(digit)  # append ditigt to the triplet
+
+            if len(triplet) == 3:  # if triplet is long enough
+                solution = triplet.copy()  # save curren triplet
+        
+        return "".join(solution)
+
+# O(n), O(1)
+class Solution:
+    def largestGoodInteger(self, number: str) -> str:
+        triplet = ""
+        
+        for index in range(len(number) - 2):
+            if number[index] == number[index + 1] == number[index + 2]:
+                triplet = max(triplet, number[index] * 3)
+        
+        return triplet
+
+
+
+
+
+# Array With Elements Not Equal to Average of Neighbors
+# https://leetcode.com/problems/array-with-elements-not-equal-to-average-of-neighbors/description/
+"""
+You are given a 0-indexed array nums of distinct integers. You want to rearrange the elements in the array such that every element in the rearranged array is not equal to the average of its neighbors.
+
+More formally, the rearranged array should have the property such that for every i in the range 1 <= i < nums.length - 1, (nums[i-1] + nums[i+1]) / 2 is not equal to nums[i].
+
+Return any rearrangement of nums that meets the requirements.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5]
+Output: [1,2,4,5,3]
+Explanation:
+When i=1, nums[i] = 2, and the average of its neighbors is (1+4) / 2 = 2.5.
+When i=2, nums[i] = 4, and the average of its neighbors is (2+5) / 2 = 3.5.
+When i=3, nums[i] = 5, and the average of its neighbors is (4+3) / 2 = 3.5.
+Example 2:
+
+Input: nums = [6,2,0,9,7]
+Output: [9,7,6,2,0]
+Explanation:
+When i=1, nums[i] = 7, and the average of its neighbors is (9+6) / 2 = 7.5.
+When i=2, nums[i] = 6, and the average of its neighbors is (7+2) / 2 = 4.5.
+When i=3, nums[i] = 2, and the average of its neighbors is (6+0) / 2 = 3.
+"""
+print(Solution().rearrangeArray([1, 2, 3, 4, 5]), [1, 5, 2, 4, 3])
+print(Solution().rearrangeArray([1, 2, 3, 4]), [1, 4, 2, 3])
+print(Solution().rearrangeArray([6, 2, 0, 9, 7]), [0, 9, 2, 7, 6])
+print(Solution().rearrangeArray([1, 3, 2]), [1, 3, 2])
+
+
+# O(nlogn), O(n)
+# two pointers
+class Solution:
+    def rearrangeArray(self, numbers: list[int]) -> list[int]:
+        numbers.sort()
+        new_numbers = [0] * len(numbers)
+        index = 0
+        left = 0
+        right = len(numbers) - 1
+        
+        while left < right:
+            new_numbers[index] = numbers[left]
+            index += 1
+            new_numbers[index] = numbers[right]
+            index += 1
+            left += 1
+            right -= 1
+        
+        if len(numbers) % 2:
+            new_numbers[-1] = numbers[len(numbers) // 2]
+        
+        return new_numbers
+
+
+# O(nlogn), O(n)
+# slice
+class Solution:
+    def rearrangeArray(self, numbers: list[int]) -> list[int]:
+        numbers.sort()
+        length = len(numbers)
+        new_numbers = [0] * length
+
+        new_numbers[: length + 1 :2] = numbers[:(length + 1) // 2]
+        new_numbers[1: length + 1 :2] = numbers[(length + 1) // 2 :]
+
+        return new_numbers
+
+
+
+
+
+# Length of Longest Subarray With at Most K Frequency
+# https://leetcode.com/problems/length-of-longest-subarray-with-at-most-k-frequency/description/
+"""
+You are given an integer array nums and an integer k.
+
+The frequency of an element x is the number of times it occurs in an array.
+
+An array is called good if the frequency of each element in this array is less than or equal to k.
+
+Return the length of the longest good subarray of nums.
+
+A subarray is a contiguous non-empty sequence of elements within an array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1,2,3,1,2], k = 2
+Output: 6
+Explanation: The longest possible good subarray is [1,2,3,1,2,3] since the values 1, 2, and 3 occur at most twice in this subarray. Note that the subarrays [2,3,1,2,3,1] and [3,1,2,3,1,2] are also good.
+It can be shown that there are no good subarrays with length more than 6.
+Example 2:
+
+Input: nums = [1,2,1,2,1,2,1,2], k = 1
+Output: 2
+Explanation: The longest possible good subarray is [1,2] since the values 1 and 2 occur at most once in this subarray. Note that the subarray [2,1] is also good.
+It can be shown that there are no good subarrays with length more than 2.
+Example 3:
+
+Input: nums = [5,5,5,5,5,5,5], k = 4
+Output: 4
+Explanation: The longest possible good subarray is [5,5,5,5] since the value 5 occurs 4 times in this subarray.
+It can be shown that there are no good subarrays with length more than 4.
+"""
+print(Solution().maxSubarrayLength([1, 2, 3, 1, 2, 3, 1, 2], 2), 6)
+print(Solution().maxSubarrayLength([1, 2, 1, 2, 1, 2, 1, 2], 1), 2)
+print(Solution().maxSubarrayLength([5, 5, 5, 5, 5, 5, 5], 4), 4)
+print(Solution().maxSubarrayLength([1, 1, 2], 2), 3)
+print(Solution().maxSubarrayLength([1, 4, 4, 3], 1), 2)
+
+
+# O(n), O(n)
+# sliding window
+class Solution:
+    def maxSubarrayLength(self, numbers: list[int], k: int) -> int:
+        window = {}  # {number: frequency}
+        left = 0
+        subarray_length = 0
+
+        for right, number in enumerate(numbers):
+            window[number] = window.get(number, 0) + 1
+
+            while window[number] > k:
+                window[numbers[left]] -= 1
+                if number not in window:
+                    window.pop(number)
+                left += 1
+
+            subarray_length = max(subarray_length, 
+                                  right - left + 1)
+
+        return subarray_length
+
+
+
+
+
+# Capacity To Ship Packages Within D Days
+# https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/submissions/1505021062/
+"""
+A conveyor belt has packages that must be shipped from one port to another within days days.
+
+The ith package on the conveyor belt has a weight of weights[i]. Each day, we load the ship with packages on the conveyor belt (in the order given by weights). We may not load more weight than the maximum weight capacity of the ship.
+
+Return the least weight capacity of the ship that will result in all the packages on the conveyor belt being shipped within days days.
+
+ 
+
+Example 1:
+
+Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
+Output: 15
+Explanation: A ship capacity of 15 is the minimum to ship all the packages in 5 days like this:
+1st day: 1, 2, 3, 4, 5
+2nd day: 6, 7
+3rd day: 8
+4th day: 9
+5th day: 10
+
+Note that the cargo must be shipped in the order given, so using a ship of capacity 14 and splitting the packages into parts like (2, 3, 4, 5), (1, 6, 7), (8), (9), (10) is not allowed.
+Example 2:
+
+Input: weights = [3,2,2,4,1,4], days = 3
+Output: 6
+Explanation: A ship capacity of 6 is the minimum to ship all the packages in 3 days like this:
+1st day: 3, 2
+2nd day: 2, 4
+3rd day: 1, 4
+Example 3:
+
+Input: weights = [1,2,3,1,1], days = 4
+Output: 3
+Explanation:
+1st day: 1
+2nd day: 2
+3rd day: 3
+4th day: 1, 1
+"""
+print(Solution().shipWithinDays([1, 2, 3, 1, 1], 4), 3)
+print(Solution().shipWithinDays([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5), 15)
+print(Solution().shipWithinDays([3, 2, 2, 4, 1, 4], 3), 6)
+
+
+# O(nlogn), O(1)
+# binary search
+class Solution:
+    def days_to_ship(self, capacity: int) -> int:
+        days = 1  # days to ship with current capacity
+        current_capacity = capacity  # capacity for current day
+
+        for weight in self.weights:
+            if current_capacity - weight < 0:  # if ship capacity in bounds
+                days += 1  # increse days to ship
+                current_capacity = capacity
+
+            current_capacity -= weight  # add a cargo to the current ship         
+
+        return days  # days to ship with current capacity
+
+
+    def shipWithinDays(self, weights: list[int], days: int) -> int:
+        self.weights = weights
+        low_capacity = max(weights)  # min ship cargo
+        high_capacity = sum(weights)  # max ship cargo
+
+        while low_capacity < high_capacity:
+            capacity = (low_capacity + high_capacity) // 2  # capacity of a cargo
+
+            if (self.days_to_ship(capacity) > days):  # if more days to ship than planned
+                low_capacity = capacity + 1  # increase capacity
+            else:
+                high_capacity = capacity  # decrease capacity
+
+        return high_capacity
+
+
+
+
+
+# Design Linked List
+# https://leetcode.com/problems/design-linked-list/description/
+"""
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+A node in a singly linked list should have two attributes: val and next. val is the value of the current node, and next is a pointer/reference to the next node.
+If you want to use the doubly linked list, you will need one more attribute prev to indicate the previous node in the linked list. Assume all nodes in the linked list are 0-indexed.
+
+Implement the MyLinkedList class:
+
+MyLinkedList() Initializes the MyLinkedList object.
+int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+void addAtTail(int val) Append a node of value val as the last element of the linked list.
+void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index equals the length of the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
+void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+ 
+
+Example 1:
+
+Input
+["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+[[], [1], [3], [1, 2], [1], [1], [1]]
+Output
+[null, null, null, null, 2, null, 3]
+
+Explanation
+MyLinkedList myLinkedList = new MyLinkedList();
+myLinkedList.addAtHead(1);
+myLinkedList.addAtTail(3);
+myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+myLinkedList.get(1);              // return 2
+myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+myLinkedList.get(1);              // return 3
+"""
+
+
+# dummy –> head –> .. -> node -> .. –> tail –> None
+# O(n), O(n)
+# linked list, singly linked list
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class MyLinkedList:
+    def __init__(self):
+      self.dummy = ListNode()  
+
+    def get(self, index: int) -> int:
+        node = self.dummy.next
+        if not node:  # no nodes
+            return -1
+
+        while index:  # while not in the right index
+            if not node.next:  # if no next node
+                return -1
+            
+            node = node.next  # next node
+            index -= 1  # next index
+            
+        return node.val
+
+
+    def addAtHead(self, val: int) -> None:
+        head = ListNode(val, self.dummy.next)  # create a new head
+        self.dummy.next = head  # point dummy to new head
+        
+
+    def addAtTail(self, val: int) -> None:
+        tail = ListNode(val)  # create a new tail
+        node = self.dummy
+        
+        while node.next:
+            node = node.next
+        
+        node.next = tail
+
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        node = self.dummy
+
+        while index:  # while not in the right index
+            if not node.next:  # if no next node
+                return
+            
+            node = node.next  # next node
+            index -= 1  # next index
+
+        new_node = ListNode(val, node.next)
+        node.next = new_node
+
+
+    def deleteAtIndex(self, index: int) -> None:
+        node = self.dummy
+
+        while index:  # while not in the right index
+            if not node.next:  # if no next node
+                return
+            
+            node = node.next  # next node
+            index -= 1  # next index
+
+        if not node.next:  # if no next node
+            return
+
+        node.next = node.next.next
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+
+
+# left <–> head <–> ... <–> node <–> ... <–> tail <–> right –> None
+# O(n), O(n)
+# linked list, doubly linked list
+class ListNode:
+    def __init__(self, val=0, next=None, prev=None):
+        self.val = val
+        self.next = next
+        self.prev = prev
+
+
+class MyLinkedList:
+    def __init__(self):
+        self.left = ListNode()  # left dummy node
+        self.right = ListNode()  # right dummy node
+        self.left.next = self.right
+        self.right.prev = self.left
+
+    def addAtHead(self, val: int) -> None:
+        next = self.left.next  # get old head
+        prev = self.left  # get left dummy node
+        node = ListNode(val, next, prev)  # create a new head
+        prev.next = node  # point left dummy to new head
+        next.prev = node  # point old head to new head
+
+    def addAtTail(self, val: int) -> None:
+        next = self.right  # get right dummy node
+        prev = self.right.prev  # get old tail
+        node = ListNode(val, next, prev)  # create a new tail
+        prev.next = node  # point old tail to new tail
+        next.prev = node  # point right dummy to new tail
+
+    def get(self, index: int) -> int:
+        node = self.left.next  # get head node
+
+        while index and node != self.right:  # while index > 0 and not on right node
+            node = node.next  # next node
+            index -= 1  # next index
+
+        if (index == 0 and
+                node != self.right):  # not on right node
+            return node.val
+        else:
+            return - 1
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        next = self.left.next  # get head node
+
+        while index and next != self.right:  # while index > 0 and next not on None
+            next = next.next  # next node
+            index -= 1  # next index
+
+        if (index == 0 and next):  # not on right node
+            prev = next.prev  # get previous node
+            node = ListNode(val, next, prev)  # create a new node between next and previous nodes
+            prev.next = node  # point previous node to new node
+            next.prev = node  # point next node to new node
+
+    def deleteAtIndex(self, index: int) -> None:
+        node = self.left.next  # get head node
+
+        while index and node.next != self.right:  # while index > 0 and next not on None
+            node = node.next  # next node
+            index -= 1  # next index
+
+        if (node and index == 0 and 
+                node != self.right):
+            node.prev.next = node.next  # point previous node to next node
+            node.next.prev = node.prev  # poion next node to previous node
+
+
+# Your MyLinkedList object will be instantiated and called as such:
+# obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+
+
+
+
+
+# Leaf-Similar Trees
+# https://leetcode.com/problems/leaf-similar-trees/description/
+"""
+Consider all the leaves of a binary tree, from left to right order, the values of those leaves form a leaf value sequence.
+    ______3__
+   /         \
+  5__         1
+ /   \       / \
+6     2     9   8
+     / \
+    7   4
+
+
+For example, in the given tree above, the leaf value sequence is (6, 7, 4, 9, 8).
+
+Two binary trees are considered leaf-similar if their leaf value sequence is the same.
+
+Return true if and only if the two given trees with head nodes root1 and root2 are leaf-similar.
+
+ 
+
+Example 1:
+    ______3__
+   /         \
+  5__         1
+ /   \       / \
+6     2     9   8
+     / \
+    7   4
+
+    __3__
+   /     \
+  5       1__
+ / \     /   \
+6   7   4     2
+             / \
+            9   8
+Input: root1 = [3,5,1,6,2,9,8,null,null,7,4], root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
+Output: true
+Example 2:
+  1
+ / \
+2   3
+
+  1
+ / \
+3   2
+Input: root1 = [1,2,3], root2 = [1,3,2]
+Output: false
+"""
+print(Solution().leafSimilar(build_tree_from_list([3, 5, 1, 6, 2, 9, 8, None, None, 7, 4]), build_tree_from_list([3, 5, 1, 6, 7, 4, 2, None, None, None, None, None, None, 9, 8])), True)
+print(Solution().leafSimilar(build_tree_from_list([1, 2, 3]), build_tree_from_list([1, 3, 2])), False)
+print(Solution().leafSimilar(build_tree_from_list([1, 2]), build_tree_from_list([2, 2])), True)
+print(Solution().leafSimilar(build_tree_from_list([3, 5, 1, 6, 7, 4, 2, None, None, None, None, None,None, 9, 11, None, None, 8, 10]), build_tree_from_list([3, 5, 1, 6, 2, 9, 8, None, None, 7, 4])), False)
+print(Solution().leafSimilar(build_tree_from_list([3, 5, 1, 6, 2, 9, 8, None, None, 7, 4]), build_tree_from_list([3, 5, 1, 6, 7, 4, 2, None, None, None, None, None, None, 9, 11, None, None, 8, 10])), False)
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+# O(n), O(n)
+# binary tree
+class Solution:
+    def leafSimilar(self, root1: TreeNode, root2: TreeNode) -> bool:
+        leaf_list = []
+
+        def dfs(node):
+            if not node:
+                return
+            elif (not node.left and  # if both child nodes are None (== leaf), 
+                    not node.right):
+                leaf_list.append(node.val)  # append value to leaf list
+                return
+
+            dfs(node.left)
+            dfs(node.right)
+        
+        dfs(root1)
+        leaf_list.reverse()
+
+        def dfs2(node):
+            if not node:
+                return True
+            elif (not node.left and 
+                    not node.right):
+                # early exit
+                if (leaf_list and  # if list is empty then there is nothing to compare to
+                        node.val == leaf_list[-1]):  # same values
+                    leaf_list.pop()
+                    return True
+                else:
+                    return False
+
+            return (dfs2(node.left) and  # left child is leaf-similar
+                    dfs2(node.right))  # right child is leaf-similar
+        
+        return (dfs2(root2) and  # all leafs from root2 are in root1
+                not leaf_list)  # leaf list is empty
+
+
+
+
+
+# Restore IP Addresses
+# https://leetcode.com/problems/restore-ip-addresses/description/
+"""
+A valid IP address consists of exactly four integers separated by single dots. Each integer is between 0 and 255 (inclusive) and cannot have leading zeros.
+
+For example, "0.1.2.201" and "192.168.1.1" are valid IP addresses, but "0.011.255.245", "192.168.1.312" and "192.168@1.1" are invalid IP addresses.
+Given a string s containing only digits, return all possible valid IP addresses that can be formed by inserting dots into s. You are not allowed to reorder or remove any digits in s. You may return the valid IP addresses in any order.
+
+ 
+
+Example 1:
+
+Input: s = "25525511135"
+Output: ["255.255.11.135","255.255.111.35"]
+Example 2:
+
+Input: s = "0000"
+Output: ["0.0.0.0"]
+Example 3:
+
+Input: s = "101023"
+Output: ["1.0.10.23","1.0.102.3","10.1.0.23","10.10.2.3","101.0.2.3"]
+"""
+print(Solution().restoreIpAddresses("25525511135"), ["255.255.11.135", "255.255.111.35"])
+print(Solution().restoreIpAddresses("0000"), ["0.0.0.0"])
+print(Solution().restoreIpAddresses("101023"), ["1.0.10.23", "1.0.102.3", "10.1.0.23", "10.10.2.3", "101.0.2.3"])
+print(Solution().restoreIpAddresses("000256"), [])
+
+
+# O(1), O(1)
+# backtarcking
+# the recursion tree is bounded by 3**4 and validation within each call is O(1)
+class Solution:
+    def restoreIpAddresses(self, text: str) -> list[str]:
+        if (len(text) < 4 or
+                len(text) > 12):
+            return []
+        
+        ip = []
+        ip_list = []
+
+        def dfs(index):
+            if index == len(text):
+                if len(ip) == 4:
+                    ip_list.append(".".join(number[0] for number in ip))
+                return
+            
+            # 0->3, 1->2, 2->1, 3->0
+            # if len(text) - (index + 1) >= (3 - index):
+            # check for 0:9
+            ip.append([text[index]])
+            dfs(index + 1)
+            ip.pop()
+            
+            # check for 10:99
+            if (index < len(text) - 1 and 
+                    text[index] != "0"):
+                ip.append([text[index: index + 2]])
+                dfs(index + 2)
+                ip.pop()
+
+            # check for 100:255
+            if (index < len(text) - 2 and 
+                text[index] != "0" and
+                    text[index: index + 3] <= "255"):
+                ip.append([text[index: index + 3]])
+                dfs(index + 3)
+                ip.pop()
+
+        dfs(0)
+        return ip_list
+
+
+
+
+
+# Design Add and Search Words Data Structure
+# https://leetcode.com/problems/design-add-and-search-words-data-structure/description/
+"""
+Design a data structure that supports adding new words and finding if a string matches any previously added string.
+
+Implement the WordDictionary class:
+
+WordDictionary() Initializes the object.
+void addWord(word) Adds word to the data structure, it can be matched later.
+bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise. word may contain dots '.' where dots can be matched with any letter.
+ 
+
+Example:
+
+Input
+["WordDictionary","addWord","addWord","addWord","search","search","search","search"]
+[[],["bad"],["dad"],["mad"],["pad"],["bad"],[".ad"],["b.."]]
+Output
+[null,null,null,null,false,true,true,true]
+
+Explanation
+WordDictionary wordDictionary = new WordDictionary();
+wordDictionary.addWord("bad");
+wordDictionary.addWord("dad");
+wordDictionary.addWord("mad");
+wordDictionary.search("pad"); // return False
+wordDictionary.search("bad"); // return True
+wordDictionary.search(".ad"); // return True
+wordDictionary.search("b.."); // return True
+"""
+word_dictionary = WordDictionary()
+word_dictionary.addWord("bad")
+word_dictionary.addWord("dad")
+word_dictionary.addWord("mad")
+print(word_dictionary.search("pad")) # False
+print(word_dictionary.search("bad")) # True
+print(word_dictionary.search(".ad")) # True
+print(word_dictionary.search("b..")) # True
+
+
+class TrieNode:
+    def __init__(self):
+        self.letters = {}
+        self.is_word = False
+
+
+class WordDictionary:
+    def __init__(self):
+        self.root = TrieNode()
+
+
+    def addWord(self, word: str) -> None:
+        node = self.root
+        
+        for letter in word:
+            if letter not in node.letters:
+                node.letters[letter] = TrieNode()
+            
+            node = node.letters[letter]
+        
+        node.is_word = True
+
+
+    def search(self, word: str) -> bool:
+        def dfs(left, node):
+            for right, letter in enumerate(word[left:], left):
+                if letter == ".":
+                    for value_node in node.letters.values():  # if key is `.` check all value nodes
+                        if dfs(right + 1, value_node):
+                            return True
+                    return False
+                else:
+                    if letter not in node.letters:
+                        return False
+                    else:
+                        node = node.letters[letter]
+    
+            return node.is_word
+    
+        return dfs(0, self.root)
+
+
+# Your WordDictionary object will be instantiated and called as such:
+# obj = WordDictionary()
+# obj.addWord(word)
+# param_2 = obj.search(word)
+
+
+
+
+
+# Triangle
+# https://leetcode.com/problems/triangle/description/
+"""
+Given a triangle array, return the minimum path sum from top to bottom.
+
+For each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.
+
+ 
+
+Example 1:
+
+Input: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+Output: 11
+Explanation: The triangle looks like:
+   2
+  3 4
+ 6 5 7
+4 1 8 3
+The minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).
+Example 2:
+
+Input: triangle = [[-10]]
+Output: -10
+"""
+print(Solution().minimumTotal([[2]]), 2)
+print(Solution().minimumTotal([[2], [3, 4], [6, 5, 7], [4, 1, 8, 3]]), 11)
+print(Solution().minimumTotal([[-10]]), -10)
+
+
+class Solution:
+    def minimumTotal(self, triangle: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        in-place
+        """
+        for level in reversed(range(len(triangle) - 1)):
+            for index in range(len(triangle[level])):
+                triangle[level][index] += (
+                    min(triangle[level + 1][index], 
+                        triangle[level + 1][index + 1]))
+                
+        return triangle[0][0]
+
+
+class Solution:
+    def minimumTotal(self, triangle: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        in-place
+        """
+        for level in range(1, len(triangle)):
+            triangle[level - 1] = ([triangle[level - 1][0]] + 
+                                   triangle[level - 1] + 
+                                   [triangle[level - 1][-1]])
+            
+            for index in range(len(triangle[level])):
+                triangle[level][index] += (
+                    min(triangle[level - 1][index], 
+                        triangle[level - 1][index + 1]))
+                
+        return min(triangle[-1])
+
+
+class Solution:
+    def minimumTotal(self, triangle: list[list[int]]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index: int, level: int) -> int:
+            if level == len(triangle):
+                return 0
+            
+            return (triangle[level][index] + 
+                    min(dfs(index, level + 1), 
+                        dfs(index + 1, level + 1)))
+        
+        return dfs(0, 0)
+
+
+
+
+
+# Kth Largest Element in a Stream
+# https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
+"""
+You are part of a university admissions office and need to keep track of the kth highest test score from applicants in real-time. This helps to determine cut-off marks for interviews and admissions dynamically as new applicants submit their scores.
+
+You are tasked to implement a class which, for a given integer k, maintains a stream of test scores and continuously returns the kth highest test score after a new score has been submitted. More specifically, we are looking for the kth highest score in the sorted list of all scores.
+
+Implement the KthLargest class:
+
+KthLargest(int k, int[] nums) Initializes the object with the integer k and the stream of test scores nums.
+int add(int val) Adds a new test score val to the stream and returns the element representing the kth largest element in the pool of test scores so far.
+ 
+
+Example 1:
+
+Input:
+["KthLargest", "add", "add", "add", "add", "add"]
+[[3, [4, 5, 8, 2]], [3], [5], [10], [9], [4]]
+
+Output: [null, 4, 5, 5, 8, 8]
+
+Explanation:
+
+KthLargest kthLargest = new KthLargest(3, [4, 5, 8, 2]);
+kthLargest.add(3); // return 4
+kthLargest.add(5); // return 5
+kthLargest.add(10); // return 5
+kthLargest.add(9); // return 8
+kthLargest.add(4); // return 8
+
+Example 2:
+
+Input:
+["KthLargest", "add", "add", "add", "add"]
+[[4, [7, 7, 7, 7, 8, 3]], [2], [10], [9], [9]]
+
+Output: [null, 7, 7, 7, 8]
+
+Explanation:
+
+KthLargest kthLargest = new KthLargest(4, [7, 7, 7, 7, 8, 3]);
+kthLargest.add(2); // return 7
+kthLargest.add(10); // return 7
+kthLargest.add(9); // return 7
+kthLargest.add(9); // return 8
+"""
+kthLargest = KthLargest(3, [4, 5, 8, 2])
+print(kthLargest.add(3)) #  return 4
+print(kthLargest.add(5)) #  return 5
+print(kthLargest.add(10)) #  return 5
+print(kthLargest.add(9)) #  return 8
+print(kthLargest.add(4)) #  return 8
+
+
+import heapq
+
+# O(nlogn), O(k)
+# heap
+class KthLargest:
+    def __init__(self, k: int, numbers: list[int]):
+        self.k = k
+        self.numbers = numbers
+        heapq.heapify(self.numbers)  # min heap
+
+        while len(self.numbers) > self.k:
+            heapq.heappop(self.numbers)
+
+    def add(self, val: int) -> int:
+        heapq.heappush(self.numbers, val)
+
+        while len(self.numbers) > self.k:
+            heapq.heappop(self.numbers)
+        
+        return self.numbers[0]
+
+
+# Your KthLargest object will be instantiated and called as such:
+# obj = KthLargest(k, nums)
+# param_1 = obj.add(val)
+
+
+# O(n^2*logn), O(n)
+# sort
+class KthLargest:
+    def __init__(self, k: int, numbers: list[int]):
+        self.numbers = numbers
+        self.k = k
+
+    def add(self, val: int) -> int:
+        self.numbers.append(val)
+        self.numbers.sort(reverse=True)
+
+        return self.numbers[self.k - 1]
+
+
+
+
+
+# Last Stone Weight
+# https://leetcode.com/problems/last-stone-weight/description/
+"""
+You are given an array of integers stones where stones[i] is the weight of the ith stone.
+
+We are playing a game with the stones. On each turn, we choose the heaviest two stones and smash them together. Suppose the heaviest two stones have weights x and y with x <= y. The result of this smash is:
+
+If x == y, both stones are destroyed, and
+If x != y, the stone of weight x is destroyed, and the stone of weight y has new weight y - x.
+At the end of the game, there is at most one stone left.
+
+Return the weight of the last remaining stone. If there are no stones left, return 0.
+
+ 
+
+Example 1:
+
+Input: stones = [2,7,4,1,8,1]
+Output: 1
+Explanation: 
+We combine 7 and 8 to get 1 so the array converts to [2,4,1,1,1] then,
+we combine 2 and 4 to get 2 so the array converts to [2,1,1,1] then,
+we combine 2 and 1 to get 1 so the array converts to [1,1,1] then,
+we combine 1 and 1 to get 0 so the array converts to [1] then that's the value of the last stone.
+Example 2:
+
+Input: stones = [1]
+Output: 1
+"""
+print(Solution().lastStoneWeight([2, 7, 4, 1, 8, 1]), 1)
+print(Solution().lastStoneWeight([1]), 1)
+print(Solution().lastStoneWeight([1, 1]), 0)
+
+
+import heapq
+
+# O(nlogn), O(n)
+# heap
+class Solution:
+    def lastStoneWeight(self, stones: list[int]) -> int:
+        stones = [-stone for stone in stones]
+        heapq.heapify(stones)  # make a heap
+        
+        while len(stones) > 1:
+            # 8 - 7 = 1  => -8 - -7 = - 1
+            stone = heapq.heappop(stones) - heapq.heappop(stones)
+            
+            if stone:
+                heapq.heappush(stones, stone)
+
+        return -stones[0] if stones else 0
+
+
+# O(nlogn), O(n)
+# binary search
+class Solution:
+    def lastStoneWeight(self, stones: list[int]) -> int:
+        stones.sort()
+        
+        while len(stones) > 1:
+            stone = stones.pop() - stones.pop()
+            
+            if stone:
+                left = 0
+                right = len(stones)
+
+                while left < right:  # binary search to find slot for a stone
+                    middle = (right + left) // 2
+                    middle_stone = stones[middle]
+
+                    if stone > middle_stone:
+                        left = middle + 1
+                    else:
+                        right = middle
+
+                stones.insert(right, stone)
+
+        return stones[0] if stones else 0
+
+
+
+
+
+# Sort an Array
+# https://leetcode.com/problems/sort-an-array/description/
+"""
+Given an array of integers nums, sort the array in ascending order and return it.
+
+You must solve the problem without using any built-in functions in O(nlog(n)) time complexity and with the smallest space complexity possible.
+
+ 
+
+Example 1:
+
+Input: nums = [5,2,3,1]
+Output: [1,2,3,5]
+Explanation: After sorting the array, the positions of some numbers are not changed (for example, 2 and 3), while the positions of other numbers are changed (for example, 1 and 5).
+Example 2:
+
+Input: nums = [5,1,1,2,0,0]
+Output: [0,0,1,1,2,5]
+Explanation: Note that the values of nums are not necessairly unique.
+"""
+print(Solution().sortArray([5, 2, 3, 1]), [1, 2, 3, 5])
+print(Solution().sortArray([5, 1, 1, 2, 0, 0]), [0, 0, 1, 1, 2, 5])
+
+# O(nlogn), O(n)
+# megret sort
+class Solution:
+    def sortArray(self, numbers: list[int]) -> list[int]:
+        def merge(left, middle, right):
+            left_chunk = numbers[left: middle + 1]  # clone left chunk
+            right_chunk = numbers[middle + 1: right + 1]  # colone right chunk
+            index = left
+            left, right = 0, 0
+
+            while (left < len(left_chunk) and  # while numbers in left chunk and
+                   right < len(right_chunk)):  # in right chunk
+                # if left number is less than right
+                if left_chunk[left] <= right_chunk[right]:
+                    numbers[index] = left_chunk[left]
+                    left += 1
+                else:
+                    numbers[index] = right_chunk[right]
+                    right += 1
+                index += 1
+
+            while left < len(left_chunk):  # while still numbers in left chunk
+                numbers[index] = left_chunk[left]
+                left += 1
+                index += 1
+
+            while right < len(right_chunk):  # while still numbers in right chunk
+                numbers[index] = right_chunk[right]
+                right += 1
+                index += 1
+
+        def merge_sort(left, right):
+            if left == right:  # if pointers point only one number
+                return
+
+            middle = (left + right) // 2
+            # divide
+            merge_sort(left, middle)
+            merge_sort(middle + 1, right)
+            # merge
+            merge(left, middle, right)
+
+        merge_sort(0, len(numbers) - 1)
+        return numbers
+
+
+# O(nlogn), O(n)
+# quick sort, tle
+class Solution:
+    def partition(self, numbers: list[int], left: int, end: int) -> int:
+        pivot = numbers[end]
+        left -= 1
+
+        for right in range(left + 1, end):
+            if numbers[right] < pivot:
+                left += 1
+                self.swap(numbers, left, right)
+
+        self.swap(numbers, left + 1, end)
+        return left + 1
+
+    def swap(self, numbers: list[int], left: int, right: int) -> None:
+        numbers[left], numbers[right] = numbers[right], numbers[left]
+
+    def quick_sort(self, numbers: list[int], left: int, right: int) -> None:
+        if left < right:
+            pivot = self.partition(numbers, left, right)
+            self.quick_sort(numbers, left, pivot - 1)
+            self.quick_sort(numbers, pivot + 1, right)
+
+    def quick_sort(self, numbers: list[int], left: int, right: int) -> None:
+        if right <= left:
+            return 
+        pivot = self.partition(numbers, left, right)
+        self.quick_sort(numbers, left, pivot - 1)
+        self.quick_sort(numbers, pivot + 1, right)
+
+    def sortArray(self, numbers: list[int]) -> list[int]:
+        self.quick_sort(numbers, 0, len(numbers) - 1)
+        return numbers
+
+
+# O(n2), O(1)
+# insertion sort, tle
+class Solution:
+    def insertionSort(self, numbers: list[int]) -> None:
+        for right in range(1, len(numbers)):
+            key = numbers[right]
+            left = right - 1
+
+            # Move elements of arr[0..i-1], that are
+            # greater than key, to one position ahead
+            # of their current position
+            while (left >= 0 and 
+                   numbers[left] > key):
+                numbers[left + 1] = numbers[left]
+                left -= 1
+            numbers[left + 1] = key
+
+    def sortArray(self, numbers: list[int]) -> list[int]:
+        self.insertionSort(numbers)
+        return numbers
+
+
+
+
+
+# Sort Colors
+# https://leetcode.com/problems/sort-colors/description/
+"""
+Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+
+You must solve this problem without using the library's sort function.
+
+ 
+
+Example 1:
+
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+Example 2:
+
+Input: nums = [2,0,1]
+Output: [0,1,2]
+"""
+print(Solution().sortColors([2, 0, 2, 1, 1, 0]), [0, 0, 1, 1, 2, 2])
+print(Solution().sortColors([2, 0, 1]), [0, 1, 2])
+
+
+# O(n), O(1)
+# two pointers, two pass
+class Solution:
+    def sortColors(self, nums: list[int]) -> None:
+        left = 0
+
+        # move zeros left
+        for right, number in enumerate(nums):
+            if number == 0:
+                nums[left], nums[right] = nums[right], nums[left]
+                left += 1
+
+        # move ones left
+        for right, number in enumerate(nums[left:], left):
+            if number == 1:
+                nums[left], nums[right] = nums[right], nums[left]
+                left += 1
+
+        return nums
+
+
+# O(n), O(1)
+# bucket sort, tow pass
+class Solution:
+    def sortColors(self, nums: list[int]) -> None:
+        bucket = [0] * 3  # i-th index is a frequency of i-th number
+        
+        for number in nums:
+            bucket[number] += 1
+        
+        index = 0
+        
+        for number, frequency in enumerate(bucket):
+            for _ in range(frequency):
+                nums[index] = number
+                index += 1
+            
+        return nums
+
+
+# O(n), O(1)
+# three pointers, one pass
+class Solution:
+    def sortColors(self, nums: list[int]) -> None:
+        left = 0
+        right = len(nums) - 1
+        index = 0
+
+        while index <= right:
+            number = nums[index]
+
+            if number == 0:
+                nums[left], nums[index] = nums[index], nums[left]
+                left += 1
+            elif number == 2:
+                nums[index], nums[right] = nums[right], nums[index]
+                right -= 1
+                # swapped value should be checked at the next iteration
+                index -= 1
+
+            index += 1
+
+        return nums
+
+
+
+
+# Boats to Save People
+# https://leetcode.com/problems/boats-to-save-people/description/
+"""
+You are given an array people where people[i] is the weight of the ith person, and an infinite number of boats where each boat can carry a maximum weight of limit. Each boat carries at most two people at the same time, provided the sum of the weight of those people is at most limit.
+
+Return the minimum number of boats to carry every given person.
+
+ 
+
+Example 1:
+
+Input: people = [1,2], limit = 3
+Output: 1
+Explanation: 1 boat (1, 2)
+Example 2:
+
+Input: people = [3,2,2,1], limit = 3
+Output: 3
+Explanation: 3 boats (1, 2), (2) and (3)
+Example 3:
+
+Input: people = [3,5,3,4], limit = 5
+Output: 4
+Explanation: 4 boats (3), (3), (4), (5)
+"""
+print(Solution().numRescueBoats([1, 2], 3), 1)
+print(Solution().numRescueBoats([3, 2, 2, 1], 3), 3)
+print(Solution().numRescueBoats([3, 5, 3, 4], 5), 4)
+print(Solution().numRescueBoats([3, 2, 3, 2, 2], 6), 3)
+
+
+# O(nlogn), O(n)
+# two pointers
+class Solution:
+    def numRescueBoats(self, people: list[int], limit: int) -> int:
+        people.sort()
+        left = 0
+        right = len(people) - 1
+        boats = 0
+
+        while left <= right:
+            delta = limit - people[right]
+            right -= 1
+            boats += 1
+
+            if (left <= right and
+                   people[left] <= delta):
+                left += 1
+
+        return boats
+
+
+# O(n), O(n)
+# two pointers, bucket
+class Solution:
+    def numRescueBoats(self, people: list[int], limit: int) -> int:
+        bucket = [0] * (max(people) + 1)
+        for weight in people:
+            bucket[weight] += 1
+
+        weight = 1  # current weight
+        for index in range(len(people)):
+            while bucket[weight] == 0:  # while no people of current weight
+                weight += 1  # next weight
+
+            people[index] = weight  # populate people weights
+            bucket[weight] -= 1  # decrease current weight in bucket
+
+        left = 0
+        right = len(people) - 1
+        boats = 0
+
+        while left <= right:
+            delta = limit - people[right]
+            right -= 1
+            boats += 1
+
+            if (left <= right and
+                    people[left] <= delta):
+                left += 1
+
+        return boats
+
+
+# slow
+class Solution:
+    def numRescueBoats(self, people: list[int], limit: int) -> int:
+        counter = {}
+        weights = list(set(people))
+        weights.sort()
+        boat_count = 0
+
+        for weight in people:
+            counter[weight] = counter.get(weight, 0) + 1
+
+        while weights:
+            weight = weights[-1]
+            counter[weight] -= 1
+            if counter[weight] == 0:
+                counter.pop(weight)
+                weights.pop()
+
+            if not weights:
+                return boat_count + 1
+
+            diff = limit - weight
+
+            for smaller_weight in reversed(range(min(weights), diff + 1)):
+                if smaller_weight in counter:
+                    counter[smaller_weight] -= 1
+                    if counter[smaller_weight] == 0:
+                        counter.pop(smaller_weight)
+                        weights.remove(smaller_weight)
+                    break
+
+            boat_count += 1
+
+        return boat_count
+
+
+# tle
+class Solution:
+    def numRescueBoats(self, people: list[int], limit: int) -> int:
+        people.sort()
+        boat_count = 0
+
+        while people:
+            weight = people.pop()
+            if not people:
+                return boat_count + 1
+
+            for smaller_weight in reversed(people):
+                if smaller_weight <= limit - weight:
+                    people.remove(smaller_weight)
+                    break
+
+            boat_count += 1
+
+        return boat_count
+
+
+
+
+
+# Count Subarrays Where Max Element Appears at Least K Times
+# https://leetcode.com/problems/count-subarrays-where-max-element-appears-at-least-k-times/description/
+"""
+You are given an integer array nums and a positive integer k.
+
+Return the number of subarrays where the maximum element of nums appears at least k times in that subarray.
+
+A subarray is a contiguous sequence of elements within an array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,2,3,3], k = 2
+Output: 6
+Explanation: The subarrays that contain the element 3 at least 2 times are: [1,3,2,3], [1,3,2,3,3], [3,2,3], [3,2,3,3], [2,3,3] and [3,3].
+Example 2:
+
+Input: nums = [1,4,2,1], k = 3
+Output: 0
+Explanation: No subarray contains the element 4 at least 3 times.
+"""
+print(Solution().countSubarrays([1, 3, 2, 3, 3], 2), 6)
+print(Solution().countSubarrays([1, 3, 2, 3, 3, 1], 2), 10)
+print(Solution().countSubarrays([1, 3, 2, 3, 1], 2), 4)
+print(Solution().countSubarrays([1, 3, 2, 3, 1, 1], 2), 6)
+print(Solution().countSubarrays([1, 3, 2, 3, 1, 1, 3], 2), 10)
+print(Solution().countSubarrays([1, 4, 2, 1], 3), 0)
+print(Solution().countSubarrays([37,20,38,66,34,38,9,41,1,14,25,63,8,12,66,66,60,12,35,27,16,38,12,66,38,36,59,54,66,54,66,48,59,66,34,11,50,66,42,51,53,66,31,24,66,44,66,1,66,66,29,54], 5), 594)
+
+
+# draft
+# [1, 3, 2, 3, 3]
+# [1,3,2,3], [3,2,3],        [1,3,2,3,3], [3,2,3,3], [2,3,3] and [3,3]
+
+# [1, 3, 2, 3, 1]
+# [1,3,2,3], [3,2,3],        [1,3,2,3,1], [3,2,3,1]
+
+
+# O(n), O(1)
+# sliding window
+class Solution:
+    def countSubarrays(self, numbers: list[int], k: int) -> int:
+        left = 0  # start of the sliding window
+        max_number = max(numbers)  # the maximum number from numbers
+        max_count = 0  # count occurences of the maximum number
+        counter = 0  # count number of subsets
+
+        for right, number in enumerate(numbers):
+            if number == max_number:  # if number is the maximum number
+                max_count += 1  # increase maximum number counter
+
+            # move the left pointer that in between left and right pointers
+            # (inclusive) are exactly k maximun numbers
+            while (max_count > k or  # too many maximum numbers or
+                   (max_count == k and  # exact number of maximum numbers and
+                    numbers[left] != max_number)):  # current numbers is not a maximum number
+                if numbers[left] == max_number:  # if current number is a maximum number
+                    max_count -= 1  # decrease maximum number counter
+                left += 1  # move left pointer
+            
+            if max_count == k:  # exact number of maximum numbers
+                counter += left + 1  # `left + 1` is the current subarray counter to add
+        
+        return counter
+
+
+# O(n3), O(1)
+# brute force
+class Solution:
+    def countSubarrays(self, numbers: list[int], k: int) -> int:
+        counter = 0
+
+        for i in range(len(numbers)):
+            for j in range(i, len(numbers)):
+                if numbers[i: j + 1].count(max(numbers)) >= 2:
+                    counter += 1
+
+        return counter
+
+# O(n2), O(1)
+# brute force
+class Solution:
+    def countSubarrays(self, numbers: list[int], k: int) -> int:
+        counter = 0
+        max_number = max(numbers)
+
+        for i in range(len(numbers)):
+            max_count = 0
+           
+            for j in range(i, len(numbers)):
+                if numbers[j] == max_number:
+                    max_count += 1
+                if  max_count >= 2:
+                    counter += 1
+
+        return counter
+
+
+# O(n), O(1)
+# sliding window, tle
+class Solution:
+    def countSubarrays(self, numbers: list[int], k: int) -> int:
+        left = 0  # left pointer for sliding window
+        counter = 0  # count number of subsets
+        numbers_max = max(numbers)  # the maximum number from numbers
+        max_num_count = 0  # count occurences of the maximum number
+
+        for number in numbers:
+            if number == numbers_max:
+                max_num_count += 1
+            
+            left_back = left  # copy of the left pointer
+            max_num_count_back = max_num_count  # copy of occurences of the maximum number starting from left pointer
+            
+            while max_num_count >= k:  # while maximum occcurs greater equal to k
+                counter += 1
+                if numbers[left] == numbers_max:
+                    max_num_count -= 1
+                left += 1
+
+            left = left_back  # restore left
+            max_num_count = max_num_count_back  # restore max num count
+
+        return counter
+
+
+
+
+
+# 132 Pattern
+# https://leetcode.com/problems/132-pattern/description/
+"""
+Given an array of n integers nums, a 132 pattern is a subsequence of three integers nums[i], nums[j] and nums[k] such that i < j < k and nums[i] < nums[k] < nums[j].
+
+Return true if there is a 132 pattern in nums, otherwise, return false.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4]
+Output: false
+Explanation: There is no 132 pattern in the sequence.
+Example 2:
+
+Input: nums = [3,1,4,2]
+Output: true
+Explanation: There is a 132 pattern in the sequence: [1, 4, 2].
+Example 3:
+
+Input: nums = [-1,3,2,0]
+Output: true
+Explanation: There are three 132 patterns in the sequence: [-1, 3, 2], [-1, 3, 0] and [-1, 2, 0].
+"""
+
+
+print(Solution().find132pattern([3, 1, 4, 2]), True)
+print(Solution().find132pattern([1, 2, 3, 4]), False)
+print(Solution().find132pattern([-1, 3, 2, 0]), True)
+print(Solution().find132pattern([3, 5, 0, 3, 4]), True)
+print(Solution().find132pattern([1, 0, 1, -4, -3]), False)
+print(Solution().find132pattern([-2, 1, 2, -2, 1, 2]), True)
+print(Solution().find132pattern([1, 2, 3, 4, -4, -3, -5, -1]), False)
+print(Solution().find132pattern([1, 3, -4, 2]), True)
+
+
+# O(n), O(n)
+# stack
+# monotonically decreasing stack
+class Solution:
+    def find132pattern(self, numbers: list[int]) -> bool:
+        stack = []  # (min_left, number)  # monotonic decreasing
+        prev_min = numbers[0]  # minimum before `j`
+
+        for number in numbers[1:]:
+            # pop all smaller equal values from the stack
+            while stack and number >= stack[-1][1]:
+                stack.pop()
+
+            # check if `numbers[k]` is: nums[i] < nums[k] < nums[j]
+            if stack and stack[-1][0] < number < stack[-1][1]:  # `number < stack[-1][1]` not nesessery because of previous while loop
+                return True
+
+            stack.append((prev_min, number))  # if stack is empty or `numbers[k]` not in bounds
+            prev_min = min(prev_min, number)  # update previous minimum value
+
+        return False
+
+
+# O(n2), O(1)
+# tle
+class Solution:
+    def find132pattern(self, numbers: list[int]) -> bool:
+        for right, number in enumerate(numbers[2:], 2):
+            middle = right - 1
+
+            while middle > 0:
+                if numbers[middle] > number:
+                    left = middle - 1
+
+                    while left >= 0:
+                        if numbers[left] < number:
+                            return True
+
+                        left -= 1
+
+                middle -= 1
+
+        return False
+
+
+# O(n3), O(1)
+# brute force
+class Solution:
+    def find132pattern(self, numbers: list[int]) -> bool:
+        for i in range(len(numbers)):
+            for j in range(i + 1, len(numbers)):
+                for k in range(j + 1, len(numbers)):
+                    if numbers[i] < numbers[k] < numbers[j]:
+                        return True
+        return False
+
+
+
+
+
+# Design Browser History
+# https://leetcode.com/problems/design-browser-history/description/
+"""
+You have a browser of one tab where you start on the homepage and you can visit another url, get back in the history number of steps or move forward in the history number of steps.
+
+Implement the BrowserHistory class:
+
+BrowserHistory(string homepage) Initializes the object with the homepage of the browser.
+void visit(string url) Visits url from the current page. It clears up all the forward history.
+string back(int steps) Move steps back in history. If you can only return x steps in the history and steps > x, you will return only x steps. Return the current url after moving back in history at most steps.
+string forward(int steps) Move steps forward in history. If you can only forward x steps in the history and steps > x, you will forward only x steps. Return the current url after forwarding in history at most steps.
+ 
+
+Example:
+
+Input:
+["BrowserHistory","visit","visit","visit","back","back","forward","visit","forward","back","back"]
+[["leetcode.com"],["google.com"],["facebook.com"],["youtube.com"],[1],[1],[1],["linkedin.com"],[2],[2],[7]]
+Output:
+[null,null,null,null,"facebook.com","google.com","facebook.com",null,"linkedin.com","google.com","leetcode.com"]
+
+Explanation:
+BrowserHistory browserHistory = new BrowserHistory("leetcode.com");
+browserHistory.visit("google.com");       // You are in "leetcode.com". Visit "google.com"
+browserHistory.visit("facebook.com");     // You are in "google.com". Visit "facebook.com"
+browserHistory.visit("youtube.com");      // You are in "facebook.com". Visit "youtube.com"
+browserHistory.back(1);                   // You are in "youtube.com", move back to "facebook.com" return "facebook.com"
+browserHistory.back(1);                   // You are in "facebook.com", move back to "google.com" return "google.com"
+browserHistory.forward(1);                // You are in "google.com", move forward to "facebook.com" return "facebook.com"
+browserHistory.visit("linkedin.com");     // You are in "facebook.com". Visit "linkedin.com"
+browserHistory.forward(2);                // You are in "linkedin.com", you cannot move forward any steps.
+browserHistory.back(2);                   // You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
+browserHistory.back(7);                   // You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
+"""
+
+
+browserHistory = BrowserHistory("leetcode.com")
+browserHistory.visit("google.com")  # You are in "leetcode.com". Visit "google.com"
+browserHistory.visit("facebook.com")  # You are in "google.com". Visit "facebook.com"
+browserHistory.visit("youtube.com")  # You are in "facebook.com". Visit "youtube.com"
+print(browserHistory.back(1))  # You are in "youtube.com", move back to "facebook.com" return "facebook.com"
+print(browserHistory.back(1))  # You are in "facebook.com", move back to "google.com" return "google.com"
+print(browserHistory.forward(1))  # You are in "google.com", move forward to "facebook.com" return "facebook.com"
+browserHistory.visit("linkedin.com")  # You are in "facebook.com". Visit "linkedin.com"
+print(browserHistory.forward(2))  # You are in "linkedin.com", you cannot move forward any steps.
+print(browserHistory.back(2))  # You are in "linkedin.com", move back two steps to "facebook.com" then to "google.com". return "google.com"
+print(browserHistory.back(7))  # You are in "google.com", you can move back only one step to "leetcode.com". return "leetcode.com"
+
+
+# O(1): visit, O(n): back, forward, O(n)
+# linked list
+class ListNode:
+    def __init__(self, val="", next=None, prev=None):
+        self.val = val
+        self.next = next
+        self.prev = prev
+
+class BrowserHistory:
+    def __init__(self, homepage: str):
+        self.home = ListNode(homepage)
+        self.node = self.home
+
+    def visit(self, url: str) -> None:
+        self.node.next = ListNode(url, None, self.node)
+        self.node = self.node.next
+
+    def back(self, steps: int) -> str:
+        while (steps and 
+               self.node.prev):
+            self.node = self.node.prev
+            steps -= 1
+        
+        return self.node.val
+
+    def forward(self, steps: int) -> str:
+        while (steps and 
+               self.node.next):
+            self.node = self.node.next
+            steps -= 1
+        
+        return self.node.val
+
+
+# Your BrowserHistory object will be instantiated and called as such:
+# obj = BrowserHistory(homepage)
+# obj.visit(url)
+# param_2 = obj.back(steps)
+# param_3 = obj.forward(steps)
+
+
+# linked list
+# first try
+class ListNode:
+    def __init__(self, val="", next=None, prev=None):
+        self.val = val
+        self.next = next
+        self.prev = prev
+
+class BrowserHistory:
+    def __init__(self, homepage: str):
+        self.home = ListNode(homepage)
+        self.end = ListNode()
+        self.home.next = self.end
+        self.end.prev = self.home
+        self.pointer = 0
+
+    def visit(self, url: str) -> None:
+        prev = self.home
+        pointer = self.pointer
+        
+        while pointer > 0:
+            prev = prev.next
+            pointer -= 1
+
+        self.node = ListNode(url, self.end, prev)
+        prev.next = self.node
+        self.end.prev = self.node
+        self.pointer += 1
+
+    def back(self, steps: int) -> str:
+        node = self.home
+        pointer = self.pointer
+        backing = max(pointer - steps, 0)
+        self.pointer = 0
+        
+        while backing != 0:
+            node = node.next
+            backing -= 1
+            self.pointer += 1
+        
+        return node.val
+
+    def forward(self, steps: int) -> str:
+        node = self.home
+        pointer = 0
+        
+        while pointer != self.pointer:
+            node = node.next
+            pointer += 1
+
+        while steps and node.next.next:
+            node = node.next
+            steps -= 1
+            self.pointer += 1
+        
+        return node.val
+
+
+# O(1), O(n)
+# stack
+class BrowserHistory:
+    def __init__(self, homepage: str):
+        self.history = [homepage]  # stack
+        self.index = 0  # current page index
+        self.len = 1  # true length of the stack
+
+    def visit(self, url: str) -> None:
+        self.index += 1
+        if len(self.history) == self.index:
+            self.history.append(url)
+        else:
+            self.history[self.index] = url
+        # soft delete values after current index by setting length
+        self.len = self.index + 1
+
+    def back(self, steps: int) -> str:
+        self.index = max(self.index - steps, 0)
+        return self.history[self.index]
+
+    def forward(self, steps: int) -> str:
+        self.index = min(self.index + steps, self.len - 1)
+        return self.history[self.index]
+
+
+# O(n): visit, O(1): back, forward, O(n)
+# stack
+class BrowserHistory:
+    def __init__(self, homepage: str):
+        self.history = [homepage]  # stack
+        self.index = 0  # current page index
+
+    def visit(self, url: str) -> None:
+        self.index += 1
+        # self.history = self.history[:self.index]
+        while len(self.history) > self.index:
+            self.history.pop()
+        self.history.append(url)
+
+    def back(self, steps: int) -> str:
+        steps = min(steps, self.index)
+        self.index -= steps
+        # self.index = max(self.index - steps, 0)
+        return self.history[self.index]
+
+    def forward(self, steps: int) -> str:
+        steps = min(steps, len(self.history) - 1 - self.index)
+        self.index += steps
+        # self.index = min(self.index + steps, len(self.history) - 1)
+        return self.history[self.index]
+
+
+
+
+
+# Evaluate Boolean Binary Tree
+# https://leetcode.com/problems/evaluate-boolean-binary-tree/description/
+"""
+You are given the root of a full binary tree with the following properties:
+
+Leaf nodes have either the value 0 or 1, where 0 represents False and 1 represents True.
+Non-leaf nodes have either the value 2 or 3, where 2 represents the boolean OR and 3 represents the boolean AND.
+The evaluation of a node is as follows:
+
+If the node is a leaf node, the evaluation is the value of the node, i.e. True or False.
+Otherwise, evaluate the node's two children and apply the boolean operation of its value with the children's evaluations.
+Return the boolean result of evaluating the root node.
+
+A full binary tree is a binary tree where each node has either 0 or 2 children.
+
+A leaf node is a node that has zero children.
+
+ 
+
+Example 1:
+   __And______                         __And_
+  /           \                       /      \
+True         __Or_         =>       True     True     =>     True
+            /     \       
+         False    True    
+
+Input: root = [2,1,3,null,null,0,1]
+Output: true
+Explanation: The above diagram illustrates the evaluation process.
+The AND node evaluates to False AND True = False.
+The OR node evaluates to True OR False = True.
+The root node evaluates to True, so we return true.
+Example 2:
+
+Input: root = [0]
+Output: false
+Explanation: The root node is a leaf node and it evaluates to false, so we return false.
+"""
+print(Solution().evaluateTree(build_tree_from_list([2, 1, 3, None, None, 0, 1])), True)
+print(Solution().evaluateTree(build_tree_from_list([0])), False)
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def evaluateTree(self, root: TreeNode) -> bool:
+        if (not root or
+                not root.val):
+            return False
+        elif root.val == 1:
+            return True
+        elif root.val == 2:
+            return (self.evaluateTree(root.left) or
+                    self.evaluateTree(root.right))
+        else:  # root.val == 3:
+            return (self.evaluateTree(root.left) and
+                    self.evaluateTree(root.right))
+
+
+
+
+
+# K Closest Points to Origin
+# https://leetcode.com/problems/k-closest-points-to-origin/description/
+"""
+Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
+
+The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
+
+You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
+
+ 
+
+Example 1:
+
+
+Input: points = [[1,3],[-2,2]], k = 1
+Output: [[-2,2]]
+Explanation:
+The distance between (1, 3) and the origin is sqrt(10).
+The distance between (-2, 2) and the origin is sqrt(8).
+Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
+We only want the closest k = 1 points from the origin, so the answer is just [[-2,2]].
+Example 2:
+
+Input: points = [[3,3],[5,-1],[-2,4]], k = 2
+Output: [[3,3],[-2,4]]
+Explanation: The answer [[-2,4],[3,3]] would also be accepted.
+"""
+print(Solution().kClosest([[1, 3], [-2, 2]], 1), [[-2, 2]])
+print(Solution().kClosest([[3, 3], [5, -1], [-2, 4]], 2), [[3, 3], [-2, 4]])
+
+
+import numpy as np
+import heapq
+
+# O(klogn), O(n)
+# heap, optimal
+class Solution:
+    def kClosest(self, points: list[list[int]], k: int) -> list[list[int]]:
+        distances = []  # [-distance, [x, y]]
+        k_points = [0] * k  # solution frame
+
+        for (x, y) in points:
+            # distance = np.sqrt(x**2 + y**2)  # calculate distance to origin
+            distance = -(x**2 + y**2)  # calculate distance to origin
+            if len(distances) < k:
+                heapq.heappush(distances, (distance, (x, y)))  # push to heap: [distance, [x, y]]
+            else:
+                heapq.heappushpop(distances, (distance, (x, y)))  # push then pop largest element
+        for index in range(k):  # loop k times
+            k_points[index] = heapq.heappop(distances)[1]  # update k closest points
+
+        return k_points
+
+
+import numpy as np
+import heapq
+
+# O(klogn), O(n)
+# heap
+class Solution:
+    def kClosest(self, points: list[list[int]], k: int) -> list[list[int]]:
+        distances = []  # [distance, [x, y]]
+        k_points = [0] * k  # solution frame
+
+        for (x, y) in points:
+            distance = np.sqrt(x**2 + y**2)  # calculate distance to origin
+            heapq.heappush(distances, (distance, (x, y)))  # push to heap: [distance, [x, y]]
+        for index in range(k):  # loop k times
+            k_points[index] = heapq.heappop(distances)[1]  # update k closest points
+
+        return k_points
+
+
+
+
+
+# Matchsticks to Square
+# https://leetcode.com/problems/matchsticks-to-square/description/
+"""
+You are given an integer array matchsticks where matchsticks[i] is the length of the ith matchstick. You want to use all the matchsticks to make one square. You should not break any stick, but you can link them up, and each matchstick must be used exactly one time.
+
+Return true if you can make this square and false otherwise.
+
+ 
+
+Example 1:
+
+
+Input: matchsticks = [1,1,2,2,2]
+Output: true
+Explanation: You can form a square with length 2, one side of the square came two sticks with length 1.
+Example 2:
+
+Input: matchsticks = [3,3,3,3,4]
+Output: false
+Explanation: You cannot find a way to form a square with all the matchsticks.
+"""
+print(Solution().makesquare([1, 1, 2, 2, 2]), True)
+print(Solution().makesquare([3, 3, 3, 3, 4]), False)
+print(Solution().makesquare([5, 5, 5, 5, 4, 4, 4, 4, 3, 3, 3, 3]), True)
+print(Solution().makesquare([7215807,6967211,5551998,6632092,2802439,821366,2465584,9415257,8663937,3976802,2850841,803069,2294462,8242205,9922998]), False)
+
+
+# O(4^n), O(n)
+# backtracking
+class Solution:
+    def makesquare(self, matchsticks: list[int]) -> bool:
+        if sum(matchsticks) % 4:
+            return False
+
+        matchsticks.sort(reverse=True)
+        max_side_len = sum(matchsticks) // 4
+        side_len = [0] * 4  # each side length cache
+
+        def dfs(index):
+            if index == len(matchsticks):
+                return True
+
+            for side in range(4):  # check every square side
+                if side_len[side] + matchsticks[index] <= max_side_len:  # if side length in bounds
+                    side_len[side] += matchsticks[index]
+                    
+                    if dfs(index + 1):  # check next match
+                        return True
+                    
+                    side_len[side] -= matchsticks[index]  # backtrack
+            
+            return False
+
+        return dfs(0)
+
+
+
+
+
+# Extra Characters in a String
+# https://leetcode.com/problems/extra-characters-in-a-string/description/
+"""
+You are given a 0-indexed string s and a dictionary of words dictionary. You have to break s into one or more non-overlapping substrings such that each substring is present in dictionary. There may be some extra characters in s which are not present in any of the substrings.
+
+Return the minimum number of extra characters left over if you break up s optimally.
+
+ 
+
+Example 1:
+
+Input: s = "leetscode", dictionary = ["leet","code","leetcode"]
+Output: 1
+Explanation: We can break s in two substrings: "leet" from index 0 to 3 and "code" from index 5 to 8. There is only 1 unused character (at index 4), so we return 1.
+
+Example 2:
+
+Input: s = "sayhelloworld", dictionary = ["hello","world"]
+Output: 3
+Explanation: We can break s in two substrings: "hello" from index 3 to 7 and "world" from index 8 to 12. The characters at indices 0, 1, 2 are not used in any substring and thus are considered as extra characters. Hence, we return 3.
+"""
+print(Solution().minExtraChar("leetcode", ["leet", "code", "leetcode"]), 0)
+print(Solution().minExtraChar("leetscode", ["leet", "code", "leetcode"]), 1)
+print(Solution().minExtraChar("sayhelloworld", ["hello", "world"]), 3)
+
+
+# draft
+# "leets43210"
+
+
+# O(n3), O(n)
+# dp, bottom-up
+class Solution:
+    def minExtraChar(self, text: str, word_list: list[str]) -> int:
+        words = set(word_list)
+        text_len = len(text)
+        cache = [0] * (text_len + 1)
+
+        for index in reversed(range(text_len)):  # check all indexes
+            cache[index] = cache[index + 1] + 1  # set default cache as if word is not found
+            
+            for word in words:  # check every word
+                if (index + len(word) <= text_len and  # check if end of the word is in bounds
+                    text[index: index + len(word)] in words):  # if word in text
+                        cache[index] = min(cache[index], cache[index + len(word)])  # update cache
+                       
+                        if not cache[index]:  # early exit, if cache is 0 than this is the best case
+                            break
+        
+        return cache[0]
+
+
+# O(n3), O(n)
+# dp, bottom-up, optimal
+class Solution:
+    def minExtraChar(self, text: str, word_list: list[str]) -> int:
+        words = set(word_list)
+        text_len = len(text)
+        cache = [0] * (text_len + 1)
+
+        # make word lengths to later iterate in word lengths not in words
+        # don't check the same word length twice
+        # when legit length is found still check in words if the word is legit
+        word_lengths = {len(word) for word in word_list}
+
+        for index in reversed(range(text_len)):  # check all indexes
+            cache[index] = cache[index + 1] + 1  # set default cache as if word is not found
+            
+            for word_length in word_lengths:  # check every word length
+                if (index + word_length <= text_len and  # check if end of the word is in bounds
+                    text[index: index + word_length] in words):  # if word in text
+                        cache[index] = min(cache[index], cache[index + word_length])  # update cache
+                       
+                        if not cache[index]:  # early exit, if cache is 0 than this is the best case
+                            break
+        
+        return cache[0]
+
+
+# O(n3), O(n2)
+# dp, bottom-up, trie, optimal
+
+class TrieNode:
+    def __init__(self):
+        self.letters = {}
+        self.is_word = False
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, word):
+        node = self.root
+
+        for letter in word:
+            if letter not in node.letters:
+                node.letters[letter] = TrieNode()
+            
+            node = node.letters[letter]
+
+        node.is_word = True
+
+    def search(self, word):
+        node = self.root
+
+        for letter in word:
+            if letter not in node.letters:
+                return False
+            
+            node = node.letters[letter]
+
+        return node.is_word
+
+
+class Solution:
+    def minExtraChar(self, text: str, word_list: list[str]) -> int:
+        # initialize trie
+        trie = Trie()
+        for word in word_list:
+            trie.insert(word)
+            
+        text_len = len(text)
+        cache = [0] * (text_len + 1)
+
+        # make word lengths to later iterate in word lengths not in words
+        # don't check the same word length twice
+        # when legit length is found still check in words if the word is legit
+        word_lengths = {len(word) for word in word_list}
+
+        for index in reversed(range(text_len)):  # check all indexes
+            cache[index] = cache[index + 1] + 1  # set default cache as if word is not found
+            
+            for word_length in word_lengths:  # check every word length
+                if (index + word_length <= text_len and  # check if end of the word is in bounds
+                    trie.search(text[index: index + word_length])):  # if word in trie
+                        cache[index] = min(cache[index], cache[index + word_length])  # update cache
+                       
+                        if not cache[index]:  # early exit, if cache is 0 than this is the best case
+                            break
+        
+        return cache[0]
+
+
+
+
+
+# Delete and Earn
+# https://leetcode.com/problems/delete-and-earn/description/
+"""
+You are given an integer array nums. You want to maximize the number of points you get by performing the following operation any number of times:
+
+Pick any nums[i] and delete it to earn nums[i] points. Afterwards, you must delete every element equal to nums[i] - 1 and every element equal to nums[i] + 1.
+Return the maximum number of points you can earn by applying the above operation some number of times.
+
+ 
+
+Example 1:
+
+Input: nums = [3,4,2]
+Output: 6
+Explanation: You can perform the following operations:
+- Delete 4 to earn 4 points. Consequently, 3 is also deleted. nums = [2].
+- Delete 2 to earn 2 points. nums = [].
+You earn a total of 6 points.
+Example 2:
+
+Input: nums = [2,2,3,3,3,4]
+Output: 9
+Explanation: You can perform the following operations:
+- Delete a 3 to earn 3 points. All 2's and 4's are also deleted. nums = [3,3].
+- Delete a 3 again to earn 3 points. nums = [3].
+- Delete a 3 once more to earn 3 points. nums = [].
+You earn a total of 9 points.
+"""
+print(Solution().deleteAndEarn([1]), 1)
+print(Solution().deleteAndEarn([2, 3]), 3)
+print(Solution().deleteAndEarn([2, 4]), 6)
+print(Solution().deleteAndEarn([3, 4, 2]), 6)
+print(Solution().deleteAndEarn([2, 2, 3, 3, 3, 4]), 9)
+print(Solution().deleteAndEarn([8, 10, 4, 9, 1, 3, 5, 9, 4, 10]), 37)
+print(Solution().deleteAndEarn([1, 1, 1, 2, 4, 5, 5, 5, 6]), 18)
+print(Solution().deleteAndEarn([1, 6, 3, 3, 8, 4, 8, 10, 1, 3]), 43)
+print(Solution().deleteAndEarn([1, 1, 1]), 3)
+print(Solution().deleteAndEarn([12,32,93,17,100,72,40,71,37,92,58,34,29,78,11,84,77,90,92,35,12,5,27,92,91,23,65,91,85,14,42,28,80,85,38,71,62,82,66,3,33,33,55,60,48,78,63,11,20,51,78,42,37,21,100,13,60,57,91,53,49,15,45,19,51,2,96,22,32,2,46,62,58,11,29,6,74,38,70,97,4,22,76,19,1,90,63,55,64,44,90,51,36,16,65,95,64,59,53,93]), 3451)
+
+
+"""
+draft
+[2, 3, 4]
+2; max(2, 3); max((2 + 4)+ or (3)+)
+"""
+
+
+class Solution:
+    def deleteAndEarn(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        counter = {}
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        sorted_numbers = sorted(set(numbers))
+        cache = [0] * len(sorted_numbers)
+
+        for index, number in enumerate(sorted_numbers):
+            cache[index] = number * counter[number]  # calculate current value
+            if index == 0:
+                continue
+
+            if sorted_numbers[index - 1] + 1 != number:  # if previous number was not less by one from current number
+                cache[index] += cache[index - 1]  # add previous cache
+            else:
+                if index != 1:  # exclude the first index
+                    cache[index] += cache[index - 2]  # add `before previous` cache
+                cache[index] = max(cache[index], cache[index - 1])  # previous number is one less to current number, but cache[index - 1] (previous cache) is better
+
+        return cache[-1]
+
+
+class Solution:
+    def deleteAndEarn(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        cache optimized
+        """
+        counter = {}
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        sorted_numbers = sorted(set(numbers))
+        cache = [0, 0]
+
+        for index, number in enumerate(sorted_numbers):
+            current_cache = number * counter[number]
+            if index == 0:
+                cache = [0, current_cache]
+                continue
+
+            if sorted_numbers[index - 1] + 1 != number:
+                current_cache += cache[1]
+            else:
+                if index != 1:
+                    current_cache += cache[0]
+                current_cache = max(current_cache, cache[1])
+
+            cache = [cache[1], current_cache]
+
+        return cache[-1]
+
+
+class Solution:
+    def deleteAndEarn(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        counter = {}
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        sorted_numbers = sorted(set(numbers))
+        memo = [None] * (len(sorted_numbers) + 2)
+        memo[-1] = memo[-2] = 0
+
+        def dfs(index: int) -> int:
+            if memo[index] is not None:
+                return memo[index]
+            
+            number = sorted_numbers[index]
+            val = number * counter[number]
+
+            if (index + 1 < len(sorted_numbers) and 
+                    sorted_numbers[index] + 1 != sorted_numbers[index + 1]):
+                val += dfs(index + 1)
+            else:
+                val += dfs(index + 2)
+            
+            memo[index] = max(val, dfs(index + 1))
+            return memo[index]
+
+        return dfs(0)
+
+
+class Solution:
+    def deleteAndEarn(self, numbers: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        counter = {}
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        sorted_numbers = sorted(set(numbers))
+        memo = {
+            len(sorted_numbers): 0, 
+            len(sorted_numbers) + 1: 0
+        }
+
+        def dfs(index: int) -> int:
+            if index in memo:
+                return memo[index]
+            
+            number = sorted_numbers[index]
+            val = number * counter[number]
+
+            if (index + 1 < len(sorted_numbers) and 
+                    sorted_numbers[index] + 1 != sorted_numbers[index + 1]):
+                val += dfs(index + 1)
+            else:
+                val += dfs(index + 2)
+            
+            memo[index] = max(val, dfs(index + 1))
+            return memo[index]
+
+        return dfs(0)
+
+
+class Solution:
+    def deleteAndEarn(self, numbers: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        counter = {}
+        for number in numbers:
+            counter[number] = counter.get(number, 0) + 1
+
+        sorted_numbers = sorted(set(numbers))
+
+        def dfs(index: int) -> int:
+            if index >= len(sorted_numbers):
+                return 0
+            
+            number = sorted_numbers[index]
+            val = number * counter[number]
+
+            if (index + 1 < len(sorted_numbers) and 
+                    sorted_numbers[index] + 1 != sorted_numbers[index + 1]):
+                val += dfs(index + 1)
+            else:
+                val += dfs(index + 2)
+            
+            return max(val, dfs(index + 1))
+
+        return dfs(0)
+
+
+
+
+
+# Paint House
+# https://leetcode.com/problems/paint-house/
+# https://leetcode.ca/all/256.html
+"""
+There are a row of n houses, each house can be painted with one of the three colors: red, blue or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color, and you need to cost the least. Return the minimum cost.
+
+The cost of painting each house with a certain color is represented by a n x 3 cost matrix. For example, costs[0][0] is the cost of painting house 0 with color red; costs[1][2] is the cost of painting house 1 with color green, and so on... Find the minimum cost to paint all houses.
+"""
+print(Solution().minCost([[1, 2, 3]]), 1)
+print(Solution().minCost([[1, 2, 3], [1, 4, 6]]), 3)
+print(Solution().minCost([[17, 2, 17], [16, 16, 5], [14, 3, 19]]), 10)
+
+
+"""
+draft
+                                .
+                   /            |           \
+                  17            2           17
+              /       \     /      \      /     \
+            16        5    16      5    16      16
+          /    \    /  \   /  \   / \  /  \    /   \
+        3      19  14  3  3   19 14  3  3  19 14   19
+"""
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        in-place
+        """
+        for index, house in enumerate(houses[1:], 1):
+            prev_house = houses[index - 1]
+            houses[index] = [
+                house[0] + min(prev_house[1], prev_house[2]),
+                house[1] + min(prev_house[2], prev_house[0]),
+                house[2] + min(prev_house[0], prev_house[1])
+            ]
+
+        return min(houses[-1])
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        cache = tuple(houses[0])
+        
+        for house in houses[1:]:
+            cache = (
+                house[0] + min(cache[1], cache[2]),
+                house[1] + min(cache[2], cache[0]),
+                house[2] + min(cache[0], cache[1])
+            )
+
+        return min(cache)
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        cache = [()] * len(houses)
+        cache[0] = tuple(houses[0])
+        
+        for index, house in enumerate(houses[1:], 1):
+            prev_house = cache[index - 1]
+            cache[index] = (
+                house[0] + min(prev_house[1], prev_house[2]),
+                house[1] + min(prev_house[2], prev_house[0]),
+                house[2] + min(prev_house[0], prev_house[1])
+            )
+
+        return min(cache[-1])
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {len(houses): 0}
+        
+        def dfs(index: int, house_number: int) -> int:
+            if index in memo:
+                return memo[index]
+
+
+            memo[index] = min(house + dfs(index + 1, house_ind) 
+                              for house_ind, house in enumerate(houses[index])
+                              if house_ind != house_number)
+            return memo[index]
+
+        return memo
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index: int, house_number: int) -> int:
+            if index == len(houses):
+                return 0
+
+            cost = float("inf")
+            for house_ind, house in enumerate(houses[index]):
+                if house_ind != house_number:
+                    cost = min(cost, house + dfs(index + 1, house_ind))
+
+            return cost
+
+        return dfs(0, -1)
+
+
+class Solution:
+    def minCost(self, houses: list[list[int]]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index: int, house_number: int) -> int:
+            if index == len(houses):
+                return 0
+
+            return min(house + dfs(index + 1, house_ind) 
+                       for house_ind, house in enumerate(houses[index])
+                       if house_ind != house_number)
+
+        return dfs(0, -1)
+
+
+
+
+
+# Destination City
+# https://leetcode.com/problems/destination-city/description/
+"""
+You are given the array paths, where paths[i] = [cityAi, cityBi] means there exists a direct path going from cityAi to cityBi. Return the destination city, that is, the city without any path outgoing to another city.
+
+It is guaranteed that the graph of paths forms a line without any loop, therefore, there will be exactly one destination city.
+
+ 
+
+Example 1:
+
+Input: paths = [["London","New York"],["New York","Lima"],["Lima","Sao Paulo"]]
+Output: "Sao Paulo" 
+Explanation: Starting at "London" city you will reach "Sao Paulo" city which is the destination city. Your trip consist of: "London" -> "New York" -> "Lima" -> "Sao Paulo".
+Example 2:
+
+Input: paths = [["B","C"],["D","B"],["C","A"]]
+Output: "A"
+Explanation: All possible trips are: 
+"D" -> "B" -> "C" -> "A". 
+"B" -> "C" -> "A". 
+"C" -> "A". 
+"A". 
+Clearly the destination city is "A".
+Example 3:
+
+Input: paths = [["A","Z"]]
+Output: "Z"
+"""
+print(Solution().destCity([["London", "New York"], ["New York", "Lima"], ["Lima", "Sao Paulo"]]), "Sao Paulo")
+print(Solution().destCity([["B", "C"], ["D", "B"], ["C", "A"]]), "A")
+print(Solution().destCity([["A", "Z"]]), "Z")
+
+
+# O(n), O(n)
+# hash map
+class Solution:
+    def destCity(self, paths: list[list[str]]) -> str:
+        city_map = {start: stop  # {starting city: destination city}
+                    for start, stop in paths}
+
+        city = paths[0][0]  # some starting city
+        
+        while city in city_map:  # while starting city have destination city
+            city = city_map[city]
+            
+        return city
+
+
+# O(n), O(n)
+# hash set
+class Solution:
+    def destCity(self, paths: list[list[str]]) -> str:
+        cities_a = {city for city, _ in paths}  # starting cities
+        cities_b = {city for _, city in paths}  # destination cities
+
+        for city in cities_b:  # for every destination city
+            if city not in cities_a:  # if its not a starting city
+                return city
+
+
+
+
+
+# Maximum Product Difference Between Two Pairs
+# https://leetcode.com/problems/maximum-product-difference-between-two-pairs/description/
+"""
+The product difference between two pairs (a, b) and (c, d) is defined as (a * b) - (c * d).
+
+For example, the product difference between (5, 6) and (2, 7) is (5 * 6) - (2 * 7) = 16.
+Given an integer array nums, choose four distinct indices w, x, y, and z such that the product difference between pairs (nums[w], nums[x]) and (nums[y], nums[z]) is maximized.
+
+Return the maximum such product difference.
+
+ 
+
+Example 1:
+
+Input: nums = [5,6,2,7,4]
+Output: 34
+Explanation: We can choose indices 1 and 3 for the first pair (6, 7) and indices 2 and 4 for the second pair (2, 4).
+The product difference is (6 * 7) - (2 * 4) = 34.
+Example 2:
+
+Input: nums = [4,2,5,9,7,4,8]
+Output: 64
+Explanation: We can choose indices 3 and 6 for the first pair (9, 8) and indices 1 and 5 for the second pair (2, 4).
+The product difference is (9 * 8) - (2 * 4) = 64.
+"""
+print(Solution().maxProductDifference([5, 6, 2, 7, 4]), 34)
+print(Solution().maxProductDifference([4, 2, 5, 9, 7, 4, 8]), 64)
+
+
+import heapq
+
+# O(n), O(1)
+# heap
+class Solution:
+    def maxProductDifference(self, numbers: list[int]) -> int:
+        heap_min = []
+        heap_max = []
+
+        for number in numbers:
+            if len(heap_max) < 2:
+                heapq.heappush(heap_max, number)
+            else:
+                heapq.heappushpop(heap_max, number)
+
+            if len(heap_min) < 2:
+                heapq.heappush(heap_min, -number)
+            else:
+                heapq.heappushpop(heap_min, -number)
+
+        return (heap_max[0] * heap_max[1] - heap_min[0] * heap_min[1])
+
+
+# draft
+# 5, 6   4
+# 4, 6,  5
+
+# O(n), O(1)
+class Solution:
+    def maxProductDifference(self, numbers: list[int]) -> int:
+        min1 = min2 = max(numbers)
+        max1 = max2 = 0
+
+        for number in numbers:
+            if number < min1:
+                min1, min2 = number, min1
+            elif number < min2:
+                min2 = number
+            
+            if number > max1:
+                max1, max2 = number, max1
+            elif number > max2:
+                max2 = number
+        
+        return max1 * max2 - min1 * min2
+
+
+
+
+
+# K-th Symbol in Grammar
+# https://leetcode.com/problems/k-th-symbol-in-grammar/description/
+"""
+We build a table of n rows (1-indexed). We start by writing 0 in the 1st row. Now in every subsequent row, we look at the previous row and replace each occurrence of 0 with 01, and each occurrence of 1 with 10.
+
+For example, for n = 3, the 1st row is 0, the 2nd row is 01, and the 3rd row is 0110.
+Given two integer n and k, return the kth (1-indexed) symbol in the nth row of a table of n rows.
+
+ 
+
+Example 1:
+
+Input: n = 1, k = 1
+Output: 0
+Explanation: row 1: 0
+Example 2:
+
+Input: n = 2, k = 1
+Output: 0
+Explanation: 
+row 1: 0
+row 2: 01
+Example 3:
+
+Input: n = 2, k = 2
+Output: 1
+Explanation: 
+row 1: 0
+row 2: 01
+"""
+print(Solution().kthGrammar(1, 1), 0)
+print(Solution().kthGrammar(2, 1), 0)
+print(Solution().kthGrammar(2, 2), 1)
+print(Solution().kthGrammar(30, 434991989), 0)
+
+
+# draft
+#         0          1 = 2**0
+#        01          2 = 2**1
+#       0110         4 = 2**2
+#     01101001
+# 0110100110010110
+
+
+# O(n), O(1)
+# two pointers, binary search
+class Solution:
+    def kthGrammar(self, n: int, k: int) -> int:
+        left = 1
+        right = 2 ** (n - 1)
+        value = 0
+
+        while left < right:
+            middle = (left + right) // 2
+
+            if k <= middle:
+                right = middle
+            else:
+                left = middle + 1
+                value = 0 if value else 1
+
+        return value
+
+
+# O(n2), O(n)
+# mle
+class Solution:
+    def kthGrammar(self, number: int, k: int) -> int:
+        row = [0]
+        
+        for _ in range(number - 1):
+            for index in range(len(row)):
+                if row[index]:
+                    row.append(0)
+                else:
+                    row.append(1)
+        
+        return row[k - 1]
+
+
+
+
+
+# Subarrays with K Different Integers
+# https://leetcode.com/problems/subarrays-with-k-different-integers/description/
+"""
+Given an integer array nums and an integer k, return the number of good subarrays of nums.
+
+A good array is an array where the number of different integers in that array is exactly k.
+
+For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3.
+A subarray is a contiguous part of an array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,1,2,3], k = 2
+Output: 7
+Explanation: Subarrays formed with exactly 2 different integers: [1,2], [2,1], [1,2], [2,3], [1,2,1], [2,1,2], [1,2,1,2]
+Example 2:
+
+Input: nums = [1,2,1,3,4], k = 3
+Output: 3
+Explanation: Subarrays formed with exactly 3 different integers: [1,2,1,3], [2,1,3], [1,3,4].
+"""
+print(Solution().subarraysWithKDistinct([1, 2, 1, 2, 3], 2), 7)
+print(Solution().subarraysWithKDistinct([1, 2, 1, 3, 4], 3), 3)
+
+
+# draft
+# [1, 2, 1, 2, 3]
+# [1,2], 
+# ([1,2,1], [2,1]), 
+# ([1,2,1,2], [2,1,2], [1,2]), 
+# [2,3]
+
+# [1,2,1,3], [2,1,3], 
+# [1,3,4]
+
+
+# O(n), O(n)
+# sliding window
+class Solution:
+    def subarraysWithKDistinct(self, numbers: list[int], k: int) -> int:
+        left = 0
+        middle = 0
+        counter = {}  # {number: frequency}
+        subarray_count = 0
+
+        for right, number in enumerate(numbers):
+            counter[number] = counter.get(number, 0) + 1
+
+            # if more than k unique numbers in subarray
+            while len(counter) > k:
+                middle_number = numbers[middle]
+                counter[middle_number] -= 1
+
+                if not counter[middle_number]:  # if key has no value
+                    counter.pop(middle_number)  # remove key
+               
+                middle += 1  # move pointer to next value
+                left = middle  # if middle pointer moves, reset the left pointer
+
+            # if there is more than one copy of middle number
+            # than separate middle from left and move if right
+            # while there's at least one copy of each unique number
+            while counter[numbers[middle]] > 1:
+                counter[numbers[middle]] -= 1
+                middle += 1
+
+            # if exactly k unique numbers in subarray
+            if len(counter) == k:
+                subarray_count += (middle - left + 1)
+        
+        return subarray_count
+
+
+# O(n2), O(n)
+# sliding window, tle
+class Solution:
+    def subarraysWithKDistinct(self, numbers: list[int], k: int) -> int:
+        left = 0
+        counter = {}  # {number: frequency}
+        subarray_count = 0
+
+        for right, number in enumerate(numbers):
+            counter[number] = counter.get(number, 0) + 1
+
+            while len(counter) > k:
+               left_number = numbers[left]
+               counter[left_number] -= 1
+
+               if not counter[left_number]:
+                   counter.pop(left_number)
+               left += 1
+
+            left_copy = left
+            counter_copy = counter.copy()
+            while len(counter) == k:
+                subarray_count += 1
+                left_number = numbers[left]
+                counter[left_number] -= 1
+
+                if not counter[left_number]:
+                    counter.pop(left_number)
+                left += 1
+
+            left = left_copy
+            counter = counter_copy.copy()
+        
+        return subarray_count
+
+
+# O(n2), O(n)
+# brute force
+class Solution:
+    def subarraysWithKDistinct(self, numbers: list[int], k: int) -> int:
+        good_subarray_count = 0
+        
+        for i in range(len(numbers)):
+            counter = {}
+            
+            for j in range(i, len(numbers)):
+                counter[numbers[j]] = counter.get(numbers[j], 0) + 1
+                if len(counter) == k:
+                    good_subarray_count += 1
+        
+        return good_subarray_count
+
+
+
+
+
+# Search in Rotated Sorted Array II
+# https://leetcode.com/problems/search-in-rotated-sorted-array-ii/
+"""
+There is an integer array nums sorted in non-decreasing order (not necessarily with distinct values).
+
+Before being passed to your function, nums is rotated at an unknown pivot index k (0 <= k < nums.length) such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). For example, [0,1,2,4,4,4,5,6,6,7] might be rotated at pivot index 5 and become [4,5,6,6,7,0,1,2,4,4].
+
+Given the array nums after the rotation and an integer target, return true if target is in nums, or false if it is not in nums.
+
+You must decrease the overall operation steps as much as possible.
+
+ 
+
+Example 1:
+
+Input: nums = [2,5,6,0,0,1,2], target = 0
+Output: true
+Example 2:
+
+Input: nums = [2,5,6,0,0,1,2], target = 3
+Output: false
+"""
+
+
+print(Solution().search([2, 5, 6, 0, 0, 1, 2], 0), True)
+print(Solution().search([2, 5, 6, 0, 0, 1, 2], 3), False)
+print(Solution().search([1], 0), False)
+print(Solution().search([0, 1], 0), True)
+print(Solution().search([1, 0], 0), True)
+print(Solution().search([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1], 2), True)
+print(Solution().search([1, 0, 1, 1, 1], 0), True)
+
+
+# draft
+# 3, 4, 0, 1, 2
+# 4, 0, 1, 2, 3
+# 0, 1, 2, 3, 4
+
+# 2, 3, 4, 0, 1
+# 1, 2, 3, 4, 0
+
+# O(n), O(1)
+# binary search
+class Solution:
+    def search(self, numbers: list[int], target: int) -> bool:
+        left = 0
+        right = len(numbers) - 1
+
+        while left <= right:
+            middle = (left + right) // 2
+
+            if numbers[middle] == target:
+                return True
+            elif numbers[middle] < numbers[right]:  # the right side of portion is contiguous
+                if numbers[middle] < target <= numbers[right]:  # if target value in the right portion
+                    left = middle + 1
+                else:
+                    right = middle - 1
+            elif numbers[middle] > numbers[right]:  # the left side of portion if contiguous
+                if numbers[left] <= target < numbers[middle]:  # if target value in the left side portion
+                    right = middle - 1
+                else:
+                    left = middle + 1
+            else:  # no way to tell which side of portion is contiguous
+                # Comparing middle number with right number, so need to
+                # remove the right number. Removing left could remove the target.
+                right -= 1
+
+        return False
+
+
+
+
+
+# Construct String from Binary Tree
+# https://leetcode.com/problems/construct-string-from-binary-tree/description/
+"""
+Given the root node of a binary tree, your task is to create a string representation of the tree following a specific set of formatting rules. The representation should be based on a preorder traversal of the binary tree and must adhere to the following guidelines:
+
+Node Representation: Each node in the tree should be represented by its integer value.
+
+Parentheses for Children: If a node has at least one child (either left or right), its children should be represented inside parentheses. Specifically:
+
+If a node has a left child, the value of the left child should be enclosed in parentheses immediately following the node's value.
+If a node has a right child, the value of the right child should also be enclosed in parentheses. The parentheses for the right child should follow those of the left child.
+Omitting Empty Parentheses: Any empty parentheses pairs (i.e., ()) should be omitted from the final string representation of the tree, with one specific exception: when a node has a right child but no left child. In such cases, you must include an empty pair of parentheses to indicate the absence of the left child. This ensures that the one-to-one mapping between the string representation and the original binary tree structure is maintained.
+
+In summary, empty parentheses pairs should be omitted when a node has only a left child or no children. However, when a node has a right child but no left child, an empty pair of parentheses must precede the representation of the right child to reflect the tree's structure accurately.
+
+ 
+
+Example 1:
+    1
+   / \
+  2   3
+ /
+4
+
+Input: root = [1,2,3,4]
+Output: "1(2(4))(3)"
+Explanation: Originally, it needs to be "1(2(4)())(3()())", but you need to omit all the empty parenthesis pairs. And it will be "1(2(4))(3)".
+Example 2:
+  __1
+ /   \
+2     3
+ \
+  4
+
+Input: root = [1,2,3,null,4]
+Output: "1(2()(4))(3)"
+Explanation: Almost the same as the first example, except the () after 2 is necessary to indicate the absence of a left child for 2 and the presence of a right child.
+"""
+print(Solution().tree2str(build_tree_from_list([1, 2, 3, 4])), "1(2(4))(3)")
+print(Solution().tree2str(build_tree_from_list([1, 2, 3, None, 4])), "1(2()(4))(3)")
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# O(n), O(n)
+# binary tree
+class Solution:
+    def tree2str(self, root: TreeNode) -> str:
+        text = []
+
+        def dfs(node):
+            if not node:
+                return
+
+            text.append(str(node.val))
+            if node.left or node.right:
+                text.append("(")
+            dfs(node.left)
+            if node.left or node.right:
+                text.append(")")
+            if node.right:
+                text.append("(")
+            dfs(node.right)
+            if node.right:
+                text.append(")")
+
+        dfs(root)
+        return "".join(text)
+
+
+# O(n), O(n)
+# binary tree
+class Solution:
+    def tree2str(self, root: TreeNode) -> str:
+        text = []
+
+        def preorder(node):
+            if not node:
+                return
+
+            text.append("(")
+            text.append(str(node.val))
+            if not node.left and node.right:
+                text.append("()")
+            preorder(node.left)
+            preorder(node.right)
+            text.append(")")
+
+        preorder(root)
+        return "".join(text)[1:-1]
+
+
+
+
+
+# Kth Largest Element in an Array
+# https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+"""
+Given an integer array nums and an integer k, return the kth largest element in the array.
+
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+Can you solve it without sorting?
+
+ 
+
+Example 1:
+
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+Example 2:
+
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+"""
+print(Solution().findKthLargest([3, 2, 1, 5, 6, 4], 2), 5)
+print(Solution().findKthLargest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4), 4)
+
+
+import heapq
+
+# O(nlogk), O(k)
+# heap
+class Solution:
+    def findKthLargest(self, numbers: list[int], k: int) -> int:
+        heap_min = []
+
+        for number in numbers:
+            if len(heap_min) < k:
+                heapq.heappush(heap_min, number)
+            else:
+                heapq.heappushpop(heap_min, number)
+
+        return heapq.heappop(heap_min)
+
+
+# O(n + klogn), O(1)
+# heap
+class Solution:
+    def findKthLargest(self, numbers: list[int], k: int) -> int:
+        for index in range(len(numbers)):
+            numbers[index] = -numbers[index]
+        
+        heapq.heapify(numbers)
+
+        for _ in range(k - 1):
+            heapq.heappop(numbers)
+        
+        return -heapq.heappop(numbers)
+
+
+# O(nlogk), O(n)
+# heap
+class Solution:
+    def findKthLargest(self, numbers: list[int], k: int) -> int:
+        return heapq.nlargest(k, numbers)[-1]
+
+
+# O(nlogn), O(n)
+# quick select, tle
+class Solution:
+    def findKthLargest(self, numbers: list[int], k: int) -> int:
+        k = len(numbers) - k
+        
+        def quick_select(left, right):
+            pivot = numbers[right]
+            pivot_index = left
+
+            for index in range(left, right):
+                if numbers[index] < pivot:
+                    numbers[index], numbers[pivot_index] = numbers[pivot_index], numbers[index]
+                    pivot_index += 1
+                
+            numbers[pivot_index], numbers[right] = numbers[right], numbers[pivot_index]
+            
+            if k < pivot_index:
+                return quick_select(left, pivot_index - 1)
+            elif k > pivot_index:
+                return quick_select(pivot_index + 1, right)
+            else:
+                return numbers[pivot_index]
+        
+        return quick_select(0, len(numbers) - 1)
+
+
+
+
+
+# Splitting a String Into Descending Consecutive Values
+# https://leetcode.com/problems/splitting-a-string-into-descending-consecutive-values/description/
+"""
+You are given a string s that consists of only digits.
+
+Check if we can split s into two or more non-empty substrings such that the numerical values of the substrings are in descending order and the difference between numerical values of every two adjacent substrings is equal to 1.
+
+For example, the string s = "0090089" can be split into ["0090", "089"] with numerical values [90,89]. The values are in descending order and adjacent values differ by 1, so this way is valid.
+Another example, the string s = "001" can be split into ["0", "01"], ["00", "1"], or ["0", "0", "1"]. However all the ways are invalid because they have numerical values [0,1], [0,1], and [0,0,1] respectively, all of which are not in descending order.
+Return true if it is possible to split s​​​​​​ as described above, or false otherwise.
+
+A substring is a contiguous sequence of characters in a string.
+
+ 
+
+Example 1:
+
+Input: s = "1234"
+Output: false
+Explanation: There is no valid way to split s.
+Example 2:
+
+Input: s = "050043"
+Output: true
+Explanation: s can be split into ["05", "004", "3"] with numerical values [5,4,3].
+The values are in descending order with adjacent values differing by 1.
+Example 3:
+
+Input: s = "9080701"
+Output: false
+Explanation: There is no valid way to split s.
+"""
+print(Solution().splitString("1"), False)
+print(Solution().splitString("21"), True)
+print(Solution().splitString("1234"), False)
+print(Solution().splitString("050043"), True)
+print(Solution().splitString("9080701"), False)
+print(Solution().splitString("0090089"), True)
+print(Solution().splitString("001"), False)
+
+
+# O(n^2*2^n), O(n)
+# backtracking
+class Solution:
+    def splitString(self, text: str) -> bool:
+        def dfs(index, prev, parts):
+            if index == len(text):
+                return parts > 1  # valid solution has at least two parts
+
+            for right in range(index, len(text)):  # check all substrings
+                value = int(text[index: right + 1])  # convert to int
+
+                if (prev == float("inf") or  # first numeber or
+                        value == prev - 1):  # lower than previous one by one
+                    if dfs(right + 1, value, parts + 1):  # check current number
+                        return True
+
+            return False
+
+        return dfs(0, float("inf"), 0)
+
+
+
+
+# Island Perimeter
+# https://leetcode.com/problems/island-perimeter/description/
+"""
+You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+
+Grid cells are connected horizontally/vertically (not diagonally). The grid is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).
+
+The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island. One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. Determine the perimeter of the island.
+
+ 
+
+Example 1:
+
+
+Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+Output: 16
+Explanation: The perimeter is the 16 yellow stripes in the image above.
+Example 2:
+
+Input: grid = [[1]]
+Output: 4
+Example 3:
+
+Input: grid = [[1,0]]
+Output: 4
+"""
+print(Solution().islandPerimeter([[0, 1, 0, 0], [1, 1, 1, 0], [0, 1, 0, 0], [1, 1, 0, 0]]), 16)
+print(Solution().islandPerimeter([[1]]), 4)
+print(Solution().islandPerimeter([[1, 0]]), 4)
+
+
+# O(n2), O(1)
+# matrix
+class Solution:
+    def islandPerimeter(self, grid: list[list[int]]) -> int:
+        def count_borders(row, col, border):
+            # if adjecent tile out of bounds or a water tile, add a border
+            if (row - 1 < 0 or grid[row - 1][col] == 0):
+                border += 1
+            if (row + 1 == rows or grid[row + 1][col] == 0):
+                border += 1
+            if (col - 1 < 0 or grid[row][col - 1] == 0):
+                border += 1
+            if (col + 1 == cols or grid[row][col + 1] == 0):
+                border += 1
+            return border
+
+        border = 0
+        rows = len(grid)
+        cols = len(grid[0])
+        
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col]:
+                    border = count_borders(row, col, border)
+        
+        return border
+
+
+# O(n2), O(1)
+# matrix
+class Solution:
+    def __init__(self):
+        self.border = 0
+    def islandPerimeter(self, grid: list[list[int]]) -> int:
+        def count_borders(row, col):
+            self.border += 4
+            
+            # if adjecent tile in bounds and a land tile: subtract a border
+            if (row - 1 >= 0 and grid[row - 1][col] == 1):
+                self.border -= 1
+            if (row + 1 < rows and grid[row + 1][col] == 1):
+                self.border -= 1
+            if (col - 1 >= 0 and grid[row][col - 1] == 1):
+                self.border -= 1
+            if (col + 1 < cols and grid[row][col + 1] == 1):
+                self.border -= 1
+
+        rows = len(grid)
+        cols = len(grid[0])
+        
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col]:
+                    count_borders(row, col)
+        
+        return self.border
+
+
+# O(n2), O(n2)
+# matrix, dfs
+class Solution:
+    def islandPerimeter(self, grid: list[list[int]]) -> int:
+        tabu = set()
+        
+        def dfs(row, col):
+            if ((row, col) in tabu):
+                return 0
+            elif (row < 0 or
+                row == rows or
+                col < 0 or
+                col == cols or
+                    grid[row][col] == 0):
+                return 1
+            
+            tabu.add((row, col))
+            return (
+                dfs(row - 1, col) + 
+                dfs(row + 1, col) + 
+                dfs(row, col - 1) + 
+                dfs(row, col + 1)
+            )
+
+        rows = len(grid)
+        cols = len(grid[0])
+        
+        for row in range(rows):
+            for col in range(cols):
+                if grid[row][col]:
+                    return dfs(row, col)
+
+
+
+
+
+# Verifying an Alien Dictionary
+# https://leetcode.com/problems/verifying-an-alien-dictionary/description/
+"""
+In an alien language, surprisingly, they also use English lowercase letters, but possibly in a different order. The order of the alphabet is some permutation of lowercase letters.
+
+Given a sequence of words written in the alien language, and the order of the alphabet, return true if and only if the given words are sorted lexicographically in this alien language.
+
+ 
+
+Example 1:
+
+Input: words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz"
+Output: true
+Explanation: As 'h' comes before 'l' in this language, then the sequence is sorted.
+Example 2:
+
+Input: words = ["word","world","row"], order = "worldabcefghijkmnpqstuvxyz"
+Output: false
+Explanation: As 'd' comes after 'l' in this language, then words[0] > words[1], hence the sequence is unsorted.
+Example 3:
+
+Input: words = ["apple","app"], order = "abcdefghijklmnopqrstuvwxyz"
+Output: false
+Explanation: The first three characters "app" match, and the second string is shorter (in size.) According to lexicographical rules "apple" > "app", because 'l' > '∅', where '∅' is defined as the blank character which is less than any other character (More info).
+"""
+print(Solution().isAlienSorted(["hello", "leetcode"], "hlabcdefgijkmnopqrstuvwxyz"), True)
+print(Solution().isAlienSorted(["word", "world", "row"], "worldabcefghijkmnpqstuvxyz"), False)
+print(Solution().isAlienSorted(["apple", "app"], "abcdefghijklmnopqrstuvwxyz"), False)
+print(Solution().isAlienSorted(["ubg", "kwh"], "qcipyamwvdjtesbghlorufnkzx"), True)
+
+
+
+# O(n2), O(1)
+# hash map
+class Solution:
+    def isAlienSorted(self, words: list[str], order: str) -> bool:
+        order_of_letters = {letter: index  # {letter: index}
+                            for index, letter 
+                            in enumerate(order)}
+
+        for word_index in range(len(words) - 1):  # for every two words
+            for letter_index in range(len(words[word_index])):  # for every letter first word
+                if letter_index == len(words[word_index + 1]):  # first word is seconds word prefix
+                    return False
+
+                left_letter = words[word_index][letter_index]  # left word letter
+                right_letter = words[word_index + 1][letter_index]  # right word letter
+                
+                if order_of_letters[left_letter] < order_of_letters[right_letter]:  # if left letter is lower, check next pair
+                    break
+                elif order_of_letters[left_letter] > order_of_letters[right_letter]:  # if right letter is higher, then wrong sort
+                    return False
+                
+        return True
+
+
+
+
+
+# Find the Town Judge
+# https://leetcode.com/problems/find-the-town-judge/description/
+"""
+In a town, there are n people labeled from 1 to n. There is a rumor that one of these people is secretly the town judge.
+
+If the town judge exists, then:
+
+The town judge trusts nobody.
+Everybody (except for the town judge) trusts the town judge.
+There is exactly one person that satisfies properties 1 and 2.
+You are given an array trust where trust[i] = [ai, bi] representing that the person labeled ai trusts the person labeled bi. If a trust relationship does not exist in trust array, then such a trust relationship does not exist.
+
+Return the label of the town judge if the town judge exists and can be identified, or return -1 otherwise.
+
+ 
+
+Example 1:
+
+Input: n = 2, trust = [[1,2]]
+Output: 2
+Example 2:
+
+Input: n = 3, trust = [[1,3],[2,3]]
+Output: 3
+Example 3:
+
+Input: n = 3, trust = [[1,3],[2,3],[3,1]]
+Output: -1
+"""
+print(Solution().findJudge(2, [[1, 2]]), 2)
+print(Solution().findJudge(3, [[1, 3], [2, 3]]), 3)
+print(Solution().findJudge(3, [[1, 3], [2, 3], [3, 1]]), -1)
+print(Solution().findJudge(3, [[1, 2], [2, 3]]), -1)
+print(Solution().findJudge(1, []), 1)
+
+
+# O(n), O(n)
+# hash map
+class Solution:
+    def findJudge(self, n: int, trust_list: list[list[int]]) -> int:
+        if not trust_list and n == 1:  # one person and no votes
+            return 1
+
+        if (not trust_list or  # if no list or
+                len(trust_list) < n - 1):  # not enough votes to identify the judge
+            return -1
+
+        a_to_b = {}  # {a: [b]}  person a to person b map
+        b_to_a = {}  # {b: [a]}  person b to person a map
+
+        for a, b in trust_list:  # traverse trust list
+            if a not in a_to_b:
+                a_to_b[a] = []
+            if b not in b_to_a:
+                b_to_a[b] = []
+
+            a_to_b[a].append(b)
+            b_to_a[b].append(a)
+
+        for key, val in b_to_a.items():
+            if (len(val) == (n - 1) and  # enough votes for the judge and
+                    key not in a_to_b):  # judge didn't vote
+                return key
+
+        return -1
+
+
+
+
+
+# Perfect Squares
+# https://leetcode.com/problems/perfect-squares/description/
+"""
+Given an integer n, return the least number of perfect square numbers that sum to n.
+
+A perfect square is an integer that is the square of an integer; in other words, it is the product of some integer with itself. For example, 1, 4, 9, and 16 are perfect squares while 3 and 11 are not.
+
+ 
+
+Example 1:
+
+Input: n = 12
+Output: 3
+Explanation: 12 = 4 + 4 + 4.
+Example 2:
+
+Input: n = 13
+Output: 2
+Explanation: 13 = 4 + 9.
+"""
+print(Solution().numSquares(1), 1)  # 1
+print(Solution().numSquares(9), 1)  # 9
+print(Solution().numSquares(16), 1)  # 1
+print(Solution().numSquares(2), 2)  # 2 = 1 + 1
+print(Solution().numSquares(5), 2)  # 5 = 4 + 1
+print(Solution().numSquares(13), 2)  # 13 = 9 + 4
+print(Solution().numSquares(12), 3)  # 12 = 4 + 4 + 4
+print(Solution().numSquares(7), 4)  # 7 = 4 + 1 + 1 + 1
+print(Solution().numSquares(28), 4)  # 28 = 16 + 9 + 1 + 1 + 1 or 28 = 25 + 1 + 1 + 1
+print(Solution().numSquares(43), 3)
+
+
+"""
+draft
+[1, 4, 9, 16, 25]
+12 = 4 + 4 + 4 => 3
+13 = 4 + 9 => 2
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+[   1  1  2  1  2  2  3  2  1           3]
+[   1, 2,    4              9]
+"""
+
+
+def get_squares(n: int) -> set:
+    """
+    Get all squared numbers smaller than n.
+    """
+    squares = set()
+    number = 0
+
+    while True:
+        number += 1
+        if number**2 > n:
+            break
+        squares.add(number**2)
+        
+    return squares
+
+
+class Solution:
+    def numSquares(self, n: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        O(n^sqrtn)
+        """
+        self.squares = get_squares(n)
+
+        def dfs(n: int) -> int:
+            if n == 0:
+                return 0
+            # elif n < 0:  # equals to `if n - number >= 0` in return
+            #     return 2
+            
+            return min(1 + dfs(n - number)
+                       for number in self.squares
+                       if n - number >= 0)
+        
+        return dfs(n)
+
+
+class Solution:
+    def numSquares(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        O(nsqrtn)
+        """
+        self.squares = get_squares(n)
+        memo = {0: 0}  # number of ways to get to the target (index)
+
+        def dfs(n: int) -> int:
+            if n in memo:
+                return memo[n]
+            elif n in self.squares:  # Explicitly handle perfect squares
+                memo[n] = 1
+                return 1
+            # elif n < 0:  # equals to `if n - number >= 0` in return
+            #     return 2
+            
+            memo[n] = min(1 + dfs(n - number)
+                          for number in self.squares
+                          if n - number >= 0)
+            return memo[n]
+        
+        return dfs(n)
+
+
+class Solution:
+    def numSquares(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as list
+        O(nsqrtn)
+        """
+        self.squares = get_squares(n)
+        memo = [None] * (n + 1)  # number of ways to get to the target (index)
+        memo[0] = 0
+
+        def dfs(n: int) -> int:
+            if memo[n] is not None:
+                return memo[n]
+            elif n in self.squares:  # Explicitly handle perfect squares
+                memo[n] = 1
+                return 1
+            # elif n < 0:  # equals to `if n - number >= 0` in return
+            #     return 2
+            
+            memo[n] = min(1 + dfs(n - number)
+                          for number in self.squares
+                          if n - number >= 0)
+            return memo[n]
+        return dfs(n)
+
+
+class Solution:
+    def numSquares(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up
+        O(nsqrtn)
+        """
+        self.squares = get_squares(n)
+        cache = [n + 1] * (n + 1)  # number of ways to get to the target (index)
+        cache[0] = 0
+
+        for index in range(1, n + 1):
+            if index in self.squares:  # early continue: if target (index) is in squares there is no need to calculate it
+                cache[index] = 1
+                continue
+
+            for number in self.squares:
+                if index - number >= 0:
+                    cache[index] = min(cache[index], 
+                                       cache[index - number] + 1)
+
+        return cache[-1]
+
+
+
+
+
+# Buy Two Chocolates
+# https://leetcode.com/problems/buy-two-chocolates/description/
+"""
+You are given an integer array prices representing the prices of various chocolates in a store. You are also given a single integer money, which represents your initial amount of money.
+
+You must buy exactly two chocolates in such a way that you still have some non-negative leftover money. You would like to minimize the sum of the prices of the two chocolates you buy.
+
+Return the amount of money you will have leftover after buying the two chocolates. If there is no way for you to buy two chocolates without ending up in debt, return money. Note that the leftover must be non-negative.
+
+ 
+
+Example 1:
+
+Input: prices = [1,2,2], money = 3
+Output: 0
+Explanation: Purchase the chocolates priced at 1 and 2 units respectively. You will have 3 - 3 = 0 units of money afterwards. Thus, we return 0.
+Example 2:
+
+Input: prices = [3,2,3], money = 3
+Output: 3
+Explanation: You cannot buy 2 chocolates without going in debt, so we return 3.
+"""
+print(Solution().buyChoco([1, 2, 2], 3), 0)
+print(Solution().buyChoco([3, 2, 3], 3), 3)
+
+
+import heapq
+
+# O(n), O(1)
+# heap
+class Solution:
+    def buyChoco(self, prices: list[int], money: int) -> int:
+        if len(prices) < 2:
+            return money
+        
+        heapq.heapify(prices)
+        chocolate_cost = heapq.heappop(prices) + heapq.heappop(prices)
+        # chocolate_cost = sum(heapq.nsmallest(2, prices))
+
+        if chocolate_cost <= money:
+            return money - chocolate_cost
+        else:
+            return money
+
+
+# O(n), O(1)
+class Solution:
+    def buyChoco(self, prices: list[int], money: int) -> int:
+        if len(prices) < 2:
+            return money
+        
+        min1 = min2 = max(prices)
+
+        for price in prices:
+            if price < min1:
+                min1, min2 = price, min1
+            elif price < min2:
+                min2 = price
+
+        if (min1 + min2) <= money:
+            return money - (min1 + min2)
+        else:
+            return money
+
+
+
+
+
+# Lemonade Change
+# https://leetcode.com/problems/lemonade-change/description/
+"""
+At a lemonade stand, each lemonade costs $5. Customers are standing in a queue to buy from you and order one at a time (in the order specified by bills). Each customer will only buy one lemonade and pay with either a $5, $10, or $20 bill. You must provide the correct change to each customer so that the net transaction is that the customer pays $5.
+
+Note that you do not have any change in hand at first.
+
+Given an integer array bills where bills[i] is the bill the ith customer pays, return true if you can provide every customer with the correct change, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: bills = [5,5,5,10,20]
+Output: true
+Explanation: 
+From the first 3 customers, we collect three $5 bills in order.
+From the fourth customer, we collect a $10 bill and give back a $5.
+From the fifth customer, we give a $10 bill and a $5 bill.
+Since all customers got correct change, we output true.
+Example 2:
+
+Input: bills = [5,5,10,10,20]
+Output: false
+Explanation: 
+From the first two customers in order, we collect two $5 bills.
+For the next two customers in order, we collect a $10 bill and give back a $5 bill.
+For the last customer, we can not give the change of $15 back because we only have two $10 bills.
+Since not every customer received the correct change, the answer is false.
+"""
+print(Solution().lemonadeChange([5, 5, 5, 10, 20]), True)
+print(Solution().lemonadeChange([5, 5, 10, 10, 20]), False)
+print(Solution().lemonadeChange([5,5,10,20,5,5,5,5,5,5,5,5,5,10,5,5,20,5,20,5]), True)
+print(Solution().lemonadeChange([5,5,5,10,5,5,10,20,20,20]), False)
+
+
+# O(n), O(n)
+# hash map
+class Solution:
+    def lemonadeChange(self, bills: list[int]) -> bool:
+        cash = {5: 0, 10: 0, 20: 0}
+
+        for bill in bills:
+            if bill == 5:
+                cash[5] += 1
+            elif bill == 10:
+                cash[5] -= 1
+                cash[10] += 1
+            elif cash[10] > 0:
+                cash[5] -= 1
+                cash[10] -= 1
+            else:
+                cash[5] -= 3
+                cash[20] += 1
+            
+            if (cash[5] < 0 or 
+                    cash[10] < 0):
+                return False
+            
+        return True
+
+
+
+
+
+# Maximum Odd Binary Number
+# https://leetcode.com/problems/maximum-odd-binary-number/description/
+"""
+You are given a binary string s that contains at least one '1'.
+
+You have to rearrange the bits in such a way that the resulting binary number is the maximum odd binary number that can be created from this combination.
+
+Return a string representing the maximum odd binary number that can be created from the given combination.
+
+Note that the resulting string can have leading zeros.
+
+ 
+
+Example 1:
+
+Input: s = "010"
+Output: "001"
+Explanation: Because there is just one '1', it must be in the last position. So the answer is "001".
+Example 2:
+
+Input: s = "0101"
+Output: "1001"
+Explanation: One of the '1's must be in the last position. The maximum number that can be made with the remaining digits is "100". So the answer is "1001".
+"""
+print(Solution().maximumOddBinaryNumber("010"), "001")
+print(Solution().maximumOddBinaryNumber("0101"), "1001")
+print(Solution().maximumOddBinaryNumber("10"), "01")
+
+
+# O(n), O(n)
+class Solution:
+    def maximumOddBinaryNumber(self, text: str) -> str:
+        ones = zeros = 0
+        
+        for digit in text:
+            if digit == "1":
+                ones += 1
+            else:
+                zeros += 1
+
+        return "1" * (ones - 1) + "0" * zeros + "1"
+
+
+# O(n), O(n)
+# quick sort
+class Solution:
+    def maximumOddBinaryNumber(self, text: str) -> str:
+        text = [digit for digit in text]
+        left = 0
+
+        for index in range(len(text)):
+            if text[index] == "1":
+                text[index], text[left] = text[left], text[index]
+                left += 1
+            
+        text[left - 1], text[len(text) - 1] = text[len(text) - 1], text[left - 1]
+        return "".join(text)
+
+
+
+
+
+# Maximum Nesting Depth of the Parentheses
+# https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/description/
+"""
+Given a valid parentheses string s, return the nesting depth of s. The nesting depth is the maximum number of nested parentheses.
+
+ 
+
+Example 1:
+
+Input: s = "(1+(2*3)+((8)/4))+1"
+
+Output: 3
+
+Explanation:
+
+Digit 8 is inside of 3 nested parentheses in the string.
+
+Example 2:
+
+Input: s = "(1)+((2))+(((3)))"
+
+Output: 3
+
+Explanation:
+
+Digit 3 is inside of 3 nested parentheses in the string.
+
+Example 3:
+
+Input: s = "()(())((()()))"
+
+Output: 3
+"""
+print(Solution().maxDepth("(1+(2*3)+((8)/4))+1"), 3)
+print(Solution().maxDepth("(1)+((2))+(((3)))"), 3)
+print(Solution().maxDepth("()(())((()()))"), 3)
+
+
+# O(n), O(1)
+class Solution:
+    def maxDepth(self, text: str) -> int:
+        depth = 0
+        opening = 0
+
+        for char in text:
+            if char == "(":
+                opening += 1
+            elif char == ")":
+                opening -= 1
+            
+            depth = max(depth, opening)
+        
+        return depth
+
+
+
+
+
+# Maximum Score After Splitting a String
+# https://leetcode.com/problems/maximum-score-after-splitting-a-string/description/
+"""
+Given a string s of zeros and ones, return the maximum score after splitting the string into two non-empty substrings (i.e. left substring and right substring).
+
+The score after splitting a string is the number of zeros in the left substring plus the number of ones in the right substring.
+
+ 
+
+Example 1:
+
+Input: s = "011101"
+Output: 5 
+Explanation: 
+All possible ways of splitting s into two non-empty substrings are:
+left = "0" and right = "11101", score = 1 + 4 = 5 
+left = "01" and right = "1101", score = 1 + 3 = 4 
+left = "011" and right = "101", score = 1 + 2 = 3 
+left = "0111" and right = "01", score = 1 + 1 = 2 
+left = "01110" and right = "1", score = 2 + 1 = 3
+Example 2:
+
+Input: s = "00111"
+Output: 5
+Explanation: When left = "00" and right = "111", we get the maximum score = 2 + 3 = 5
+Example 3:
+
+Input: s = "1111"
+Output: 3
+"""
+print(Solution().maxScore("011101"), 5)
+print(Solution().maxScore("00111"), 5)
+print(Solution().maxScore("1111"), 3)
+print(Solution().maxScore("00"), 1)
+
+
+# O(n), O(1)
+class Solution:
+    def maxScore(self, text: str) -> int:
+        left_score = 0
+        right_score = text.count("1")
+        max_score = 0
+        
+        for index in range(len(text) - 1):
+            if text[index] == "0":
+                left_score += 1
+            else:
+                right_score -= 1
+        
+            max_score = max(max_score, left_score + right_score)
+        
+        return max_score
+
+
+
+
+
+# Path Crossing
+# https://leetcode.com/problems/path-crossing/description/
+"""
+Given a string path, where path[i] = 'N', 'S', 'E' or 'W', each representing moving one unit north, south, east, or west, respectively. You start at the origin (0, 0) on a 2D plane and walk on the path specified by path.
+
+Return true if the path crosses itself at any point, that is, if at any time you are on a location you have previously visited. Return false otherwise.
+
+ 
+
+Example 1:
+
+
+Input: path = "NES"
+Output: false 
+Explanation: Notice that the path doesn't cross any point more than once.
+Example 2:
+
+
+Input: path = "NESWW"
+Output: true
+Explanation: Notice that the path visits the origin twice.
+"""
+print(Solution().isPathCrossing("NES"), False)
+print(Solution().isPathCrossing("NESWW"), True)
+print(Solution().isPathCrossing("WNSN"), True)
+
+
+class Solution:
+    def isPathCrossing(self, path: str) -> bool:
+        stops = {(0, 0)}  # {(x, y)}
+        prev_stop = (0, 0)
+
+        directions = {
+            "E": (1, 0),
+            "W": (-1, 0),
+            "N": (0, 1),
+            "S": (0, -1)
+        }
+
+        for direction in path:
+            next_stop = (prev_stop[0] + directions[direction][0],
+                         prev_stop[1] + directions[direction][1])
+
+            if next_stop in stops:
+                return True
+            else:
+                stops.add(next_stop)
+                prev_stop = next_stop
+
+        return False
+
+
+
+
+
+# Minimum Time to Make Rope Colorful
+# https://leetcode.com/problems/minimum-time-to-make-rope-colorful/description/
+"""
+Alice has n balloons arranged on a rope. You are given a 0-indexed string colors where colors[i] is the color of the ith balloon.
+
+Alice wants the rope to be colorful. She does not want two consecutive balloons to be of the same color, so she asks Bob for help. Bob can remove some balloons from the rope to make it colorful. You are given a 0-indexed integer array neededTime where neededTime[i] is the time (in seconds) that Bob needs to remove the ith balloon from the rope.
+
+Return the minimum time Bob needs to make the rope colorful.
+
+ 
+
+Example 1:
+
+
+Input: colors = "abaac", neededTime = [1,2,3,4,5]
+Output: 3
+Explanation: In the above image, 'a' is blue, 'b' is red, and 'c' is green.
+Bob can remove the blue balloon at index 2. This takes 3 seconds.
+There are no longer two consecutive balloons of the same color. Total time = 3.
+Example 2:
+
+
+Input: colors = "abc", neededTime = [1,2,3]
+Output: 0
+Explanation: The rope is already colorful. Bob does not need to remove any balloons from the rope.
+Example 3:
+
+
+Input: colors = "aabaa", neededTime = [1,2,3,4,1]
+Output: 2
+Explanation: Bob will remove the balloons at indices 0 and 4. Each balloons takes 1 second to remove.
+There are no longer two consecutive balloons of the same color. Total time = 1 + 1 = 2.
+"""
+print(Solution().minCost("abaac", [1, 2, 3, 4, 5]), 3)
+print(Solution().minCost("abc", [1, 2, 3]), 0)
+print(Solution().minCost("aabaa", [1, 2, 3, 4, 1]), 2)
+
+
+class Solution:
+    def minCost(self, colors: str, neededTime: list[int]) -> int:
+        left = 0  # left pointer
+        minimum_time = 0  # minnium time to remove consecutive same color baloons
+
+        for right in range(1, len(colors)):
+            if colors[left] != colors[right]:  # different color
+                left = right  # move left pointer
+            else:
+                if neededTime[left] <= neededTime[right]:  # left time is less (equal) than right time
+                    minimum_time += neededTime[left]  # add time needed to remove the left baloon
+                    left = right  # move left pointer
+                else:
+                    minimum_time += neededTime[right]  # add time needed to remove the right baloon
+
+        return minimum_time
+
+
+
+
+
+# Find First and Last Position of Element in Sorted Array
+# https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/description/
+"""
+Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
+
+If target is not found in the array, return [-1, -1].
+
+You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+Example 1:
+
+Input: nums = [5,7,7,8,8,10], target = 8
+Output: [3,4]
+Example 2:
+
+Input: nums = [5,7,7,8,8,10], target = 6
+Output: [-1,-1]
+Example 3:
+
+Input: nums = [], target = 0
+Output: [-1,-1]
+"""
+print(Solution().searchRange([5, 7, 7, 8, 8, 10], 8), [3, 4])
+print(Solution().searchRange([5, 7, 7, 8, 8, 10], 6), [-1, -1])
+print(Solution().searchRange([], 0), [-1, -1])
+print(Solution().searchRange([1], 1), [0, 0])
+
+
+# O(logn), O(1)
+# binary search
+class Solution:
+    def searchRange(self, numbers: list[int], target: int) -> list[int]:
+        left = 0
+        right = len(numbers) - 1
+        has_target = False
+
+        # find target starting position
+        while left <= right:
+            middle = (left + right) // 2
+            middle_number = numbers[middle]
+
+            if target > middle_number:
+                left = middle + 1
+            else:
+                if target == middle_number:  # check if numbers has tagret numebr
+                    has_target = True
+                first_position = middle  # first_position == left, after exiting while loop
+                right = middle - 1
+
+        # no target in numbers
+        if not has_target:
+            return [-1, -1]
+
+        left = 0
+        right = len(numbers) - 1
+
+        # find target ending position
+        while left <= right:
+            middle = (left + right) // 2
+            middle_number = numbers[middle]
+
+            if target < middle_number:
+                right = middle - 1
+            else:
+                last_position = middle  # last_position == right, after exiting while loop
+                left = middle + 1
+
+        return [first_position, last_position]
+
+
+
+
+
+# Find the Duplicate Number
+# https://leetcode.com/problems/find-the-duplicate-number/description/
+"""
+Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+
+There is only one repeated number in nums, return this repeated number.
+
+You must solve the problem without modifying the array nums and using only constant extra space.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,4,2,2]
+Output: 2
+Example 2:
+
+Input: nums = [3,1,3,4,2]
+Output: 3
+Example 3:
+
+Input: nums = [3,3,3,3,3]
+Output: 3
+"""
+print(Solution().findDuplicate([1, 3, 4, 2, 2]), 2)
+print(Solution().findDuplicate([3, 1, 3, 4, 2]), 3)
+print(Solution().findDuplicate([3, 3, 3, 3, 3]), 3)
+print(Solution().findDuplicate([2, 5, 9, 6, 9, 3, 8, 9, 7, 1]), 9)
+
+
+# 1 -> 3 –> 2 <-> 4
+# 3 -> 4 -> 2 -> 3 -> 4
+# O(n), O(1)
+# linked list
+class Solution:
+    def findDuplicate(self, numbers: list[int]) -> int:
+        slow = 0
+        fast = 0
+
+        # find the intersection
+        while True:
+            slow = numbers[slow]
+            fast = numbers[numbers[fast]]
+            if fast == slow:
+                break
+        
+        # return [slow, numbers[slow]]  # [index, number]
+
+        # find the beginning of the cycle
+        # The distance from the intersection to the beginning of the cycle is the same as
+        # from the beginning of the graph to the beginning of the cycle.
+        slow2 = 0
+        while True:
+            slow = numbers[slow]
+            slow2 = numbers[slow2]
+            if slow == slow2:
+                return slow
+
+
+
+
+
+# Insert into a Binary Search Tree
+# https://leetcode.com/problems/insert-into-a-binary-search-tree/description/
+"""
+You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node of the BST after the insertion. It is guaranteed that the new value does not exist in the original BST.
+
+Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after insertion. You can return any of them.
+
+ 
+
+Example 1:
+    __4
+   /   \
+  2     7
+ / \
+1   3
+
+    __4__
+   /     \
+  2       7
+ / \     /
+1   3   5
+
+Input: root = [4,2,7,1,3], val = 5
+Output: [4,2,7,1,3,5]
+Explanation: Another accepted tree is:
+    ____5
+   /     \
+  2       7
+ / \
+1   3
+     \
+      4
+
+Example 2:
+     ____40___
+    /         \
+  _20         _60
+ /   \       /   \
+10    30    50    70
+
+     _______40___
+    /            \
+  _20___         _60
+ /      \       /   \
+10      _30    50    70
+       /
+      25
+
+Input: root = [40,20,60,10,30,50,70], val = 25
+Output: [40,20,60,10,30,50,70,null,null,25]
+
+Example 3:
+    __4
+   /   \
+  2     7
+ / \
+1   3
+
+    __4__
+   /     \
+  2       7
+ / \     /
+1   3   5
+
+Input: root = [4,2,7,1,3,null,null,null,null,null,null], val = 5
+Output: [4,2,7,1,3,5]
+"""
+print(level_order_traversal(Solution().insertIntoBST(build_tree_from_list([4, 2, 7, 1, 3]), 5)), [4, 2, 7, 1, 3, 5])
+print(level_order_traversal(Solution().insertIntoBST(build_tree_from_list([40, 20, 60, 10, 30, 50, 70]), 25)), [40, 20, 60, 10, 30, 50, 70, None, None, 25])
+print(level_order_traversal(Solution().insertIntoBST(build_tree_from_list([4, 2, 7, 1, 3, None, None, None, None, None, None]), 5)), [4, 2, 7, 1, 3, 5])
+
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+# O(n), O(n)
+# binary search, recursion
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        def dfs(node):
+            if not node:
+                return TreeNode(val)
+            elif val < node.val:
+                node.left = dfs(node.left)
+            else:
+                node.right = dfs(node.right)
+            
+            return node
+        return dfs(root)
+
+
+from collections import deque
+
+# O(n), O(1)
+# binary search, iteration
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        if not root:
+            return TreeNode(val)
+        
+        queue = deque([root])
+
+        while queue:
+            node = queue.popleft()
+
+            if val < node.val:
+                if not node.left:
+                    node.left = TreeNode(val)
+                else:
+                    queue.append(node.left)
+            else:
+                if not node.right:
+                    node.right = TreeNode(val)
+                else:
+                    queue.append(node.right)
+            
+        return root
+
+
+
+
+
+# Task Scheduler
+# https://leetcode.com/problems/task-scheduler/description/
+"""
+You are given an array of CPU tasks, each labeled with a letter from A to Z, and a number n. Each CPU interval can be idle or allow the completion of one task. Tasks can be completed in any order, but there's a constraint: there has to be a gap of at least n intervals between two tasks with the same label.
+
+Return the minimum number of CPU intervals required to complete all tasks.
+
+ 
+
+Example 1:
+
+Input: tasks = ["A","A","A","B","B","B"], n = 2
+
+Output: 8
+
+Explanation: A possible sequence is: A -> B -> idle -> A -> B -> idle -> A -> B.
+
+After completing task A, you must wait two intervals before doing A again. The same applies to task B. In the 3rd interval, neither A nor B can be done, so you idle. By the 4th interval, you can do A again as 2 intervals have passed.
+
+Example 2:
+
+Input: tasks = ["A","C","A","B","D","B"], n = 1
+
+Output: 6
+
+Explanation: A possible sequence is: A -> B -> C -> D -> A -> B.
+
+With a cooling interval of 1, you can repeat a task after just one other task.
+
+Example 3:
+
+Input: tasks = ["A","A","A", "B","B","B"], n = 3
+
+Output: 10
+
+Explanation: A possible sequence is: A -> B -> idle -> idle -> A -> B -> idle -> idle -> A -> B.
+
+There are only two types of tasks, A and B, which need to be separated by 3 intervals. This leads to idling twice between repetitions of these tasks.
+"""
+print(Solution().leastInterval(["A", "A", "A", "B", "B", "B"], 2), 8)  # A -> B -> idle -> A -> B -> idle -> A -> B
+print(Solution().leastInterval(["A", "C", "A", "B", "D", "B"], 1), 6)  # A -> B -> C -> D -> A -> B
+print(Solution().leastInterval(["A", "A", "A", "B", "B", "B"], 3), 10)  # A -> B -> idle -> idle -> A -> B -> idle -> idle -> A -> B
+
+
+import heapq
+from collections import deque
+
+# O(n), O(n)
+# heap, deque
+# O(nlogn) -> log26 => const ->  O(n)
+class Solution:
+    def leastInterval(self, tasks: list[str], idle: int) -> int:
+        counter = {}
+        for task in tasks:
+            counter[task] = counter.get(task, 0) + 1
+
+        task_heap = [-value for value in counter.values()]
+        queue = deque()
+        heapq.heapify(task_heap)
+
+        time = 0
+        while task_heap or queue:
+            time += 1
+            
+            # take most frequent task from heap, decrease frequency by one
+            # and append it to the queue
+            if task_heap:  # []
+                task = heapq.heappop(task_heap) + 1
+                if task:
+                    queue.append((time + idle, task))
+
+            # if task is not idle pop it from the queue and
+            # push it to the task heap
+            if queue and queue[0][0] == time:
+                _, task = queue.popleft()
+                heapq.heappush(task_heap, task)
+
+        return time
+
+
+
+
+
+# Design Twitter
+# https://leetcode.com/problems/design-twitter/description/
+"""
+Design a simplified version of Twitter where users can post tweets, follow/unfollow another user, and is able to see the 10 most recent tweets in the user's news feed.
+
+Implement the Twitter class:
+
+Twitter() Initializes your twitter object.
+void postTweet(int userId, int tweetId) Composes a new tweet with ID tweetId by the user userId. Each call to this function will be made with a unique tweetId.
+List<Integer> getNewsFeed(int userId) Retrieves the 10 most recent tweet IDs in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user themself. Tweets must be ordered from most recent to least recent.
+void follow(int followerId, int followeeId) The user with ID followerId started following the user with ID followeeId.
+void unfollow(int followerId, int followeeId) The user with ID followerId started unfollowing the user with ID followeeId.
+ 
+
+Example 1:
+
+Input
+["Twitter", "postTweet", "getNewsFeed", "follow", "postTweet", "getNewsFeed", "unfollow", "getNewsFeed"]
+[[], [1, 5], [1], [1, 2], [2, 6], [1], [1, 2], [1]]
+Output
+[null, null, [5], null, null, [6, 5], null, [5]]
+
+Explanation
+Twitter twitter = new Twitter();
+twitter.postTweet(1, 5); // User 1 posts a new tweet (id = 5).
+twitter.getNewsFeed(1);  // User 1's news feed should return a list with 1 tweet id -> [5]. return [5]
+twitter.follow(1, 2);    // User 1 follows user 2.
+twitter.postTweet(2, 6); // User 2 posts a new tweet (id = 6).
+twitter.getNewsFeed(1);  // User 1's news feed should return a list with 2 tweet ids -> [6, 5]. Tweet id 6 should precede tweet id 5 because it is posted after tweet id 5.
+twitter.unfollow(1, 2);  // User 1 unfollows user 2.
+twitter.getNewsFeed(1);  // User 1's news feed should return a list with 1 tweet id -> [5], since user 1 is no longer following user 2.
+"""
+
+
+import heapq
+from collections import defaultdict
+
+
+# O(1): postTweet, follow, unfollow, O(n): getNewsFeed, O(n)
+# heap
+# O(nlog10) => O(n)
+class Twitter:
+
+    def __init__(self):
+        self.user_follows = defaultdict(set)  # {user: {followee_1, followee_2, ...}}
+        self.user_tweets = defaultdict(list)  #  {user: [(time stamp, tweet id), ...]}
+        self.time_stamp = 0
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        self.time_stamp += 1  # update time stamp with higher (newer) value
+        self.user_tweets[userId].append((self.time_stamp, tweetId))  # save users tweet
+
+    def getNewsFeed(self, userId: int) -> list[int]:
+        def merge_feed(tweets: dict[list]) -> None:
+            if news_feed and tweets[-1][0] < news_feed[0][0]:  # if the newest tweet from a user is older than the oldest tweet from the feed
+                return
+            for tweet in tweets[-10:]:  # Only consider the 10 most recent tweets
+                if len(news_feed) < 10:
+                    heapq.heappush(news_feed, tweet)
+                else:
+                    heapq.heappushpop(news_feed, tweet)
+
+        news_feed = []  # [(time stamp, tweet id)], news feed with timestamps
+        # Add user's own tweets
+        if userId in self.user_tweets:  # if user has tweets
+            merge_feed(self.user_tweets[userId])
+
+        # Add followees' tweets
+        if userId in self.user_follows:  # if user has followees
+            for followee in self.user_follows[userId]:  # check every followee
+                merge_feed(self.user_tweets[followee])
+        
+        clean_news_feed = []  # [tweet id_1, tweet id_2], tweets witwhout timestamps starting from the newest
+        for _ in range(len(news_feed)):
+            clean_news_feed.append(heapq.heappop(news_feed)[1])  # clean news feed from time stamps
+        return (list(reversed(clean_news_feed)))
+
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        if followerId != followeeId:  # user should not follow itself
+            self.user_follows[followerId].add(followeeId)
+
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        if followerId in self.user_follows:  # if user has a following list (set)
+            self.user_follows[followerId].discard(followeeId)
+
+
+# Your Twitter object will be instantiated and called as such:
+# obj = Twitter()
+# obj.postTweet(userId,tweetId)
+# param_2 = obj.getNewsFeed(userId)
+# obj.follow(followerId,followeeId)
+# obj.unfollow(followerId,followeeId)
+
+
+def test_input(operations: list[str], arguments: list[list[int | None]]) -> list[list[int] | None]:
+    """
+    Test imput provided in two separate lists: operations and arguments
+    """
+    twitter = None
+    result = []
+    
+    for operation, argument in zip(operations, arguments):
+        if operation == "Twitter":
+            twitter = Twitter()
+            result.append(None)
+        elif operation == "postTweet":
+            result.append(twitter.postTweet(*argument))
+        elif operation == "getNewsFeed":
+            result.append(twitter.getNewsFeed(*argument))
+        elif operation == "follow":
+            result.append(twitter.follow(*argument))
+        elif operation == "unfollow":
+            result.append(twitter.unfollow(*argument))
+
+    return result
+
+# Example Input
+operations = ["Twitter", "getNewsFeed"]
+arguments = [[], [1]]
+expected_output = [None, []]
+
+operations = ["Twitter","postTweet","getNewsFeed","follow","postTweet","getNewsFeed","unfollow","getNewsFeed"]
+arguments = [[],[1,5],[1],[1,2],[2,6],[1],[1,2],[1]]
+expected_output = [None, None, [5], None, None, [6, 5], None, [5]]
+
+operations = ["Twitter","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","postTweet","getNewsFeed","follow","getNewsFeed","unfollow","getNewsFeed"]
+arguments = [[],[1,5],[2,3],[1,101],[2,13],[2,10],[1,2],[1,94],[2,505],[1,333],[2,22],[1,11],[1,205],[2,203],[1,201],[2,213],[1,200],[2,202],[1,204],[2,208],[2,233],[1,222],[2,211],[1],[1,2],[1],[1,2],[1]]
+expected_output = [None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,[222,204,200,201,205,11,333,94,2,101],None,[211,222,233,208,204,202,200,213,201,203],None,[222,204,200,201,205,11,333,94,2,101]]
+
+
+# Run tests
+test_output = test_input(operations, arguments)
+print(test_output == expected_output)
+print(test_output)
+
+
+
+
+
+twitter = Twitter()
+print(twitter.postTweet(1, 5))  # User 1 posts a new tweet (id = 5).
+print(twitter.getNewsFeed(1))  # User 1's news feed should return a list with 1 tweet id -> [5]. return [5]
+print(twitter.follow(1, 2))  # User 1 follows user 2.
+print(twitter.postTweet(2, 6))  # User 2 posts a new tweet (id = 6).
+print(twitter.getNewsFeed(1))  # User 1's news feed should return a list with 2 tweet ids -> [6, 5]. Tweet id 6 should precede tweet id 5 because it is posted after tweet id 5.
+print(twitter.unfollow(1, 2))  # User 1 unfollows user 2.
+print(twitter.getNewsFeed(1))  # User 1's news feed should return a list with 1 tweet id -> [5], since user 1 is no longer following user 2.
+print()
+twitter = Twitter()
+print(twitter.postTweet(1, 1))
+print(twitter.getNewsFeed(1))  # [1]
+print(twitter.follow(2, 1))
+print(twitter.getNewsFeed(2))  # [1]
+print(twitter.unfollow(2, 1))
+print(twitter.getNewsFeed(2))  # []
+print()
+twitter = Twitter()
+print(twitter.getNewsFeed(1))  # [0]
+print()
+twitter = Twitter()
+print(twitter.follow(1, 5))
+print(twitter.getNewsFeed(1))  # []
+print()
+twitter = Twitter()
+print(twitter.postTweet(1, 5))
+print(twitter.postTweet(1, 3))
+print(twitter.getNewsFeed(1))  # [3, 5]
+
+
+
+
+import heapq
+from collections import defaultdict
+
+
+class ListNode:
+    def __init__(self, val=(0, 0), next=None):  # val=(timestamp, tweetId)
+        self.val = val
+        self.next = next
+
+# O(1): postTweet, follow, unfollow, O(n): getNewsFeed, O(n)
+# heap, linked list
+# O(nlog10) => O(n)
+class Twitter:
+    def __init__(self):
+        self.user_follows = defaultdict(set)  # {user: {followee_1, followee_2, ...}}
+        self.user_tweets = {}  #  {user: ListNode((time stamp, tweet id), next node)}
+        self.time_stamp = 0
+
+    def postTweet(self, userId: int, tweetId: int) -> None:
+        self.time_stamp += 1  # update time stamp with higher (newer) value
+        if userId not in self.user_tweets:
+            self.user_tweets[userId] = ListNode()  # Dummy head node
+        
+        head = self.user_tweets[userId]
+        head.next = ListNode((self.time_stamp, tweetId), head.next)  # Insert new tweet at the front
+        
+
+    def getNewsFeed(self, userId: int) -> list[int]:
+        def merge_feed(user: int) -> None:
+            if (user not in self.user_tweets or # User has no tweets
+                    not self.user_tweets[user].next):
+                return
+            
+            # if news_feed and tweets[-1][0] < news_feed[0][0]:  # if the newest tweet from a user is older than the oldest tweet from the feed
+                # return
+            node = self.user_tweets[user].next
+            count = 0
+
+            while (node and count < 10  # take at most 10 tweets
+                   ):  #and node.val[0] < news_feed[0][0] take tweets that aren't older than the oldest tweet in news feed
+                if len(news_feed) < 10:
+                    heapq.heappush(news_feed, node.val)
+                else:
+                    heapq.heappushpop(news_feed, node.val)
+                node = node.next
+                count += 1
+
+        news_feed = []  # [(time stamp, tweet id)]  Min-heap for top 10 tweets
+        # Add user's own tweets
+        merge_feed(userId)
+
+        # Add followees' tweets
+        if userId in self.user_follows:  # if user has followees
+            for followee in self.user_follows[userId]:  # check every followee
+                merge_feed(followee)
+        
+        clean_news_feed = []  # [tweet id_1, tweet id_2], tweets witwhout timestamps starting from the newest
+        for _ in range(len(news_feed)):
+            clean_news_feed.append(heapq.heappop(news_feed)[1])  # clean news feed from time stamps
+        return clean_news_feed[::-1]
+
+
+    def follow(self, followerId: int, followeeId: int) -> None:
+        if followerId != followeeId:  # user should not follow itself
+            self.user_follows[followerId].add(followeeId)
+
+
+    def unfollow(self, followerId: int, followeeId: int) -> None:
+        if followerId in self.user_follows:  # if user has a following list (set)
+            self.user_follows[followerId].discard(followeeId)
+
+
+
+
+
+# Find Unique Binary String
+# https://leetcode.com/problems/find-unique-binary-string/description/
+"""
+Given an array of strings nums containing n unique binary strings each of length n, return a binary string of length n that does not appear in nums. If there are multiple answers, you may return any of them.
+
+ 
+
+Example 1:
+
+Input: nums = ["01","10"]
+Output: "11"
+Explanation: "11" does not appear in nums. "00" would also be correct.
+Example 2:
+
+Input: nums = ["00","01"]
+Output: "11"
+Explanation: "11" does not appear in nums. "10" would also be correct.
+Example 3:
+
+Input: nums = ["111","011","001"]
+Output: "101"
+Explanation: "101" does not appear in nums. "000", "010", "100", and "110" would also be correct.
+"""
+print(Solution().findDifferentBinaryString(["0"]), "1")
+print(Solution().findDifferentBinaryString(["01", "10"]), "11")
+print(Solution().findDifferentBinaryString(["00", "01"]), "11")
+print(Solution().findDifferentBinaryString(["111", "011", "001"]), "101")
+
+
+# O(2^n), O(n)
+# backtracking
+class Solution:
+    def findDifferentBinaryString(self, numbers: list[str]) -> str:
+        permutation = []
+        number_set = set(numbers)
+
+        def dfs(index):
+            if index == len(numbers):
+                if "".join(permutation) in number_set:
+                    return
+                else:
+                    return "".join(permutation)
+
+            for number in "01":
+                permutation.append(number)
+                unique = dfs(index + 1)
+                if unique:
+                    return unique
+                permutation.pop()
+
+        return dfs(0)
+
+
+
+
+
+# Check if There is a Valid Partition For The Array
+# https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
+"""
+You are given a 0-indexed integer array nums. You have to partition the array into one or more contiguous subarrays.
+
+We call a partition of the array valid if each of the obtained subarrays satisfies one of the following conditions:
+
+The subarray consists of exactly 2, equal elements. For example, the subarray [2,2] is good.
+The subarray consists of exactly 3, equal elements. For example, the subarray [4,4,4] is good.
+The subarray consists of exactly 3 consecutive increasing elements, that is, the difference between adjacent elements is 1. For example, the subarray [3,4,5] is good, but the subarray [1,3,5] is not.
+Return true if the array has at least one valid partition. Otherwise, return false.
+
+ 
+
+Example 1:
+
+Input: nums = [4,4,4,5,6]
+Output: true
+Explanation: The array can be partitioned into the subarrays [4,4] and [4,5,6].
+This partition is valid, so we return true.
+Example 2:
+
+Input: nums = [1,1,1,2]
+Output: false
+Explanation: There is no valid partition for this array.
+"""
+print(Solution().validPartition([4, 4, 4, 5, 6]), True)
+print(Solution().validPartition([1, 1, 1, 2]), False)
+print(Solution().validPartition([993335, 993336, 993337, 993338, 993339, 993340, 993341]), False)
+print(Solution().validPartition([803201, 803201, 803201, 803201, 803202, 803203]), True)
+print(Solution().validPartition([67149,67149,67149,67149,67149,136768,136768,136768,136768,136768,136768,136768,136769,136770,136771,136772,136773,136774,136775,136776,136777,136778,136779,136780,136781,136782,136783,136784]), False)
+
+
+"""
+draft
+                 .
+             /        \
+            44        444
+          /   \      /    \
+        .     456   .     .
+
+[4, 4, 4, 5, 6]
+[T, F, T, F, F, T]
+[1, 1, 1, 2]
+[F, F, F, F, T]
+"""
+
+
+class Solution:
+    def validPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        cache = [False] * (len(numbers) + 1)
+        cache[-1] = True
+
+        for index in reversed(range(len(numbers))):
+            # two digit number 
+            if index + 1 < len(numbers):
+                if numbers[index] == numbers[index + 1]:
+                    cache[index] = cache[index + 2]
+                    if cache[index]:  # if partitions here, no need to check three digit number
+                        continue  # early continue
+
+            # three digit number
+            if index + 2 < len(numbers):
+                if (numbers[index] == numbers[index + 1] == numbers[index + 2] or
+                        numbers[index] + 2 == numbers[index + 1] + 1 == numbers[index + 2]): # -
+                    cache[index] = cache[index + 3]
+
+        return cache[0]
+
+
+class Solution:
+    def validPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n), O(1)
+        dp, bottom-up
+        """
+        cache = [True, True, True]
+
+        for index in reversed(range(len(numbers))):
+            cache_0 = False
+            
+            # two digit number 
+            if index + 1 < len(numbers):
+                if numbers[index] == numbers[index + 1]:
+                    cache_0 = cache[1]
+                    continue
+
+            # three digit number
+            if index + 2 < len(numbers):
+                if (numbers[index] == numbers[index + 1] == numbers[index + 2] or
+                        numbers[index] + 2 == numbers[index + 1] + 1 == numbers[index + 2]): # -
+                    cache_0 = cache[2]
+            
+            cache = [cache_0, cache[0], cache[1]]
+
+        return cache[0]
+
+
+class Solution:
+    def validPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {len(numbers): True}
+
+        def dfs(index: int) -> bool:
+            if index in memo:
+                return memo[index]
+            
+            can_partition = False
+    
+            # two digit number
+            if index + 1 < len(numbers):
+                if numbers[index] == numbers[index + 1]:
+                    can_partition = dfs(index + 2)
+                    if can_partition:  # if partitions here, no need to check three digit number
+                        memo[index] = True
+                        return True  # early return
+
+            # three digit number
+            if index + 2 < len(numbers):
+                if (numbers[index] == numbers[index + 1] == numbers[index + 2] or
+                        numbers[index] + 2 == numbers[index + 1] + 1 == numbers[index + 2]): # -
+                    can_partition = can_partition or dfs(index + 3)
+
+            memo[index] = can_partition
+            return memo[index]
+        
+        return dfs(0)
+
+
+class Solution:
+    def validPartition(self, numbers: list[int]) -> bool:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * (len(numbers) + 1)
+        memo[-1] = True
+
+        def dfs(index: int) -> bool:
+            if memo[index]:
+                return memo[index]
+            elif memo[index] == False:
+                return False
+            
+            can_partition = False
+            
+            # two digit number
+            if index + 1 < len(numbers):
+                if numbers[index] == numbers[index + 1]:
+                    can_partition = dfs(index + 2)
+                    if can_partition:  # if partitions here, no need to check three digit number
+                        memo[index] = True
+                        return True  # early return
+
+            # three digit number
+            if index + 2 < len(numbers):
+                if (numbers[index] == numbers[index + 1] == numbers[index + 2] or
+                        numbers[index] + 2 == numbers[index + 1] + 1 == numbers[index + 2]): # -
+                    can_partition = can_partition or dfs(index + 3)
+
+            memo[index] = can_partition
+            return memo[index]
+        
+        return dfs(0)
+
+
+class Solution:
+    def validPartition(self, numbers: list[int]) -> bool:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index: int) -> bool:
+            if index >= len(numbers):
+                return index == len(numbers)
+            
+            can_partition = False
+    
+            # two digit number
+            if index + 1 < len(numbers):
+                if numbers[index] == numbers[index + 1]:
+                    can_partition = dfs(index + 2)
+                    if can_partition:  # if partitions here, no need to check three digit number
+                        return True  # early return
+
+            # three digit number
+            if index + 2 < len(numbers):
+                if (numbers[index] == numbers[index + 1] == numbers[index + 2] or
+                        numbers[index] + 2 == numbers[index + 1] + 1 == numbers[index + 2]): # -
+                    can_partition = can_partition or dfs(index + 3)
+
+            return can_partition
+        
+        return dfs(0)
+
+
+
+
+
+# Maximum Subarray Min-Product
+# https://leetcode.com/problems/maximum-subarray-min-product/description/
+"""
+The min-product of an array is equal to the minimum value in the array multiplied by the array's sum.
+
+For example, the array [3,2,5] (minimum value is 2) has a min-product of 2 * (3+2+5) = 2 * 10 = 20.
+Given an array of integers nums, return the maximum min-product of any non-empty subarray of nums. Since the answer may be large, return it modulo 109 + 7.
+
+Note that the min-product should be maximized before performing the modulo operation. Testcases are generated such that the maximum min-product without modulo will fit in a 64-bit signed integer.
+
+A subarray is a contiguous part of an array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,2]
+Output: 14
+Explanation: The maximum min-product is achieved with the subarray [2,3,2] (minimum value is 2).
+2 * (2+3+2) = 2 * 7 = 14.
+Example 2:
+
+Input: nums = [2,3,3,1,2]
+Output: 18
+Explanation: The maximum min-product is achieved with the subarray [3,3] (minimum value is 3).
+3 * (3+3) = 3 * 6 = 18.
+Example 3:
+
+Input: nums = [3,1,5,6,4,2]
+Output: 60
+Explanation: The maximum min-product is achieved with the subarray [5,6,4] (minimum value is 4).
+4 * (5+6+4) = 4 * 15 = 60.
+"""
+print(Solution().maxSumMinProduct([1]), 1)  # [1] * 1
+print(Solution().maxSumMinProduct([1, 2]), 4)  # [2] * 2
+print(Solution().maxSumMinProduct([1, 2, 3]), 10)  # [2, 3] * 2
+print(Solution().maxSumMinProduct([1, 2, 3, 2]), 14)  # [2, 3, 2] * 2
+print(Solution().maxSumMinProduct([2, 3, 3, 1, 2]), 18)  # [3, 3] * 3
+print(Solution().maxSumMinProduct([3, 1, 5, 6, 4, 2]), 60)  # [5, 6, 4] * 4
+
+
+class Solution:
+    def maxSumMinProduct(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(1)
+        brute force, tle
+        """
+        mod = 10 ** 9 + 7
+        max_min_prod = 0
+        
+        for left in range(len(numbers)):
+            subarray_sum = 0
+            min_number = numbers[left]
+
+            for right in range(left, len(numbers)):
+                subarray_sum += numbers[right]
+                min_number = min(min_number, numbers[right])
+                max_min_prod = max(max_min_prod, 
+                                   subarray_sum * min_number % mod)
+
+        return max_min_prod
+
+
+
+
+
+# Integer Break
+# https://leetcode.com/problems/integer-break/description/
+"""
+Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
+
+Return the maximum product you can get.
+
+ 
+
+Example 1:
+
+Input: n = 2
+Output: 1
+Explanation: 2 = 1 + 1, 1 × 1 = 1.
+Example 2:
+
+Input: n = 10
+Output: 36
+Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+"""
+print(Solution().integerBreak(2), 1)  # Explanation: 2 = 1 + 1, 1 × 1 = 1.
+print(Solution().integerBreak(3), 2)  # Explanation: 3 = 1 + 2, 1 × 2 = 2.
+print(Solution().integerBreak(4), 4)  # Explanation: 4 = 2 + 2, 2 × 2 = 4.
+print(Solution().integerBreak(5), 6)  # Explanation: 5 = 2 + 3, 2 × 3 = 6.
+print(Solution().integerBreak(6), 9)  # Explanation: 6 = 3 + 3, 3 × 3 = 9.
+print(Solution().integerBreak(7), 12)  # Explanation: 7 = 3 + 4, 3 × 4 = 12; 2 = 2 + 2 + 3, 2 x 2 x 3 = 12.
+print(Solution().integerBreak(10), 36)  # Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+print(Solution().integerBreak(24), 6561)  # tle testcase
+
+
+"""
+draft
+                        4
+                  1/            2|           3\  
+                  3              2            1
+               1/     2\        1/ \2        1|
+              2       1        1     0        0
+           1/  \2    1|       1|
+           1    0     1        0
+          1|
+           0
+
+"""
+
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {0: 1}  # {number: product}  maximum product for current number
+
+        def dfs(index: int, is_first: bool) -> int:
+            if index in memo:
+                return memo[index]
+            
+            memo[index] = max(number * dfs(index - number, False) 
+                              for number 
+                              in range(1, index + bool(not is_first)))  # bool is `1` excep of the first loop
+            return memo[index]
+
+        return dfs(n, True)
+
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * (n + 1)  # maximum product for current number (index)
+        memo[0] = 1
+
+        def dfs(index: int, is_first: bool) -> int:
+            if memo[index] is not None:
+                return memo[index]
+            
+            memo[index] = max(number * dfs(index - number, False) 
+                              for number 
+                              in range(1, index + bool(not is_first)))  # bool is `1` excep of the first loop
+            return memo[index]
+
+        return dfs(n, True)
+
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index: int, is_first: bool) -> int:
+            if index == 0:
+                return 1
+            
+            max_number = 0
+
+            for number in range(1, index + bool(not is_first)):  # bool is `1` excep of the first loop
+                max_number = max(max_number, 
+                                 number * dfs(index - number, False))
+
+            return max_number
+
+        return dfs(n, True)
+
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, backtracking, tle
+        """
+        integers = []
+        max_product = 0
+
+        def product():
+            p = 1
+            for number in integers:
+                p *= number
+            return p
+
+        def dfs(n, max_product):
+            if (n == 0 and
+                    len(integers) > 1):
+                max_product = max(max_product, product())
+                return max_product
+
+            for index in range(1, n + 1):
+                integers.append(index)
+                max_product = dfs(n - index, max_product)
+                integers.pop()
+            
+            return max_product
+
+        return dfs(n, max_product)
+
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up
+        """
+        cache = [None] * (n + 1)  # maximum product for current number (index)
+        cache[0] = 1
+
+        for index in range(2, n + 1):
+            # if cache[index] is not None:
+            #     return cache[index]
+            
+            cache[index] = max(number * cache[index - number, False]
+                              for number 
+                              in range(1, index + bool(not is_first)))  # bool is `1` excep of the first loop
+            return cache[index]
+
+        return cache
+
+
+
+
+
+# Minimum Number of Operations to Make Array Continuous
+# https://leetcode.com/problems/minimum-number-of-operations-to-make-array-continuous/description/
+"""
+You are given an integer array nums. In one operation, you can replace any element in nums with any integer.
+
+nums is considered continuous if both of the following conditions are fulfilled:
+
+All elements in nums are unique.
+The difference between the maximum element and the minimum element in nums equals nums.length - 1.
+For example, nums = [4, 2, 5, 3] is continuous, but nums = [1, 2, 3, 5, 6] is not continuous.
+
+Return the minimum number of operations to make nums continuous.
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,5,3]
+Output: 0
+Explanation: nums is already continuous.
+Example 2:
+
+Input: nums = [1,2,3,5,6]
+Output: 1
+Explanation: One possible solution is to change the last element to 4.
+The resulting array is [1,2,3,5,4], which is continuous.
+Example 3:
+
+Input: nums = [1,10,100,1000]
+Output: 3
+Explanation: One possible solution is to:
+- Change the second element to 2.
+- Change the third element to 3.
+- Change the fourth element to 4.
+The resulting array is [1,2,3,4], which is continuous.
+"""
+print(Solution().minOperations([4, 2, 5, 3]), 0)
+print(Solution().minOperations([1, 2, 3, 5, 6]), 1)
+print(Solution().minOperations([1, 10, 100, 1000]), 3)
+
+
+# O(n2), O(n)
+# tle
+class Solution:
+    def minOperations(self, numbers: list[int]) -> int:
+        number_set = set(numbers)
+        numbers.sort()
+        min_difference = len(numbers)
+
+
+        for number in number_set:  # check every unique number
+            difference = 0  # number of dffferences for current number
+            
+            for j in range(1, len(numbers)):  # check every distance starting from `1`
+                difference += number + j not in number_set  # increase difference if no distance from current number found
+            
+            min_difference = min(min_difference, difference)  # update max distance
+        
+        return min_difference
+
+
+# O(nlog), O(n)
+# sliding window
+class Solution:
+    def minOperations(self, numbers: list[int]) -> int:
+        unique_numbers = sorted(set(numbers))
+        right = 0
+        min_difference = len(numbers)
+
+        for left, number in enumerate(unique_numbers):
+
+            while (right < len(numbers) and
+                   numbers[right] < number + len(numbers)):
+                right += 1
+
+            window_length = right - left
+            difference = len(numbers) - window_length
+            min_difference = min(min_difference, difference)
+
+        return min_difference
+
+
+
+
+
+# Maximum Frequency Stack
+# https://leetcode.com/problems/maximum-frequency-stack/description/
+"""
+Design a stack-like data structure to push elements to the stack and pop the most frequent element from the stack.
+
+Implement the FreqStack class:
+
+FreqStack() constructs an empty frequency stack.
+void push(int val) pushes an integer val onto the top of the stack.
+int pop() removes and returns the most frequent element in the stack.
+If there is a tie for the most frequent element, the element closest to the stack's top is removed and returned.
+ 
+
+Example 1:
+
+Input
+["FreqStack", "push", "push", "push", "push", "push", "push", "pop", "pop", "pop", "pop"]
+[[], [5], [7], [5], [7], [4], [5], [], [], [], []]
+Output
+[null, null, null, null, null, null, null, 5, 7, 5, 4]
+
+Explanation
+FreqStack freqStack = new FreqStack();
+freqStack.push(5); // The stack is [5]
+freqStack.push(7); // The stack is [5,7]
+freqStack.push(5); // The stack is [5,7,5]
+freqStack.push(7); // The stack is [5,7,5,7]
+freqStack.push(4); // The stack is [5,7,5,7,4]
+freqStack.push(5); // The stack is [5,7,5,7,4,5]
+freqStack.pop();   // return 5, as 5 is the most frequent. The stack becomes [5,7,5,7,4].
+freqStack.pop();   // return 7, as 5 and 7 is the most frequent, but 7 is closest to the top. The stack becomes [5,7,5,4].
+freqStack.pop();   // return 5, as 5 is the most frequent. The stack becomes [5,7,4].
+freqStack.pop();   // return 4, as 4, 5 and 7 is the most frequent, but 4 is closest to the top. The stack becomes [5,7].
+"""
+
+
+# Your FreqStack object will be instantiated and called as such:
+# obj = FreqStack()
+# obj.push(val)
+# param_2 = obj.pop()
+
+
+# O(1): push O(n): pop; aux space O(n)
+# brute force
+class FreqStack:
+    def __init__(self):
+        self.stack = []
+        self.counter = {}
+
+    def push(self, val: int) -> None:
+        self.stack.append(val)
+        self.counter[val] = self.counter.get(val, 0) + 1
+
+    def pop(self) -> int:
+        max_frequency = max(self.counter.values())
+        reversed_stack = []
+
+        while (self.stack and
+               self.counter[self.stack[-1]] != max_frequency):
+            reversed_stack.append(self.stack.pop())
+
+        most_frequent = self.stack.pop()
+        self.counter[most_frequent] -= 1
+
+        while reversed_stack:
+            self.stack.append(reversed_stack.pop())
+
+        return most_frequent
+
+
+import heapq
+
+# O(logn), O(n)
+# heap
+class FreqStack:
+    def __init__(self):
+        self.stack = []  # [((-frequency, -index), value), ]
+        self.counter = {}
+        self.index = 0
+
+    def push(self, val: int) -> None:
+        self.counter[val] = self.counter.get(val, 0) + 1
+        heapq.heappush(self.stack, ((-self.counter[val], -self.index), val))
+        self.index += 1
+
+    def pop(self) -> int:
+        val = heapq.heappop(self.stack)[1]
+        self.counter[val] -= 1
+        return val
+
+
+# O(n), O(n)
+# 2 hash maps
+class FreqStack:
+    def __init__(self):
+        self.counter = {}  # {value: frequency, }
+        self.bucket = {}  # {frequency: [value1, value2, ], }
+        self.max_frequency = 0
+
+    def push(self, val: int) -> None:
+        self.counter[val] = self.counter.get(val, 0) + 1
+        self.max_frequency = max(self.max_frequency, self.counter[val])
+        if self.max_frequency not in self.bucket:
+            self.bucket[self.max_frequency] = []
+        self.bucket[self.counter[val]].append(val)
+
+    def pop(self) -> int:
+        val = self.bucket[self.max_frequency].pop()
+        self.counter[val] -= 1
+        if not self.bucket[self.max_frequency]:
+            self.max_frequency -= 1
+        return val
+
+
+from collections import deque
+
+# O(n), O(n)
+# 2 hash maps, deque
+class FreqStack:
+    def __init__(self):
+        self.counter = {}  # {value: frequency, }
+        self.bucket = {}  # {frequency: deque(value1, value2, ), }
+        self.max_frequency = 0
+
+    def push(self, val: int) -> None:
+        self.counter[val] = self.counter.get(val, 0) + 1
+        self.max_frequency = max(self.max_frequency, self.counter[val])
+        if self.max_frequency not in self.bucket:
+            self.bucket[self.max_frequency] = deque()
+        self.bucket[self.counter[val]].append(val)
+
+    def pop(self) -> int:
+        val = self.bucket[self.max_frequency].pop()
+        self.counter[val] -= 1
+        if not self.bucket[self.max_frequency]:
+            self.max_frequency -= 1
+        return val
+
+
+from collections import defaultdict
+
+# O(n), O(n)
+# 2 default hash maps
+class FreqStack:
+    def __init__(self):
+        self.counter = defaultdict(int)  # {value: frequency, }
+        self.bucket = defaultdict(list)  # {frequency: [value1, value2, ], }
+        self.max_frequency = 0
+
+    def push(self, val: int) -> None:
+        self.counter[val] += 1
+        self.max_frequency = max(self.max_frequency, self.counter[val])
+        self.bucket[self.counter[val]].append(val)
+
+    def pop(self) -> int:
+        val = self.bucket[self.max_frequency].pop()
+        self.counter[val] -= 1
+        if not self.bucket[self.max_frequency]:
+            self.max_frequency -= 1
+        return val
+
+
+from collections import defaultdict, deque
+
+# O(n), O(n)
+# 2 default hash maps, deque
+class FreqStack:
+    def __init__(self):
+        self.counter = defaultdict(int)  # {value: frequency, }
+        self.bucket = defaultdict(deque)  # {frequency: deque(value1, value2, ), }
+        self.max_frequency = 0
+
+    def push(self, val: int) -> None:
+        self.counter[val] += 1
+        self.max_frequency = max(self.max_frequency, self.counter[val])
+        self.bucket[self.counter[val]].append(val)
+
+    def pop(self) -> int:
+        val = self.bucket[self.max_frequency].pop()
+        self.counter[val] -= 1
+        if not self.bucket[self.max_frequency]:
+            self.max_frequency -= 1
+        return val
+
+
+freqStack = FreqStack()
+print(freqStack.push(5))  # The stack is [5]
+print(freqStack.push(7))  # The stack is [5,7]
+print(freqStack.push(5))  # The stack is [5,7,5]
+print(freqStack.push(7))  # The stack is [5,7,5,7]
+print(freqStack.push(4))  # The stack is [5,7,5,7,4]
+print(freqStack.push(5))  # The stack is [5,7,5,7,4,5]
+print(freqStack.pop())  # return 5, as 5 is the most frequent. The stack becomes [5,7,5,7,4].
+print(freqStack.pop())  # return 7, as 5 and 7 is the most frequent, but 7 is closest to the top. The stack becomes [5,7,5,4].
+print(freqStack.pop())  # return 5, as 5 is the most frequent. The stack becomes [5,7,4].
+print(freqStack.pop())  # return 4, as 4, 5 and 7 is the most frequent, but 4 is closest to the top. The stack becomes [5,7].
+
+
+def test_input(operations: list[str], arguments: list[list[int | None]]) -> list[list[int] | None]:
+    result = []
+
+    for operation, argument in zip(operations, arguments):
+        if operation == "FreqStack":
+            freqStack = FreqStack()
+            result.append(None)
+        elif operation == "push":
+            freqStack.push(*argument)
+            result.append(None)
+        elif operation == "pop":
+            result.append(freqStack.pop())
+    
+    return result
+
+# Example Input
+operations = ["FreqStack", "push", "push", "push", "push", "push", "push", "pop", "pop", "pop", "pop"]
+arguments = [[], [5], [7], [5], [7], [4], [5], [], [], [], []]
+expected_output = [None, None, None, None, None, None, None, 5, 7, 5, 4]
+
+operations = ["FreqStack","push","push","push","push","pop", "pop", "push", "push", "push", "pop", "pop", "pop"]
+arguments = [[],[1], [1], [1], [2], [], [], [2], [2], [1], [], [], []]
+expected_output = [None, None, None, None, None, 1, 1, None, None, None, 2, 1, 2]
+
+# Run tests
+test_output = test_input(operations, arguments)
+print(test_output == expected_output)
+print(test_output)
+
+
+
+
+
+# Minimum Cost For Tickets
+# https://leetcode.com/problems/minimum-cost-for-tickets/description/
+"""
+You have planned some train traveling one year in advance. The days of the year in which you will travel are given as an integer array days. Each day is an integer from 1 to 365.
+
+Train tickets are sold in three different ways:
+
+a 1-day pass is sold for costs[0] dollars,
+a 7-day pass is sold for costs[1] dollars, and
+a 30-day pass is sold for costs[2] dollars.
+The passes allow that many days of consecutive travel.
+
+For example, if we get a 7-day pass on day 2, then we can travel for 7 days: 2, 3, 4, 5, 6, 7, and 8.
+Return the minimum number of dollars you need to travel every day in the given list of days.
+
+ 
+
+Example 1:
+
+Input: days = [1,4,6,7,8,20], costs = [2,7,15]
+Output: 11
+Explanation: For example, here is one way to buy passes that lets you travel your travel plan:
+On day 1, you bought a 1-day pass for costs[0] = $2, which covered day 1.
+On day 3, you bought a 7-day pass for costs[1] = $7, which covered days 3, 4, ..., 9.
+On day 20, you bought a 1-day pass for costs[0] = $2, which covered day 20.
+In total, you spent $11 and covered all the days of your travel.
+Example 2:
+
+Input: days = [1,2,3,4,5,6,7,8,9,10,30,31], costs = [2,7,15]
+Output: 17
+Explanation: For example, here is one way to buy passes that lets you travel your travel plan:
+On day 1, you bought a 30-day pass for costs[2] = $15 which covered days 1, 2, ..., 30.
+On day 31, you bought a 1-day pass for costs[0] = $2 which covered day 31.
+In total, you spent $17 and covered all the days of your travel.
+"""
+print(Solution().mincostTickets([5], [2, 7, 15]), 2)
+print(Solution().mincostTickets([1, 4, 6, 7, 8, 20], [2, 7, 15]), 11)
+print(Solution().mincostTickets([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 31], [2, 7, 15]), 17)
+print(Solution().mincostTickets([1,2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,24,25,27,28,29,30,31,34,37,38,39,41,43,44,45,47,48,49,54,57,60,62,63,66,69,70,72,74,76,78,80,81,82,83,84,85,88,89,91,93,94,97,99], [9,38,134]), 423)
+
+
+"""
+draft
+                                               1
+                      (1,2)/               (7,7)|                 (30,15)\
+                         2                     8                         31
+          /             |   \               /    |     \
+         3              9    32            9    15     39
+    /    | \        /   | \
+   4    10  33     10   16  39
+
+[1,  4, 6, 7, 8, 20]
+[12, 10, 8, 6, 4, 2, 0]
+[                   ,  0]
+"""
+
+
+class Solution:
+    def mincostTickets(self, days: list[int], costs: list[int]) -> int:
+        """
+        O(3^n), O(n)
+        brute force, tle
+        """
+        def dfs(day_index: int) -> int:
+            if day_index >= len(days):
+                return 0
+            
+            min_cost = float("inf")
+
+            for cost, validity in zip(costs, (1, 7, 30)):
+                ticket_index = 0
+                
+                while (day_index + ticket_index < len(days) and
+                       days[day_index + ticket_index] < days[day_index] + validity):
+                    ticket_index += 1
+                
+                min_cost = min(min_cost, cost + dfs(day_index + ticket_index))
+
+            return min_cost
+
+        return dfs(0)
+
+
+class Solution:
+    def mincostTickets(self, days: list[int], costs: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {}  # {day_index: cost} minimum cost to travel from day index pointing day onwards
+
+        def dfs(day_index: int) -> int:
+            if day_index >= len(days):
+                return 0
+            elif day_index in memo:
+                return memo[day_index]
+            
+            min_cost = float("inf")
+
+            for cost, validity in zip(costs, (1, 7, 30)):
+                ticket_index = 0
+                
+                while (day_index + ticket_index < len(days) and
+                       days[day_index + ticket_index] < days[day_index] + validity):
+                    ticket_index += 1
+                
+                min_cost = min(min_cost, cost + dfs(day_index + ticket_index))
+
+            memo[day_index] = min_cost
+            return min_cost
+
+        return dfs(0)
+
+
+class Solution:
+    def mincostTickets(self, days: list[int], costs: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [None] * len(days)  # {day_index: cost} minimum cost to travel from day index pointing day onwards
+
+        def dfs(day_index: int) -> int:
+            if day_index >= len(days):
+                return 0
+            elif memo[day_index] is not None:
+                return memo[day_index]
+            
+            min_cost = float("inf")
+
+            for cost, validity in zip(costs, (1, 7, 30)):
+                ticket_index = 0
+                
+                while (day_index + ticket_index < len(days) and
+                       days[day_index + ticket_index] < days[day_index] + validity):
+                    ticket_index += 1
+                
+                min_cost = min(min_cost, cost + dfs(day_index + ticket_index))
+
+            memo[day_index] = min_cost
+            return min_cost
+
+        return dfs(0)
+
+
+class Solution:
+    def mincostTickets(self, days: list[int], costs: list[int]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        cache = [float("inf")] * (len(days) + 0)  # {day_index: cost} minimum cost to travel from day index pointing day onwards
+        # cache = 
+
+        for day_index, day in enumerate(days):
+            for cost, validity in zip(costs, (1, 7, 30)):
+                ticket_index = 0
+                
+                while (day_index + ticket_index < len(days) and
+                       days[day_index + ticket_index] < days[day_index] + validity):
+                    ticket_index += 1
+                
+                cache[day_index] = min(cache[day_index], 
+                                       cost + cache[day_index + ticket_index])
+
+            
+            # if day_index >= len(days):
+            #     return 0
+            # elif cache[day_index] is not None:
+            #     return cache[day_index]
+            
+
+        return cache
+
+
+class Solution:
+    def mincostTickets(self, days: list[int], costs: list[int]) -> int:
+        self.max_cost = float("inf")
+        day_set = set(days)
+        cost_list = []
+
+        def dfs(day):
+            while (day not in day_set and 
+                    day < max(day_set)):
+                day += 1
+            
+            if day > max(day_set):
+                self.max_cost = min(self.max_cost, sum(cost_list))
+                return
+
+            # one day ticket
+            cost_list.append(costs[0])
+            dfs(day + 1)
+            cost_list.pop()
+
+            # seven days ticket
+            cost_list.append(costs[1])
+            dfs(day + 7)
+            cost_list.pop()
+
+            # 30 days ticket
+            cost_list.append(costs[2])
+            dfs(day + 30)
+            cost_list.pop()
+
+        dfs(days[0])
+        return self.max_cost
+
+
+
+
+
+# Number of Longest Increasing Subsequence
+# https://leetcode.com/problems/number-of-longest-increasing-subsequence/description/
+"""
+Given an integer array nums, return the number of longest increasing subsequences.
+
+Notice that the sequence has to be strictly increasing.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,5,4,7]
+Output: 2
+Explanation: The two longest increasing subsequences are [1, 3, 4, 7] and [1, 3, 5, 7].
+Example 2:
+
+Input: nums = [2,2,2,2,2]
+Output: 5
+Explanation: The length of the longest increasing subsequence is 1, and there are 5 increasing subsequences of length 1, so output 5.
+"""
+print(Solution().findNumberOfLIS([1, 3, 5, 4]), 2)  # [1, 3, 4] and [1, 3, 5]
+print(Solution().findNumberOfLIS([1, 3, 5, 4, 7]), 2)  # [1, 3, 4, 7] and [1, 3, 5, 7]
+print(Solution().findNumberOfLIS([2, 2, 2, 2, 2]), 5)  # [2] * 5
+print(Solution().findNumberOfLIS([1, 2, 4, 3, 5, 4, 7, 2]), 3)  # [1, 2, 3, 4, 7], [1, 2, 3, 5, 7], [1, 2, 4, 5, 7]
+print(Solution().findNumberOfLIS([1, 1, 1, 2, 2, 2, 3, 3, 3]), 27)
+
+
+"""
+draft
+[1, 3, 5, 4, 7]
+[1, 1]      [[LIS lengths, frequency]]
+   [2, 1]
+      [3, 1]
+         [3, 1]
+            [4, 2]
+"""
+
+
+class Solution:
+    def findNumberOfLIS(self, numbers: list[int]) -> int:
+        """
+        O(n2), O(n)
+        dp, bottom-up
+        """
+        cache = [[1, 1] for _ in range(len(numbers))]  # [[LIS lengths, frequency]]
+
+        for right in range(len(numbers)):
+            for left in range(right):
+                if numbers[left] < numbers[right]:  # if right number is greater
+                    if cache[left][0] + 1 > cache[right][0]:  # longer LIS
+                        cache[right] = [cache[left][0] + 1,  # update LIS length
+                                        cache[left][1]]  # carry frequencies to new LIS
+                    elif cache[left][0] + 1 == cache[right][0]:  # same length LIS                   
+                        cache[right] = [cache[right][0], 
+                                        cache[right][1] + cache[left][1]]  # update LIS frequency
+
+        # Travrse through cache and gather max frequencies.
+        max_lis_length = 0
+        for lis_length, frequency in cache:
+            if lis_length > max_lis_length:
+                max_lis_length = lis_length
+                max_frequency = frequency
+            elif lis_length == max_lis_length:
+               max_frequency += frequency
+
+        return max_frequency
+
+
+
+
+
+# Uncrossed Lines
+# https://leetcode.com/problems/uncrossed-lines/description/
+"""
+You are given two integer arrays nums1 and nums2. We write the integers of nums1 and nums2 (in the order they are given) on two separate horizontal lines.
+
+We may draw connecting lines: a straight line connecting two numbers nums1[i] and nums2[j] such that:
+
+nums1[i] == nums2[j], and
+the line we draw does not intersect any other connecting (non-horizontal) line.
+Note that a connecting line cannot intersect even at the endpoints (i.e., each number can only belong to one connecting line).
+
+Return the maximum number of connecting lines we can draw in this way.
+
+ 
+
+Example 1:
+
+
+Input: nums1 = [1,4,2], nums2 = [1,2,4]
+Output: 2
+Explanation: We can draw 2 uncrossed lines as in the diagram.
+We cannot draw 3 uncrossed lines, because the line from nums1[1] = 4 to nums2[2] = 4 will intersect the line from nums1[2]=2 to nums2[1]=2.
+Example 2:
+
+Input: nums1 = [2,5,1,2,5], nums2 = [10,5,2,1,5,2]
+Output: 3
+Example 3:
+
+Input: nums1 = [1,3,7,1,7,5], nums2 = [1,9,2,5,1]
+Output: 2
+"""
+print(Solution().maxUncrossedLines([1, 4, 2], [1, 2, 4]), 2)
+print(Solution().maxUncrossedLines([2, 5, 1, 2, 5], [10, 5, 2, 1, 5, 2]), 3)
+print(Solution().maxUncrossedLines([1, 3, 7, 1, 7, 5], [1, 9, 2, 5, 1]), 2)
+print(Solution().maxUncrossedLines([4,1,2,5,1,5,3,4,1,5], [3,1,1,3,2,5,2,4,1,3,2,2,5,5,3,5,5,1,2,1]), 7)
+print(Solution().maxUncrossedLines([5,1,2,5,1,2,2,3,1,1,1,1,1,3,1], [2,5,1,3,4,5,5,2,2,4,5,2,2,3,1,4,5,3,2,4,5,2,4,4,2,2,2,1,3,1]), 11)
+
+
+"""
+draft
+[1, 4, 2]
+ |    \\
+[1, 2, 4]
+[1, 2], [1, 4]
+
+[2,  5, 1, 2, 5]
+     |    \   |
+[10, 5, 2, 1, 5, 2]
+[2, 5, 2], [5, 1, 5], [5, 1, 2]
+"""
+
+
+class Solution:
+    def maxUncrossedLines(self, numbers_1: list[int], numbers_2: list[int]) -> int:
+        """
+        O(n2), O(n2)
+        dp, bottom-up
+        reversed iteration
+        """
+        cache = [[0] * (len(numbers_2) + 1)
+                for _ in range((len(numbers_1) + 1))]  # [(index_1, index_2): number of connections]
+
+        for index_1 in reversed(range(len(numbers_1))):
+            for index_2 in reversed(range(len(numbers_2))):
+                if numbers_1[index_1] == numbers_2[index_2]:
+                    cache[index_1][index_2] = cache[index_1 + 1][index_2 + 1] + 1
+                else:
+                    cache[index_1][index_2] = max(cache[index_1 + 1][index_2], 
+                                                  cache[index_1][index_2 + 1])
+                
+        return cache[0][0]
+
+
+class Solution:
+    def maxUncrossedLines(self, numbers_1: list[int], numbers_2: list[int]) -> int:
+        """
+        O(n2), O(n2)
+        dp, bottom-up
+        """
+        cache = [[0] * (len(numbers_2) + 1)
+                for _ in range((len(numbers_1) + 1))]  # [(index_1, index_2): number of connections]
+
+        for index_1 in range(len(numbers_1)):
+            for index_2 in range(len(numbers_2)):
+                if numbers_1[index_1] == numbers_2[index_2]:
+                    cache[index_1 + 1][index_2 + 1] = cache[index_1][index_2] + 1
+                else:
+                    cache[index_1 + 1][index_2 + 1] = max(cache[index_1 + 1][index_2], 
+                                                          cache[index_1][index_2 + 1])
+        
+        return cache[len(numbers_1)][len(numbers_2)]
+
+
+class Solution:
+    def maxUncrossedLines(self, numbers_1: list[int], numbers_2: list[int]) -> int:
+        """
+        O(n2), O(n2)
+        dp, top-down with memoization as hash map
+        """
+        cache = {}  # {(index_1, index_2): number of connections}
+
+        def dfs(index_1, index_2):
+            if (index_1 == len(numbers_1) or
+                    index_2 == len(numbers_2)):
+                return 0
+            elif (index_1, index_2) in cache:
+                return cache[(index_1, index_2)]
+
+            if numbers_1[index_1] == numbers_2[index_2]:
+                cache[(index_1, index_2)] = 1 + dfs(index_1 + 1, index_2 + 1)
+            else:
+                cache[(index_1, index_2)] = max(dfs(index_1 + 1, index_2), 
+                                               dfs(index_1, index_2 + 1))
+            
+            return cache[(index_1, index_2)]
+
+        return dfs(0, 0)
+
+
+class Solution:
+    def maxUncrossedLines(self, numbers_1: list[int], numbers_2: list[int]) -> int:
+        """
+        O(n2), O(n2)
+        dp, top-down with memoization as list
+        """
+        memo = [[-1] * len(numbers_2) 
+                for _ in range(len(numbers_1))]  # [(index_1, index_2): number of connections]
+
+        def dfs(index_1, index_2):
+            if (index_1 == len(numbers_1) or
+                    index_2 == len(numbers_2)):
+                return 0
+            elif memo[index_1][index_2] != -1:
+                return memo[index_1][index_2]
+
+            if numbers_1[index_1] == numbers_2[index_2]:
+                memo[index_1][index_2] = 1 + dfs(index_1 + 1, index_2 + 1)
+            else:
+                memo[index_1][index_2] = max(dfs(index_1 + 1, index_2), 
+                                               dfs(index_1, index_2 + 1))
+            
+            return memo[index_1][index_2]
+
+        return dfs(0, 0)
+
+
+class Solution:
+    def maxUncrossedLines(self, numbers_1: list[int], numbers_2: list[int]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        def dfs(index_1, index_2):
+            if (index_1 == len(numbers_1) or
+                    index_2 == len(numbers_2)):
+                return 0
+
+            if numbers_1[index_1] == numbers_2[index_2]:
+                return 1 + dfs(index_1 + 1, index_2 + 1)
+            else:
+                return max(dfs(index_1 + 1, index_2), 
+                           dfs(index_1, index_2 + 1))
+
+        return dfs(0, 0)
+
+
+
+
+# Solving Questions With Brainpower
+# https://leetcode.com/problems/solving-questions-with-brainpower/description/
+"""
+You are given a 0-indexed 2D integer array questions where questions[i] = [pointsi, brainpoweri].
+
+The array describes the questions of an exam, where you have to process the questions in order (i.e., starting from question 0) and make a decision whether to solve or skip each question. Solving question i will earn you pointsi points but you will be unable to solve each of the next brainpoweri questions. If you skip question i, you get to make the decision on the next question.
+
+For example, given questions = [[3, 2], [4, 3], [4, 4], [2, 5]]:
+If question 0 is solved, you will earn 3 points but you will be unable to solve questions 1 and 2.
+If instead, question 0 is skipped and question 1 is solved, you will earn 4 points but you will be unable to solve questions 2 and 3.
+Return the maximum points you can earn for the exam.
+
+ 
+
+Example 1:
+
+Input: questions = [[3,2],[4,3],[4,4],[2,5]]
+Output: 5
+Explanation: The maximum points can be earned by solving questions 0 and 3.
+- Solve question 0: Earn 3 points, will be unable to solve the next 2 questions
+- Unable to solve questions 1 and 2
+- Solve question 3: Earn 2 points
+Total points earned: 3 + 2 = 5. There is no other way to earn 5 or more points.
+Example 2:
+
+Input: questions = [[1,1],[2,2],[3,3],[4,4],[5,5]]
+Output: 7
+Explanation: The maximum points can be earned by solving questions 1 and 4.
+- Skip question 0
+- Solve question 1: Earn 2 points, will be unable to solve the next 2 questions
+- Unable to solve questions 2 and 3
+- Solve question 4: Earn 5 points
+Total points earned: 2 + 5 = 7. There is no other way to earn 7 or more points.
+"""
+print(Solution().mostPoints([[3, 2], [4, 3], [4, 4], [2, 5]]), 5)
+print(Solution().mostPoints([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]]), 7)
+print(Solution().mostPoints([[72,5],[36,5],[95,5],[50,1],[62,1],[14,3],[72,5],[86,2],[43,3],[51,3],[14,1],[91,5],[47,4],[72,4],[63,5],[40,3],[68,1],[8,3],[84,5],[7,5],[40,1],[35,3],[66,2],[39,5],[40,1],[92,3],[67,5],[34,3],[84,4],[75,5],[6,1],[71,3],[77,3],[25,3],[53,3],[32,3],[88,5],[18,2],[21,3],[78,2],[69,5],[45,4],[94,2],[70,1],[85,2],[7,2],[68,4],[71,4],[57,2],[12,5],[53,5],[51,3],[46,1],[28,3]]), 845)
+
+
+class Solution:
+    def mostPoints(self, questions: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up with tabulation as hash map
+        """
+        cache = {}  # {question: maximum points cumulated}
+    
+        for index in range(len(questions) -1, -1, -1):
+            cache[index] = max(
+                questions[index][0] + cache.get(index + 1 + questions[index][1], 0),  # solve question
+                cache.get(index + 1, 0)  # skip question
+            )
+
+        return cache.get(0)
+
+
+class Solution:
+    def mostPoints(self, questions: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        memo = {len(questions): 0}  # {question: maximum points cumulated}
+
+        def dfs(index):
+            if index >= len(questions):
+                return 0
+            elif index in memo:
+                return memo[index]
+            
+
+            memo[index] = max(
+                questions[index][0] + dfs(index + 1 + questions[index][1]),  # solve question
+                dfs(index + 1)  # skip question
+            )
+            return memo[index]
+
+        return dfs(0)
+
+
+class Solution:
+    def mostPoints(self, questions: list[list[int]]) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as list
+        """
+        memo = [-1] * (len(questions) + 1)  # [question: maximum points cumulated]
+        memo[len(questions)]
+
+        def dfs(index):
+            if index >= len(questions):
+                return 0
+            elif memo[index] != -1:
+                return memo[index]
+            
+
+            memo[index] = max(
+                questions[index][0] + dfs(index + 1 + questions[index][1]),  # solve question
+                dfs(index + 1)  # skip question
+            )
+            return memo[index]
+        
+        return dfs(0)
+
+
+class Solution:
+    def mostPoints(self, questions: list[list[int]]) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+
+        def dfs(index):
+            if index >= len(questions):
+                return 0
+            
+            return max(
+                questions[index][0] + dfs(index + 1 + questions[index][1]),  # solve question
+                dfs(index + 1)  # skip question
+            )
+
+        return dfs(0)
+
+
+
+
+
+# Count Ways To Build Good Strings
+# https://leetcode.com/problems/count-ways-to-build-good-strings/description/
+"""
+Given the integers zero, one, low, and high, we can construct a string by starting with an empty string, and then at each step perform either of the following:
+
+Append the character '0' zero times.
+Append the character '1' one times.
+This can be performed any number of times.
+
+A good string is a string constructed by the above process having a length between low and high (inclusive).
+
+Return the number of different good strings that can be constructed satisfying these properties. Since the answer can be large, return it modulo 109 + 7.
+
+ 
+
+Example 1:
+
+Input: low = 3, high = 3, zero = 1, one = 1
+Output: 8
+Explanation: 
+One possible valid good string is "011". 
+It can be constructed as follows: "" -> "0" -> "01" -> "011". 
+All binary strings from "000" to "111" are good strings in this example.
+Example 2:
+
+Input: low = 2, high = 3, zero = 1, one = 2
+Output: 5
+Explanation: The good strings are "00", "11", "000", "110", and "011".
+"""
+print(Solution().countGoodStrings(1, 1, 1, 1), 2)
+print(Solution().countGoodStrings(1, 2, 1, 1), 6)
+print(Solution().countGoodStrings(2, 2, 1, 1), 4)
+print(Solution().countGoodStrings(1, 3, 1, 1), 14)
+print(Solution().countGoodStrings(3, 3, 1, 1), 8)
+print(Solution().countGoodStrings(2, 3, 1, 2), 5)
+print(Solution().countGoodStrings(200, 200, 10, 1), 764262396)  # tle
+print(Solution().countGoodStrings(1, 100000, 1, 1), 215447031)  # RecursionError: maximum recursion depth exceeded
+
+
+"""
+draft
+[1, 1, 1, 1]
+"0", "1"
+
+[1, 2, 1, 1]
+"0", "1", "00", "01", "10", "11"
+
+[2, 2, 1, 1]
+"00", "01", "10", "11"
+2**2 = 4
+
+[3, 3, 1, 1]
+2**3 + 2**2 + 2**1 = 8 + 4 + 2 = 14
+
+[2, 3, 1, 2]
+"00", "11", "000", "110", and "011"
+"""
+
+
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero_times: int, one_times: int) -> int:
+        """
+        O(n), O(n)
+        dp, bottom-up
+        """
+        mod = 10 ** 9 + 7
+        cache = {}  # memo[string length]: store the number of ways to make a good string of length index
+        cache[0] = 1  # one way to create zero length (empty) string
+
+        for index in range(1, high + 1):
+            cache[index] = (cache.get(index - zero_times, 0) + 
+                            cache.get(index - one_times, 0)) % mod
+        
+        return sum(cache[index]
+                   for index in range(low, high + 1)) % mod
+
+
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero_times: int, one_times: int) -> int:
+        """
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        """
+        mod = 10 ** 9 + 7
+        memo = {}  # represents the total number of valid good strings that can be constructed starting from length index and going up to high
+
+        def dfs(index: int) -> int:
+            if index > high:
+                return 0
+            elif index in memo:
+                return memo[index]
+            
+            current_node_count = 1 if index >= low else 0
+            zero_branch = dfs(index + zero_times)
+            one_branch = dfs(index + one_times)
+            
+            memo[index] = (current_node_count + zero_branch + one_branch) % mod
+            return memo[index]
+
+        return dfs(0)
+
+
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero_times: int, one_times: int) -> int:
+        """
+        O(2^n), O(n)
+        brute force, tle
+        """
+        mod = 10 ** 9 + 7
+
+        def dfs(index: int) -> int:
+            if index > high:
+                return 0
+            
+            current_node_count = 1 if index >= low else 0
+            zero_branch = dfs(index + zero_times)
+            one_branch = dfs(index + one_times)
+            
+            return (current_node_count + zero_branch + one_branch) % mod
+
+        return dfs(0)
+
+
+
+
+
+# New 21 Game
+# https://leetcode.com/problems/new-21-game/description/
+"""
+Alice plays the following game, loosely based on the card game "21".
+
+Alice starts with 0 points and draws numbers while she has less than k points. During each draw, she gains an integer number of points randomly from the range [1, maxPts], where maxPts is an integer. Each draw is independent and the outcomes have equal probabilities.
+
+Alice stops drawing numbers when she gets k or more points.
+
+Return the probability that Alice has n or fewer points.
+
+Answers within 10-5 of the actual answer are considered accepted.
+
+ 
+
+Example 1:
+
+Input: n = 10, k = 1, maxPts = 10
+Output: 1.00000
+Explanation: Alice gets a single card, then stops.
+Example 2:
+
+Input: n = 6, k = 1, maxPts = 10
+Output: 0.60000
+Explanation: Alice gets a single card, then stops.
+In 6 out of 10 possibilities, she is at or below 6 points.
+Example 3:
+
+Input: n = 21, k = 17, maxPts = 10
+Output: 0.73278
+"""
+print(Solution().new21Game(10, 1, 10), 1)
+print(Solution().new21Game(3, 2, 3), 0.88889)
+print(Solution().new21Game(6, 1, 10), 0.6)
+print(Solution().new21Game(21, 17, 10), 0.73278)
+print(Solution().new21Game(421, 400, 47), 0.71188)  # tle
+print(Solution().new21Game(9811, 8776, 1096), 0.99670)  # tle
+
+
+class Solution:
+    def new21Game(self, n: int, k: int, maxPts: int) -> float:
+        """
+        O(2^n), O(n)
+        brute force
+        tle, O(maxPts^k)
+        """
+        def dfs(score): 
+            if score >= k:
+                return score <= n 
+
+            return sum(
+                dfs(score + points) 
+                for points in range(1, maxPts + 1)
+            ) / maxPts
+        
+        return dfs(0)
+
+
+
+class Solution:
+    def new21Game(self, n: int, k: int, maxPts: int) -> float:
+        """
+        O(n2), O(n)
+        dp, top-down with memoization as hash map
+        O(k*maxPts), tle
+        """
+        memo = {}  # the probability that Alice has n or fewer score after drawing a card if she had k or less score
+
+        def dfs(score): 
+            if score >= k:
+                return score <= n
+            elif score in memo:
+                return memo[score]
+
+            valid_count = 0  # is the number of valid outcomes (paths) from the current state.
+            for points in range(1, maxPts + 1):
+                valid_count += (dfs(score + points)) 
+
+            memo[score] = valid_count / maxPts  #  is the probability of reaching a valid score from the current state.
+            return memo[score]
+        
+        return dfs(0)
+
+
+class Solution:
+    def new21Game(self, n: int, k: int, maxPts: int) -> float:
+        if k == 0:
+            return 1.0
+
+        windowSum = sum(
+            i <= n 
+            for i in range(k, k + maxPts))
+        
+        dp = {}
+        for i in range(k - 1, -1, -1):
+            dp[i] = windowSum / maxPts
+            remove = 0
+            if i + maxPts <= n:
+                remove = dp.get(i + maxPts, 1)
+            
+            windowSum += dp[i] - remove
+        
+        return dp[0]
+
+
+
+
+# 
