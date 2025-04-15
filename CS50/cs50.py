@@ -344,17 +344,17 @@ class Hat:
         self.houses = ["Q"]  # overrides class attribute
 
     @classmethod
-    def sort(cls, name):  # class method 
+    def class_sort(cls, name):  # class method 
         print(f"{name} is in house {np.random.choice(cls.houses)}")
         print(f"{cls}")
     
-    def sort2(self, name):  # instance method
+    def instance_sort(self, name):  # instance method
         print(f"{name} is in house {np.random.choice(self.houses)}")
         print(f"{self}")
 
 hat = Hat()
-hat.sort("Harry")
-hat.sort2("Merry")
+hat.class_sort("Harry")
+hat.instance_sort("Merry")
 
 
 # get students name within class not function
@@ -544,7 +544,7 @@ class Cat:
     def meow(cls):
         return "meow\n" * cls.MEOWS
 
-Cat.meow()
+print(Cat.meow())
 
 
 

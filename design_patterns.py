@@ -311,28 +311,27 @@ car = polonez.build()
 # singleton
 
 class ApplicationState:
-    instante = None
+    instance = None
 
     def __init__(self):
         self.is_loggedin = False
     
     @staticmethod
     def get_instance():
-        if not ApplicationState.instante:
-            ApplicationState.instante = ApplicationState()
-        return ApplicationState.instante
+        if not ApplicationState.instance:
+            ApplicationState.instance = ApplicationState()
+        return ApplicationState.instance
 
 app_state_1 = ApplicationState().get_instance()
 print(app_state_1.is_loggedin)  # False
 
 app_state_2 = ApplicationState().get_instance()
-print(app_state_1.is_loggedin)  # False
+print(app_state_2.is_loggedin)  # False
 
 app_state_1.is_loggedin = True
 
 print(app_state_1.is_loggedin)  # True
 print(app_state_2.is_loggedin)  # True
-
 
 
 
@@ -914,4 +913,19 @@ linked_list_2 =LinkedList(node_1)
 # iterate through LinkedList
 for node in linked_list_2:
     print(node)
+
+
+
+
+
+
+
+
+
+
+
+
+# behavioral pattern
+# command
+# Encapsulates a request as an object therby letting parametrize other objects with different requests, queues or log requests.
 

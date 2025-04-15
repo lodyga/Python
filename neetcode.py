@@ -1,138 +1,27 @@
 https://neetcode.io/practice
 
-# 217. Contains Duplicate
-# https://leetcode.com/problems/contains-duplicate/
 """
-Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
-
-Example 1:
-
-Input: nums = [1, 2, 3, 1]
-Output: true
-
-Example 2:
-
-Input: nums = [1, 2, 3, 4]
-Output: false
-
-Example 3:
-
-Input: nums = [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]
-Output: true
-"""
-(Solution().containsDuplicate([1, 2, 3]), False)
-(Solution().containsDuplicate([1, 2, 3, 4]), False)
-(Solution().containsDuplicate([1, 1, 1, 3, 3, 4, 3, 2, 4, 2]), True)
-
-
-# O(n), O(n)
-class Solution:
-    def containsDuplicate(self, nums: list[int]) -> bool:
-        seen = set()
-    
-        for num in nums:
-            if num in seen:
-                return True
-            else:
-                seen.add(num)
-        return False
-        
-        # alt solution 
-        # return not (len(set(nums)) == len(nums))
-
-        # alt solution
-        # import numpy as np
-        # return len(np.unique(nums)) == len(nums)
+        O(n), O(1)
+        dp, bottom-up
+        O(n), O(n)
+        dp, bottom-up
+        O(n), O(n)
+        dp, top-down with memoization as hash map
+        O(n), O(n)
+        dp, top-down with memoization as list
+        O(2^n), O(n)
+        brute force
+        tle
+        """
 
 
 
 
 
-# Valid Anagram
-# https://leetcode.com/problems/valid-anagram/
-"""
-Given two strings s and t, return true if t is an anagram of s, and false otherwise.
-
-An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
-
-Example 1:
-
-Input: s = "anagram", t = "nagaram"
-Output: true
-Example 2:
-
-Input: s = "rat", t = "car"
-Output: false
-"""
-(Solution().isAnagram("anagram", "nagaram"), True)
-(Solution().isAnagram("rat", "car"), False)
-
-
-# O(n), O(n)
-class Solution:
-    def counter(self, word):
-        counter = {}
-
-        for letter in word:
-            counter[letter] = counter.get(letter, 0) + 1
-
-        return counter
-
-    def isAnagram(self, word1, word2):
-        return self.counter(word1) == self.counter(word2)
-
-
-from collections import Counter
-
-class Solution:
-    def isAnagram(self, s: str, t: str) -> bool:
-        return Counter(s) == Counter(t)
-    
 
 
 
 
-# Two Sum
-# https://leetcode.com/problems/two-sum/description/
-"""
-Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
-
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
-
-You can return the answer in any order.
-
-Example 1:
-
-Input: nums = [2,7,11,15], target = 9
-Output: [0,1]
-Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
-"""
-# https://www.codewars.com/kata/54d81488b981293527000c8f
-(Solution().twoSum([2, 7, 11, 15], 9), [0, 1])
-(Solution().twoSum([3, 2, 4], 6), [1, 2])
-(Solution().twoSum([3, 3], 6), [0, 1])
-(Solution().twoSum([3, 3], 7), None)
-
-
-# O(n), O(n)
-class Solution:
-    def twoSum(self, numbers: list[int], target: int) -> list[int]:
-        seen = {}
-
-        for index, number in enumerate(numbers):
-            diff = target - number
-        
-            if diff in seen: # seen.get(diff, False)
-                return [seen[diff], index] # [seen.get(diff), index]
-            seen[number] = index # seen.update({number: ind})
-        
-        return None
-
-    # alt solution
-    #     for i in range(len(nums) - 1):  # 1600, 17; O(n2), O(1)
-    #         for j in range(i + 1, len(nums)):
-    #             if nums[i] + nums[j] == target:
-    #                 return [i, j]
 
 
 
@@ -525,131 +414,6 @@ class Solution:
 
 
 
-# 125. Valid Palindrome
-# https://leetcode.com/problems/valid-palindrome/description/
-"""
-A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
-
-Given a string s, return true if it is a palindrome, or false otherwise.
-
-Example 1:
-
-Input: s = "A man, a plan, a canal: Panama"
-Output: true
-Explanation: "amanaplanacanalpanama" is a palindrome.
-Example 2:
-
-Input: s = "race a car"
-Output: false
-Explanation: "raceacar" is not a palindrome.
-Example 3:
-
-Input: s = " "
-Output: true
-Explanation: s is an empty string "" after removing non-alphanumeric characters.
-Since an empty string reads the same forward and backward, it is a palindrome.
-"""
-(Solution().isPalindrome("A man, a plan, a canal: Panama"), True)
-(Solution().isPalindrome("race a car"), False)
-(Solution().isPalindrome(" "), True)
-(Solution().isPalindrome("0P"), False)
-
-
-# O(n), O(n)
-# Two Pointers
-class Solution:
-    def isPalindrome(self, text: str) -> bool:
-        left = 0
-        right = len(text) - 1
-
-        while left < right:
-            while (not text[left].isalnum() and 
-                   left < right):
-                left += 1
-
-            while (not text[right].isalnum() and 
-                   left < right):
-                right -= 1
-            
-            if text[left].lower() != text[right].lower():
-                return False
-
-            left += 1
-            right -= 1
-
-        return True
-
-
-# O(n), O(n)
-# reverse str
-class Solution:
-    def isPalindrome(self, text: str) -> bool:
-        joined = "".join(filter(str.isalnum, text)).lower()
-        return joined == joined[::-1]
-
-
-# Two Pointers, import string
-import string
-class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        l = 0
-        r = len(s) - 1
-
-        while l < r:
-            while s[l] in string.punctuation + " " and l < r:
-                l += 1
-
-            while s[r] in string.punctuation + " "  and l < r:
-                r -= 1
-            
-            if s[l].lower() != s[r].lower():
-                return False
-
-            l += 1
-            r -= 1
-        
-        return True
-
-
-# replace
-import string
-class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        for char in string.punctuation + " ":
-            s = s.replace(char, "")
-        return s.lower() == s[::-1].lower()
-Solution().isPalindrome("A man, a plan, a canal: Panama")
-
-
-# regex
-import re
-class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        s = re.sub(r"[\W_]", "", s).lower()
-        return s == s[::-1]
-Solution().isPalindrome("A man, a plan, a canal: Panama")
-
-
-# comprehension list, isalpha()
-class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        cleaned_s = [alph.lower() for alph in s if alph.isalnum()]
-        return cleaned_s == cleaned_s[::-1]
-Solution().isPalindrome("A man, a plan, a canal: Panama")
-
-
-# comprehension list
-import string
-class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        # filtered_s = list(filter(lambda x: not x in string.punctuation + " ", s))
-        filtered_s = list(alph.lower() for alph in s if not alph in string.punctuation + " ")
-        # return "".join(filtered_s).lower() == "".join(filtered_s[::-1]).lower()
-        return filtered_s == filtered_s[::-1]
-Solution().isPalindrome("A man, a plan, a canal: Panama")
-
-
-
 
 
 # Two Sum II - Input Array Is Sorted
@@ -914,138 +678,7 @@ class Solution:
 
 
 
-# Best Time to Buy and Sell Stock
-# https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
-"""
-You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
-You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
-
-Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
-
-Example 1:
-
-Input: prices = [7,1,5,3,6,4]
-Output: 5
-Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
-Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
-Example 2:
-
-Input: prices = [7,6,4,3,1]
-Output: 0
-Explanation: In this case, no transactions are done and the max profit = 0.
-"""
-(Solution().maxProfit([7, 1, 5, 3, 6, 4]), 5)
-(Solution().maxProfit([7, 6, 4, 3, 1]), 0)
-(Solution().maxProfit([2, 4, 1]), 2)
-(Solution().maxProfit([2, 1, 2, 1, 0, 1, 2]), 2)
-(Solution().maxProfit([1, 2]), 1)
-
-
-# pointers as values
-class Solution:
-    def maxProfit(self, prices):
-        left_price = prices[0]  # the left_price pointer as a value
-        max_profit = 0
-
-        for right_price in prices[1:]:  # the right_price pointer as a value
-            if left_price > right_price:  # if price is lower buy
-                left_price = right_price
-            else:  # if price is higher calculate revenue
-                profit = right_price - left_price
-                max_profit = max(max_profit, profit)
-
-        return max_profit
-
-
-# pointers as indexes
-class Solution:
-    def maxProfit(self, prices):
-        max_profit = 0
-        left = 0  # the left pointer
-
-        for right in range(1, len(prices)):  # the right pointer
-            if prices[left] > prices[right]:  # if price is lower buy
-                left = right
-            else:  # if price is higher calculate revenue
-                profit = prices[right] - prices[left]
-                max_profit = max(max_profit, profit)
-
-        return max_profit
-
-
-# O(n), O(n)
-# two pass
-class Solution:
-    def maxProfit(self, prices: list[int]) -> int:
-        min_price = [0] * len(prices)  # cache
-
-        for index, price in enumerate(prices):
-            if index:
-                min_price[index] = min(min_price[index - 1], price)
-            else:
-                min_price[index] = price
-        
-        for index, price in enumerate(prices):
-            min_price[index] = price - min_price[index]
-        
-        return max(min_price)
-    
-
-# O(n), O(n)
-# one pass
-class Solution:
-    def maxProfit(self, prices: list[int]) -> int:
-        min_price = [0] * len(prices)  # cache
-        max_profit = 0
-
-        for index, price in enumerate(prices):
-            if index:
-                min_price[index] = min(min_price[index - 1], price)
-            else:
-                min_price[index] = price
-
-            max_profit = max(max_profit, price - min_price[index])
-        
-        return max_profit
-    
-
-# O(n), O(1)
-# one pass
-class Solution:
-    def maxProfit(self, prices: list[int]) -> int:
-        max_profit = 0
-
-        for index, price in enumerate(prices):
-            if index:
-                min_price = min(min_price, price)
-            else:
-                min_price = price
-
-            max_profit = max(max_profit, price - min_price)
-        
-        return max_profit
-
-
-# O(n), O(1)
-# one pass, basic functions
-class Solution:
-    def maxProfit(self, prices: list[int]) -> int:
-        max_profit = 0
-
-        for index, price in enumerate(prices):
-            if index:
-                if price < min_price:
-                    min_price = price
-            else:
-                min_price = price
-
-            profit = price - min_price
-        
-            if profit > max_profit:
-                max_profit = profit
-        
-        return max_profit
 
 
 
@@ -1231,63 +864,6 @@ class Solution:
 
 
 
-
-# 20. Valid Parentheses
-# https://leetcode.com/problems/valid-parentheses/description/
-"""
-Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-
-An input string is valid if:
-
-Open brackets must be closed by the same type of brackets.
-Open brackets must be closed in the correct order.
-Every close bracket has a corresponding open bracket of the same type.
- 
-
-Example 1:
-
-Input: s = "()"
-Output: true
-Example 2:
-
-Input: s = "()[]{}"
-Output: true
-Example 3:
-
-Input: s = "(]"
-Output: false
-"""
-print(Solution().isValid("()"), True)
-print(Solution().isValid("({})"), True)
-print(Solution().isValid("(]"), False)
-print(Solution().isValid("(})"), False)
-print(Solution().isValid("([)"), False)
-print(Solution().isValid(""), True)
-print(Solution().isValid("["), False)
-
-
-# O(n), O(n)
-# stack
-class Solution:
-    def isValid(self, brackets: str) -> bool:
-        stacked_brackets = []
-        opposing_bracket = {
-            ")": "(",
-            "]": "[",
-            "}": "{"
-        }
-
-        for bracket in brackets:
-            if bracket in opposing_bracket:
-                if (stacked_brackets and 
-                        opposing_bracket[bracket] == stacked_brackets[-1]):
-                    stacked_brackets.pop()
-                else:
-                    return False
-            else:
-                stacked_brackets.append(bracket)
-        
-        return not stacked_brackets  # if not empty then unmatched brackets left
 
 
 
@@ -1490,237 +1066,10 @@ class Solution:
 
 
 
-# Climbing Stairs
-# https://leetcode.com/problems/climbing-stairs/
-"""
-You are climbing a staircase. It takes n steps to reach the top.
-
-Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
-
-Example 1:
-
-Input: n = 2
-Output: 2
-Explanation: There are two ways to climb to the top.
-1. 1 step + 1 step
-2. 2 steps
-Example 2:
-
-Input: n = 3
-Output: 3
-Explanation: There are three ways to climb to the top.
-1. 1 step + 1 step + 1 step
-2. 1 step + 2 steps
-3. 2 steps + 1 step
-"""
-print(Solution().climbStairs(0), 0)
-print(Solution().climbStairs(1), 1)
-print(Solution().climbStairs(2), 2)
-print(Solution().climbStairs(3), 3)
-print(Solution().climbStairs(4), 5)
-print(Solution().climbStairs(5), 8)
 
 
-"""
-blueprint
-             ___5
-           _| 4
-         _| 3
-       _| 2
-     _| 1
-____|
-
-           ___4
-         _|  3
-       _|  2
-     _|  1
-____|
-
-         ___3
-       _|  2
-     _|  1
-____|
 
 
-Adding steps
-                   0
-             /1          \2
-            1             2
-        /1     \2      /1   \2
-       2        3     3      4
-     /1  \2    /1    /1
-   3      4   4     4
-  /1
- 4
-
-Subtracting steps
-                   4
-             /1          \2
-            3             2
-        /1     \2      /1   \2
-       2        1     1      0
-     /1  \2    /1    /1
-   1      0   0     0
-  /1
- 0
-
-
-5 -> 1 + 4 + 3 = 8
-4 -> 5
-3 -> 3
-2 -> 2
-1 -> 1
-0 -> 0
-
-Fibonnacci problem
-"""
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(n), O(1)
-        dp, bottom-up
-        """
-        if number == 0:
-            return 0
-        elif number == 1:
-            return 1
-        
-        cache = [1, 1]
-
-        for _ in range(2, number + 1):
-            cache = [cache[1], cache[0] + cache[1]]
-
-        return cache[-1]
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(n), O(n)
-        dp, bottom-up
-        """
-        if number == 0:
-            return 0
-        elif number == 1:
-            return 1
-        
-        cache = [1] * (number + 1)
-
-        for index in range(2, number + 1):
-            cache[index] = cache[index - 1] + cache[index - 2]
-
-        return cache[number]
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(n), O(n)
-        dp, top-down with memoization as hash map
-        """
-        if number == 0:
-            return 0
-        
-        memo = {0: 1}
-
-        def dfs(index):
-            if index < 0:
-                return 0
-            elif index in memo:
-                return memo[index]
-
-            memo[index] = dfs(index - 1) + dfs(index - 2)
-            return memo[index]
-
-        return dfs(number)
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(n), O(n)
-        dp, top-down with memoization as list
-        """
-        if number == 0:
-            return 0
-        
-        memo = [None] * (number + 1)
-        memo[0] = 1
-
-        def dfs(index):
-            if index < 0:
-                return 0
-            elif memo[index] is not None:
-                return memo[index]
-
-            memo[index] = dfs(index - 1) + dfs(index - 2)
-            return memo[index]
-
-        return dfs(number)
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(2^n), O(n)
-        brute force, pure recursion, tle
-        converts to top-down
-        """
-        if number == 0:
-            return 0
-        
-        def dfs(index):
-            if index < 0:
-                return 0
-            elif index == 0:
-                return 1
-
-            return dfs(index - 1) + dfs(index - 2)
-
-        return dfs(number)
-
-
-class Solution:
-    def climbStairs(self, number: int) -> int:
-        """
-        O(2^n), O(n)
-        brute force, shared state, tle
-        """
-        if number == 0:
-            return 0
-        
-        self.counter = 0
-
-        def dfs(index):
-            if index == 0:
-                self.counter += 1
-                return
-            elif index < 0:
-                return
-
-            dfs(index - 1)
-            dfs(index - 2)
-
-        dfs(number)
-        return self.counter
-
-
-# generator
-def Fib_gen(n):
-    a = 1
-    b = 1
-
-    for _ in range(n):
-        yield b
-        a, b = b, a + b
-
-fib5 = Fib_gen(5)
-
-for i in fib5:
-    print(i)
-next(fib5)
 
 
 
@@ -3801,50 +3150,6 @@ class Solution:
 
 
  
-# Binary Search
-# https://leetcode.com/problems/binary-search/
-"""
-Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
-
-You must write an algorithm with O(log n) runtime complexity.
-
-Example 1:
-
-Input: nums = [-1,0,3,5,9,12], target = 9
-Output: 4
-Explanation: 9 exists in nums and its index is 4
-
-Example 2:
-
-Input: nums = [-1,0,3,5,9,12], target = 2
-Output: -1
-Explanation: 2 does not exist in nums so return -1
-"""
-(Solution().search([-1, 0, 3, 5, 9, 12], -1), 0)
-(Solution().search([-1, 0, 3, 5, 9, 12], 0), 1)
-(Solution().search([-1, 0, 3, 5, 9, 12], 3), 2)
-(Solution().search([-1, 0, 3, 5, 9, 12], 5), 3)
-(Solution().search([-1, 0, 3, 5, 9, 12], 9), 4)
-(Solution().search([-1, 0, 3, 5, 9, 12], 12), 5)
-(Solution().search([-1, 0, 3, 5, 9, 12], 2), -1)
-
-
-class Solution:
-    def search(self, nums: list[int], target: int):
-        left = 0
-        right = len(nums) - 1
-
-        while left <= right:  # two poionters
-            mid = (left + right) // 2  # find mid index
-            
-            if target == nums[mid]:  # if target found
-                return mid
-            elif target < nums[mid]:  # if target is less than middle, choose left chunk
-                right = mid - 1
-            else:  # if target is greater than middle, choose rigth chunk
-                left = mid + 1
-        
-        return -1
 
 
 
@@ -5889,235 +5194,23 @@ class Solution:
 
 
 
-# Min Cost Climbing Stairs
-# https://leetcode.com/problems/min-cost-climbing-stairs/
-"""
-You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
-
-You can either start from the step with index 0, or the step with index 1.
-
-Return the minimum cost to reach the top of the floor.
-
-Example 1:
-
-Input: cost = [10,15,20]
-Output: 15
-Explanation: You will start at index 1.
-- Pay 15 and climb two steps to reach the top.
-The total cost is 15.
-
-Example 2:
-
-Input: cost = [1,100,1,1,1,100,1,1,100,1]
-Output: 6
-Explanation: You will start at index 0.
-- Pay 1 and climb two steps to reach index 2.
-- Pay 1 and climb two steps to reach index 4.
-- Pay 1 and climb two steps to reach index 6.
-- Pay 1 and climb one step to reach index 7.
-- Pay 1 and climb two steps to reach index 9.
-- Pay 1 and climb one step to reach the top.
-The total cost is 6.
-"""
-print(Solution().minCostClimbingStairs([10, 15, 20]), 15)
-print(Solution().minCostClimbingStairs([1, 100, 1, 1, 1, 100, 1, 1, 100, 1]), 6)
 
 
-# draft
-# cost to move from the i-th step       [1,100,1,1,1,100,1,1,100,1]
-# cumulative cost to get to i-th step   [0, 0, 1,1,2, 2, 3,4, 5, 5, 6]
-# cumulative cost to get from i-th step [1,100,2,3,3,103,4,5,104,6]
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(1)
-        dp, bottom-up
-        """
-        cache = [cost[0], cost[1]]
-
-        for index in range(2, len(cost)):
-            prev = cache[0]
-            prev_prev = cache[1]
-            cache = [cache[1], cost[index] + min(prev, prev_prev)]
-
-        return min(cache[-1], cache[-2])
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(1)
-        dp, bottom-up
-        """
-        a = cost[0]
-        b = cost[1]
-
-        for index in range(2, len(cost)):
-            a, b = b, cost[index] + min(a, b)
-
-        return min(a, b)
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(1)
-        dp, bottom-up
-        mutate input list
-        """
-        cache = [None] * len(cost)
-        cache[0] = cost[0]
-        cache[1] = cost[1]
-
-        for index in range(2, len(cost)):
-            cost[index] = cost[index] + min(cost[index - 1], cost[index - 2])
-
-        return min(cost[-1], cost[-2])
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(n)
-        dp, bottom-up
-        """
-        cache = [None] * len(cost)
-        cache[0] = cost[0]
-        cache[1] = cost[1]
-
-        for index in range(2, len(cost)):
-            cache[index] = cost[index] + min(cache[index - 1], cache[index - 2])
-
-        return min(cache[-1], cache[-2])
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(n)
-        dp, top-down with memoization as hash map
-        """
-        # Memoization dictionary to store the minimum cost to reach the top from each step
-        memo = {}
-
-        def dfs(index):
-            # Base case: if we're already at or beyond the top, no cost is needed
-            if index >= len(cost):
-                # No extra cost beyond the last step
-                return 0
-            # If the result is already computed, return it
-            elif index in memo:
-                return memo[index]
-            
-            # Recursively compute the cost of taking 1 step or 2 steps
-            # Store the result in the memo dictionary
-            memo[index] = cost[index] + min(dfs(index + 1), dfs(index + 2))
-            
-            return memo[index]
-
-        # Start from step 0 or step 1, whichever is cheaper
-        return min(dfs(0), dfs(1))
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(n), O(n)
-        dp, top-down with memoization as list
-        """
-        memo = [None] * len(cost)
-
-        def dfs(index):
-            if index >= len(cost):
-                return 0  # No extra cost beyond the last step
-            elif memo[index] is not None:
-                return memo[index]
-
-            memo[index] = cost[index] + min(dfs(index + 1), dfs(index + 2))
-            return memo[index]
-
-        return min(dfs(0), dfs(1))
 
 
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(2^n), O(n)
-        brute force, pure recursion, tle
-        converts to top-down
-        """
-        def dfs(index):
-            if index >= len(cost):
-                return 0
-            
-            return cost[index] + min(dfs(index + 1), dfs(index + 2))
 
-        return min(dfs(0), dfs(1))
-
-
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(2^n), O(n)
-        brute force, function argument, tle
-        """
-        self.min_total_cost = sum(cost)
-
-        def dfs(index, total_cost):
-            if index >= len(cost):
-                self.min_total_cost = min(self.min_total_cost, total_cost)
-                return
-
-            dfs(index + 1, total_cost + cost[index])
-            dfs(index + 2, total_cost + cost[index])
-
-        dfs(0, 0)
-        dfs(1, 0)
-        return self.min_total_cost
-
-
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(2^n), O(n)
-        brute force, backtracking, tle
-        """
-        self.total_cost = 0
-        self.min_total_cost = sum(cost)
-
-        def dfs(index):
-            if index >= len(cost):
-                self.min_total_cost = min(self.min_total_cost, self.total_cost)
-                return
-
-            self.total_cost += cost[index]
-            dfs(index + 1)
-            dfs(index + 2)
-            self.total_cost -= cost[index]
-
-
-        dfs(0)
-        dfs(1)
-        return self.min_total_cost
-
-
-class Solution:
-    def minCostClimbingStairs(self, cost: list[int]) -> int:
-        """
-        O(2^n), O(n)
-        brute force, function argument, tle
-        """
-        def dfs(index, total_cost):
-            if index >= len(cost):
-                return total_cost
-
-            return min(
-                dfs(index + 1, total_cost + cost[index]),
-                dfs(index + 2, total_cost + cost[index]))
-
-        return min(dfs(0, 0), dfs(1, 0))
 
 
 
@@ -6480,228 +5573,8 @@ class Solution:
 
 
 
-# Invert Binary Tree
-# https://leetcode.com/problems/invert-binary-tree/description/
-"""
-Given the root of a binary tree, invert the tree, and return its root.
-
-Example 1:
-
-Input: root = [4,2,7,1,3,6,9]
-    __4__
-   /     \
-  2       7
- / \     / \
-1   3   6   9
-
-Output: [4,7,2,9,6,3,1]
-    __4__
-   /     \
-  7       2
- / \     / \
-9   6   3   1
-
-Example 2:
-
-Input: root = [2,1,3]
-  2
- / \
-1   3
-
-Output: [2,3,1]
-  2
- / \
-3   1
-
-Example 3:
-
-Input: root = []
-Output: []
-"""
-# Definition for a binary tree node.
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
 
 
-from collections import deque
-
-# Function to create a binary tree from a list (level-order traversal)
-def build_tree_from_list(node_list, node_type=TreeNode):
-    if not node_list:
-        return
-
-    if type(node_list) == int:  # case when the node list is a single value
-        node_list = [node_list]
-
-    root = node_type(node_list[0])  # Create the root node
-    queue = deque([root])
-    index = 1
-
-    # Process the list and construct the tree
-    while index < len(node_list):
-        node = queue.popleft()
-
-        # Assign the left child if available
-        if index < len(node_list) and node_list[index] is not None:
-            node.left = node_type(node_list[index])
-            queue.append(node.left)
-        index += 1
-
-        # Assign the right child if available
-        if index < len(node_list) and node_list[index] is not None:
-            node.right = node_type(node_list[index])
-            queue.append(node.right)
-        index += 1
-
-    return root
-
-
-from binarytree import Node
-
-tree_from_list = build_tree_from_list([4, 2, 7, 1, 3, 6, 9], TreeNode)  # use TreeNode or Node
-print(tree_from_list)
-#     __4__
-#    /     \
-#   2       7
-#  / \     / \
-# 1   3   6   9
-
-
-tree_from_list2 = build_tree_from_list([3, 9, 20, None, None, 15, 7], Node)
-print(tree_from_list2)
-#   3___
-#  /    \
-# 9     _20
-#      /   \
-#     15    7
-
-
-from collections import deque
-
-# Function create a list from a binary tree in level-order (breadth-first traversal)
-# def level_order_traversal(root: TreeNode | Node | None):
-def level_order_traversal(root):
-    if not root:
-        return
-    
-    node_list = []
-    queue = deque([root])  # Initialize the queue with the root node
-
-    while queue:
-        node = queue.popleft()  # Pop the current node
-        node_list.append(node.val)  # add its value to node list
-        
-        if node.left:  # Add left child to the queue if it exists
-            queue.append(node.left)
-
-        if node.right:  # Add right child to the queue if it exists
-            queue.append(node.right)
-
-    return node_list
-
-
-level_order_traversal(tree_from_list)
-# [4, 2, 7, 1, 3, 6, 9]
-
-level_order_traversal(tree_from_list2)
-# [3, 9, 20, 15, 7]
-
-
-
-
-from binarytree import Node  # or use TreeNode
-
-(level_order_traversal(
-    Solution().invertTree(
-        build_tree_from_list(
-            [4, 2, 7, 1, 3, 6, 9], TreeNode))), [4, 7, 2, 9, 6, 3, 1])
-# don't mix Node or TreeNode in one Solution
-
-(Solution().invertTree([4, 2, 7, 1, 3, 6, 9]), [4, 7, 2, 9, 6, 3, 1])
-(Solution().invertTree([2, 1, 3]), [2, 3, 1])
-(Solution().invertTree([]), [])
-
-
-# O(n), O(n)
-# dfs, recursion
-class Solution:
-    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
-        if not root:
-            return
-
-        root.left, root.right = root.right, root.left
-        self.invertTree(root.left)
-        self.invertTree(root.right)
-        
-        return root
-
-
-# O(n), O(n)
-# dfs, recursion
-class Solution:
-    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
-        if root:
-            root.left, root.right = root.right, root.left
-            self.invertTree(root.left) 
-            self.invertTree(root.right)
-        
-        return root
-
-
-# O(n), O(n)
-# dfs, recursion
-class Solution:
-    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
-        if root:
-            root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
-        
-            return root
-
-
-# O(n), O(n)
-# dfs, stack, iteration
-class Solution:
-    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
-        if not root:
-            return None
-        
-        stack = [root]
-
-        while stack:
-            node = stack.pop()
-            node.left, node.right = node.right, node.left
-            
-            if node.left:
-                stack.append(node.left)
-            if node.right:
-                stack.append(node.right)
-        
-        return root
-
-
-from collections import deque
-# O(n), O(n)
-# bfs, deque, iteration
-class Solution:
-    def invertTree(self, root: TreeNode | None) -> TreeNode | None:
-        if not root:
-            return None
-        
-        queue = deque([root])
-
-        while queue:
-            node = queue.popleft()
-            node.left, node.right = node.right, node.left
-            
-            if node.left:
-                queue.append(node.left)
-            if node.right:
-                queue.append(node.right)
-        
-        return root
 
 
 # Maximum Depth of Binary Tree
@@ -9371,11 +8244,21 @@ Example 3:
 Input: head = []
 Output: []
 """
+# simple test    
+node_3 = ListNode(3)
+node_2 = ListNode(2, node_3)
+node_1 = ListNode(1, node_2)
+solution = Solution()
+print(solution.reverseList(node_1).val)
+
+
 Solution().reverseList(node0)
 
 
-# Definition for singly-linked list.
 class ListNode:
+    """
+    Definition for singly-linked list.
+    """
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
@@ -9389,42 +8272,40 @@ node0 = ListNode(0, node1)
 node0.next
 node0.next.next
 
-# original Linked List
-# Node0(0, Node1) => Node1(1, Node2) => Node2(2, None) => None
-
-# reversed Linked List
-# None <= Node0(0, None) <= Node1(1, Node0) <= Node2(2, Node1)
-
-# previous   current            next
-# None <= Node0(0, None) <= Node1(1, Node2)
-
+from typing import Optional
 
 # O(n), O(1)
-# Iteration, two pointers
 class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
-        node = head  # assign head to node
-        previous = None
-
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        """
+        Reverse a singly-linked list.
+        Time complexity: O(n)
+        Auxiliary space complexity: O(1)
+        """
+        node = head
+        prev = None
         while node:
-            next_node = node.next  # save next node pointer
-            node.next = previous  # reverse pointer
-            
-            previous = node  # shift pointer
-            node = next_node  # shift pointer
-        
-        return previous
+            node_next = node.next
+            node.next = prev
+            prev = node
+            node = node_next
+        return prev
 
 
 # O(n), O(1)
-# Iteration, two pointers
 class Solution:
-    def reverseList(self, head: ListNode) -> ListNode:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        """
+        Reverse a singly-linked list.
+        One-liner
+        Time complexity: O(n)
+        Auxiliary space complexity: O(1)
+        """
         node = head
         previous = None
 
         while node:
-            node.next, previous, node = previous, node, node.next  # oneliner
+            node.next, previous, node = previous, node, node.next
         
         return previous
 
@@ -12949,79 +11830,6 @@ class Solution:
 
 
 
-# Reverse Words in a String III
-# https://leetcode.com/problems/reverse-words-in-a-string-iii/
-"""
-Given a string s, reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
-
-Example 1:
-
-Input: s = "Let's take LeetCode contest"
-Output: "s'teL ekat edoCteeL tsetnoc"
-Example 2:
-
-Input: s = "Mr Ding"
-Output: "rM gniD"
-"""
-print(Solution().reverseWords("Let's take LeetCode contest"), "s'teL ekat edoCteeL tsetnoc")
-print(Solution().reverseWords("Mr Ding"), "rM gniD")
-print(Solution().reverseWords("hehhhhhhe"), "ehhhhhheh")
-
-
-# O(n), O(n)
-# built-in function
-class Solution:
-    def reverseWords(self, text: str) -> str:
-        return " ".join(word[::-1] 
-                        for word in text.split())
-
-
-# O(n), O(n)
-# two pionters
-class Solution:
-    def reverseWords(self, text: str) -> str:
-        text = list(text)
-        text.append(" ")  # add space to catch the last word
-        left = 0  # the start of the word pointer
-
-        for index, letter in enumerate(text):
-            if letter == " ":
-                right = index - 1  # the end of the word pointer
-
-                while left < right:
-                    text[left], text[right] = text[right], text[left]  # swap letters
-                    left += 1
-                    right -= 1
-                
-                left = index + 1  # move the left pointer to the beginning of the next word
-
-        return "".join(text[:-1])
-
-
-class Solution:
-    def reverseWords(self, text: str) -> str:
-        rev_str = ""
-
-        for word in text.split():
-            rev_str = rev_str + word[::-1] + " "
-
-        return rev_str[:-1]
-
-
-class Solution:
-    def reverseWords(self, text: str) -> str:
-        rev_word = ""
-        rev_text = ""
-
-        for letter in text:
-            if letter != " ":
-                rev_word = letter + rev_word
-            else:
-                rev_text += rev_word + " "
-                rev_word = ""
-        
-        return rev_text + rev_word
-
 
 
 
@@ -15066,21 +13874,17 @@ class Solution:
         return reverse_linkedlist(anchor)
 
 
-list_nodes = [5, 2, 13, 3, 8]
 
-def list_to_linkedlist(list_nodes):
+def list_to_linked_list(values: list) -> Optional[ListNode]:
     anchor = node = ListNode()
-
-    for static_node in list_nodes:
-        node.next = ListNode(static_node)
+    for value in values:
+        node.next = ListNode(value)
         node = node.next
-    
-    node.next = None
-    
     return anchor.next
 
-linkedlist_1 = list_to_linkedlist(list_nodes)
-print(linkedlist_1.val)
+values = [5, 2, 13, 3, 8]
+linked_list_1 = list_to_linked_list(values)
+print(linked_list_1.val)
 
 
 # define LinkedList class to iterate throungh linked list
@@ -15103,7 +13907,7 @@ class LinkedList:
         else:
             raise StopIteration
 
-linkedList1 = LinkedList(linkedlist_1)
+linkedList1 = LinkedList(linked_list_1)
 
 # iterate through LinkedList
 for linkedlist_node in linkedList1:
@@ -15111,24 +13915,22 @@ for linkedlist_node in linkedList1:
 
 
 
-def linkedlist_to_list(node):
-    list_nodes = []
-
+def linked_list_to_list(node: Optional[ListNode]) -> list:
+    values = []
     while node:
-        list_nodes.append(node.val)
+        values.append(node.val)
         node = node.next
+    return values
 
-    return list_nodes
+print(linked_list_to_list(linked_list_1))
 
-print(linkedlist_to_list(linkedlist_1))
-
-print(linkedlist_to_list(Solution().removeNodes((list_to_linkedlist([5, 2, 13, 3, 8])))), [13, 8])
-print(linkedlist_to_list(Solution().removeNodes((list_to_linkedlist([1, 1, 1, 1])))), [1,1,1,1])
+print(linked_list_to_list(Solution().removeNodes((list_to_linked_list([5, 2, 13, 3, 8])))), [13, 8])
+print(linked_list_to_list(Solution().removeNodes((list_to_linked_list([1, 1, 1, 1])))), [1,1,1,1])
 
 print(
-    linkedlist_to_list(
+    linked_list_to_list(
         Solution().removeNodes((
-            list_to_linkedlist([5, 2, 13, 3, 8])))), [13, 8])
+            list_to_linked_list([5, 2, 13, 3, 8])))), [13, 8])
 
 
 
@@ -21946,7 +20748,8 @@ def test_input(operations: list[str], arguments: list[list[int | None]]) -> list
 
 # Example Input
 operations = ["Twitter", "getNewsFeed"]
-arguments = [[], [1]]
+
+ = [[], [1]]
 expected_output = [None, []]
 
 operations = ["Twitter","postTweet","getNewsFeed","follow","postTweet","getNewsFeed","unfollow","getNewsFeed"]
@@ -21959,9 +20762,9 @@ expected_output = [None,None,None,None,None,None,None,None,None,None,None,None,N
 
 
 # Run tests
-test_output = test_input(operations, arguments)
-print(test_output == expected_output)
-print(test_output)
+actual_output = test_input(operations, arguments)
+print(actual_output == expected_output)
+print(actual_output)
 
 
 
@@ -22872,9 +21675,9 @@ arguments = [[],[1], [1], [1], [2], [], [], [2], [2], [1], [], [], []]
 expected_output = [None, None, None, None, None, 1, 1, None, None, None, 2, 1, 2]
 
 # Run tests
-test_output = test_input(operations, arguments)
-print(test_output == expected_output)
-print(test_output)
+actual_output = test_input(operations, arguments)
+print(actual_output == expected_output)
+print(actual_output)
 
 
 
@@ -23691,4 +22494,118 @@ class Solution:
 
 
 
-# 
+
+# Best Team With No Conflicts
+# https://leetcode.com/problems/best-team-with-no-conflicts/description/
+"""
+You are the manager of a basketball team. For the upcoming tournament, you want to choose the team with the highest overall score. The score of the team is the sum of scores of all the players in the team.
+
+However, the basketball team is not allowed to have conflicts. A conflict exists if a younger player has a strictly higher score than an older player. A conflict does not occur between players of the same age.
+
+Given two lists, scores and ages, where each scores[i] and ages[i] represents the score and age of the ith player, respectively, return the highest overall score of all possible basketball teams.
+
+ 
+
+Example 1:
+
+Input: scores = [1,3,5,10,15], ages = [1,2,3,4,5]
+Output: 34
+Explanation: You can choose all the players.
+Example 2:
+
+Input: scores = [4,5,6,5], ages = [2,1,2,1]
+Output: 16
+Explanation: It is best to choose the last 3 players. Notice that you are allowed to choose multiple people of the same age.
+Example 3:
+
+Input: scores = [1,2,3,5], ages = [8,9,10,1]
+Output: 6
+Explanation: It is best to choose the first 3 players. 
+"""
+
+# https://neetcode.io/solutions/best-team-with-no-conflicts
+# https://leetcode.com/problems/best-team-with-no-conflicts/
+
+class Solution:
+    def bestTeamScore(self, scores: list[int], ages: list[int]) -> int:
+        def dfs(index, youngest_age, youngest_score):
+            if index >= len(scores):
+                return 0
+
+            # check for conflicts
+            skip_conflict = 0
+            while (index + skip_conflict < len(scores) and 
+                   ages[index] < youngest_age and 
+                   scores[index] > youngest_score):
+                skip_conflict += 1
+
+            if ages[index] < youngest_age:
+                youngest_age = ages[index]
+                youngest_score = scores[index]
+            elif ages[index] == youngest_age:
+                youngest_score = min(youngest_score, scores[index])
+
+            # score = scores[index] + dfs(index + 1 + skip_conflict, youngest_age, youngest_score)
+            # if skip_conflict != 0:
+            #     score = max(score, dfs(index + 1, youngest_age, youngest_score))
+
+            include_score = scores[index] + dfs(index + 1 + skip_conflict, youngest_age, youngest_score)
+            skip_score = dfs(index + 1, youngest_age, youngest_score)
+            score = max(include_score, skip_score)
+                
+            return score
+
+        return dfs(0, float("inf"), float("inf"))
+
+print(Solution().bestTeamScore([3, 4], [8, 7]), 4)
+# print(Solution().bestTeamScore([3, 4], [7, 8]), 7)
+# print(Solution().bestTeamScore([1, 3, 5, 10, 15], [1, 2, 3, 4, 5]), 34)
+# print(Solution().bestTeamScore([4, 5, 6, 5], [2, 1, 2, 1]), 16)
+# print(Solution().bestTeamScore([1, 2, 3, 5], [8, 9, 10, 1]), 6)
+
+"""
+draft
+[3, 4] scores
+[8, 7] ages
+
+                    .
+            /               \
+            3               0
+        /       \       /       \
+        -       0       4       0
+
+[4, 5, 6, 5] scores
+[2, 1, 2, 1] ages
+
+                           .
+                /4                       \4
+                4                        0
+       /5-            \5              /5          \5
+                      5             5              0
+                   /6  \6        /6    \6-       /6    \6
+                 11     5      11           
+              /5  \5            
+             16   11
+
+
+"""
+
+
+
+
+class Solution:
+    def longestStrChain(self, words: list[str]) -> int:
+
+        def dfs(index, youngest_age, youngest_score):
+            if index >= len(words):
+                return 0
+
+            return 
+
+        return dfs(0)
+
+
+print(Solution().longestStrChain(["a", "b", "ba", "bca", "bda", "bdca"]), 4)
+print(Solution().longestStrChain(["xbc", "pcxbcf", "xb", "cxbc", "pcxbc"]), 5)
+print(Solution().longestStrChain(["abcd", "dbqca"]), 1)
+# print(Solution().longestStrChain(), )

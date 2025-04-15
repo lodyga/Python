@@ -532,53 +532,51 @@ age = {}
 age = dict()
 type(age)  # <class 'dict'>
 
-s_dict = {'Tim': 28,
+people = {'Tim': 28,
           'Jim': 35,
           'Pam': 40
           }
 
-names = s_dict.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
-ages = s_dict.values()  # dict_values([28, 35, 40])
-s_dict.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
-len(s_dict)  # 3
-s_dict.get('Tim')  # 28
-s_dict.get('Ukasz')  # Nothin # dict.get() is safer then dict[]
-s_dict.get('Ukasz', 100)  # 100 # dict.get() returns 100 if key not in dict
-s_dict['Tim']  # 28
-s_dict['Tim'] += 2  # 30
-s_dict['Ukasz']  # Error
+names = people.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
+ages = people.values()  # dict_values([28, 35, 40])
+people.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
+len(people)  # 3
+people.get('Tim')  # 28
+people.get('Ukasz')  # Nothin # dict.get() is safer then dict[]
+people.get('Ukasz', 100)  # 100 # dict.get() returns 100 if key not in dict
+people['Tim']  # 28
+people['Tim'] += 2  # 30
+people['Ukasz']  # Error
 
-s_dict['Tom2'] = 50
-s_dict.update({'Tom': 50})
-
-# remove elements, all
-del s_dict['Tom2']
-s_dict.pop('Tom')
-s_dict.clear() # remove all the elements from the dictionary.
-del s_dict # delete, remove dictionary
+people['Tom2'] = 50
+people.update({'Tom': 50})
+people.pop('Tom')  # remove a key form dict
+del people['Tom2']
+people.clear() # remove all the elements from the dictionary.
+del people # delete, remove dictionary
 
 
 # lists as values
-s_dict.update({'Tom': []})  # []
-s_dict['Tom'].append(0)  # [0]
-s_dict['Tom'].append(1)  # [0, 1]
+people.update({'Tom': []})  # []
+people['Tom'].append(0)  # [0]
+people['Tom'].append(1)  # [0, 1]
 
 # int as a key
-s_dict[0] = 1  # {0: 1}
-s_dict[0]
+people[0] = 1  # {0: 1}
+people[0]
 
-'Tim' in s_dict
-'Tim' in s_dict.keys()
+'Tim' in people
+'Tim' in people.keys()
 
 list(dict.fromkeys([1, 2, 2, 3, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
-{**s_dict} == s_dict
-{**s_dict, **{'Sam': 55}}
-{*s_dict, *{'Sam': 55}}
+{**people} == people
+{**people, **{'Sam': 55}}
+{*people, *{'Sam': 55}}
 
 
 
-age_copy = s_dict.copy() # creates copy which has another id
+age_copy = people.copy() # creates copy which has another id
 age_copy['Tim'] = 100
 
 sentence = 'Jim quickly realized that the beautiful gowns are expensive'
@@ -927,7 +925,7 @@ list(range(3, 5))  # [3, 4]
 
 
 
-# match
+# match Introduced in Python 3.10
 # case
 # switch
 # which
@@ -2262,7 +2260,7 @@ os.listdir()
 
 # reading a file
 
-emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp.txt", "r")
+emp_file = open("./rfscVS0vtbw/emp.txt", "r")
 
 print(emp_file.readable())  # is file readable
 print(emp_file.read())  # read a file
@@ -2273,12 +2271,12 @@ emp_file.close()
 
 # writting (append) to a file
 
-emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp.txt", "a")
+emp_file = open("./rfscVS0vtbw/emp.txt", "a")
 emp_file.write("Paweł poledancer\n")
 emp_file.close()
 
 # w new file
-emp_file = open("/home/ukasz/Documents/IT/Python/rfscVS0vtbw/emp1.txt", "w")  # creats a new file
+emp_file = open("./rfscVS0vtbw/emp1.txt", "w")  # creats a new file
 emp_file.close()
 
 
@@ -3592,6 +3590,9 @@ from binarytree import Node
 
 
 
+
+
+
 # setter, getter
 class Rectangle:
     def __init__(self, height, width):
@@ -3629,28 +3630,27 @@ class Rectangle:
     def width(self):
         del self._width
         print("Width deleted.")
+    
+    @property
+    def area(self):
+        return f"{self._height * self._width} cm2"
+
+    @property    
+    def perimeter(self):
+        return f"{2 * (self._height + self._width)} cm"
 
 
-rectangle1 = Rectangle(2, 5)
-rectangle1.height = 3
-rectangle1.width = 6
+rectangle_1 = Rectangle(2, 5)
+print(rectangle_1.area)
+print(rectangle_1.perimeter)
+rectangle_1.height = 3
+rectangle_1.width = 6
 
-# del rectangle1.height
-# del rectangle1.width
+print(rectangle_1.height)
+print(rectangle_1.width)
 
-print(rectangle1.height)
-print(rectangle1.width)
-
-
-
-
-
-
-
-
-
-
-
+# del rectangle_1.height
+# del rectangle_1.width
 
 
 
@@ -3694,4 +3694,83 @@ list_1 = ListWithLength([3, 4, 5])
 print(list_1.print_p)  # [3, 4, 5]
 list_1.print()  # [3, 4, 5]
 print(list_1.length)  # 3
+print(list_1)
 
+
+
+
+
+
+
+
+
+
+
+
+import requests
+# Get languages
+curl -X GET http://localhost:2358/languages
+print(requests.get("http://localhost:2358/languages").json())
+
+
+# Get languages with API
+curl --header "x-rapidapi-host: judge0-ce.p.rapidapi.com" \
+--header "x-rapidapi-key: ***" \
+-X GET http://localhost:2358/languages
+
+import requests
+headers = {
+    "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+    "x-rapidapi-key": "***"
+}
+url = f"https://judge0-ce.p.rapidapi.com/languages"
+response = requests.get(url, headers=headers).json()
+print(response)
+
+
+# Hello World local
+import requests
+url = f"http://localhost:2358/submissions"
+data = {
+    "source_code": "print('Hello, World!')",
+    "language_id": 71
+}
+response = requests.post(url, data=data).json()
+print(response)  # {'token': 'c941a888-2e9c-42ee-a806-0ef2697373a8'}
+
+token = response["token"]
+url = f"http://localhost:2358/submissions/{token}"
+response = requests.get(url).json()
+print(response)
+
+
+# Hello World with API
+import requests
+headers = {
+    "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
+    "x-rapidapi-key": "***"
+}
+url = f"https://judge0-ce.p.rapidapi.com/submissions"
+data = {
+    "source_code": "print('Hello, World!')",
+    "language_id": 71
+}
+response = requests.post(url, data=data, headers=headers).json()
+print(response)
+
+token = response["token"]
+url = f"https://judge0-ce.p.rapidapi.com/submissions/{token}"
+response = requests.get(url, headers=headers).json()
+print(response)
+
+
+
+
+
+
+
+# copy to clipboard
+import pyperclip
+# sudo apt-get install xclip
+pyperclip.copy('The text to be copied to the clipboard.')
+spam = pyperclip.paste()
