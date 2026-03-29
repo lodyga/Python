@@ -84,3 +84,32 @@ print("Linked List length:", linked_list_1._length)
 print(linked_list_1)
 print(linked_list_1.reverse_list().to_list())
 print(linked_list_1.visualize())
+
+
+
+
+# define LinkedList class to iterate throungh linked list
+class LinkedList:
+    def __init__(self, head):
+        self.head = head
+        self.node = None
+
+    # define iterator
+    def __iter__(self):
+        self.node = self.head
+        return self
+
+    # iterate
+    def __next__(self):
+        if self.node:
+            val = self.node.val
+            self.node = self.node.next
+            return val
+        else:
+            raise StopIteration
+
+linkedList1 = LinkedList(linked_list_1)
+
+# iterate through LinkedList
+for linkedlist_node in linkedList1:
+    print(linkedlist_node)

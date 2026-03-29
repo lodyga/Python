@@ -1,44 +1,14 @@
-from collections import Counter
-
-
-# help
-from scipy.fftpack import shift
-from sympy import intersection
-
-
 dir(str)  # returns a list of attributes and methods belonging to an object
 help(str)
 help(str.isdigit)
 type(str)  # <class 'type'> # type of an object
-id(str)  # identity of an object
-
-
-
-
-
-# slice
-'abc'[::-1]  # 'cba' # reversed string
-''.join(reversed('abc'))  # 'cba' # same
-[1, 2, 3][::-1]  # [3, 2, 1] # reversed list
+id(str)  # identity of an object, memory address
 
 
 
 
 
 # Strings
-'welcome '+ "you" + ' too ' + "2"  # 'welcome you too 2'
-'welcome {0} too {1}'.format('you', '2')  # 'welcome you too 2'
-'welcome {a} too {b}'.format(a='you', b=2)  # 'welcome you too 2'
-'welcome %s too %d' % ('you', 2)  # 'welcome you too 2'
-first_str, sec_str = "you", "2"
-f'welcome {first_str} too {sec_str}'  # 'welcome you too 2'
-
-arg = 'you'
-arg2 = 2
-'welcome {0} too {1}'.format(arg, arg2)
-'welcome %s too %d' % (arg, arg2)
-f'welcome {arg} too {arg2}'
-
 '2' + '2'  # '22'
 'S' * 3  # 'SSS'
 'equals = ' + str(8)  # 'equals = 8'
@@ -61,7 +31,7 @@ print('GGT\nCAG\r')
 'A  Alan'.split(' ')  # ['A', '', 'Alan'] # capture additional spaces
 list('abcd')  # ['a', 'b', 'c', 'd'] # list from a string  # JS word.split('')
 list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from a string
-{x:int(y) for x, _, y in ['0+1', '1-2']}  # {'0': 1, '1':2}
+{x: int(y) for x, _, y in ['0+1', '1-2']}  # {'0': 1, '1':2}
 
 ';'.join(str(123))  # '1;2;3'
 ';'.join('abcd')  # 'a;b;c;d'
@@ -71,14 +41,20 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from a string
 'abc'.islower()  # True # string.ascii_lowercase
 'abc'.isupper()  # False # string.ascii_uppercase
 'abc'.isnumeric()  # False
+'-5'.isnumeric()  # False
 'abc123'.isalnum()  # True
 'abc123'.isalpha()  # False
 '123'.isdigit()  # True
+"-123".isdigit()  # False
 '123'.isalnum()  # True
+'-5'.isalnum()  # False
 '123'.isdecimal()  # True
+'-5'.isdecimal()  # False
 '123'.isnumeric()  # True
+'-123'.isnumeric()  # False
 '1010'.isnumeric()  # True
 '{:b}'.format(10).isnumeric()  # True
+# to check if negative number with try: int(str) except: pass
 
 'abc'.upper()  # 'ABC'
 'ABc'.lower()  # 'abc'
@@ -89,7 +65,6 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from a string
 'ABC DEF'.title()  # 'Abc Def'
 " ".join(map(str.capitalize, "abc def".split()))  # 'Abc Def'
 "abc't def".title()  # 'Abc'T Def'
-import string
 string.capwords("abc't def")  # 'Abc't Def'
 
 '  1 2  '.strip()  # '1 2' # removes leading and trailing whitespaces  // .trim()
@@ -104,6 +79,10 @@ string.capwords("abc't def")  # 'Abc't Def'
 'foobar'.startswith('foo')  # True
 'foobar'.endswith('bar')  # True
 
+# slice
+'abc'[::-1]  # 'cba' # reversed string
+''.join(reversed('abc'))  # 'cba' # same
+[1, 2, 3][::-1]  # [3, 2, 1] # reversed list
 
 # slice
 # part
@@ -121,15 +100,6 @@ S[:2:-1]  # 'noh' # starts form the end, ends on the 2nd elem exclusive reversed
 S[4::-1]  # 'ohtyP' # starts from the 4th elem, ends on the start reversed # first five elements counting from left reversed
 S[:-4:-1]  # 'noh' # starts form the end, ends on the 4th elem from right exclusive reversed # last three elements counting from right reversed
 S[-2::-1]  # 'ohtyP' # starts from the 2nd elem from right, ends on the start reversed # first five elements counting from right reversed
-
-rev = slice(None, None, -1)  # creates reversed function based on slice
-S[rev]  # "nehtyP"
-f_five = slice(None, 5)  # first five chars based on slice
-S[f_five]  # "Pytho"
-
-
-
-
 
 """
 start counting from +left/-right:
@@ -165,9 +135,20 @@ step counting from +left/-right:
 '40'.rjust(5)
 '{:.2e}'.format(40)  # 4.00e+01' # scientific form
 '{:.2E}'.format(40)  # 4.00E+01' # scientific form
+format(number, f'0{k}b')  # 
 
+'welcome '+ "you" + ' too ' + "2"  # 'welcome you too 2'
+'welcome {0} too {1}'.format('you', '2')  # 'welcome you too 2'
+'welcome {a} too {b}'.format(a='you', b=2)  # 'welcome you too 2'
+'welcome %s too %d' % ('you', 2)  # 'welcome you too 2'
+first_str, sec_str = "you", "2"
+f'welcome {first_str} too {sec_str}'  # 'welcome you too 2'
 
-
+arg = 'you'
+arg2 = 2
+'welcome {0} too {1}'.format(arg, arg2)
+'welcome %s too %d' % (arg, arg2)
+f'welcome {arg} too {arg2}'
 
 
 
@@ -256,6 +237,7 @@ bin(0xff)  # '0b11111111' # hex to bin
 
 
 # comprehension
+sum(value % x for row in grid for value in row)
 [chr(j) * i for i in range(1, 3) for j in range(97, 100)]  # ['a', 'b', 'c', 'aa', 'bb', 'cc']
 sum(int(i) for i in str(169))  # 16 # comprehension generator sum
 sum(i in 'aeiou' for i in 'abracadabra')  # 5
@@ -271,11 +253,21 @@ True or 1/0  # True
 not p or not q <==> not (p and q)
 p => q <==> (not p) and q
 
+True | True  # True
+True or True  # True
+True & False  # False
+True and False  # False
+
 list(True if i in 'ab' else False for i in 'abc')  # [True, True, False]
 list(i in 'ab' for i in 'abc')  # [True, True, False]
 list(True for i in 'abc' if i in 'ab')  # [True, True]
 list(i > 5 for i in range(10) if not i % 2)  # [False, False, False, True, True]
 
+if all(all(row) for row in grid):  # if all cells are True
+if all(number == 1 for row in grid for number in row):
+
+if not any(any(row) for row in grid):  # if all cels are False
+if all(number == 0 for row in grid for number in row):
 
 
 
@@ -291,29 +283,29 @@ Operator	Example	Meaning
 >>	a >> n	Bitwise right shift
 """
 
-AND, intersection
+# AND, intersection
 156 & 52  # 20
 0b10011100 & 0b00110100  # 20  # 0b10100
 bin(20)  # '10100'
 
-OR, disjunction
+# OR, disjunction
 156 | 52  # 188
 0b10011100 | 0b110100  # 188
 bin(188)  # '10111100'
 
-XOR, 
+# XOR, 
 156 ^ 52  # 168
 0b10011100 ^ 0b110100  # 168
 bin(168)  # '10101000'
 
-NOT, complement
+# NOT, complement
 ~ 156  # -157
 ~ 0b10011100  # -157
-Need to use binary number representations
+# Need to use binary number representations
 ~ 156 & 255  # 99
 ~ 0b10011100 & 255  # 99
 
-Left Shift
+# Left Shift
 0b100111  # 39
 0b100111 << 1  # 78  # 78 * 2
 0b100111 << 2  # 156
@@ -328,10 +320,11 @@ int(bin(312)[3:], 2)  # 56
 0b10011101 >> 2  # 39
 0b10011101 >> 3  # 19
 
-4 & 1  # 0  # False & True => False
-100 & 1  # 0  # False & True => False
-5 & 1  # 1  # True & True => True
-101 & 1  # 1  # True & True => True
+11 << 1  # 11 * 2
+11 >> 1  # 11 // 2
+5 & 1  # 101 & 001 -> 001 = 1
+2 ^ 3  # 10 ^ 11 -> 01 = 1
+2 | 3  # 10 | 11 -> 11 = 11
 
 0b101 & 0b101  # 5
 0b100 | 0b101  # 5
@@ -350,9 +343,38 @@ id(a)
 id(b)
 a is b
 
-11 << 1  # 11 * 2
-11 >> 1  # 11 // 2
-2 ^ 3  # 10 xor 11 -> 01 -> 1
+
+
+# bit manipulation
+[bin(0), bin(2), bin(6)]  # ['0b0', '0b10', '0b110']
+
+
+def to_bin(number):
+    if number == 0:
+        return 0
+    bin_number = []
+
+    while number:
+        bin_digit = str((number % 2))
+        bin_number.append(bin_digit)
+        number //= 2
+    return "".join(reversed(bin_number))
+
+print(to_bin(0), 0)  # 0
+print(to_bin(2), 10)  # 10
+print(to_bin(6), 110)  # 110
+
+
+def get_32_bits(n: int) -> str:
+    int32_bin = []
+    for i in range(32):
+        bin_digit = str((n >> i) & 1)
+        int32_bin.append(bin_digit)
+    return "".join(reversed(int32_bin))
+
+print(get_32_bits(0))  # 00000000000000000000000000000000
+print(get_32_bits(2))  # 00000000000000000000000000000010
+print(get_32_bits(6))  # 00000000000000000000000000000110
 
 
 
@@ -407,6 +429,8 @@ a.extend([5, 6])  # extend list with another list
 a.reverse()
 a2 = a  # another name to the same list instance
 a3 = a.copy()  # creates another instance of a list
+a3 = a[:]  # creates another instance of a list
+a3 = [*a]
 a.clear()
 
 [10, 20, 3, 3].index(3)  # 2 # the first index of the value
@@ -473,7 +497,7 @@ type(b)  # <class 'tuple'>
 
 
 
-# Sets
+# set()
 
 s = set()
 s = {1, 3, 5}
@@ -523,6 +547,11 @@ A <= {0, 1, 2, 3, 4}
 'A' in 'ABC'  # True
 
 
+hash_map[key] |= hash_map2[key]
+hash_map[key].update(hash_map2[key])
+
+
+
 
 
 
@@ -538,6 +567,7 @@ people = {'Tim': 28,
           }
 
 names = people.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
+letter = next(iter(node.letters))  # take the first dict value
 ages = people.values()  # dict_values([28, 35, 40])
 people.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
 len(people)  # 3
@@ -632,6 +662,86 @@ for student in students:
 
 
 
+
+
+
+# queue
+# deque
+from collections import deque
+
+queue = deque([7, 8, 9])
+queue.append(4)
+queue.appendleft(5)
+queue.pop()
+queue.popleft()
+queue.remove(7)
+len(queue)
+queue[0]
+queue[-1]
+queue.extend([4, 5, 6]) # add list
+queue.clear()  # empty 
+queue = deque(range(5), maxlen=5) # max elements in q
+
+
+
+
+
+
+
+
+
+# heap
+import heapq
+
+heapq.heapify(numbers)
+heapq.heappush(numbers, val)
+heapq.heappop(numbers)
+heapq.heappushpop(numbers, val)
+
+# heap order is the same
+heapq.heappush(self.freq_stack, (-self.number_frequency[val], self.index, val))
+heapq.heappush(self.freq_stack, ((-self.number_frequency[val], self.index), val))
+
+
+
+
+# SortedList
+from sortedcontainers import SortedList
+
+events = SortedList()
+events.add((20, 30))
+events.add((10, 20))
+events.add((15, 25))
+print(events.bisect_right((17, 1)))  # 2
+
+
+# bisect
+import bisect
+
+numbers = [10, 20, 20, 20, 30, 40]
+
+# bisect_left - first position where value could be inserted
+bisect.bisect_left(numbers, 20)   # 1 (first occurrence of 20)
+bisect.bisect_left(numbers, 25)   # 4 (where 25 would be inserted)
+
+# bisect_right - position after the last occurrence
+bisect.bisect_right(numbers, 20)  # 4 (after last 20)
+bisect.bisect_right(numbers, 25)  # 4 (same as bisect_left for non-existent)
+
+bisect.insort(numbers, 15)  # [10, 15, 20, 20, 20, 30, 40]
+
+numbers = [(10, 20), (15, 25), (20, 30)]
+
+bisect.bisect_right(numbers, (10, 10))  # 0
+bisect.bisect_right(numbers, (10, 30))  # 1
+bisect.bisect_right(numbers, (20, 10))  # 2
+bisect.bisect_right(numbers, (20, 50))  # 3
+
+
+
+
+
+
 # min
 # max
 
@@ -672,7 +782,8 @@ min((a - b, -b, i) for i, (a, b) in enumerate(goals))[-1] # min of sorted indexe
 
 
 
-# sorted
+# sort
+nums.sort(key=lambda x: (len(x), x), reverse=True)  # sort lexicographically
 
 # sort dict by count
 from collections import Counter
@@ -728,6 +839,9 @@ a = [(1, 2), (4, 1), (9, 10), (13, -3)]
 a.sort(key=lambda x: x[1])  # sorts enlements in list a
 sorted(a, key=lambda x: x[1])  # creates a new list with sorted elements
 
+nums.sort(key=lambda x: (len(x), x), reverse=True)  # sort numbers lexicographically
+
+
 
 
 
@@ -735,6 +849,8 @@ sorted(a, key=lambda x: x[1])  # creates a new list with sorted elements
 # sum
 
 sum([True, False, True, False])  # 2 # counts True
+sum(number for row in grid for number in row)  # sum matrix
+sum([4, 5, 6], 5)  # 20, sum(iterable, start=0)  # hacky
 
 import numpy as np
 X = [[1, 2], [2, 3], [4, 5]]
@@ -863,29 +979,10 @@ print(json.dumps(some_dict))
 
 
 
-# from collections import deque
-
-from collections import deque
-
-d = deque()
-d.append(1)
-d.append('1')
-len(d)
-d[0]
-d[-1]
-d.popleft()
-d.remove('1')
-
-d = deque(range(5), maxlen=5) # max elements in q
-d.appendleft(-1) # add element from left
-d.extend([4, 5, 6]) # add list
-
-
-
-
 
 # enumerate
-
+for index, char in reversed(list(enumerate(text))):  # reverse enumerate
+    
 for i, char in enumerate(('a', 'b', 'c'), -3):
     print(i, char)
 
@@ -952,7 +1049,6 @@ py_unicode = [U'\u0050', u'\u0059', u'\u0054',
 ''.join(py_unicode)
 
 
-# https://en.wikipedia.org/wiki/Bracket
 u'\u0050' # P
 u'\u003C' # <
 u'\u003E' # >
@@ -966,8 +1062,15 @@ u'\u2264' # ≤
 u'\u0061' # a
 
 
-ord('u')
-chr(117)
+ord("a")  # 97, The ASCII (Unicode, UTF-8) values of the characters 
+chr(97)  # a
+int("01100001", 2)  # 97  binary
+
+"a".encode("unicode_escape")
+"a".encode()
+bin("a".encode())
+ord(u"a")
+
 
 import html
 html.unescape('&pound;682m')
@@ -1610,6 +1713,8 @@ np.std([9, 16, 25])  # 6.54
 
 np.round([17.05, 15.49], 0)  # 17.0
 np.ceil(17.05)  # 18.0
+(d - 1) // s + 1
+(d + s - 1) // s
 np.floor(17.05)  # 17.0
 
 l = np.array([1, 2])
@@ -1928,6 +2033,7 @@ for i in re.finditer(r'([a-zA-Z]+)\s\d+', 'June 24, August 9, Dec 12'):
 
 # re.split() splits on the pattern
 re.split(r'\s','split the swords', 2)  # ['split', 'the', 'swords']  # stops after 2nd split
+re.split(r'\s','split the swords', 1)  # ['split', 'the swords']  # stops after 1st split
 re.split(r's', 'split the swords')  # ['', 'plit the ', 'word', '']
 re.split(r'[.,]', '100,000.00')  # ['100', '000', '00']
 re.split(r'\D', '100,000.00')  # ['100', '000', '00']
@@ -2130,6 +2236,37 @@ finally:
 
 
 
+import os
+
+os.environ.get("PATH", "").split(os.pathsep)  # ["/usr/bin", "/usr/local/bin"]
+os.path.join(directory, cmd)  # "/usr/bin"/cmd
+os.path.isfile(cmd_path)  # True/False
+os.chdir(path)  # True/False
+os.path.exists(full_path)  # True/False
+os.access(full_path, os.X_OK)  # True/False
+
+with os.scandir(directory) as it:  # search directory
+    for entry in it:
+        if (
+            not entry.is_file() or
+            entry.name in seen
+        ):
+            continue
+
+with open(file_path, "w") as f:  # write to/create a file
+    f.write(text + "\n")
+
+with open(file_path, "a") as f:  # append to/create a file
+    f.write(text + "\n")
+
+
+import subprocess
+subprocess.run((cmd, *args))  # run command with arguments
+
+with open(output_file, "w") as f:  # redirect supprocess to a file
+    subprocess.run([cmd, *cmd_args], stdout=f)
+
+
 
 
 
@@ -2151,8 +2288,6 @@ ss.norm(0, 1).rvs((5, 2)) # generate normal distribution array; rvs = random var
 ss.norm.rvs(0, 1, (5, 2))
 
 ss.uniform.rvs(size=3)
-
-
 
 
 
@@ -2278,6 +2413,20 @@ emp_file.close()
 # w new file
 emp_file = open("./rfscVS0vtbw/emp1.txt", "w")  # creats a new file
 emp_file.close()
+
+
+
+# readline()
+readline.set_completer(completer)
+readline.parse_and_bind("tab: complete")
+
+
+def completer(text, state):
+    options = [cmd + " " for cmd in BUILTINS if cmd.startswith(text)]
+    return options[state] if state < len(options) else None
+
+
+
 
 
 
@@ -3774,3 +3923,109 @@ import pyperclip
 # sudo apt-get install xclip
 pyperclip.copy('The text to be copied to the clipboard.')
 spam = pyperclip.paste()
+
+
+
+
+
+# parse parameters (flag) from command line arguments
+# Get `directory` path
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--directory',
+                    type=str,
+                    help='Directory to serve files from')
+args = parser.parse_args()
+directory = args.directory
+
+import sys
+if "--directory" in sys.argv:
+    dir_index = sys.argv.dir_index("--directory")
+    if dir_index + 1 < len(sys.argv):
+        directory = sys.argv[dir_index + 1]
+
+
+
+
+
+
+
+
+
+
+
+# import moudle, import package
+# 1. Use environment variable PYTHONPATH
+# one time use
+# from binary_tree_utils import build_tree, print_tree
+# PYTHONPATH=/home/ukasz/Documents/IT/Python python solution.py
+
+# 2. Package structure
+# use in current terminal
+# export PYTHONPATH=/home/ukasz/Documents/IT/Python/
+# $ echo $PYTHONPATH
+# from binary_tree_utils import *
+# py solution.py
+
+# export PYTHONPATH=/home/ukasz/Documents/IT/
+# /home/ukasz/Documents/IT/Python/
+#     __init__.py
+#     binary_tree_utils.py
+# from Python.binary_tree_utils import *
+
+# 3 Permanent via .bashrc
+# permanent use
+# nano ~/.bashrc
+# export PYTHONPATH="/home/ukasz/Documents/IT/Python:$PYTHONPATH"
+# source ~/.bashrc
+# python -c "import sys; print(sys.path)"
+
+
+# import module with debugger in vsc
+# .env
+# PYTHONPATH=/home/ukasz/Documents/IT/Python
+# settings.json
+# {"python.envFile": "${workspaceFolder}/.env"}
+
+
+
+# gcd, greatest common divisor
+
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+
+def gcd(a, b):
+    return gcd(b, a % b) if b else a
+
+
+
+
+
+# doctest
+# temp.py
+class Solution:
+    def twoSum(self, nums: list[int], target: int) -> list[int]:
+        """
+        >>> Solution().twoSum([2, 7, 11, 15], 9)
+        [0, 1]
+        >>> Solution().twoSum([3, 2, 4], 6)
+        [1, 2]
+        >>> Solution().twoSum([3, 3], 6)
+        [0, 1]
+        """
+        num_index = {}
+        for index, num in enumerate(nums):
+            complement = target - num
+            if complement in num_index:
+                return [num_index[complement], index]
+            else:
+                num_index[num] = index
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
+py temp.py -v
