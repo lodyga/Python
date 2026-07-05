@@ -1,4 +1,5 @@
 # PYTHONPATH=/home/ukasz/Documents/IT/Python py solution.py
+# source ~/Documents/IT/Python/.venv/bin/activate
 # export PYTHONPATH=/home/ukasz/Documents/IT/Python/
 
 
@@ -16,6 +17,7 @@ class TreeNode:
         self.right = right
 
 def build_tree(node_list: list[int], node_type: tree.Node | TreeNode = TreeNode, with_lookup: bool = False) -> TreeNode | None:
+    # build
     """
     Build binary tree from level order traversal list.
 
@@ -26,8 +28,10 @@ def build_tree(node_list: list[int], node_type: tree.Node | TreeNode = TreeNode,
     # Becaues of node_list = [1, None, 3, None, None, None, 4] need to use try/except
     if node_type == tree.Node:
         try:
+            # Build a tree from `list representation`.
             return tree.build2(node_list)
         except:
+            # Build a tree from a compact list.
             return tree.build(node_list)
 
     while node_list and node_list[-1] is None:
@@ -74,6 +78,7 @@ def build_tree(node_list: list[int], node_type: tree.Node | TreeNode = TreeNode,
 
 
 def get_tree_values(root: TreeNode) -> list[int]:
+    # serialize
     """
     Return tree node values in level order traversal format.
     """
@@ -102,6 +107,7 @@ def get_tree_values(root: TreeNode) -> list[int]:
 
 
 def is_same_tree(root1: TreeNode | None, root2: TreeNode | None) -> bool:
+    # is_equal
     """
     Time complexity: O(n)
     Auxiliary space complexity: O(n)
@@ -151,5 +157,9 @@ if __name__ == "__main__":
     binary_tree_1 = build_tree(values_1, node_type=tree.Node)  # from binary_tree
     # binary_tree_1 = tree.build2(values_1)  # from binarytree
     # binary_tree_1 = build_tree(values_1, with_lookup=True)
-    print(binary_tree_1)
+    pretty_print = binary_tree_1.__str__()
+    print(pretty_print)
+    print(binary_tree_1.max_node_value)
+    print(binary_tree_1.properties["height"])
+    print(binary_tree_1.levelorder)
     # print(is_same_tree(binary_tree_1, binary_tree_1))

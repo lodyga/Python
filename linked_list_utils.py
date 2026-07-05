@@ -1,5 +1,5 @@
 # PYTHONPATH=/home/ukasz/Documents/IT/Python py solution.py
-
+# sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 class ListNode:
     """
@@ -11,32 +11,23 @@ class ListNode:
         self.next = next
 
 
-def build_linked_list_deprecated(numbers: list[int]) -> ListNode:
-    """
-    Build linked list from list.
-    """
-    node = None
-    for number in reversed(numbers):
-        node = ListNode(number, node)
-    return node
-
-
-def build_linked_list(numbers: list[int], cycle_position: int = -1) -> ListNode:
+def build_linked_list(nums: list[int], cycle_position: int = -1) -> ListNode:
     """
     Build linked list with cycle from list.
     """
     anchor = node = ListNode()
-    has_cycle = False
+    cycle_node = None
 
-    for position, number in enumerate(numbers):
-        node.next = ListNode(number)
+    for position, num in enumerate(nums):
+        node.next = ListNode(num)
         node = node.next
+
         if position == cycle_position:
             cycle_node = node
-            has_cycle = True
 
-    if has_cycle:
+    if cycle_node is not None:
         node.next = cycle_node
+
     return anchor.next
 
 

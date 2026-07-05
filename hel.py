@@ -1,3 +1,7 @@
+$ which python
+$ python --version
+$ python -V
+
 dir(str)  # returns a list of attributes and methods belonging to an object
 help(str)
 help(str.isdigit)
@@ -55,6 +59,16 @@ list(iter('abcd'))  # ['a', 'b', 'c', 'd'] # generator from a string
 '1010'.isnumeric()  # True
 '{:b}'.format(10).isnumeric()  # True
 # to check if negative number with try: int(str) except: pass
+
+isdecimal ⊂ isdigit ⊂ isnumeric
+print("123".isnumeric())   # True
+print("²".isnumeric())     # True
+print("½".isnumeric())     # True
+print("Ⅳ".isnumeric())     # True
+print("²".isdigit())    # True
+print("²".isdecimal())  # False
+print("²".isnumeric())  # True
+
 
 'abc'.upper()  # 'ABC'
 'ABc'.lower()  # 'abc'
@@ -555,109 +569,41 @@ hash_map[key].update(hash_map2[key])
 
 
 
-# Dictionaries
-
-age = {}
-age = dict()
-type(age)  # <class 'dict'>
-
-people = {'Tim': 28,
-          'Jim': 35,
-          'Pam': 40
-          }
-
-names = people.keys()  # dict_keys(['Tim', 'Jim', 'Pam'])
-letter = next(iter(node.letters))  # take the first dict value
-ages = people.values()  # dict_values([28, 35, 40])
-people.items()  # dict_items([('Tim', 28), ('Jim', 35), ('Pam', 40)])
-len(people)  # 3
-people.get('Tim')  # 28
-people.get('Ukasz')  # Nothin # dict.get() is safer then dict[]
-people.get('Ukasz', 100)  # 100 # dict.get() returns 100 if key not in dict
-people['Tim']  # 28
-people['Tim'] += 2  # 30
-people['Ukasz']  # Error
-
-people['Tom2'] = 50
-people.update({'Tom': 50})
-people.pop('Tom')  # remove a key form dict
-del people['Tom2']
-people.clear() # remove all the elements from the dictionary.
-del people # delete, remove dictionary
-
+# Map Dictionary
+type(map)  # <class 'dict'>
+.keys()  # dict_keys()
+.values()  # dict_values()
+.items()  # dict_items([])
+len()
+[key] =
+[key] += 2
+.get(key, None)  # None if key not in dict
+.update({key: val})
+.pop(key)
+del dict[key]
+.clear()
+del dict_name # delete, remove dictionary
+.copy() # creates copy which has another id
 
 # lists as values
-people.update({'Tom': []})  # []
-people['Tom'].append(0)  # [0]
-people['Tom'].append(1)  # [0, 1]
+people.update({key: []})  # []
+people['Tom'].append(list_val)  # [0]
 
-# int as a key
-people[0] = 1  # {0: 1}
-people[0]
-
-'Tim' in people
-'Tim' in people.keys()
-
+letter = next(iter(node.letters))  # take the first dict value
 list(dict.fromkeys([1, 2, 2, 3, 3, 4, 4, 5]))  # [1, 2, 3, 4, 5]
 
 {**people} == people
 {**people, **{'Sam': 55}}
 {*people, *{'Sam': 55}}
 
-
-
-age_copy = people.copy() # creates copy which has another id
-age_copy['Tim'] = 100
-
-sentence = 'Jim quickly realized that the beautiful gowns are expensive'
-
-import string
-def counter(input_string):
-    count_letters = {}
-    for letter in input_string:
-        if letter in string.ascii_letters:
-            count_letters[letter] = count_letters.get(letter, 0) + 1
-    return count_letters
-
-counter(sentence)
-
-
-students = {"Tim": 28,
-          "Jim": 35,
-          "Pam": 40
-          }
-
+students = {"Tim": 28, "Jim": 35, "Pam": 40}
 f"Students names: {list(students.keys())}"  # "Students names: ['Tim', 'Jim', 'Pam']"
 "Students names: {}".format(list(students.keys()))  # "Students names: ['Tim', 'Jim', 'Pam']"
 "Students names: %s" % list(students.keys())  # "Students names: ['Tim', 'Jim', 'Pam']"
 
-for student in students:
-    print(student, students[student])
-
-for student, age in students.items():
-    print(student, age)
-
-for student in students:
-    print(f"{student}: {students[student]}")
-
-for student, age in students.items():
-    print(f"{student}: {age}")
-
-for student in students.keys():
-   print("{}: {}".format(student, students[student]))
-
-for student in students.keys():
-    print("%s: %d" % (student, students[student]))
-
-for student in students.keys():
-   print(student + ":", students[student])
-
-for student, age in students.items():
-    print(student + ": " + str(age) )
-
-for student in students:
-    print(": ".join((student, str(students[student]))))
-
+# int pair as a key
+idx = (idx1, idx2)
+idx = idx1 << 32 | idx2
 
 
 
@@ -1101,6 +1047,10 @@ list(abc('a', 't'))
 
 # type()
 # isinstance()
+
+print(isinstance(1, str))  # False
+print(isinstance(1, float))  # False
+print(isinstance(1, int))  # True
 
 type('Hello World')  # <class 'str'>
 isinstance('Hello World', str)  # True
@@ -1580,8 +1530,9 @@ next(lett)
 import random
 
 random.seed(1) # Fixes the see of the random number generator.
-random.choice([1, '2', 'tree'])
-random.sample(range(10), 3)
+random.choice([1, '2', 'tree'])  # one choice
+random.choices([1, '2', 'tree'], k=2)  # choices with repetition
+random.sample(range(10), 3)  # choices without repetition
 random.random()
 random.uniform(-1, 1)
 
@@ -1607,8 +1558,6 @@ np.math.factorial(5)  # 120, deprecated
 
 
 
-
-# import numpy as np
 
 import numpy as np
 
@@ -2933,7 +2882,6 @@ dict_obj = json.loads(person_data)
 # check type of dict_obj
 type(dict_obj)
 # get human object details
-e
 dict_obj['person']['name']
 
 # read str -> dict
@@ -4028,4 +3976,73 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
-py temp.py -v
+
+
+
+# dataclasses
+class User:
+    def __init__(self, name, age) -> None:
+        self.name: str = name
+        self.age: int = age
+    
+    def __str__(self) -> str:
+        return f"name: {self.name}, age: {self.age}"
+
+    def __repr__(self) -> str:
+        return f"name: {self.name}, age: {self.age}"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, User):
+            return NotImplemented
+        return self.name == other.name and self.age == other.age
+
+
+user1 = User("Ala", 30)
+user2 = User("Ala", 30)
+print(user1.name)
+print(user1.age)
+print(user1)
+print(user2)
+print(user1 == user2)
+print("---------------------------")
+
+from dataclasses import dataclass
+
+@dataclass
+class UserDT:
+    name: str
+    age: int
+
+user1_dt = UserDT("Ala", 30)
+user2_dt = UserDT("Ala", 30)
+print(user1_dt.name)
+print(user1_dt.age)
+print(user1_dt)
+print(user2_dt)
+print(user1_dt == user2_dt)
+
+
+
+
+
+
+
+class User:
+    def __init__(self, age):
+        self.age = age  # “use the public API”
+        # self._age = age  # “write directly to internal storage”
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if value < 0:
+            raise ValueError("Age cannot be negative")
+
+        self._age = value
+
+user = User(20)
+print(user.age)
+user = User(-30)

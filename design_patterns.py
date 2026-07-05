@@ -2,27 +2,7 @@
 
 # structural pattern
 # factory method
-# Defines an interface for creating an object, but lets subclasses decide which class to instantiate.
-
-class Burger:
-    def __init__(self, ingredients):
-        self.indegrients = ingredients
-
-    def print(self):
-        print(self.indegrients)
-
-class BurgerFactory:
-    def createCheeseBurger(self):
-        ingredients = ["bun", "cheese", "grilled-meat"]
-        return Burger(ingredients)
-
-burgerFactory = BurgerFactory()
-burgerFactory.createCheeseBurger().print()
-cheeseBurger = burgerFactory.createCheeseBurger()
-cheeseBurger.print()
-print(cheeseBurger)
-
-
+# Defines an interface for creating an object in a superclass, but lets subclasses decide which class to instantiate (to alter the type of objects that will be created).
 
 
 from abc import ABC, abstractmethod
@@ -31,25 +11,31 @@ from abc import ABC, abstractmethod
 # Step 1: Define the Product Interface
 class Notification(ABC):
     @abstractmethod
-    def send(self, message: str) -> None:
+    def send(self, message: str) -> str:
         pass
 
 # Concrete Product
 # Step 2: Create Concrete Products
 class EmailNotification(Notification):
-    def send(self, message: str) -> None:
-        print(f"Sending Email: {message}")
+    def send(self, message: str) -> str:
+        return f"Sending Email: {message}"
 
 class SMSNotification(Notification):
-    def send(self, message: str) -> None:
-        print(f"Sending SMS: {message}")
+    def send(self, message: str) -> str:
+        return f"Sending SMS: {message}"
 
 # Creator
 # Step 3: Define the Creator Class
 class NotificationFactory(ABC):
+    # factory method
     @abstractmethod
     def create_notification(self) -> Notification:
         pass
+
+    def some_operation(self, message: str) -> str:
+        notification = self.create_notification()
+        result = f"Some operation {notification.send(message)}"
+        return result
 
 # Concrete Creator
 # Step 4: Implement Concrete Creators
@@ -62,17 +48,28 @@ class SMSNotificationFactory(NotificationFactory):
         return SMSNotification()
 
 # Client Code
-def send_notification(factory: NotificationFactory, message: str) -> None:
+def send_notification(factory: NotificationFactory, message: str) -> str:
     notification = factory.create_notification()
-    notification.send(message)
+    return notification.send(message)
+
+# Client Code 2
+def send_notification2(factory: NotificationFactory, message: str) -> str:
+    notification = factory.some_operation(message)
+    return notification
+
 
 # Example Usage
 # if __name__ == "__main__":
 email_factory = EmailNotificationFactory()
 sms_factory = SMSNotificationFactory()
     
-send_notification(email_factory, "Hello via Email!")
-send_notification(sms_factory, "Hello via SMS!")
+# print(send_notification(email_factory, "Hello via Email!"))
+# print(send_notification(sms_factory, "Hello via SMS!"))
+print(send_notification(email_factory, "Hello via Email!"))
+
+
+
+
 
 
 
@@ -138,6 +135,25 @@ introduce_animal(plains_factory, "a plains animal.")
 
 
 
+class Burger(ABC):
+    def __init__(self, ingredients: list[str]):
+        self.indegrients = ingredients
+
+    @property
+    def ingredients(self):
+        print(self.indegrients)
+
+class BurgerFactory(ABC):
+    def createCheeseBurger(self):
+        ingredients = ["bun", "cheese", "grilled-meat"]
+        return Burger(ingredients)
+
+burgerFactory = BurgerFactory()
+cheeseBurger = burgerFactory.createCheeseBurger()
+cheeseBurger.ingredients
+print(cheeseBurger)
+
+
 
 
 
@@ -155,6 +171,132 @@ introduce_animal(plains_factory, "a plains animal.")
 # Factory can produce different products.
 
 
+from abc import ABC, abstractmethod
+
+
+# ===== Abstract Products =====
+
+class VirtualMachine(ABC):
+    @abstractmethod
+    def start(self):
+        pass
+
+
+class Database(ABC):
+    @abstractmethod
+    def connect(self):
+        pass
+
+
+class Storage(ABC):
+    @abstractmethod
+    def upload(self, filename):
+        pass
+
+
+# ===== AWS Products =====
+
+class AWSVirtualMachine(VirtualMachine):
+    def start(self):
+        print("Starting AWS EC2 instance")
+
+
+class AWSDatabase(Database):
+    def connect(self):
+        print("Connecting to AWS RDS")
+
+
+class AWSStorage(Storage):
+    def upload(self, filename):
+        print(f"Uploading {filename} to AWS S3")
+
+
+# ===== Azure Products =====
+
+class AzureVirtualMachine(VirtualMachine):
+    def start(self):
+        print("Starting Azure Virtual Machine")
+
+
+class AzureDatabase(Database):
+    def connect(self):
+        print("Connecting to Azure SQL Database")
+
+
+class AzureStorage(Storage):
+    def upload(self, filename):
+        print(f"Uploading {filename} to Azure Blob Storage")
+
+
+# ===== Abstract Factory =====
+
+class CloudFactory(ABC):
+    @abstractmethod
+    def create_vm(self) -> VirtualMachine:
+        pass
+
+    @abstractmethod
+    def create_database(self) -> Database:
+        pass
+
+    @abstractmethod
+    def create_storage(self) -> Storage:
+        pass
+
+
+# ===== Concrete Factories =====
+
+class AWSFactory(CloudFactory):
+    def create_vm(self) -> VirtualMachine:
+        return AWSVirtualMachine()
+
+    def create_database(self) -> Database:
+        return AWSDatabase()
+
+    def create_storage(self) -> Storage:
+        return AWSStorage()
+
+
+class AzureFactory(CloudFactory):
+    def create_vm(self) -> VirtualMachine:
+        return AzureVirtualMachine()
+
+    def create_database(self) -> Database:
+        return AzureDatabase()
+
+    def create_storage(self) -> Storage:
+        return AzureStorage()
+
+
+# ===== Client =====
+
+class DeploymentManager:
+    def __init__(self, factory: CloudFactory) -> None:
+        self.vm = factory.create_vm()
+        self.db = factory.create_database()
+        self.storage = factory.create_storage()
+
+    def deploy(self):
+        self.vm.start()
+        self.db.connect()
+        self.storage.upload("app.zip")
+
+
+# ===== Usage =====
+
+factory = AWSFactory()
+deployment = DeploymentManager(factory)
+deployment.deploy()
+
+print()
+
+factory = AzureFactory()
+deployment = DeploymentManager(factory)
+deployment.deploy()
+
+
+
+
 
 
 
@@ -170,6 +312,292 @@ introduce_animal(plains_factory, "a plains animal.")
 
 # creational pattern
 # builder
+# Builder is a creational design pattern that lets you construct complex objects step by step. The pattern allows you to produce different types and representations of an object using the same construction code.
+
+from abc import ABC, abstractmethod
+from typing import Any
+
+
+class Product1():
+    def __init__(self) -> None:
+        self.parts = []
+
+    def add(self, part: Any) -> None:
+        self.parts.append(part)
+
+    def list_parts(self) -> None:
+        print(f"Product parts: {', '.join(self.parts)}", end="")
+
+
+class Builder(ABC):
+    @property
+    @abstractmethod
+    def product(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_part_a(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_part_b(self) -> None:
+        pass
+
+    @abstractmethod
+    def produce_part_c(self) -> None:
+        pass
+
+
+class ConcreteBuilder1(Builder):
+    def __init__(self) -> None:
+        self.reset()
+
+    def reset(self) -> None:
+        self._product = Product1()
+
+    @property
+    def product(self) -> Product1:
+        product = self._product
+        self.reset()
+        return product
+
+    def produce_part_a(self) -> None:
+        self._product.add("PartA1")
+
+    def produce_part_b(self) -> None:
+        self._product.add("PartB1")
+
+    def produce_part_c(self) -> None:
+        self._product.add("PartC1")
+
+
+class Director:
+    def __init__(self) -> None:
+        self._builder = None
+
+    @property
+    def builder(self) -> Builder:
+        return self._builder
+
+    @builder.setter
+    def builder(self, builder: Builder) -> None:
+        self._builder = builder
+
+    def build_minimal_viable_product(self) -> None:
+        self.builder.produce_part_a()
+
+    def build_full_featured_product(self) -> None:
+        self.builder.produce_part_a()
+        self.builder.produce_part_b()
+        self.builder.produce_part_c()
+
+
+if __name__ == "__main__":
+    director = Director()
+    builder = ConcreteBuilder1()
+    director.builder = builder
+
+    print("Standard basic product: ")
+    director.build_minimal_viable_product()
+    builder.product.list_parts()
+
+    print("\n")
+
+    print("Standard full featured product: ")
+    director.build_full_featured_product()
+    builder.product.list_parts()
+
+    print("\n")
+
+    # Remember, the Builder pattern can be used without a Director class.
+    print("Custom product: ")
+    builder.produce_part_a()
+    builder.produce_part_b()
+    builder.product.list_parts()
+    print("\n")
+
+
+
+
+
+"""
+Structure of the Builder pattern
+Product – the complex object being created (Computer).
+Builder – defines the steps required to build the product (ComputerBuilder).
+Concrete Builder – implements those steps (GamingComputerBuilder, OfficeComputerBuilder).
+Director – orchestrates the building process (ComputerDirector).
+Client – chooses which builder to use.
+"""
+
+from abc import ABC, abstractmethod
+
+
+# Product
+class Computer:
+    def __init__(self):
+        self.cpu = None
+        self.ram = None
+        self.storage = None
+        self.gpu = None
+
+    def __str__(self):
+        return (
+            f"Computer("
+            f"cpu={self.cpu}, "
+            f"ram={self.ram}, "
+            f"storage={self.storage}, "
+            f"gpu={self.gpu})"
+        )
+
+
+# Builder interface
+class ComputerBuilder(ABC):
+    @abstractmethod
+    def build_cpu(self):
+        pass
+
+    @abstractmethod
+    def build_ram(self):
+        pass
+
+    @abstractmethod
+    def build_storage(self):
+        pass
+
+    @abstractmethod
+    def build_gpu(self):
+        pass
+
+    @abstractmethod
+    def get_result(self):
+        pass
+
+
+# Concrete builder
+class GamingComputerBuilder(ComputerBuilder):
+    def __init__(self):
+        self.computer = Computer()
+
+    def build_cpu(self):
+        self.computer.cpu = "Intel Core i9"
+
+    def build_ram(self):
+        self.computer.ram = "32 GB"
+
+    def build_storage(self):
+        self.computer.storage = "2 TB SSD"
+
+    def build_gpu(self):
+        self.computer.gpu = "RTX 5090"
+
+    def get_result(self):
+        return self.computer
+
+
+# Another concrete builder
+class OfficeComputerBuilder(ComputerBuilder):
+    def __init__(self):
+        self.computer = Computer()
+
+    def build_cpu(self):
+        self.computer.cpu = "Intel Core i3"
+
+    def build_ram(self):
+        self.computer.ram = "8 GB"
+
+    def build_storage(self):
+        self.computer.storage = "512 GB HDD"
+
+    def build_gpu(self):
+        self.computer.gpu = "Integrated Graphics"
+
+    def get_result(self):
+        return self.computer
+
+
+# Director
+class ComputerDirector:
+    def construct(self, builder: ComputerBuilder):
+        builder.build_cpu()
+        builder.build_ram()
+        builder.build_storage()
+        builder.build_gpu()
+        return builder.get_result()
+
+
+# Client code
+director = ComputerDirector()
+
+gaming_pc = director.construct(GamingComputerBuilder())
+office_pc = director.construct(OfficeComputerBuilder())
+
+print(gaming_pc)
+print(office_pc)
+
+builder = GamingComputerBuilder()
+builder.build_gpu()
+print(builder.get_result())
+
+
+
+
+# Fluent builder
+class Computer:
+    def __init__(self):
+        self.cpu = None
+        self.ram = None
+        self.storage = None
+        self.gpu = None
+
+    def __str__(self):
+        return (
+            f"Computer(cpu={self.cpu}, "
+            f"ram={self.ram}, "
+            f"storage={self.storage}, "
+            f"gpu={self.gpu})"
+        )
+
+
+class ComputerBuilder:
+    def __init__(self):
+        self.computer = Computer()
+
+    def cpu(self, value):
+        self.computer.cpu = value
+        return self
+
+    def ram(self, value):
+        self.computer.ram = value
+        return self
+
+    def storage(self, value):
+        self.computer.storage = value
+        return self
+
+    def gpu(self, value):
+        self.computer.gpu = value
+        return self
+
+    def build(self):
+        return self.computer
+
+
+pc = (
+    ComputerBuilder()
+    .cpu("AMD Ryzen 9")
+    .ram("64 GB")
+    .storage("4 TB SSD")
+    .gpu("RTX 5080")
+    .build()
+)
+
+print(pc)
+
+
+
+
+
+
 class Burger:
     def __init__(self):
         self.buns = None
@@ -234,61 +662,6 @@ burger = cheesburger.build()
 
 
 
-class Car:
-    def __init__(self) -> None:
-        self.brand = None
-        self.model = None
-        self.color = None
-    
-    def set_brand(self, brand_style: str):
-        self.brand = brand_style
-    
-    def set_model(self, model_style: str):
-        self.model = model_style
-    
-    def set_color(self, color_style: str):
-        self.color = color_style
-
-class CarBuilder:
-    def __init__(self) -> None:
-        self.car = Car()
-    
-    def add_brand(self, brand: str):
-        self.car.set_brand(brand)
-        return self
-    
-    def add_model(self, model: str):
-        self.car.set_model(model)
-        return self
-    
-    def add_color(self, color: str):
-        self.car.set_color(color)
-        return self
-    
-    def build(self):
-        return self.car
-
-car = CarBuilder() \
-    .add_brand("FSO") \
-    .add_model("Polonez")\
-    .add_color("red")\
-    .build()
-
-
-class CarDirector:
-    def buildFSO(self, builder: CarBuilder):
-        builder \
-            .add_brand("FSO") \
-            .add_color("red")
-
-director = CarDirector()
-polonez = CarBuilder()
-director.buildFSO(polonez)
-car = polonez.build()
-
-
-
-
 
 
 
@@ -309,6 +682,54 @@ car = polonez.build()
 
 # creational pattern
 # singleton
+# a class has only one instance, while providing a global access point to this instance.
+
+class SingletonMeta(type):
+    """
+    The Singleton class can be implemented in different ways in Python. Some
+    possible methods include: base class, decorator, metaclass. We will use the
+    metaclass because it is best suited for this purpose.
+    """
+
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        """
+        Possible changes to the value of the `__init__` argument do not affect
+        the returned instance.
+        """
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+
+class Singleton(metaclass=SingletonMeta):
+    def some_business_logic(self):
+        """
+        Finally, any singleton should define some business logic, which can be
+        executed on its instance.
+        """
+
+        # ...
+
+
+if __name__ == "__main__":
+    # The client code.
+
+    s1 = Singleton()
+    s2 = Singleton()
+
+    if id(s1) == id(s2):
+        print("Singleton works, both variables contain the same instance.")
+    else:
+        print("Singleton failed, variables contain different instances.")
+
+
+
+
+
+
 
 class ApplicationState:
     instance = None
@@ -320,7 +741,9 @@ class ApplicationState:
     def get_instance():
         if not ApplicationState.instance:
             ApplicationState.instance = ApplicationState()
+
         return ApplicationState.instance
+
 
 app_state_1 = ApplicationState().get_instance()
 print(app_state_1.is_loggedin)  # False
